@@ -2,35 +2,24 @@
 #include <iostream>
 #include <cstring>
 
-void FlowDefinition::addUnit(const std::string &name, CalculationUnit *unit) {
-	units.insert(pair_units(unit, name));
-}
-
 Flow::Flow()
-	: shared(false), data(0), fd(new FlowDefinition()) {
-	tmp_values = new std::map<std::string, double>();
+	: data(0), fd(new FlowDefinition()) {
 }
 
 Flow::Flow(const Flow &other)
-		: shared(true), data(0), fd(other.fd), tmp_values(0) {
-
+	: data(0) {
+	fd = other.fd;
 }
 
 Flow &Flow::operator =(const Flow &other) {
 	fd = other.fd;
 	data = 0;
-	//data = new double[fd->units.size()];
-	//std::memcpy(data, other.data, sizeof(double) * fd->units.size());
 	return *this;
 }
 
 Flow::~Flow() {
 	if (data) {
 		delete data;
-	}
-
-	if (!shared) {
-		delete tmp_values;
 	}
 }
 
@@ -41,7 +30,7 @@ Flow *Flow::addUnit(const std::string &name,
 	if (data != 0) {
 		std::cerr << "flow values lost" << std::endl;
 	}
-	(*tmp_values)[name] = value;
+	tmp_values[name] = value;
 	fd->addUnit(name, unit);
 	return this;
 }
@@ -64,13 +53,16 @@ void Flow::initData() {
 		}
 		const std::string name = it->second;
 		fd->indices[name] = i;
-		const double value = (*tmp_values)[name];
+		const double value = tmp_values[name];
 		data[i] = value;
 		i++;
 	}
-	delete tmp_values;
-	locked = true;
 }
+
+void FlowDefinition::addUnit(const std::string &name, CalculationUnit *unit) {
+	units.insert(pair_units(unit, name));
+}
+
 
 SafeArrayAccess<double> Flow::getUnitData(CalculationUnit &unit) {
 	if (!data) {

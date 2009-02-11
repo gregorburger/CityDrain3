@@ -62,13 +62,11 @@ private:
 	void initData();
 
 private:
-	bool shared;
-	bool locked;
-
-
 	double *data;
 	boost::shared_ptr<FlowDefinition> fd;
-	std::map<std::string, double> *tmp_values;
+
+	typedef std::map<std::string, double> tmp_val_type;
+	tmp_val_type tmp_values;
 };
 
 template<typename T>

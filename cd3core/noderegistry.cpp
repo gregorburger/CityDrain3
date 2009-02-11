@@ -2,30 +2,27 @@
 
 #include "nodefactory.h"
 #include "node.h"
-
-#include <memory>
 #include <boost/foreach.hpp>
+#include <iostream>
 
-NodeRegistry::NodeRegistry()
-{
+NodeRegistry::NodeRegistry() {
 }
+
+typedef std::pair<std::string, INodeFactory *> rn_ptype;
 
 NodeRegistry::~NodeRegistry() {
-	std::pair<std::string, boost::shared_ptr<INodeFactory> > p;
-	BOOST_FOREACH(p, registered_nodes) {
-		p.second.reset();
+	BOOST_FOREACH(rn_ptype t, registered_nodes) {
+		delete t.second;
 	}
 }
 
-bool NodeRegistry::addNodeFactory(boost::shared_ptr<INodeFactory> factory) {
-	if (registered_nodes.find(factory.get()->getNodeName()) != registered_nodes.end()) {
-		return false;
-	}
-	registered_nodes[factory->getNodeName()] = factory;
+bool NodeRegistry::addNodeFactory(INodeFactory *factory) {
+	assert(registered_nodes.find(factory->doGetNodeName()) == registered_nodes.end());
+	registered_nodes[factory->doGetNodeName()] = factory;
 	return true;
 }
 
-std::list<std::string> NodeRegistry::getRegisteredNames() const {
+/*std::list<std::string> NodeRegistry::getRegisteredNames() const {
 	std::list<std::string> names;
 
 	for (reg_node_type::const_iterator it = registered_nodes.begin();
@@ -34,10 +31,10 @@ std::list<std::string> NodeRegistry::getRegisteredNames() const {
 	}
 
 	return names;
-}
+}*/
 
-boost::shared_ptr<Node> NodeRegistry::createNode(const std::string &name) {
-	return registered_nodes[name]->createNode();
+Node *NodeRegistry::createNode(const std::string &name) {
+	return registered_nodes[name]->doCreateNode();
 }
 
 bool NodeRegistry::contains(const std::string &name) const {

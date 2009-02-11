@@ -5,7 +5,7 @@
 FileOut::FileOut()
 	: Node()
 {
-	addParameter(ADD_PARAMETERS(out_file_name));
+	addParameter(ADD_PARAMETERS_P(out_file_name));
 }
 
 FileOut::~FileOut() {

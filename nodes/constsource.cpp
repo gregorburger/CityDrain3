@@ -2,10 +2,13 @@
 
 #include <flow.h>
 
-ConstSource::ConstSource()
-{
+ConstSource::ConstSource() {
 	addParameter(ADD_PARAMETERS(const_flow));
 	tmp = new Flow();
+}
+
+ConstSource::~ConstSource() {
+	delete tmp;
 }
 
 void ConstSource::f(int time, int dt) {

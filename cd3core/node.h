@@ -4,9 +4,10 @@
 #include <string>
 #include <map>
 #include <list>
-#include <utility>
+//#include <utility>
+#include <memory>
 #include <loki/LokiTypeInfo.h>
-#include <boost/shared_ptr.hpp>
+
 
 class Flow;
 
@@ -32,7 +33,7 @@ public:
 	const_in_ports(&in_ports),
 	const_out_ports(&out_ports)  {
 	}
-	~Node() {}
+	virtual ~Node() {}
 
 	virtual const char *getNodeName() const = 0;
 	virtual void f(int time, int dt) = 0;
@@ -50,23 +51,23 @@ public:
 
 	void setInPort(const std::string &, const Flow *in);
 
-	template<class T> bool setState(const std::string &name, boost::shared_ptr<T> state) {
+	template<class T> bool setState(const std::string &name, std::auto_ptr<T> state) {
 		ltvp p = states[name];
 		if (p.first != typeid(T))
 			return false;
 		T *vp = static_cast<T*>(p.second);
 		assert(vp);
-		*vp = *(state.get());
+		*vp = *state;
 		return true;
 	}
 
-	template<class T> bool setParameter(const std::string &name, boost::shared_ptr<T> param) {
+	template<class T> bool setParameter(const std::string &name, std::auto_ptr<T> param) {
 		ltvp p = parameters[name];
 		if (p.first != typeid(T))
 			return false;
 		T *vp = static_cast<T*>(p.second);
 		assert(vp);
-		*vp = *(param.get());
+		*vp = *param;
 		return true;
 	}
 

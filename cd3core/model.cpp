@@ -3,24 +3,26 @@
 #include <node.h>
 #include <boost/foreach.hpp>
 
-Model::Model()
-{
+Model::Model() {
 }
 
 Model::~Model() {
-	std::pair<std::string, boost::shared_ptr<Node> > p;
+	std::pair<std::string, Node*> p;
 	BOOST_FOREACH(p, nodes) {
-		p.second.reset();
+		delete p.second;
 	}
 }
 
 
-void Model::addNode(const std::string &name, boost::shared_ptr<Node> node) {
+void Model::addNode(const std::string &name, Node *node) {
+	assert(node);
+	assert(name != "");
+	assert(nodes.find(name) == nodes.end());
 	nodes[name] = node;
 }
 
 void dumpParameters(Node *n) {
-
+	(void) n;
 }
 
 void Model::dump() {

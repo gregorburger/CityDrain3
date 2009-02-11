@@ -2,7 +2,6 @@
 #define FILEOUT_H
 
 #include <node.h>
-#include <string>
 
 CD3_DECLARE_NODE(FileOut)
 public:
@@ -12,7 +11,7 @@ public:
 
 private:
 	Flow *in;
-	std::string out_file_name;
+	std::string *out_file_name;
 };
 
 #endif // FILEOUT_H

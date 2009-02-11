@@ -2,7 +2,9 @@
 <qtcreator>
  <data>
   <variable>RunConfiguration0-CommandLineArguments</variable>
-  <valuelist type="QVariantList" />
+  <valuelist type="QVariantList" >
+   <value type="QString" >models/test.xml</value>
+  </valuelist>
  </data>
  <data>
   <variable>RunConfiguration0-ProFile</variable>
@@ -64,6 +66,7 @@
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Release</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList" >
     <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-DxA6sd9MUC,guid=439b6f50e2aebf476357170a4992846b</value>
+    <value type="QString" >DESKTOP_AUTOSTART_ID=107bc10ba59206c15123433892612173700000054070001</value>
     <value type="QString" >DESKTOP_SESSION=default</value>
     <value type="QString" >DESKTOP_STARTUP_ID=</value>
     <value type="QString" >DISPLAY=:0.0</value>
@@ -110,6 +113,7 @@
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Release</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList" >
     <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-DxA6sd9MUC,guid=439b6f50e2aebf476357170a4992846b</value>
+    <value type="QString" >DESKTOP_AUTOSTART_ID=107bc10ba59206c15123433892612173700000054070001</value>
     <value type="QString" >DESKTOP_SESSION=default</value>
     <value type="QString" >DESKTOP_STARTUP_ID=</value>
     <value type="QString" >DISPLAY=:0.0</value>
@@ -158,6 +162,7 @@
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Release</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList" >
     <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-DxA6sd9MUC,guid=439b6f50e2aebf476357170a4992846b</value>
+    <value type="QString" >DESKTOP_AUTOSTART_ID=107bc10ba59206c15123433892612173700000054070001</value>
     <value type="QString" >DESKTOP_SESSION=default</value>
     <value type="QString" >DESKTOP_STARTUP_ID=</value>
     <value type="QString" >DISPLAY=:0.0</value>

@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <QFile>
-#include <boost/shared_ptr.hpp>
+#include <model.h>
 
 void usage(int argc, char **argv) {
 	(void) argc;
@@ -18,6 +18,10 @@ int main(int argc, char **argv) {
 	QFile f(argv[1]);
 	f.open(QIODevice::ReadOnly);
 	XmlLoader loader(f);
-	boost::shared_ptr<Model> m = loader.loadModel();
-	m.get()->dump();
+	Model *m;
+	if (!(m = loader.loadModel())) {
+		std::cout << "could not load xml file" << std::endl;
+	}
+	m->dump();
+	delete m;
 }

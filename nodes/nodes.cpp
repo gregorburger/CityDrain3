@@ -10,11 +10,11 @@
 
 extern "C" {
 	void registerNodes(INodeRegistry *registry) {
-		registry->addNodeFactory(boost::shared_ptr<INodeFactory>(new NodeFactory<ConstSource>()));
-		registry->addNodeFactory(boost::shared_ptr<INodeFactory>(new NodeFactory<FileOut>()));
+		registry->doAddNodeFactory(new NodeFactory<ConstSource>());
+		registry->doAddNodeFactory(new NodeFactory<FileOut>());
 	}
 
 	void registerTypes(TypeRegistry *registry) {
-		registry->addTypeFactory<Flow>(boost::shared_ptr<ITypeFactory>(new FlowTypeFactory()));
+		registry->addTypeFactory<Flow>(new FlowTypeFactory());
 	}
 }

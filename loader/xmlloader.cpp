@@ -10,6 +10,7 @@
 #include <model.h>
 #include <noderegistry.h>
 #include <node.h>
+#include <boost/format.hpp>
 
 #include "typeregistry.h"
 
@@ -30,14 +31,15 @@ XmlLoader::~XmlLoader() {
 	delete node_registry;
 }
 
-boost::shared_ptr<Model> XmlLoader::loadModel() {
+Model *XmlLoader::loadModel() {
 	QString errorStr;
 	int errorLine;
 	int errorColumn;
 
 	if (!document.setContent(&file, true, &errorStr, &errorLine, &errorColumn)) {
-		qCritical() << errorLine << ":" << errorColumn << errorColumn;
-		model = 0;
+		std::string s = boost::str(boost::format("%1%") % 1);
+		std::cout << s << std::endl;
+		return 0;
 	}
 
 	loadNodesFromPlugins(node_registry, loadPluginPaths());
@@ -46,7 +48,7 @@ boost::shared_ptr<Model> XmlLoader::loadModel() {
 	loadNodes(document.firstChild().firstChildElement("model").firstChildElement("nodelist"));
 
 
-	return boost::shared_ptr<Model>(model);
+	return model;
 }
 
 QStringList XmlLoader::loadPluginPaths() {
@@ -110,13 +112,16 @@ void XmlLoader::loadNodes(QDomElement element) {
 }
 
 void XmlLoader::loadNode(QDomElement element) {
+	assert(element.nodeName() == "node");
 	std::string id = element.attribute("id", "").toStdString();
 	std::string nodeClass = element.attribute("class").toStdString();
-	if (!node_registry->contains(nodeClass)) {
+	if (!node_registry->doContains(nodeClass)) {
 		qDebug() << "no class " << nodeClass.c_str() << " registered";
 		return;
 	}
-	boost::shared_ptr<Node> node = node_registry->createNode(nodeClass);
+	Node *node = node_registry->doCreateNode(nodeClass);
+
+	assert(node);
 
 	QDomNodeList childs = element.childNodes();
 
@@ -131,7 +136,9 @@ void XmlLoader::loadNode(QDomElement element) {
 
 
 
-void XmlLoader::setNodeParameter(boost::shared_ptr<Node> node, QDomElement element) {
+void XmlLoader::setNodeParameter(Node *node, QDomElement element) {
+	assert(node);
+	assert(element.nodeName() == "parameter");
 	bool simple = element.attribute("kind", "simple") == "simple";
 
 	std::string name = element.attribute("name", "").toStdString();
@@ -146,12 +153,12 @@ void XmlLoader::setNodeParameter(boost::shared_ptr<Node> node, QDomElement eleme
 		QString value = element.attribute("value", "0.0");
 
 		if (type == "double") {
-			node->setState(name, boost::shared_ptr<double>(new double(value.toDouble())));
+			node->setState(name, std::auto_ptr<double> (new double(value.toDouble())));
 			return;
 		}
 
 		if (type == "int") {
-			node->setState(name, boost::shared_ptr<int>(new int(value.toInt())));
+			node->setState(name, std::auto_ptr<int> (new int(value.toInt())));
 			return;
 		}
 
@@ -164,12 +171,12 @@ void XmlLoader::setNodeParameter(boost::shared_ptr<Node> node, QDomElement eleme
 					xmlError(element, "can not parse bool");
 				}
 			}
-			node->setState(name, boost::shared_ptr<bool>(new bool(bvalue)));
+			node->setState(name, std::auto_ptr<bool> (new bool(bvalue)));
 			return;
 		}
 
 		if (type == "string") {
-			node->setState(name, boost::shared_ptr<std::string>(new std::string(value.toStdString())));
+			node->setState(name, std::auto_ptr<std::string> (new std::string(value.toStdString())));
 			return;
 		}
 

@@ -12,11 +12,11 @@ class ITypeFactory {
 public:
 	virtual std::string getTypeName() = 0;
 
-	virtual void setParameter(boost::shared_ptr<Node> n,
+	virtual void setParameter(Node *n,
 							  const std::string &parameter,
 							  QDomElement &element) = 0;
 
-	virtual void setState(boost::shared_ptr<Node> n,
+	virtual void setState(Node *n,
 						  const std::string &parameter,
 						  QDomElement &element) = 0;
 };

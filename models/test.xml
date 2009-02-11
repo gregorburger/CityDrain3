@@ -15,7 +15,7 @@
 			</node>
 			
 			<node id="testnode3" class="FileOut">
-				<parameter name="out_file_name" value="out.txt">
+				<parameter name="out_file_name" type="string" value="out.txt" />
 			</node>
 		</nodelist>
 		

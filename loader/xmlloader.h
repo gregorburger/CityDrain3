@@ -9,7 +9,6 @@ class Node;
 
 #include <QtXml>
 #include <QStringList>
-#include <boost/shared_ptr.hpp>
 
 
 class XmlLoader
@@ -17,7 +16,7 @@ class XmlLoader
 public:
 	XmlLoader(QFile &file);
 	~XmlLoader();
-	boost::shared_ptr<Model> loadModel();
+	Model *loadModel();
 private:
 	/*void loadNodes(Model *m);
 	void loadConnections(Model *m);*/
@@ -27,7 +26,7 @@ private:
 	void loadNodes(QDomElement element);
 	void loadNode(QDomElement element);
 	void loadConnections(QDomElement element);
-	void setNodeParameter(boost::shared_ptr<Node> node, QDomElement element);
+	void setNodeParameter(Node *node, QDomElement element);
 
 private:
 	QDomDocument document;

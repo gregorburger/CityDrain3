@@ -1,29 +1,29 @@
 #include "flowtypefactory.h"
 #include <node.h>
 
-FlowTypeFactory::FlowTypeFactory()
-{
+FlowTypeFactory::FlowTypeFactory() {
 }
 
-void FlowTypeFactory::setParameter(boost::shared_ptr<Node> n,
+void FlowTypeFactory::setParameter(Node *n,
 							  const std::string &parameter,
 							  QDomElement &element) {
 	n->setParameter(parameter, flowFromDom(element));
 }
 
-void FlowTypeFactory::setState(boost::shared_ptr<Node> n,
+void FlowTypeFactory::setState(Node *n,
 						  const std::string &state,
 						  QDomElement &element) {
 	n->setState<Flow>(state, flowFromDom(element));
 }
 
-boost::shared_ptr<Flow> FlowTypeFactory::flowFromDom(QDomElement &e) {
-	Flow *f = new Flow();
+std::auto_ptr<Flow> FlowTypeFactory::flowFromDom(QDomElement &e) {
+	std::auto_ptr<Flow> f(new Flow());
 
 	if (e.nodeName() != "flow") {
 		std::cerr << "type " << e.nodeName().toStdString() << "not known" << std::endl;
-		return boost::shared_ptr<Flow>((Flow*)0);
+		return std::auto_ptr<Flow>((Flow *)0);
 	}
+
 	for (int i = 0; i < e.childNodes().size(); i++) {
 		QDomNode node = e.childNodes().at(i);
 		QDomNamedNodeMap attr = node.attributes();
@@ -47,5 +47,5 @@ boost::shared_ptr<Flow> FlowTypeFactory::flowFromDom(QDomElement &e) {
 		double value = attr.namedItem("value").toAttr().value().toDouble();
 		f->addUnit(name, unit, value);
 	}
-	return boost::shared_ptr<Flow>(f);
+	return f;
 }

@@ -7,14 +7,14 @@
 
 class Node;
 
-typedef std::map<std::string, boost::shared_ptr<Node> > node_map;
+typedef std::map<std::string, Node *> node_map;
 
 class Model
 {
 public:
     Model();
 	~Model();
-	void addNode(const std::string &name, boost::shared_ptr<Node> node);
+	void addNode(const std::string &name, Node *node);
 	void dump();
 
 private:

@@ -3,14 +3,23 @@
 
 #include <string>
 #include <typeinfo>
-#include <boost/shared_ptr.hpp>
 
 #include "node.h"
+#include <boost/utility.hpp>
 
 class INodeFactory {
-public:
-	virtual boost::shared_ptr<Node> createNode() const = 0;
+private:
+	virtual Node *createNode() const = 0;
 	virtual std::string getNodeName() = 0;
+public:
+	virtual ~INodeFactory(){}
+	Node *doCreateNode() {
+		return createNode();
+	}
+
+	std::string doGetNodeName() {
+		return getNodeName();
+	}
 };
 
 template <typename T>
@@ -18,21 +27,22 @@ class NodeFactory
 	: public INodeFactory {
 public:
 	NodeFactory();
-	virtual boost::shared_ptr<Node> createNode() const;
-	virtual std::string getNodeName();
 private:
+	virtual Node *createNode() const;
+	virtual std::string getNodeName();
 	std::string nodeName;
 };
 
 template <typename T>
 NodeFactory<T>::NodeFactory() {
-	boost::shared_ptr<Node> tmp = createNode();
+	Node *tmp = createNode();
 	nodeName = tmp->getNodeName();
+	delete tmp;
 }
 
 template <typename T>
-boost::shared_ptr<Node> NodeFactory<T>::createNode() const {
-	return boost::shared_ptr<Node>(new T());
+Node *NodeFactory<T>::createNode() const {
+	return (new T());
 }
 
 template <typename T>

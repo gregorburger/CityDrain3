@@ -6,7 +6,8 @@
 
 CD3_DECLARE_NODE(ConstSource)
 public:
-    ConstSource();
+	ConstSource();
+	~ConstSource();
 	void f(int time, int dt);
 	void init(int start, int end, int dt);
 private:
