@@ -1,0 +1,30 @@
+<citydrain version="1.0">
+	<simulation name="TestSimulation">
+		<time start="0" stop="7200" dt="300" />
+		<pluginpath path="nodes/libnodes.so.1.0.0" />
+	</simulation>
+
+	<model>
+		<nodelist>
+			<node id="testnode1" class="ConstSource">
+				<parameter name="const_flow" kind="complex" type="Flow">
+					<flow>
+						<unit name="Q" kind="flow" value="3.0" />
+					</flow>
+				</parameter>
+			</node>
+			
+			<node id="testnode3" class="FileOut">
+				<parameter name="out_file_name" value="out.txt">
+			</node>
+		</nodelist>
+		
+		
+		<connectionlist>
+			<connection id="1">
+				<source node="uuid:asdf" port="out" />
+				<sink node="uuid:asdf1" port="in" />
+			</connection>
+		</connectionlist>
+	</model>
+</citydrain>

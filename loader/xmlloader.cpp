@@ -1,0 +1,181 @@
+#include "xmlloader.h"
+
+#include <QtXml>
+#include <QDataStream>
+#include <QDebug>
+#include <QLibrary>
+
+#include <iostream>
+
+#include <model.h>
+#include <noderegistry.h>
+#include <node.h>
+
+#include "typeregistry.h"
+
+void xmlError(QDomNode node, QString error) {
+	qDebug() << node.lineNumber() << ":" << node.columnNumber() << error;
+}
+
+
+XmlLoader::XmlLoader(QFile &file)
+ : file(file) {
+	model = new Model();
+	node_registry = new NodeRegistry();
+	type_registry = new TypeRegistry();
+}
+
+XmlLoader::~XmlLoader() {
+	delete type_registry;
+	delete node_registry;
+}
+
+boost::shared_ptr<Model> XmlLoader::loadModel() {
+	QString errorStr;
+	int errorLine;
+	int errorColumn;
+
+	if (!document.setContent(&file, true, &errorStr, &errorLine, &errorColumn)) {
+		qCritical() << errorLine << ":" << errorColumn << errorColumn;
+		model = 0;
+	}
+
+	loadNodesFromPlugins(node_registry, loadPluginPaths());
+	loadTypesFromPlugins(type_registry, loadPluginPaths());
+
+	loadNodes(document.firstChild().firstChildElement("model").firstChildElement("nodelist"));
+
+
+	return boost::shared_ptr<Model>(model);
+}
+
+QStringList XmlLoader::loadPluginPaths() {
+	QStringList plist;
+	QDomNodeList dlist = document.elementsByTagName("pluginpath");
+	for (int i = 0; i < dlist.count(); i++) {
+		plist.append(dlist.at(i).attributes().namedItem("path").toAttr().value());
+	}
+	//qDebug() << plist;
+	return plist;
+}
+
+//TODO globalise
+typedef void (*regNodeFunProto)(INodeRegistry *reg);
+
+void XmlLoader::loadNodesFromPlugins(
+		INodeRegistry *registry,
+		QStringList paths) {
+
+	QString path;
+	foreach (path, paths) {
+		QLibrary l(path);
+		regNodeFunProto regFun = (regNodeFunProto) l.resolve("registerNodes");
+		if (regFun) {
+			regFun(registry);
+		} else {
+			qWarning() << path << " has no node register hook";
+		}
+	}
+}
+
+typedef void (*regTypeFunProto)(TypeRegistry *reg);
+
+void XmlLoader::loadTypesFromPlugins(
+		TypeRegistry *registry,
+		QStringList paths) {
+	QString path;
+	foreach (path, paths) {
+		QLibrary l(path);
+		regTypeFunProto regFun = (regTypeFunProto) l.resolve("registerTypes");
+		if (regFun) {
+			regFun(registry);
+		} else {
+			qWarning() << path << " has no type register hook";
+		}
+	}
+}
+
+void XmlLoader::loadNodes(QDomElement element) {
+	qDebug() << "start loading nodes";
+	QDomNodeList childs = element.childNodes();
+	for (int i = 0; i < childs.count(); i++) {
+		QDomNode child = childs.at(i);
+		if (child.nodeName() != "node" || !child.isElement()) {
+			xmlError(element, "dom node not a node type");
+			continue;
+		}
+
+		loadNode(child.toElement());
+	}
+}
+
+void XmlLoader::loadNode(QDomElement element) {
+	std::string id = element.attribute("id", "").toStdString();
+	std::string nodeClass = element.attribute("class").toStdString();
+	if (!node_registry->contains(nodeClass)) {
+		qDebug() << "no class " << nodeClass.c_str() << " registered";
+		return;
+	}
+	boost::shared_ptr<Node> node = node_registry->createNode(nodeClass);
+
+	QDomNodeList childs = element.childNodes();
+
+	for (int i = 0; i < childs.count(); i++) {
+		if (childs.at(i).nodeName() == "parameter") {
+			setNodeParameter(node, childs.at(i).toElement());
+		}
+	}
+	model->addNode(id, node);
+}
+
+
+
+
+void XmlLoader::setNodeParameter(boost::shared_ptr<Node> node, QDomElement element) {
+	bool simple = element.attribute("kind", "simple") == "simple";
+
+	std::string name = element.attribute("name", "").toStdString();
+	std::string type = element.attribute("type", "double").toStdString();
+
+	if (node->const_parameters->find(name) == node->const_parameters->end()) {
+		xmlError(element, QString(name.c_str()).append(" no such parameter in node"));
+	}
+
+
+	if (simple) {
+		QString value = element.attribute("value", "0.0");
+
+		if (type == "double") {
+			node->setState(name, boost::shared_ptr<double>(new double(value.toDouble())));
+			return;
+		}
+
+		if (type == "int") {
+			node->setState(name, boost::shared_ptr<int>(new int(value.toInt())));
+			return;
+		}
+
+		if (type == "bool") {
+			bool bvalue;
+			if (value == "true") {
+				bvalue = true;
+			} else {
+				if (value == "false") {
+					xmlError(element, "can not parse bool");
+				}
+			}
+			node->setState(name, boost::shared_ptr<bool>(new bool(bvalue)));
+			return;
+		}
+
+		if (type == "string") {
+			node->setState(name, boost::shared_ptr<std::string>(new std::string(value.toStdString())));
+			return;
+		}
+
+		xmlError(element, " could not parse simple type parameter");
+	} else {
+		QDomElement sub = element.firstChild().toElement();
+		type_registry->getByTypeName(type)->setParameter(node, name, sub);
+	}
+}
