@@ -6,6 +6,7 @@ FileOut::FileOut()
 	: Node()
 {
 	addParameter(ADD_PARAMETERS_P(out_file_name));
+	addInPort(ADD_PARAMETERS_P(in));
 }
 
 FileOut::~FileOut() {

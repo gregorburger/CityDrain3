@@ -45,8 +45,13 @@ Model *XmlLoader::loadModel() {
 	loadNodesFromPlugins(node_registry, loadPluginPaths());
 	loadTypesFromPlugins(type_registry, loadPluginPaths());
 
-	loadNodes(document.firstChild().firstChildElement("model").firstChildElement("nodelist"));
+	loadNodes(document.firstChild()
+			  .firstChildElement("model")
+			  .firstChildElement("nodelist"));
 
+	loadConnections(document.firstChild()
+					.firstChildElement("model")
+					.firstChildElement("connectionlist"));
 
 	return model;
 }
@@ -133,8 +138,36 @@ void XmlLoader::loadNode(QDomElement element) {
 	model->addNode(id, node);
 }
 
+void XmlLoader::loadConnections(QDomElement element) {
+	assert(element.nodeName() == "connectionlist");
+
+	QDomNodeList childs = element.childNodes();
+
+	for (int i = 0; i < childs.count(); i++) {
 
 
+		QDomNode child = childs.at(i);
+
+		assert(child.nodeName() == "connection");
+
+		QDomNamedNodeMap source_attrs = child.firstChildElement("source").attributes();
+		QDomNamedNodeMap sink_attrs = child.firstChildElement("sink").attributes();
+
+		assert(source_attrs.contains("node"));
+		assert(source_attrs.contains("port"));
+		assert(sink_attrs.contains("node"));
+		assert(sink_attrs.contains("port"));
+
+		std::string src_node = source_attrs.namedItem("node").toAttr().value().toStdString();
+		std::string sin_node = sink_attrs.namedItem("node").toAttr().value().toStdString();
+
+		std::string src_port = source_attrs.namedItem("port").toAttr().value().toStdString();
+		std::string sin_port = sink_attrs.namedItem("port").toAttr().value().toStdString();
+
+		model->addConnection(src_node, src_port, sin_node, sin_port);
+	}
+
+}
 
 void XmlLoader::setNodeParameter(Node *node, QDomElement element) {
 	assert(node);

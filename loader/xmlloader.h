@@ -26,6 +26,8 @@ private:
 	void loadNodes(QDomElement element);
 	void loadNode(QDomElement element);
 	void loadConnections(QDomElement element);
+
+
 	void setNodeParameter(Node *node, QDomElement element);
 
 private:

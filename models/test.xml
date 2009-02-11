@@ -5,8 +5,9 @@
 	</simulation>
 
 	<model>
+	
 		<nodelist>
-			<node id="testnode1" class="ConstSource">
+			<node id="constsource" class="ConstSource">
 				<parameter name="const_flow" kind="complex" type="Flow">
 					<flow>
 						<unit name="Q" kind="flow" value="3.0" />
@@ -14,17 +15,18 @@
 				</parameter>
 			</node>
 			
-			<node id="testnode3" class="FileOut">
+			<node id="fileout" class="FileOut">
 				<parameter name="out_file_name" type="string" value="out.txt" />
 			</node>
 		</nodelist>
 		
-		
 		<connectionlist>
-			<connection id="1">
-				<source node="uuid:asdf" port="out" />
-				<sink node="uuid:asdf1" port="in" />
+			<connection id="con1">
+				<source node="constsource" port="out" />
+				<sink	node="fileout" port="in" />
 			</connection>
 		</connectionlist>
+		
 	</model>
+	
 </citydrain>

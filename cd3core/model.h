@@ -15,10 +15,15 @@ public:
     Model();
 	~Model();
 	void addNode(const std::string &name, Node *node);
+	void addConnection(const std::string &src_node,
+					   const std::string &src_port,
+					   const std::string &sin_node,
+					   const std::string &sin_port);
 	void dump();
 
 private:
 	node_map nodes;
+
 };
 
 #endif // MODEL_H

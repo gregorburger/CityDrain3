@@ -5,6 +5,7 @@
 ConstSource::ConstSource() {
 	addParameter(ADD_PARAMETERS(const_flow));
 	tmp = new Flow();
+	addOutPort(ADD_PARAMETERS(out));
 }
 
 ConstSource::~ConstSource() {
@@ -21,5 +22,4 @@ void ConstSource::init(int start, int end, int dt) {
 	(void) end;
 	(void) dt;
 	//out = const_flow;
-	addOutPort(ADD_PARAMETERS(out));
 }
