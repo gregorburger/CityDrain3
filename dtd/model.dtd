@@ -1,0 +1,54 @@
+<!ELEMENT citydrain (simulation, model) >
+<!ELEMENT model (nodelist, connectionlist) >
+<!ELEMENT nodelist (node*) >
+<!ELEMENT connectionlist (connection*) >
+<!ELEMENT simulation (time, pluginpath*) >
+<!ELEMENT time EMPTY >
+<!ELEMENT pluginpath EMPTY >
+<!ELEMENT node (parameter*) >
+<!ELEMENT parameter ANY >
+<!ELEMENT connection (source, sink) >
+<!ELEMENT source EMPTY >
+<!ELEMENT sink EMPTY >
+<!ELEMENT flow (unit*) >
+<!ELEMENT unit EMPTY >
+
+<!ATTLIST citydrain 
+	version CDATA #REQUIRED >
+	
+<!ATTLIST simulation
+	name CDATA #REQUIRED >
+	
+<!ATTLIST node
+	id ID #REQUIRED
+	class CDATA #REQUIRED >
+	
+<!ATTLIST time
+	start CDATA #REQUIRED
+	stop CDATA  #REQUIRED
+	dt CDATA #REQUIRED >
+	
+<!ATTLIST pluginpath
+	path CDATA #REQUIRED >
+
+<!ATTLIST parameter 
+	name CDATA #REQUIRED 
+	type CDATA #REQUIRED
+	kind CDATA "simple"
+	value CDATA #IMPLIED >	
+	
+<!ATTLIST connection
+	id ID #REQUIRED >
+	
+<!ATTLIST sink
+	node IDREF #REQUIRED
+	port CDATA #REQUIRED >
+	
+<!ATTLIST source
+	node IDREF #REQUIRED
+	port CDATA #REQUIRED >
+
+<!ATTLIST unit
+	name CDATA #REQUIRED
+	kind CDATA #REQUIRED
+	value CDATA #REQUIRED >

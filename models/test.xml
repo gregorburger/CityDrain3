@@ -1,3 +1,5 @@
+<!DOCTYPE citydrain SYSTEM "model.dtd" >
+
 <citydrain version="1.0">
 	<simulation name="TestSimulation">
 		<time start="0" stop="7200" dt="300" />
