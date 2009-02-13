@@ -7,11 +7,12 @@ HEADERS += calculationunit.h \
     nodefactory.h \
     node.h \
     noderegistry.h \
-    simulation.h
+    simulation.h \
+    mapbasedmodel.h
 SOURCES += calculationunit.cpp \
     flow.cpp \
-    model.cpp \
     nodeconnection.cpp \
     node.cpp \
     noderegistry.cpp \
-    simulation.cpp
+    simulation.cpp \
+    mapbasedmodel.cpp

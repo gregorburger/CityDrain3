@@ -1,29 +1,29 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#include <map>
 #include <string>
-#include <boost/shared_ptr.hpp>
+#include <set>
 
 class Node;
+class SimulationParameters;
 
-typedef std::map<std::string, Node *> node_map;
 
-class Model
-{
+class IModel {
 public:
-    Model();
-	~Model();
-	void addNode(const std::string &name, Node *node);
-	void addConnection(const std::string &src_node,
+	virtual ~IModel() {}
+
+	virtual void addNode(const std::string &name, Node *node) = 0;
+	virtual void addConnection(const std::string &src_node,
 					   const std::string &src_port,
 					   const std::string &sin_node,
-					   const std::string &sin_port);
-	void dump();
+					   const std::string &sin_port) = 0;
 
-private:
-	node_map nodes;
+	virtual void initNodes(const SimulationParameters &) = 0;
+	virtual std::set<Node *> sourceNodes() = 0;
+	virtual std::set<Node *> sinkNodes() = 0;
 
+	virtual std::set<Node *> forward(Node *n) = 0;
+	virtual std::set<Node *> backward(Node *n) = 0;
 };
 
 #endif // MODEL_H

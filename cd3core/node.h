@@ -27,22 +27,28 @@ typedef std::map<std::string, ltvp>			ssltvp;
 class Node
 {
 public:
-	Node() :
-	const_parameters(&parameters),
-	const_states(&states),
-	const_in_ports(&in_ports),
-	const_out_ports(&out_ports)  {
+	Node()
+		: const_parameters(&parameters),
+		const_states(&states),
+		const_in_ports(&in_ports),
+		const_out_ports(&out_ports)  {
 	}
+
 	virtual ~Node() {}
 
 	virtual const char *getNodeName() const = 0;
 	virtual void f(int time, int dt) = 0;
+
+	//setup ports here called after all parameters are set
+	virtual void initPorts() {
+	}
 
 	virtual void init(int start, int end, int dt) {
 		(void) start;
 		(void) end;
 		(void) dt;
 	}
+
 	virtual void deinit() {
 	}
 

@@ -18,10 +18,8 @@ void xmlError(QDomNode node, QString error) {
 	qDebug() << node.lineNumber() << ":" << node.columnNumber() << error;
 }
 
-
-XmlLoader::XmlLoader(QFile &file)
- : file(file) {
-	model = new Model();
+XmlLoader::XmlLoader(Simulation *s, IModel *m)
+ : model(m), simulation(s) {
 	node_registry = new NodeRegistry();
 	type_registry = new TypeRegistry();
 }
@@ -31,34 +29,45 @@ XmlLoader::~XmlLoader() {
 	delete node_registry;
 }
 
-Model *XmlLoader::loadModel() {
+bool XmlLoader::load(QFile &file) {
+	assert(model);
+	assert(simulation);
+
 	QString errorStr;
+	QDomDocument document("citydrain");
 	int errorLine;
 	int errorColumn;
+
+	if (!file.open(QIODevice::ReadOnly)) {
+		qFatal("could no open file");
+		return false;
+	}
 
 	if (!document.setContent(&file, true, &errorStr, &errorLine, &errorColumn)) {
 		std::string s = boost::str(boost::format("%1%") % 1);
 		std::cout << s << std::endl;
-		return 0;
+		return false;
 	}
 
-	loadNodesFromPlugins(node_registry, loadPluginPaths());
-	loadTypesFromPlugins(type_registry, loadPluginPaths());
 
-	loadNodes(document.firstChild()
+	QStringList paths = loadPluginPaths(document.elementsByTagName("pluginpath"));
+
+	loadNodesFromPlugins(node_registry, paths);
+	loadTypesFromPlugins(type_registry, paths);
+
+	loadNodes(document.firstChildElement("citydrain")
 			  .firstChildElement("model")
 			  .firstChildElement("nodelist"));
 
-	loadConnections(document.firstChild()
+	loadConnections(document.firstChildElement("citydrain")
 					.firstChildElement("model")
 					.firstChildElement("connectionlist"));
 
-	return model;
+	return true;
 }
 
-QStringList XmlLoader::loadPluginPaths() {
-	QStringList plist;
-	QDomNodeList dlist = document.elementsByTagName("pluginpath");
+QStringList XmlLoader::loadPluginPaths(QDomNodeList dlist) {
+	QStringList plist;	
 	for (int i = 0; i < dlist.count(); i++) {
 		plist.append(dlist.at(i).attributes().namedItem("path").toAttr().value());
 	}
@@ -103,6 +112,8 @@ void XmlLoader::loadTypesFromPlugins(
 }
 
 void XmlLoader::loadNodes(QDomElement element) {
+	assert(element.nodeName() == "nodelist");
+
 	qDebug() << "start loading nodes";
 	QDomNodeList childs = element.childNodes();
 	for (int i = 0; i < childs.count(); i++) {
@@ -139,7 +150,9 @@ void XmlLoader::loadNode(QDomElement element) {
 }
 
 void XmlLoader::loadConnections(QDomElement element) {
-	assert(element.nodeName() == "connectionlist");
+	//xmlError(element, element.nodeName());
+	//assert(false);
+	//assert(element.nodeName() == "connectionlist");
 
 	QDomNodeList childs = element.childNodes();
 

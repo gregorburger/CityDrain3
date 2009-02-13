@@ -1,4 +1,5 @@
-<!DOCTYPE citydrain SYSTEM "model.dtd" >
+<?xml version="1.0"?>
+<!DOCTYPE citydrain SYSTEM "../dtd/model.dtd">
 
 <citydrain version="1.0">
 	<simulation name="TestSimulation">
@@ -7,7 +8,6 @@
 	</simulation>
 
 	<model>
-	
 		<nodelist>
 			<node id="constsource" class="ConstSource">
 				<parameter name="const_flow" kind="complex" type="Flow">
@@ -28,7 +28,5 @@
 				<sink	node="fileout" port="in" />
 			</connection>
 		</connectionlist>
-		
 	</model>
-	
 </citydrain>
