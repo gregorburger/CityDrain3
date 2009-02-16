@@ -3,10 +3,15 @@
 
 #include <string>
 #include <set>
+#include <vector>
+#include <boost/tuple/tuple.hpp>
 
 class Node;
 class SimulationParameters;
 
+typedef std::set<Node *> node_set_type;
+typedef std::pair<Node *, std::string> end_point_type;
+typedef boost::tuple<std::string, Node *, std::string> next_node_type;
 
 class IModel {
 public:
@@ -19,11 +24,11 @@ public:
 					   const std::string &sin_port) = 0;
 
 	virtual void initNodes(const SimulationParameters &) = 0;
-	virtual std::set<Node *> sourceNodes() = 0;
-	virtual std::set<Node *> sinkNodes() = 0;
+	virtual node_set_type sourceNodes() = 0;
+	virtual node_set_type sinkNodes() = 0;
 
-	virtual std::set<Node *> forward(Node *n) = 0;
-	virtual std::set<Node *> backward(Node *n) = 0;
+	virtual std::vector<next_node_type> forward(Node *n) = 0;
+	virtual std::vector<next_node_type> backward(Node *n) = 0;
 };
 
 #endif // MODEL_H
