@@ -2,6 +2,7 @@
 #define FLOW_H
 
 #include <map>
+#include <vector>
 #include <iostream>
 #include <limits>
 #include <boost/shared_ptr.hpp>
@@ -39,6 +40,7 @@ struct FlowDefinition {
 	cu_to_int offsets;
 	str_to_int indices;
 	cu_mto_str units;
+	std::vector<std::string> names;
 };
 
 class Flow
@@ -55,8 +57,10 @@ public:
 	int getUnitCount(CalculationUnit &unit) const;
 	SafeArrayAccess<double> getUnitData(CalculationUnit &unit);
 	double getValue(const std::string &name);
-
+	const std::vector<std::string> &getNames();
+	int getSize() const;
 	void dump();
+	const double *const_data;
 
 private:
 	void initData();

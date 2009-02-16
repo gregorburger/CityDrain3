@@ -35,6 +35,10 @@ Flow *Flow::addUnit(const std::string &name,
 	return this;
 }
 
+const std::vector<std::string> &Flow::getNames() {
+	return fd->names;
+}
+
 
 void Flow::initData() {
 	if (data) {
@@ -43,6 +47,7 @@ void Flow::initData() {
 	}
 
 	data = new double[fd->units.size()];
+	const_data = data;
 	int i = 0;
 	CalculationUnit *tmp = NULL;
 
@@ -61,8 +66,12 @@ void Flow::initData() {
 
 void FlowDefinition::addUnit(const std::string &name, CalculationUnit *unit) {
 	units.insert(pair_units(unit, name));
+	names.push_back(name);
 }
 
+int Flow::getSize() const {
+	return fd->names.size();
+}
 
 SafeArrayAccess<double> Flow::getUnitData(CalculationUnit &unit) {
 	if (!data) {
