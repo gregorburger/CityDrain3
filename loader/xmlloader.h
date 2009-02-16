@@ -11,6 +11,12 @@ class Simulation;
 #include <QtXml>
 #include <QStringList>
 
+#define DEBUG
+
+#ifdef DEBUG
+#include <QList>
+#endif
+
 
 class XmlLoader
 {
@@ -19,8 +25,8 @@ public:
 	~XmlLoader();
 	bool load(QFile &f);
 private:
-	void loadModel();
-	void loadSimulation();
+	void loadModel(QDomDocument document);
+	void loadSimulation(QDomDocument document);
 	void loadNodesFromPlugins(INodeRegistry *registry, QStringList paths);
 	void loadTypesFromPlugins(TypeRegistry *registry, QStringList paths);
 	void loadNodes(QDomElement element);
@@ -28,7 +34,6 @@ private:
 	void loadConnections(QDomElement element);
 
 	QStringList loadPluginPaths(QDomNodeList list);
-
 
 	void setNodeParameter(Node *node, QDomElement element);
 
@@ -40,6 +45,11 @@ private:
 
 	IModel *model;
 	Simulation *simulation;
+#ifdef DEBUG
+	QList<QDomElement> consumed;
+	QList<QDomElement> dont_check;
+	void checkAllConsumed(QDomElement root);
+#endif
 };
 
 #endif // XMLLOADER_H

@@ -4,18 +4,25 @@
 #include <QDataStream>
 #include <QDebug>
 #include <QLibrary>
-
+#include <boost/format.hpp>
 #include <iostream>
 
 #include <model.h>
 #include <noderegistry.h>
 #include <node.h>
-#include <boost/format.hpp>
+#include <simulation.h>
+
 
 #include "typeregistry.h"
 
+#ifdef DEBUG
+#define CONSUME(node) consumed << node
+#else
+#define CONSUME(node) (void) node;
+#endif
+
 void xmlError(QDomNode node, QString error) {
-	qDebug() << node.lineNumber() << ":" << node.columnNumber() << error;
+	qDebug() << node.lineNumber() << ":" << node.columnNumber() << "-" << node.nodeName() << error;
 }
 
 XmlLoader::XmlLoader(Simulation *s, IModel *m)
@@ -55,20 +62,63 @@ bool XmlLoader::load(QFile &file) {
 	loadNodesFromPlugins(node_registry, paths);
 	loadTypesFromPlugins(type_registry, paths);
 
+	loadModel(document);
+	loadSimulation(document);
+
+	CONSUME(document.firstChildElement("citydrain").toElement());
+
+#ifdef DEBUG
+#warning Checking for consumed nodes
+	checkAllConsumed(document.firstChildElement("citydrain"));
+#endif
+
+	return true;
+}
+
+void XmlLoader::loadModel(QDomDocument document) {
+
 	loadNodes(document.firstChildElement("citydrain")
 			  .firstChildElement("model")
 			  .firstChildElement("nodelist"));
 
+	CONSUME(document.firstChildElement("citydrain")
+			.firstChildElement("model").toElement());
+
+
 	loadConnections(document.firstChildElement("citydrain")
 					.firstChildElement("model")
 					.firstChildElement("connectionlist"));
+}
 
-	return true;
+void XmlLoader::loadSimulation(QDomDocument document) {
+	assert(simulation);
+
+	QDomElement time = document.firstChildElement("citydrain")
+					   .firstChildElement("simulation")
+					   .firstChildElement("time");
+
+	CONSUME(document.firstChildElement("citydrain")
+			.firstChildElement("simulation").toElement());
+
+	QDomNamedNodeMap attrs = time.attributes();
+
+	assert(attrs.contains("start"));
+	assert(attrs.contains("stop"));
+	assert(attrs.contains("dt"));
+
+	CONSUME(time);
+
+	int start = attrs.namedItem("start").nodeValue().toInt();
+	int stop = attrs.namedItem("stop").nodeValue().toInt();
+	int dt = attrs.namedItem("dt").nodeValue().toInt();
+
+	simulation->setSimulationParameters(SimulationParameters(start, stop, dt));
 }
 
 QStringList XmlLoader::loadPluginPaths(QDomNodeList dlist) {
 	QStringList plist;	
 	for (int i = 0; i < dlist.count(); i++) {
+		CONSUME(dlist.at(i).toElement());
 		plist.append(dlist.at(i).attributes().namedItem("path").toAttr().value());
 	}
 	//qDebug() << plist;
@@ -113,22 +163,20 @@ void XmlLoader::loadTypesFromPlugins(
 
 void XmlLoader::loadNodes(QDomElement element) {
 	assert(element.nodeName() == "nodelist");
-
+	CONSUME(element);
 	qDebug() << "start loading nodes";
 	QDomNodeList childs = element.childNodes();
 	for (int i = 0; i < childs.count(); i++) {
 		QDomNode child = childs.at(i);
-		if (child.nodeName() != "node" || !child.isElement()) {
-			xmlError(element, "dom node not a node type");
-			continue;
-		}
-
+		assert(child.nodeName() == "node");
+		assert(child.isElement());
 		loadNode(child.toElement());
 	}
 }
 
 void XmlLoader::loadNode(QDomElement element) {
 	assert(element.nodeName() == "node");
+	CONSUME(element);
 	std::string id = element.attribute("id", "").toStdString();
 	std::string nodeClass = element.attribute("class").toStdString();
 	if (!node_registry->doContains(nodeClass)) {
@@ -152,13 +200,13 @@ void XmlLoader::loadNode(QDomElement element) {
 void XmlLoader::loadConnections(QDomElement element) {
 	//xmlError(element, element.nodeName());
 	//assert(false);
-	//assert(element.nodeName() == "connectionlist");
+	assert(element.nodeName() == "connectionlist");
+
+	CONSUME(element);
 
 	QDomNodeList childs = element.childNodes();
 
 	for (int i = 0; i < childs.count(); i++) {
-
-
 		QDomNode child = childs.at(i);
 
 		assert(child.nodeName() == "connection");
@@ -166,10 +214,15 @@ void XmlLoader::loadConnections(QDomElement element) {
 		QDomNamedNodeMap source_attrs = child.firstChildElement("source").attributes();
 		QDomNamedNodeMap sink_attrs = child.firstChildElement("sink").attributes();
 
+		CONSUME(child.firstChildElement("source"));
+		CONSUME(child.firstChildElement("sink"));
+
 		assert(source_attrs.contains("node"));
 		assert(source_attrs.contains("port"));
 		assert(sink_attrs.contains("node"));
 		assert(sink_attrs.contains("port"));
+
+		CONSUME(child.toElement());
 
 		std::string src_node = source_attrs.namedItem("node").toAttr().value().toStdString();
 		std::string sin_node = sink_attrs.namedItem("node").toAttr().value().toStdString();
@@ -185,6 +238,7 @@ void XmlLoader::loadConnections(QDomElement element) {
 void XmlLoader::setNodeParameter(Node *node, QDomElement element) {
 	assert(node);
 	assert(element.nodeName() == "parameter");
+	CONSUME(element);
 	bool simple = element.attribute("kind", "simple") == "simple";
 
 	std::string name = element.attribute("name", "").toStdString();
@@ -229,6 +283,60 @@ void XmlLoader::setNodeParameter(Node *node, QDomElement element) {
 		xmlError(element, " could not parse simple type parameter");
 	} else {
 		QDomElement sub = element.firstChild().toElement();
+		dont_check << sub;
 		type_registry->getByTypeName(type)->setParameter(node, name, sub);
 	}
 }
+
+#ifdef DEBUG
+void XmlLoader::checkAllConsumed(QDomElement root) {
+	if (root.isNull()) {
+		return;
+	}
+
+	if (dont_check.contains(root)) {
+		xmlError(root, "ignoring consume");
+		return;
+	}
+
+	if (!consumed.contains(root)) {
+		xmlError(root, "not consumed");
+	}
+
+	QDomNodeList childs = root.childNodes();
+
+	for (int i = 0; i < childs.count(); i++) {
+		checkAllConsumed(childs.at(i).toElement());
+	}
+}
+/* {
+	if (root.isNull()) {
+		return;
+	}
+
+	if (dont_check.contains(root)) {
+		xmlError(root, "ignoring consume");
+		return;
+	}
+
+	if (!consumed.contains(root)) {
+		xmlError(root, "not consumed");
+	}
+
+	QDomNode sib = root.nextSibling();
+	while (!sib.isNull()) {
+		if (dont_check.contains(root)) { //TODO rethink maybe not necessary, eg. branch earlier
+			xmlError(root, "ignoring consume");
+
+		} else {
+			if (sib.isElement() && !consumed.contains(sib.toElement())) {
+				xmlError(sib, "not consumed");
+			}
+			checkAllConsumed(sib.firstChild().toElement());
+		}
+		checkAllConsumed(sib.toElement());
+		sib = sib.nextSibling();
+	}
+	checkAllConsumed(root.firstChild().toElement());
+}*/
+#endif
