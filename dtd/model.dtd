@@ -1,8 +1,8 @@
-<!ELEMENT citydrain (simulation, model) >
+<!ELEMENT citydrain (pluginpath*, simulation, model) >
 <!ELEMENT model (nodelist, connectionlist) >
 <!ELEMENT nodelist (node*) >
 <!ELEMENT connectionlist (connection*) >
-<!ELEMENT simulation (time, pluginpath*) >
+<!ELEMENT simulation (time) >
 <!ELEMENT time EMPTY >
 <!ELEMENT pluginpath EMPTY >
 <!ELEMENT node (parameter*) >

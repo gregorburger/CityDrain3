@@ -1,10 +1,12 @@
 <?xml version="1.0"?>
-<!DOCTYPE citydrain SYSTEM "../dtd/model.dtd">
+<!DOCTYPE citydrain SYSTEM "model.dtd">
 
 <citydrain version="1.0">
+
+	<pluginpath path="nodes/libnodes.so.1.0.0" />
+
 	<simulation name="TestSimulation">
-		<time start="0" stop="7200" dt="300" />
-		<pluginpath path="nodes/libnodes.so.1.0.0" />
+		<time start="0" stop="7200" dt="30" />
 	</simulation>
 
 	<model>
