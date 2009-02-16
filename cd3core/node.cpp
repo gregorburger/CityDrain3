@@ -7,6 +7,10 @@ void Node::setInPort(const std::string &name, const Flow *inflow) {
 	*in_ports[name] = *inflow;
 }
 
+const Flow *Node::getOutPort(const std::string &name) {
+	return out_ports[name];
+}
+
 void Node::addInPort(const std::string &name, Flow *inflow) {
 	in_ports[name] = inflow;
 }

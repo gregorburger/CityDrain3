@@ -56,6 +56,7 @@ public:
 	static std::pair<int, int>  MIN_MAX_DT_DONT_CARE;
 
 	void setInPort(const std::string &, const Flow *in);
+	const Flow *getOutPort(const std::string &);
 
 	template<class T> bool setState(const std::string &name, std::auto_ptr<T> state) {
 		ltvp p = states[name];
