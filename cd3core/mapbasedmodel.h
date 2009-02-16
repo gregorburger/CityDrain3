@@ -7,9 +7,8 @@
 #include <set>
 
 typedef std::map<std::string, Node *> node_map;
-typedef std::pair<Node *, std::string> end_point_type;
-typedef std::map<end_point_type, end_point_type> connection_type;
-typedef std::set<Node *> node_set_type;
+typedef std::map<Node *, std::vector<next_node_type > > connection_type;
+
 
 class MapBasedModel : public IModel
 {
@@ -30,12 +29,16 @@ public:
 	node_set_type sourceNodes();
 	node_set_type sinkNodes();
 
+	std::vector<next_node_type> forward(Node *n);
+	std::vector<next_node_type> backward(Node *n);
+
 private:
 	node_set_type all_nodes;
 	node_set_type sink_nodes;
 	node_set_type source_nodes;
 	node_map names_nodes;
 	connection_type fwd_connections;
+	connection_type bwd_connections;
 
 };
 
