@@ -3,3 +3,4 @@ Makefile*
 *.so*
 *.o
 cd3
+testcore/testcore

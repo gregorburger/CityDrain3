@@ -1,9 +1,9 @@
 #ifndef NODE_H
 #define NODE_H
-
 #include <string>
 #include <map>
-#include <loki/LokiTypeInfo.h>
+#include <cd3typeinfo.h>
+#include <cassert>
 
 #ifdef DEBUG
 #include <iostream>
@@ -18,7 +18,7 @@ public: \
 private:
 
 typedef std::map<std::string, Flow *>		ssf;
-typedef std::pair<Loki::TypeInfo, void *>	ltvp;
+typedef std::pair<cd3::TypeInfo, void *>	ltvp;
 typedef std::map<std::string, ltvp>			ssltvp;
 
 #define ADD_PARAMETERS(var) #var, &var
@@ -63,7 +63,7 @@ public:
 	template<class T> T *getState(const std::string &name) {
 		assert(states.find(name) != states.end());
 		ltvp p = states[name];
-		assert(p.first == typeid(T));
+		assert(p.first == cd3::TypeInfo(typeid(T)));
 		return static_cast<T*>(p.second);
 	}
 
@@ -71,8 +71,7 @@ public:
 	void setState(const std::string &name, T &state) {
 		assert(states.find(name) != states.end());
 		ltvp p = states[name];
-		assert(p.first == typeid(T));
-
+		assert(p.first == cd3::TypeInfo(typeid(T)));
 		T *vp = static_cast<T*>(p.second);
 		assert(vp);
 		*vp = state;
@@ -82,7 +81,7 @@ public:
 	T *getParameter(const std::string &name) {
 		assert(parameters.find(name) != parameters.end());
 		ltvp p = parameters[name];
-		assert(p.first == typeid(T));
+		assert(p.first == cd3::TypeInfo(typeid(T)));
 		return static_cast<T*>(p.second);
 	}
 
@@ -92,7 +91,7 @@ public:
 		assert(parameters.find(name) != parameters.end());
 		ltvp p = parameters[name];
 
-		assert(p.first == Loki::TypeInfo(typeid(T)));
+		assert(p.first == cd3::TypeInfo(typeid(T)));
 		T *vp = static_cast<T*>(p.second);
 		assert(vp);
 		*vp = param;
@@ -109,14 +108,14 @@ protected:
 	void addState(const std::string &name, T *ptr) {
 		assert(ptr);
 		assert(states.find(name) == states.end());
-		states[name] = ltvp(Loki::TypeInfo(typeid(T)), ptr);
+		states[name] = ltvp(cd3::TypeInfo(typeid(T)), ptr);
 	}
 
 	template<class T>
 	void addParameter(const std::string &name, T *ptr) {
 		assert(ptr);
 		assert(parameters.find(name) == parameters.end());
-		parameters[name] = ltvp(Loki::TypeInfo(typeid(T)), ptr);
+		parameters[name] = ltvp(cd3::TypeInfo(typeid(T)), ptr);
 	}
 
 	void addInPort	(const std::string &name, Flow *p);
