@@ -3,7 +3,6 @@
 #include <QtXml>
 #include <QDataStream>
 #include <QDebug>
-#include <QLibrary>
 #include <boost/format.hpp>
 #include <iostream>
 
@@ -11,9 +10,7 @@
 #include <noderegistry.h>
 #include <node.h>
 #include <simulation.h>
-
-
-#include "typeregistry.h"
+#include <typeregistry.h>
 
 #ifdef DEBUG
 #define CONSUME(node) consumed << node
@@ -68,7 +65,6 @@ bool XmlLoader::load(QFile &file) {
 	CONSUME(document.firstChildElement("citydrain").toElement());
 
 #ifdef DEBUG
-#warning Checking for consumed nodes
 	checkAllConsumed(document.firstChildElement("citydrain"));
 #endif
 
@@ -135,6 +131,8 @@ void XmlLoader::loadNodesFromPlugins(
 	QString path;
 	foreach (path, paths) {
 		QLibrary l(path);
+		l.setLoadHints(QLibrary::ExportExternalSymbolsHint);
+		l.load();
 		regNodeFunProto regFun = (regNodeFunProto) l.resolve("registerNodes");
 		if (regFun) {
 			regFun(registry);
@@ -152,6 +150,8 @@ void XmlLoader::loadTypesFromPlugins(
 	QString path;
 	foreach (path, paths) {
 		QLibrary l(path);
+		l.setLoadHints(QLibrary::ExportExternalSymbolsHint);
+		l.load();
 		regTypeFunProto regFun = (regTypeFunProto) l.resolve("registerTypes");
 		if (regFun) {
 			regFun(registry);
@@ -211,8 +211,12 @@ void XmlLoader::loadConnections(QDomElement element) {
 
 		assert(child.nodeName() == "connection");
 
-		QDomNamedNodeMap source_attrs = child.firstChildElement("source").attributes();
-		QDomNamedNodeMap sink_attrs = child.firstChildElement("sink").attributes();
+		QDomNamedNodeMap source_attrs = child
+										.firstChildElement("source")
+										.attributes();
+		QDomNamedNodeMap sink_attrs = child
+									  .firstChildElement("sink")
+									  .attributes();
 
 		CONSUME(child.firstChildElement("source"));
 		CONSUME(child.firstChildElement("sink"));
@@ -224,11 +228,23 @@ void XmlLoader::loadConnections(QDomElement element) {
 
 		CONSUME(child.toElement());
 
-		std::string src_node = source_attrs.namedItem("node").toAttr().value().toStdString();
-		std::string sin_node = sink_attrs.namedItem("node").toAttr().value().toStdString();
+		std::string src_node = source_attrs.namedItem("node")
+							   .toAttr()
+							   .value()
+							   .toStdString();
+		std::string sin_node = sink_attrs.namedItem("node")
+							   .toAttr()
+							   .value()
+							   .toStdString();
 
-		std::string src_port = source_attrs.namedItem("port").toAttr().value().toStdString();
-		std::string sin_port = sink_attrs.namedItem("port").toAttr().value().toStdString();
+		std::string src_port = source_attrs.namedItem("port")
+							   .toAttr()
+							   .value()
+							   .toStdString();
+		std::string sin_port = sink_attrs.namedItem("port")
+							   .toAttr()
+							   .value()
+							   .toStdString();
 
 		model->addConnection(src_node, src_port, sin_node, sin_port);
 	}
@@ -245,20 +261,26 @@ void XmlLoader::setNodeParameter(Node *node, QDomElement element) {
 	std::string type = element.attribute("type", "double").toStdString();
 
 	if (node->const_parameters->find(name) == node->const_parameters->end()) {
-		xmlError(element, QString(name.c_str()).append(" no such parameter in node"));
+		xmlError(element, QString().sprintf("%s no such parameter in node",
+											name.c_str()));
 	}
 
 
 	if (simple) {
 		QString value = element.attribute("value", "0.0");
 
+		qDebug() << QString(node->getNodeName()) << "::setParameter<" << type.c_str()
+				 << "> = " << value;
+
 		if (type == "double") {
-			node->setState(name, std::auto_ptr<double> (new double(value.toDouble())));
+			double d = value.toDouble();
+			node->setParameter<double>(name, d);
 			return;
 		}
 
 		if (type == "int") {
-			node->setState(name, std::auto_ptr<int> (new int(value.toInt())));
+			int ivalue = value.toInt();
+			node->setParameter<int>(name, ivalue);
 			return;
 		}
 
@@ -271,16 +293,17 @@ void XmlLoader::setNodeParameter(Node *node, QDomElement element) {
 					xmlError(element, "can not parse bool");
 				}
 			}
-			node->setState(name, std::auto_ptr<bool> (new bool(bvalue)));
+			node->setParameter<bool>(name, bvalue);
 			return;
 		}
 
 		if (type == "string") {
-			node->setState(name, std::auto_ptr<std::string> (new std::string(value.toStdString())));
+			std::string std = value.toStdString();
+			node->setParameter<std::string>(name, std);
 			return;
 		}
 
-		xmlError(element, " could not parse simple type parameter");
+		xmlError(element, QString().sprintf("%s simple type unknown", type.c_str()));
 	} else {
 		QDomElement sub = element.firstChild().toElement();
 		dont_check << sub;
@@ -309,34 +332,4 @@ void XmlLoader::checkAllConsumed(QDomElement root) {
 		checkAllConsumed(childs.at(i).toElement());
 	}
 }
-/* {
-	if (root.isNull()) {
-		return;
-	}
-
-	if (dont_check.contains(root)) {
-		xmlError(root, "ignoring consume");
-		return;
-	}
-
-	if (!consumed.contains(root)) {
-		xmlError(root, "not consumed");
-	}
-
-	QDomNode sib = root.nextSibling();
-	while (!sib.isNull()) {
-		if (dont_check.contains(root)) { //TODO rethink maybe not necessary, eg. branch earlier
-			xmlError(root, "ignoring consume");
-
-		} else {
-			if (sib.isElement() && !consumed.contains(sib.toElement())) {
-				xmlError(sib, "not consumed");
-			}
-			checkAllConsumed(sib.firstChild().toElement());
-		}
-		checkAllConsumed(sib.toElement());
-		sib = sib.nextSibling();
-	}
-	checkAllConsumed(root.firstChild().toElement());
-}*/
 #endif

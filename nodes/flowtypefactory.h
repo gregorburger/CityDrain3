@@ -2,7 +2,8 @@
 #define FLOWTYPEFACTORY_H
 
 #include <typefactory.h>
-#include <flow.h>
+
+class Flow;
 
 CD3_DECLARE_TYPE_FACTORY(Flow)
 public:
@@ -15,7 +16,7 @@ public:
 						  const std::string &parameter,
 						  QDomElement &element);
 private:
-	std::auto_ptr<Flow> flowFromDom(QDomElement &element);
+	Flow *flowFromDom(QDomElement &element);
 };
 
 #endif // FLOWTYPEFACTORY_H

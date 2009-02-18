@@ -9,9 +9,9 @@ CD3_DECLARE_NODE(FileOut)
 public:
 	FileOut();
 	~FileOut();
-	void f(int time, int dt);
-	void init(int start, int stop, int dt);
-	void deinit();
+	virtual void f(int time, int dt);
+	virtual void init(int start, int stop, int dt);
+	virtual void deinit();
 private:
 	Flow *in;
 	std::string *out_file_name;

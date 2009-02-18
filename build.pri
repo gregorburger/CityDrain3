@@ -1,3 +1,4 @@
+DEFINES = DEBUG
 CONFIG += debug
 OBJECTS_DIR=$$PWD/tmp/
 MOC_DIR=$$PWD/tmp/

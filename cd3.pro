@@ -2,9 +2,8 @@
 
 
 TEMPLATE = 	subdirs
-CONFIG += 	ordered debug_and_release
-
-SUBDIRS =	test \
-                nodes \
+CONFIG += 	ordered debug
+SUBDIRS =	nodes \
+                test \
                 testcore
 

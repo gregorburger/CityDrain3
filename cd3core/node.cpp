@@ -12,9 +12,11 @@ const Flow *Node::getOutPort(const std::string &name) {
 }
 
 void Node::addInPort(const std::string &name, Flow *inflow) {
+	assert(inflow);
 	in_ports[name] = inflow;
 }
 
-void Node::addOutPort(const std::string &name, Flow *inflow) {
-	out_ports[name] = inflow;
+void Node::addOutPort(const std::string &name, Flow *outflow) {
+	assert(outflow);
+	out_ports[name] = outflow;
 }

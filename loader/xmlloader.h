@@ -11,8 +11,6 @@ class Simulation;
 #include <QtXml>
 #include <QStringList>
 
-#define DEBUG
-
 #ifdef DEBUG
 #include <QList>
 #endif

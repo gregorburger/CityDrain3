@@ -38,5 +38,5 @@ int main(int argc, char **argv) {
 		std::cout << "source: " << n->getNodeName() << std::endl;
 	}
 
-	//s.start(&m);
+	s.start(&m);
 }

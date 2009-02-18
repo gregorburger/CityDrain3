@@ -3,11 +3,11 @@
 
 #include <string>
 #include <map>
-#include <list>
-//#include <utility>
-#include <memory>
 #include <loki/LokiTypeInfo.h>
 
+#ifdef DEBUG
+#include <iostream>
+#endif
 
 class Flow;
 
@@ -52,30 +52,50 @@ public:
 	virtual void deinit() {
 	}
 
-	virtual std::pair<int,int> getMinMaxDT() { return std::make_pair<int, int>(-1, -1); }
+	virtual std::pair<int,int> getMinMaxDT() {
+		return std::make_pair<int, int>(-1, -1);
+	}
 	static std::pair<int, int>  MIN_MAX_DT_DONT_CARE;
 
 	void setInPort(const std::string &, const Flow *in);
 	const Flow *getOutPort(const std::string &);
 
-	template<class T> bool setState(const std::string &name, std::auto_ptr<T> state) {
+	template<class T> T *getState(const std::string &name) {
+		assert(states.find(name) != states.end());
 		ltvp p = states[name];
-		if (p.first != typeid(T))
-			return false;
-		T *vp = static_cast<T*>(p.second);
-		assert(vp);
-		*vp = *state;
-		return true;
+		assert(p.first == typeid(T));
+		return static_cast<T*>(p.second);
 	}
 
-	template<class T> bool setParameter(const std::string &name, std::auto_ptr<T> param) {
-		ltvp p = parameters[name];
-		if (p.first != typeid(T))
-			return false;
+	template<class T>
+	void setState(const std::string &name, T &state) {
+		assert(states.find(name) != states.end());
+		ltvp p = states[name];
+		assert(p.first == typeid(T));
+
 		T *vp = static_cast<T*>(p.second);
 		assert(vp);
-		*vp = *param;
-		return true;
+		*vp = state;
+	}
+
+	template<class T>
+	T *getParameter(const std::string &name) {
+		assert(parameters.find(name) != parameters.end());
+		ltvp p = parameters[name];
+		assert(p.first == typeid(T));
+		return static_cast<T*>(p.second);
+	}
+
+	template<class T>
+	void setParameter(const std::string &name,
+					  T param) {
+		assert(parameters.find(name) != parameters.end());
+		ltvp p = parameters[name];
+
+		assert(p.first == Loki::TypeInfo(typeid(T)));
+		T *vp = static_cast<T*>(p.second);
+		assert(vp);
+		*vp = param;
 	}
 
 public:
@@ -87,11 +107,15 @@ public:
 protected:
 	template<class T>
 	void addState(const std::string &name, T *ptr) {
+		assert(ptr);
+		assert(states.find(name) == states.end());
 		states[name] = ltvp(Loki::TypeInfo(typeid(T)), ptr);
 	}
 
 	template<class T>
 	void addParameter(const std::string &name, T *ptr) {
+		assert(ptr);
+		assert(parameters.find(name) == parameters.end());
 		parameters[name] = ltvp(Loki::TypeInfo(typeid(T)), ptr);
 	}
 

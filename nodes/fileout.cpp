@@ -8,12 +8,18 @@
 FileOut::FileOut()
 	: Node()
 {
+	in = new Flow();
+	out_file_name = new std::string();
 	addParameter(ADD_PARAMETERS_P(out_file_name));
 	addInPort(ADD_PARAMETERS_P(in));
 }
 
 FileOut::~FileOut() {
-	delete file;
+	//file->close();
+	if (file && file->isOpen()) {
+		file->close();
+		delete file;
+	}
 }
 
 void FileOut::init(int start, int stop, int dt) {
@@ -22,11 +28,12 @@ void FileOut::init(int start, int stop, int dt) {
 	(void) dt;
 	assert(out_file_name);
 	file = new QFile(out_file_name->c_str());
+	std::cout << "FileOut::init " << *out_file_name << std::endl;
 	stream = new QTextStream(file);
 }
 
 void FileOut::deinit() {
-	file->close();
+	//file->close();
 }
 
 void FileOut::f(int time, int dt) {

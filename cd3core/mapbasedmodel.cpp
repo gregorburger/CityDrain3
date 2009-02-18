@@ -7,8 +7,6 @@
 #include <simulation.h>
 #include <vector>
 
-
-
 typedef std::pair<std::string, Node*> nodes_pair_type;
 
 MapBasedModel::MapBasedModel() {
@@ -81,9 +79,9 @@ void MapBasedModel::initNodes(const SimulationParameters &sp) {
 	node_set_type::iterator it = all_nodes.begin();
 	while (it != all_nodes.end()) {
 		Node *n = *it;
-		std::cout << "initing node type " << n->getNodeName();
+		//std::cout << "initing node type " << n->getNodeName();
 		n->init(sp.start, sp.stop, sp.dt);
-		std::cout << " done" << std::endl;
+		//std::cout << " done" << std::endl;
 		it++;
 	}
 }

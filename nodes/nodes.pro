@@ -1,14 +1,12 @@
 TEMPLATE = lib
 TARGET = nodes
+CONFIG += debug
 QT -= gui
 QT += xml
-HEADERS = constsource.h \
-    flowtypefactory.h \
-    fileout.h
-SOURCES = nodes.cpp \
-    constsource.cpp \
-    flowtypefactory.cpp \
-    fileout.cpp
+
+QMAKE_LFLAGS += -Wl,-E
+
+include(nodes.pri)
 include(../build.pri)
 include(../cd3core/cd3core.pri)
 include(../loader/loader.pri)

@@ -1,5 +1,7 @@
 #include "flowtypefactory.h"
 #include <node.h>
+#include <flow.h>
+
 
 FlowTypeFactory::FlowTypeFactory() {
 }
@@ -7,21 +9,26 @@ FlowTypeFactory::FlowTypeFactory() {
 void FlowTypeFactory::setParameter(Node *n,
 							  const std::string &parameter,
 							  QDomElement &element) {
-	n->setParameter(parameter, flowFromDom(element));
+	//n->setParameter(parameter, flowFromDom(element).get());
+	Flow * f = flowFromDom(element);
+	n->setParameter(parameter, *f);
+	delete f;
 }
 
 void FlowTypeFactory::setState(Node *n,
 						  const std::string &state,
 						  QDomElement &element) {
-	n->setState<Flow>(state, flowFromDom(element));
+	Flow * f = flowFromDom(element);
+	n->setState(state, *f);
+	delete f;
 }
 
-std::auto_ptr<Flow> FlowTypeFactory::flowFromDom(QDomElement &e) {
-	std::auto_ptr<Flow> f(new Flow());
+Flow *FlowTypeFactory::flowFromDom(QDomElement &e) {
+	Flow *f = new Flow();
 
 	if (e.nodeName() != "flow") {
 		std::cerr << "type " << e.nodeName().toStdString() << "not known" << std::endl;
-		return std::auto_ptr<Flow>((Flow *)0);
+		return 0;
 	}
 
 	for (int i = 0; i < e.childNodes().size(); i++) {

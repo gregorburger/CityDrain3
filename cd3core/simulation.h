@@ -2,6 +2,7 @@
 #define SIMULATION_H
 
 class IModel;
+class Node;
 
 struct SimulationParameters {
 	SimulationParameters()
@@ -31,7 +32,7 @@ public:
 	void suspend();
 
 private: //methods
-
+	void run(IModel *model, Node *n, int time);
 private: //data member
 	SimulationParameters sp;
 };
