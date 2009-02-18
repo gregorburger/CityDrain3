@@ -2,8 +2,8 @@
 #define FILEOUT_H
 
 #include <node.h>
-class QFile;
-class QTextStream;
+#include <QFile>
+#include <QTextStream>
 
 CD3_DECLARE_NODE(FileOut)
 public:
@@ -15,8 +15,8 @@ public:
 private:
 	Flow *in;
 	std::string *out_file_name;
-	QFile *file;
-	QTextStream *stream;
+	QFile file;
+	QTextStream stream;
 };
 
 #endif // FILEOUT_H

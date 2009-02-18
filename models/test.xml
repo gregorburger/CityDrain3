@@ -15,12 +15,13 @@
 				<parameter name="const_flow" kind="complex" type="Flow">
 					<flow>
 						<unit name="Q" kind="flow" value="3.0" />
+						<unit name="Qtest" kind="flow" value="0.0"/>
 					</flow>
 				</parameter>
 			</node>
 			
 			<node id="fileout" class="FileOut">
-				<parameter name="out_file_name" type="string" value="out.txt" />
+				<parameter name="out_file_name" type="string" value="/tmp/out.txt" />
 			</node>
 		</nodelist>
 		

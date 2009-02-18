@@ -8,7 +8,8 @@ HEADERS += calculationunit.h \
     node.h \
     noderegistry.h \
     simulation.h \
-    mapbasedmodel.h
+    mapbasedmodel.h \
+    cd3typeinfo.h
 SOURCES += calculationunit.cpp \
     flow.cpp \
     nodeconnection.cpp \

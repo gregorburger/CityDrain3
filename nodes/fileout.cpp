@@ -6,7 +6,7 @@
 #include <boost/foreach.hpp>
 
 FileOut::FileOut()
-	: Node()
+	: Node(), stream(&file)
 {
 	in = new Flow();
 	out_file_name = new std::string();
@@ -15,11 +15,9 @@ FileOut::FileOut()
 }
 
 FileOut::~FileOut() {
-	//file->close();
-	if (file && file->isOpen()) {
-		file->close();
-		delete file;
-	}
+	std::cout << "closing file" << std::endl;
+	if (file.isOpen())
+		file.close();
 }
 
 void FileOut::init(int start, int stop, int dt) {
@@ -27,9 +25,10 @@ void FileOut::init(int start, int stop, int dt) {
 	(void) stop;
 	(void) dt;
 	assert(out_file_name);
-	file = new QFile(out_file_name->c_str());
-	std::cout << "FileOut::init " << *out_file_name << std::endl;
-	stream = new QTextStream(file);
+	file.setFileName(QString::fromStdString(*out_file_name));
+	if (!file.isOpen()) {
+		file.open(QFile::WriteOnly);
+	}
 }
 
 void FileOut::deinit() {
@@ -39,9 +38,19 @@ void FileOut::deinit() {
 void FileOut::f(int time, int dt) {
 	(void) time;
 	(void) dt;
-	(*stream) << time;
-	for (int i = 0; i < in->getSize(); i++) {
-		(*stream) << "\t" << in->const_data[i];
+	static bool first = true;
+	if (first) {
+		stream << "time";
+		BOOST_FOREACH(std::string name, in->getNames()) {
+			stream << "\t" << QString::fromStdString(name);
+		}
+		stream << endl;
+		first = false;
 	}
-	(*stream) << endl;
+	stream << time;
+	for (int i = 0; i < in->getSize(); i++) {
+		stream << "\t" << in->const_data[i];
+	}
+	stream << endl;
+	stream.flush();
 }
