@@ -4,6 +4,7 @@
 #include <string>
 #include <set>
 #include <vector>
+#include <map>
 #include <boost/tuple/tuple.hpp>
 
 class Node;
@@ -15,7 +16,10 @@ typedef boost::tuple<std::string, Node *, std::string> next_node_type;
 
 class IModel {
 public:
-	virtual ~IModel() {}
+	virtual ~IModel(){}
+
+	virtual std::string serialize() = 0;
+	virtual void deserialize(const std::string &serialid) = 0;
 
 	virtual void addNode(const std::string &name, Node *node) = 0;
 	virtual void addConnection(const std::string &src_node,
@@ -29,6 +33,8 @@ public:
 
 	virtual std::vector<next_node_type> forward(Node *n) = 0;
 	virtual std::vector<next_node_type> backward(Node *n) = 0;
+
+	virtual const node_set_type *getNodes() const = 0;
 };
 
 #endif // MODEL_H

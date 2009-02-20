@@ -51,19 +51,17 @@ public:
 	Flow(const Flow &other);
 	Flow &operator=(const Flow &other);
 
-
 	Flow *addUnit(const std::string &name, CalculationUnit *unit, double value);
 
 	int getUnitCount(CalculationUnit &unit) const;
 	SafeArrayAccess<double> getUnitData(CalculationUnit &unit);
 	double getValue(const std::string &name);
 	const std::vector<std::string> &getNames();
+	std::vector<std::string> getUnitNames(CalculationUnit &unit) const;
 	int getSize() const;
 	void dump();
-	const double *const_data;
-
-private:
-	void initData();
+	const double *getData() const;
+	void prepareData();
 
 private:
 	double *data;
@@ -71,6 +69,7 @@ private:
 
 	typedef std::map<std::string, double> tmp_val_type;
 	tmp_val_type tmp_values;
+	bool prepared;
 };
 
 template<typename T>

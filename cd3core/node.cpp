@@ -13,6 +13,8 @@ const Flow *Node::getOutPort(const std::string &name) {
 
 void Node::addInPort(const std::string &name, Flow *inflow) {
 	assert(inflow);
+	if (std::string(getNodeName()) == std::string("Mixer"))
+		std::cout << "adding in port " << name << std::endl;
 	in_ports[name] = inflow;
 }
 

@@ -6,6 +6,8 @@
 class ICalculationUnit
 {
 public:
+	ICalculationUnit(){}
+	virtual ~ICalculationUnit(){}
 	virtual const std::string &getName() const = 0;
 	virtual const std::string &getDescritption() const = 0;
 	virtual const std::string &getUnit() const = 0;
@@ -15,6 +17,8 @@ public:
 
 class CalculationUnit : public ICalculationUnit {
 public:
+	CalculationUnit() {}
+	~CalculationUnit()  {}
 	const std::string &getName() const;
 	const std::string &getDescritption() const;
 	const std::string &getUnit() const;
@@ -26,6 +30,9 @@ public:
 	bool operator == (const ICalculationUnit &other);
 
 private:
+	CalculationUnit(const CalculationUnit &other) {
+		(void) other;
+	}
 	CalculationUnit(const std::string &name, const std::string & description, const std::string &unit);
 
 	std::string name;

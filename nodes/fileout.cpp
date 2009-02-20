@@ -16,6 +16,8 @@ FileOut::FileOut()
 
 FileOut::~FileOut() {
 	std::cout << "closing file" << std::endl;
+	delete out_file_name;
+	delete in;
 	if (file.isOpen())
 		file.close();
 }
@@ -49,7 +51,7 @@ void FileOut::f(int time, int dt) {
 	}
 	stream << time;
 	for (int i = 0; i < in->getSize(); i++) {
-		stream << "\t" << in->const_data[i];
+		stream << "\t" << in->getData()[i];
 	}
 	stream << endl;
 	stream.flush();

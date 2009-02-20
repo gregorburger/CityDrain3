@@ -22,7 +22,7 @@ void xmlError(QDomNode node, QString error) {
 	qDebug() << node.lineNumber() << ":" << node.columnNumber() << "-" << node.nodeName() << error;
 }
 
-XmlLoader::XmlLoader(Simulation *s, IModel *m)
+XmlLoader::XmlLoader(ISimulation *s, IModel *m)
  : model(m), simulation(s) {
 	node_registry = new NodeRegistry();
 	type_registry = new TypeRegistry();
@@ -59,8 +59,9 @@ bool XmlLoader::load(QFile &file) {
 	loadNodesFromPlugins(node_registry, paths);
 	loadTypesFromPlugins(type_registry, paths);
 
-	loadModel(document);
 	loadSimulation(document);
+	loadModel(document);
+
 
 	CONSUME(document.firstChildElement("citydrain").toElement());
 
@@ -80,6 +81,7 @@ void XmlLoader::loadModel(QDomDocument document) {
 	CONSUME(document.firstChildElement("citydrain")
 			.firstChildElement("model").toElement());
 
+	model->initNodes(simulation->getSimulationParameters());
 
 	loadConnections(document.firstChildElement("citydrain")
 					.firstChildElement("model")
@@ -131,7 +133,7 @@ void XmlLoader::loadNodesFromPlugins(
 	QString path;
 	foreach (path, paths) {
 		QLibrary l(path);
-		l.setLoadHints(QLibrary::ExportExternalSymbolsHint);
+		//l.setLoadHints(QLibrary::ExportExternalSymbolsHint);
 		l.load();
 		regNodeFunProto regFun = (regNodeFunProto) l.resolve("registerNodes");
 		if (regFun) {
@@ -150,7 +152,7 @@ void XmlLoader::loadTypesFromPlugins(
 	QString path;
 	foreach (path, paths) {
 		QLibrary l(path);
-		l.setLoadHints(QLibrary::ExportExternalSymbolsHint);
+		//l.setLoadHints(QLibrary::ExportExternalSymbolsHint);
 		l.load();
 		regTypeFunProto regFun = (regTypeFunProto) l.resolve("registerTypes");
 		if (regFun) {

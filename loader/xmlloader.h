@@ -6,7 +6,7 @@ class IModel;
 class INodeRegistry;
 class TypeRegistry;
 class Node;
-class Simulation;
+class ISimulation;
 
 #include <QtXml>
 #include <QStringList>
@@ -19,7 +19,7 @@ class Simulation;
 class XmlLoader
 {
 public:
-	XmlLoader(Simulation *s, IModel *m);
+	XmlLoader(ISimulation *s, IModel *m);
 	~XmlLoader();
 	bool load(QFile &f);
 private:
@@ -42,7 +42,7 @@ private:
 	TypeRegistry *type_registry;
 
 	IModel *model;
-	Simulation *simulation;
+	ISimulation *simulation;
 #ifdef DEBUG
 	QList<QDomElement> consumed;
 	QList<QDomElement> dont_check;

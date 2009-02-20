@@ -54,5 +54,6 @@ Flow *FlowTypeFactory::flowFromDom(QDomElement &e) {
 		double value = attr.namedItem("value").toAttr().value().toDouble();
 		f->addUnit(name, unit, value);
 	}
+	f->prepareData();
 	return f;
 }

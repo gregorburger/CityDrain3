@@ -1,11 +1,11 @@
 #include "mapbasedmodel.h"
-
 #include <iostream>
 #include <node.h>
 #include <boost/foreach.hpp>
-#include <cassert>
+#include <boost/assert.hpp>
 #include <simulation.h>
 #include <vector>
+#include <cd3assert.h>
 
 typedef std::pair<std::string, Node*> nodes_pair_type;
 
@@ -18,11 +18,14 @@ MapBasedModel::~MapBasedModel() {
 	}
 }
 
+const node_set_type *MapBasedModel::getNodes() const {
+	return &all_nodes;
+}
 
 void MapBasedModel::addNode(const std::string &name, Node *node) {
-	assert(node);
-	assert(name != "");
-	assert(names_nodes.find(name) == names_nodes.end());
+	assert(node, "added node null");
+	assert(name != "", "node name empty");
+	assert(names_nodes.find(name) == names_nodes.end(), "node name already defined");
 	
 	names_nodes[name] = node;
 	all_nodes.insert(node);
@@ -36,17 +39,23 @@ void MapBasedModel::addConnection(const std::string &src_node,
 					   const std::string &sin_node,
 					   const std::string &sin_port) {
 
-	assert(names_nodes.find(src_node) != names_nodes.end());
-	assert(names_nodes.find(sin_node) != names_nodes.end());
+	assert(names_nodes.find(src_node) != names_nodes.end(), "source node not found");
+	assert(names_nodes.find(sin_node) != names_nodes.end(), "sink node not found");
 
 	Node *source = names_nodes.find(src_node)->second;
 	Node *sink = names_nodes.find(sin_node)->second;
 
 	sink_nodes.erase(source);
 	source_nodes.erase(sink);
+	std::cout << src_node << " --> " << sin_node << std::endl;
+	std::cout << src_port << " --> " << sin_port << std::endl;
+	assert(source->const_out_ports->find(src_port)
+		   !=
+		   source->const_out_ports->end(), "source node port not found");
 
-	assert(source->const_out_ports->find(src_port) != source->const_out_ports->end());
-	assert(sink->const_in_ports->find(sin_port) != sink->const_in_ports->end());
+	assert(sink->const_in_ports->find(sin_port)
+		   !=
+		   sink->const_in_ports->end(), "sink node port not found");
 
 	if (fwd_connections.find(source) == fwd_connections.end()) {
 		fwd_connections[source] = std::vector<next_node_type>();
@@ -58,7 +67,7 @@ void MapBasedModel::addConnection(const std::string &src_node,
 		bwd_connections[sink] = std::vector<next_node_type>();
 	}
 
-	//bwd_connections[sink][sin_port] = end_point_type(source, src_port);
+	//BOOST_ENABLE_ASSERT_HANDLERbwd_connections[sink][sin_port] = end_point_type(source, src_port);
 	bwd_connections[sink].push_back(next_node_type(sin_port, source, src_port));
 }
 
@@ -66,20 +75,20 @@ void dumpParameters(Node *n) {
 	(void) n;
 }
 
-void MapBasedModel::dump() {
+/*void MapBasedModel::dump() {
 	std::cout << "number of nodes: " << names_nodes.size() << std::endl;
 	node_map::iterator it = names_nodes.begin();
 	while (it != names_nodes.end()) {
 		std::cout << "node[" << it->first << "]=" << it->second->getNodeName() << std::endl;
 		it++;
 	}
-}
+}*/
 
 void MapBasedModel::initNodes(const SimulationParameters &sp) {
 	node_set_type::iterator it = all_nodes.begin();
 	while (it != all_nodes.end()) {
 		Node *n = *it;
-		//std::cout << "initing node type " << n->getNodeName();
+		std::cout << "initing node type " << n->getNodeName() << std::endl;
 		n->init(sp.start, sp.stop, sp.dt);
 		//std::cout << " done" << std::endl;
 		it++;
