@@ -31,7 +31,7 @@ void MapBasedModel::addNode(const std::string &name, Node *node) {
 	all_nodes.insert(node);
 	sink_nodes.insert(node);
 	source_nodes.insert(node);
-	node->initPorts();
+//	node->initPorts();
 }
 
 void MapBasedModel::addConnection(const std::string &src_node,
@@ -47,8 +47,7 @@ void MapBasedModel::addConnection(const std::string &src_node,
 
 	sink_nodes.erase(source);
 	source_nodes.erase(sink);
-	std::cout << src_node << " --> " << sin_node << std::endl;
-	std::cout << src_port << " --> " << sin_port << std::endl;
+
 	assert(source->const_out_ports->find(src_port)
 		   !=
 		   source->const_out_ports->end(), "source node port not found");
@@ -88,9 +87,7 @@ void MapBasedModel::initNodes(const SimulationParameters &sp) {
 	node_set_type::iterator it = all_nodes.begin();
 	while (it != all_nodes.end()) {
 		Node *n = *it;
-		std::cout << "initing node type " << n->getNodeName() << std::endl;
 		n->init(sp.start, sp.stop, sp.dt);
-		//std::cout << " done" << std::endl;
 		it++;
 	}
 }

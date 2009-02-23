@@ -166,7 +166,7 @@ void XmlLoader::loadTypesFromPlugins(
 void XmlLoader::loadNodes(QDomElement element) {
 	assert(element.nodeName() == "nodelist");
 	CONSUME(element);
-	qDebug() << "start loading nodes";
+	//qDebug() << "start loading nodes";
 	QDomNodeList childs = element.childNodes();
 	for (int i = 0; i < childs.count(); i++) {
 		QDomNode child = childs.at(i);
@@ -181,6 +181,7 @@ void XmlLoader::loadNode(QDomElement element) {
 	CONSUME(element);
 	std::string id = element.attribute("id", "").toStdString();
 	std::string nodeClass = element.attribute("class").toStdString();
+	//TODO assert here
 	if (!node_registry->doContains(nodeClass)) {
 		qDebug() << "no class " << nodeClass.c_str() << " registered";
 		return;
@@ -270,9 +271,6 @@ void XmlLoader::setNodeParameter(Node *node, QDomElement element) {
 
 	if (simple) {
 		QString value = element.attribute("value", "0.0");
-
-		qDebug() << QString(node->getNodeName()) << "::setParameter<" << type.c_str()
-				 << "> = " << value;
 
 		if (type == "double") {
 			double d = value.toDouble();

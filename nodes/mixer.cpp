@@ -31,7 +31,6 @@ void Mixer::init(int start, int end, int dt) {
 	addOutPort(ADD_PARAMETERS_P(out));
 	inputs = new Flow*[num_inputs];
 	for (int i = 0; i < num_inputs; i++) {
-		std::cout << "settin up port " << i << std::endl;
 		inputs[i] = new Flow();
 		std::ostringstream name;
 		name << "inputs[" << i << "]";

@@ -20,5 +20,4 @@ void ConstSource::init(int start, int end, int dt) {
 	(void) end;
 	(void) dt;
 	out = const_flow;
-	std::cout << "constsource init" << std::endl;
 }

@@ -2,6 +2,7 @@
 #include <node.h>
 #include <flow.h>
 #include <calculationunit.h>
+#include <cd3assert.h>
 
 FlowTypeFactory::FlowTypeFactory() {
 }
@@ -38,22 +39,20 @@ Flow *FlowTypeFactory::flowFromDom(QDomElement &e) {
 		QString kind = attr.namedItem("kind").toAttr().value();
 		CalculationUnit *unit = CalculationUnit::null;
 		if (kind == "flow") {
-			std::cerr << "setting flow" << std::endl;
 			unit = CalculationUnit::flow;
 		}
 		if (kind == "concentration") {
-			std::cerr << "setting concentration" << std::endl;
 			unit = CalculationUnit::concentration;
 		}
 		if (kind == "volume") {
-			std::cerr << "setting volume" << std::endl;
 			unit = CalculationUnit::volume;
 		}
-		if (unit == 0) {
+		assert(unit != 0, "unknown unit type");
+		/*if (unit == 0) {
 			int line = attr.namedItem("kind").lineNumber();
 			int column = attr.namedItem("kind").columnNumber();
 			std::cerr << line << ":" << column << ":" << "wrong unit" << std::endl;
-		}
+		}*/
 		double value = attr.namedItem("value").toAttr().value().toDouble();
 		f->addUnit(name, unit, value);
 	}

@@ -40,22 +40,11 @@ public:
 	virtual void f(int time, int dt) = 0;
 
 	//setup ports here called after all parameters are set
-	virtual void initPorts() {
-	}
+	//virtual void initPorts();
+	virtual void init(int start, int end, int dt);
+	virtual void deinit();
 
-	virtual void init(int start, int end, int dt) {
-		(void) start;
-		(void) end;
-		(void) dt;
-	}
-
-	virtual void deinit() {
-	}
-
-	virtual std::pair<int,int> getMinMaxDT() {
-		return std::make_pair<int, int>(-1, -1);
-	}
-	static std::pair<int, int>  MIN_MAX_DT_DONT_CARE;
+	virtual int getDT();
 
 	void setInPort(const std::string &, const Flow *in);
 	const Flow *getOutPort(const std::string &);
