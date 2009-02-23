@@ -18,7 +18,7 @@ public:
 	void addController(IController *controller);
 
 private: //methods
-	void run(IModel *model, Node *n, int time);
+	void run(IModel *model, Node *n, int time, std::map<Node *, int> &deps);
 	std::map<Node *, int> getDepends(IModel *model);
 private: //data member
 	SimulationParameters sp;

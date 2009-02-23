@@ -29,16 +29,17 @@ void DefaultSimulation::start(IModel *model) {
 	node_set_type sources = model->sourceNodes();
 
 	for (int time = sp.start; time <= sp.stop; time += sp.dt) {
+		std::map<Node *, int> deps = getDepends(model);
 		BOOST_FOREACH(Node *n, sources) {
-			run(model, n, time);
-			std::cout << time << std::endl;
+			run(model, n, time, deps);
 		}
+		std::cout << time << std::endl;
 	}
 }
 
 //typedef std::vector<next_node_type> vector_next_node_type;
 
-void DefaultSimulation::run(IModel *model, Node *n, int time) {
+void DefaultSimulation::run(IModel *model, Node *n, int time, std::map<Node *, int> &depends) {
 	n->f(time, sp.dt);
 
 	BOOST_FOREACH(next_node_type con, model->forward(n)) {
@@ -47,7 +48,13 @@ void DefaultSimulation::run(IModel *model, Node *n, int time) {
 		boost::tuples::tie(src_port, next, snk_port) = con;
 
 		next->setInPort(snk_port, n->getOutPort(src_port));
-		run(model, next, time);
+
+		depends[next]--;
+
+		if (depends[next] > 0) {
+			return;
+		}
+		run(model, next, time, depends);
 	}
 }
 

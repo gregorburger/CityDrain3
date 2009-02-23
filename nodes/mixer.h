@@ -12,6 +12,7 @@ public:
 	void init(int start, int end, int dt);
 private:
 	int num_inputs;
+	bool inited;
 	Flow *out;
 	Flow **inputs;
 };

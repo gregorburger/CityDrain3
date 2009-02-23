@@ -16,7 +16,7 @@ static int num_back;*/
 #endif
 #define assert(expr, message) if (!(expr)) { \
 	std::cerr << __FILE__ << ":" << __LINE__ \
-			<< " assertion failed : " << message << std::endl; \
+			<< " assert: " << message << std::endl; \
 	std::abort(); \
 	}
 

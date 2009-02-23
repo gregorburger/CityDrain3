@@ -50,8 +50,9 @@ void FileOut::f(int time, int dt) {
 		first = false;
 	}
 	stream << time;
-	for (int i = 0; i < in->getSize(); i++) {
-		stream << "\t" << in->getData()[i];
+
+	BOOST_FOREACH(std::string name, in->getNames()) {
+			stream << "\t" << in->getValue(name);
 	}
 	stream << endl;
 	stream.flush();

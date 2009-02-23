@@ -1,7 +1,7 @@
 #include "flowtypefactory.h"
 #include <node.h>
 #include <flow.h>
-
+#include <calculationunit.h>
 
 FlowTypeFactory::FlowTypeFactory() {
 }
@@ -36,15 +36,18 @@ Flow *FlowTypeFactory::flowFromDom(QDomElement &e) {
 		QDomNamedNodeMap attr = node.attributes();
 		std::string name = attr.namedItem("name").toAttr().value().toStdString();
 		QString kind = attr.namedItem("kind").toAttr().value();
-		CalculationUnit *unit = 0;
+		CalculationUnit *unit = CalculationUnit::null;
 		if (kind == "flow") {
-			unit = &CalculationUnit::flow;
+			std::cerr << "setting flow" << std::endl;
+			unit = CalculationUnit::flow;
 		}
 		if (kind == "concentration") {
-			unit = &CalculationUnit::concentration;
+			std::cerr << "setting concentration" << std::endl;
+			unit = CalculationUnit::concentration;
 		}
 		if (kind == "volume") {
-			unit = &CalculationUnit::volume;
+			std::cerr << "setting volume" << std::endl;
+			unit = CalculationUnit::volume;
 		}
 		if (unit == 0) {
 			int line = attr.namedItem("kind").lineNumber();
@@ -54,6 +57,5 @@ Flow *FlowTypeFactory::flowFromDom(QDomElement &e) {
 		double value = attr.namedItem("value").toAttr().value().toDouble();
 		f->addUnit(name, unit, value);
 	}
-	f->prepareData();
 	return f;
 }

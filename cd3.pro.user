@@ -43,26 +43,6 @@
   <value type="QString" >Qt4ProjectManager.Qt4RunConfiguration</value>
  </data>
  <data>
-  <variable>RunConfiguration2-CommandLineArguments</variable>
-  <valuelist type="QVariantList" />
- </data>
- <data>
-  <variable>RunConfiguration2-ProFile</variable>
-  <value type="QString" >/home/gregor/workspace/cd3-1/testcowptr/testcowptr.pro</value>
- </data>
- <data>
-  <variable>RunConfiguration2-RunConfiguration.name</variable>
-  <value type="QString" >testcowptr</value>
- </data>
- <data>
-  <variable>RunConfiguration2-UserSetName</variable>
-  <value type="bool" >false</value>
- </data>
- <data>
-  <variable>RunConfiguration2-type</variable>
-  <value type="QString" >Qt4ProjectManager.Qt4RunConfiguration</value>
- </data>
- <data>
   <variable>activeRunConfiguration</variable>
   <value type="int" >0</value>
  </data>
@@ -83,7 +63,7 @@
  <data>
   <variable>buildConfiguration-deug</variable>
   <valuemap type="QVariantMap" >
-   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >deug</value>
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >debug</value>
    <value key="QtVersionId" type="int" >0</value>
    <value key="addQDumper" type="" ></value>
    <value key="buildDirectory" type="QString" >/home/gregor/workspace/cd3-1</value>
@@ -237,8 +217,8 @@
   <valuemap type="QVariantMap" >
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >deug</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList" >
-    <value type="QString" >COLORTERM=gnome-terminal</value>
-    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-Z49gsfKZ2Q,guid=80e7a80c6619959083465573499d432b</value>
+    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-HthZxjygM7,guid=a516531ac7a6f05439d7397b49a255ed</value>
+    <value type="QString" >DESKTOP_AUTOSTART_ID=1066837fc5eb3a84a4123537560039144900000059700001</value>
     <value type="QString" >DESKTOP_SESSION=default</value>
     <value type="QString" >DESKTOP_STARTUP_ID=</value>
     <value type="QString" >DISPLAY=:0.0</value>
@@ -246,37 +226,27 @@
     <value type="QString" >GDM_LANG=en_GB.UTF-8</value>
     <value type="QString" >GDM_XSERVER_LOCATION=local</value>
     <value type="QString" >GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
-    <value type="QString" >GNOME_KEYRING_PID=12302</value>
-    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-Hr18Fk/socket</value>
-    <value type="QString" >GPG_AGENT_INFO=/tmp/seahorse-yP9XRX/S.gpg-agent:12447:1</value>
+    <value type="QString" >GNOME_KEYRING_PID=5959</value>
+    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-g2V5OF/socket</value>
+    <value type="QString" >GPG_AGENT_INFO=/tmp/seahorse-1t4jk5/S.gpg-agent:6105:1</value>
     <value type="QString" >GTK_RC_FILES=/etc/gtk/gtkrc:/home/gregor/.gtkrc-1.2-gnome2</value>
-    <value type="QString" >HISTCONTROL=ignoreboth</value>
     <value type="QString" >HOME=/home/gregor</value>
     <value type="QString" >LANG=en_GB.UTF-8</value>
-    <value type="QString" >LC_NUMERIC=C</value>
-    <value type="QString" >LESSCLOSE=/usr/bin/lesspipe %s %s</value>
-    <value type="QString" >LESSOPEN=| /usr/bin/lesspipe %s</value>
     <value type="QString" >LIBGL_DRIVERS_PATH=/usr/lib/dri</value>
     <value type="QString" >LOGNAME=gregor</value>
-    <value type="QString" >LS_COLORS=no=00:fi=00:di=01;34:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:su=37;41:sg=30;43:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.svgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.lzma=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.bz2=01;31:*.bz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.rar=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:</value>
-    <value type="QString" >OLDPWD=/home/gregor</value>
     <value type="QString" >ORBIT_SOCKETDIR=/tmp/orbit-gregor</value>
     <value type="QString" >PATH=/usr/bin:/home/gregor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games</value>
-    <value type="QString" >PWD=/home/gregor/qtcreator-0.9.2/bin</value>
+    <value type="QString" >PWD=/home/gregor</value>
     <value type="QString" >QTDIR=/usr</value>
-    <value type="QString" >SESSION_MANAGER=local/c815-pc43:/tmp/.ICE-unix/12312</value>
+    <value type="QString" >SESSION_MANAGER=local/c815-pc43:/tmp/.ICE-unix/5970</value>
     <value type="QString" >SHELL=/bin/bash</value>
-    <value type="QString" >SHLVL=1</value>
-    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-Hr18Fk/ssh</value>
-    <value type="QString" >TERM=xterm</value>
+    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-g2V5OF/ssh</value>
     <value type="QString" >USER=gregor</value>
     <value type="QString" >USERNAME=gregor</value>
-    <value type="QString" >WINDOWID=67109840</value>
-    <value type="QString" >WINDOWPATH=9</value>
+    <value type="QString" >WINDOWPATH=7</value>
     <value type="QString" >XAUTHORITY=/home/gregor/.Xauthority</value>
     <value type="QString" >XDG_DATA_DIRS=/usr/local/share/:/usr/share/:/usr/share/gdm/</value>
-    <value type="QString" >XDG_SESSION_COOKIE=c5516441131aed83a207d14049759d2a-1235043115.169356-733109270</value>
-    <value type="QString" >_=./qtcreator-0.9.2-200902200439-linux-x86-setup.bin</value>
+    <value type="QString" >XDG_SESSION_COOKIE=c5516441131aed83a207d14049759d2a-1235375596.621220-1231385830</value>
    </valuelist>
    <valuelist key="abstractProcess.arguments" type="QVariantList" >
     <value type="QString" >/home/gregor/workspace/cd3-1/cd3.pro</value>
@@ -296,8 +266,8 @@
   <valuemap type="QVariantMap" >
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >deug</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList" >
-    <value type="QString" >COLORTERM=gnome-terminal</value>
-    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-Z49gsfKZ2Q,guid=80e7a80c6619959083465573499d432b</value>
+    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-HthZxjygM7,guid=a516531ac7a6f05439d7397b49a255ed</value>
+    <value type="QString" >DESKTOP_AUTOSTART_ID=1066837fc5eb3a84a4123537560039144900000059700001</value>
     <value type="QString" >DESKTOP_SESSION=default</value>
     <value type="QString" >DESKTOP_STARTUP_ID=</value>
     <value type="QString" >DISPLAY=:0.0</value>
@@ -305,37 +275,27 @@
     <value type="QString" >GDM_LANG=en_GB.UTF-8</value>
     <value type="QString" >GDM_XSERVER_LOCATION=local</value>
     <value type="QString" >GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
-    <value type="QString" >GNOME_KEYRING_PID=12302</value>
-    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-Hr18Fk/socket</value>
-    <value type="QString" >GPG_AGENT_INFO=/tmp/seahorse-yP9XRX/S.gpg-agent:12447:1</value>
+    <value type="QString" >GNOME_KEYRING_PID=5959</value>
+    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-g2V5OF/socket</value>
+    <value type="QString" >GPG_AGENT_INFO=/tmp/seahorse-1t4jk5/S.gpg-agent:6105:1</value>
     <value type="QString" >GTK_RC_FILES=/etc/gtk/gtkrc:/home/gregor/.gtkrc-1.2-gnome2</value>
-    <value type="QString" >HISTCONTROL=ignoreboth</value>
     <value type="QString" >HOME=/home/gregor</value>
     <value type="QString" >LANG=en_GB.UTF-8</value>
-    <value type="QString" >LC_NUMERIC=C</value>
-    <value type="QString" >LESSCLOSE=/usr/bin/lesspipe %s %s</value>
-    <value type="QString" >LESSOPEN=| /usr/bin/lesspipe %s</value>
     <value type="QString" >LIBGL_DRIVERS_PATH=/usr/lib/dri</value>
     <value type="QString" >LOGNAME=gregor</value>
-    <value type="QString" >LS_COLORS=no=00:fi=00:di=01;34:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:su=37;41:sg=30;43:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.svgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.lzma=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.bz2=01;31:*.bz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.rar=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:</value>
-    <value type="QString" >OLDPWD=/home/gregor</value>
     <value type="QString" >ORBIT_SOCKETDIR=/tmp/orbit-gregor</value>
     <value type="QString" >PATH=/usr/bin:/home/gregor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games</value>
-    <value type="QString" >PWD=/home/gregor/qtcreator-0.9.2/bin</value>
+    <value type="QString" >PWD=/home/gregor</value>
     <value type="QString" >QTDIR=/usr</value>
-    <value type="QString" >SESSION_MANAGER=local/c815-pc43:/tmp/.ICE-unix/12312</value>
+    <value type="QString" >SESSION_MANAGER=local/c815-pc43:/tmp/.ICE-unix/5970</value>
     <value type="QString" >SHELL=/bin/bash</value>
-    <value type="QString" >SHLVL=1</value>
-    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-Hr18Fk/ssh</value>
-    <value type="QString" >TERM=xterm</value>
+    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-g2V5OF/ssh</value>
     <value type="QString" >USER=gregor</value>
     <value type="QString" >USERNAME=gregor</value>
-    <value type="QString" >WINDOWID=67109840</value>
-    <value type="QString" >WINDOWPATH=9</value>
+    <value type="QString" >WINDOWPATH=7</value>
     <value type="QString" >XAUTHORITY=/home/gregor/.Xauthority</value>
     <value type="QString" >XDG_DATA_DIRS=/usr/local/share/:/usr/share/:/usr/share/gdm/</value>
-    <value type="QString" >XDG_SESSION_COOKIE=c5516441131aed83a207d14049759d2a-1235043115.169356-733109270</value>
-    <value type="QString" >_=./qtcreator-0.9.2-200902200439-linux-x86-setup.bin</value>
+    <value type="QString" >XDG_SESSION_COOKIE=c5516441131aed83a207d14049759d2a-1235375596.621220-1231385830</value>
    </valuelist>
    <valuelist key="abstractProcess.arguments" type="QVariantList" >
     <value type="QString" >-w</value>
@@ -356,8 +316,8 @@
   <valuemap type="QVariantMap" >
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >deug</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList" >
-    <value type="QString" >COLORTERM=gnome-terminal</value>
-    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-Z49gsfKZ2Q,guid=80e7a80c6619959083465573499d432b</value>
+    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-HthZxjygM7,guid=a516531ac7a6f05439d7397b49a255ed</value>
+    <value type="QString" >DESKTOP_AUTOSTART_ID=1066837fc5eb3a84a4123537560039144900000059700001</value>
     <value type="QString" >DESKTOP_SESSION=default</value>
     <value type="QString" >DESKTOP_STARTUP_ID=</value>
     <value type="QString" >DISPLAY=:0.0</value>
@@ -365,37 +325,27 @@
     <value type="QString" >GDM_LANG=en_GB.UTF-8</value>
     <value type="QString" >GDM_XSERVER_LOCATION=local</value>
     <value type="QString" >GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
-    <value type="QString" >GNOME_KEYRING_PID=12302</value>
-    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-Hr18Fk/socket</value>
-    <value type="QString" >GPG_AGENT_INFO=/tmp/seahorse-yP9XRX/S.gpg-agent:12447:1</value>
+    <value type="QString" >GNOME_KEYRING_PID=5959</value>
+    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-g2V5OF/socket</value>
+    <value type="QString" >GPG_AGENT_INFO=/tmp/seahorse-1t4jk5/S.gpg-agent:6105:1</value>
     <value type="QString" >GTK_RC_FILES=/etc/gtk/gtkrc:/home/gregor/.gtkrc-1.2-gnome2</value>
-    <value type="QString" >HISTCONTROL=ignoreboth</value>
     <value type="QString" >HOME=/home/gregor</value>
     <value type="QString" >LANG=en_GB.UTF-8</value>
-    <value type="QString" >LC_NUMERIC=C</value>
-    <value type="QString" >LESSCLOSE=/usr/bin/lesspipe %s %s</value>
-    <value type="QString" >LESSOPEN=| /usr/bin/lesspipe %s</value>
     <value type="QString" >LIBGL_DRIVERS_PATH=/usr/lib/dri</value>
     <value type="QString" >LOGNAME=gregor</value>
-    <value type="QString" >LS_COLORS=no=00:fi=00:di=01;34:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:su=37;41:sg=30;43:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.svgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.lzma=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.bz2=01;31:*.bz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.rar=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:</value>
-    <value type="QString" >OLDPWD=/home/gregor</value>
     <value type="QString" >ORBIT_SOCKETDIR=/tmp/orbit-gregor</value>
     <value type="QString" >PATH=/usr/bin:/home/gregor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games</value>
-    <value type="QString" >PWD=/home/gregor/qtcreator-0.9.2/bin</value>
+    <value type="QString" >PWD=/home/gregor</value>
     <value type="QString" >QTDIR=/usr</value>
-    <value type="QString" >SESSION_MANAGER=local/c815-pc43:/tmp/.ICE-unix/12312</value>
+    <value type="QString" >SESSION_MANAGER=local/c815-pc43:/tmp/.ICE-unix/5970</value>
     <value type="QString" >SHELL=/bin/bash</value>
-    <value type="QString" >SHLVL=1</value>
-    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-Hr18Fk/ssh</value>
-    <value type="QString" >TERM=xterm</value>
+    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-g2V5OF/ssh</value>
     <value type="QString" >USER=gregor</value>
     <value type="QString" >USERNAME=gregor</value>
-    <value type="QString" >WINDOWID=67109840</value>
-    <value type="QString" >WINDOWPATH=9</value>
+    <value type="QString" >WINDOWPATH=7</value>
     <value type="QString" >XAUTHORITY=/home/gregor/.Xauthority</value>
     <value type="QString" >XDG_DATA_DIRS=/usr/local/share/:/usr/share/:/usr/share/gdm/</value>
-    <value type="QString" >XDG_SESSION_COOKIE=c5516441131aed83a207d14049759d2a-1235043115.169356-733109270</value>
-    <value type="QString" >_=./qtcreator-0.9.2-200902200439-linux-x86-setup.bin</value>
+    <value type="QString" >XDG_SESSION_COOKIE=c5516441131aed83a207d14049759d2a-1235375596.621220-1231385830</value>
    </valuelist>
    <valuelist key="abstractProcess.arguments" type="QVariantList" >
     <value type="QString" >clean</value>
