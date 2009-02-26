@@ -28,8 +28,8 @@ public:
 					   const std::string &sin_port) = 0;
 
 	virtual void initNodes(const SimulationParameters &) = 0;
-	virtual node_set_type sourceNodes() = 0;
-	virtual node_set_type sinkNodes() = 0;
+	virtual node_set_type getSourceNodes() = 0;
+	virtual node_set_type getSinkNodes() = 0;
 
 	virtual std::vector<next_node_type> forward(Node *n) = 0;
 	virtual std::vector<next_node_type> backward(Node *n) = 0;

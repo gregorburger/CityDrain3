@@ -34,8 +34,8 @@ public:
 	//call before adding Connections
 	void initNodes(const SimulationParameters &);
 
-	node_set_type sourceNodes();
-	node_set_type sinkNodes();
+	node_set_type getSourceNodes();
+	node_set_type getSinkNodes();
 
 	std::vector<next_node_type> forward(Node *n);
 	std::vector<next_node_type> backward(Node *n);

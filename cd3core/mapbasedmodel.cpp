@@ -92,11 +92,11 @@ void MapBasedModel::initNodes(const SimulationParameters &sp) {
 	}
 }
 
-node_set_type MapBasedModel::sinkNodes() {
+node_set_type MapBasedModel::getSinkNodes() {
 	return sink_nodes;
 }
 
-node_set_type MapBasedModel::sourceNodes() {
+node_set_type MapBasedModel::getSourceNodes() {
 	return source_nodes;
 }
 

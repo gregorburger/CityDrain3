@@ -37,7 +37,7 @@ SimulationParameters DefaultSimulation::getSimulationParameters() const {
 
 void DefaultSimulation::start(IModel *model) {
 	sp->model = model;
-	node_set_type sources = sp->model->sourceNodes();
+	node_set_type sources = sp->model->getSourceNodes();
 
 	for (int time = sp->sp.start; time <= sp->sp.stop; time += sp->sp.dt) {
 		std::map<Node *, int> deps = createDependsMap();
