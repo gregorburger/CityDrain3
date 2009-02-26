@@ -4,3 +4,4 @@ Makefile*
 *.o
 cd3
 testcore/testcore
+*.pro.user
