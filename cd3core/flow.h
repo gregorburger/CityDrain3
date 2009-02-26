@@ -26,11 +26,16 @@ public:
 	const std::vector<std::string> &getNames() const;
 	const std::vector<std::string> &getUnitNames(const CalculationUnit *unit) const;
 
+	void copy();
+	
 private:
 	void copyData();
 	void copyDefinition();
 	boost::shared_ptr<FlowPriv> f;
 	boost::shared_ptr<FlowDefinition> fd;
 };
+
+void mix(Flow *out, const Flow *const *inputs, int num_inputs);
+Flow *mix(const Flow * const *inputs, int num_inputs);
 
 #endif // FLOW_H
