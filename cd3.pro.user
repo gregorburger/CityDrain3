@@ -217,8 +217,8 @@
   <valuemap type="QVariantMap" >
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >deug</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList" >
-    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-HthZxjygM7,guid=a516531ac7a6f05439d7397b49a255ed</value>
-    <value type="QString" >DESKTOP_AUTOSTART_ID=1066837fc5eb3a84a4123537560039144900000059700001</value>
+    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-BrDGN2VRgr,guid=7689e0166f5064eba1269c0a49a4e0fb</value>
+    <value type="QString" >DESKTOP_AUTOSTART_ID=10e47a44953a73c4f0123554227061979600000057760001</value>
     <value type="QString" >DESKTOP_SESSION=default</value>
     <value type="QString" >DESKTOP_STARTUP_ID=</value>
     <value type="QString" >DISPLAY=:0.0</value>
@@ -226,9 +226,9 @@
     <value type="QString" >GDM_LANG=en_GB.UTF-8</value>
     <value type="QString" >GDM_XSERVER_LOCATION=local</value>
     <value type="QString" >GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
-    <value type="QString" >GNOME_KEYRING_PID=5959</value>
-    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-g2V5OF/socket</value>
-    <value type="QString" >GPG_AGENT_INFO=/tmp/seahorse-1t4jk5/S.gpg-agent:6105:1</value>
+    <value type="QString" >GNOME_KEYRING_PID=5765</value>
+    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-sqo6Kr/socket</value>
+    <value type="QString" >GPG_AGENT_INFO=/tmp/seahorse-HMv49y/S.gpg-agent:5911:1</value>
     <value type="QString" >GTK_RC_FILES=/etc/gtk/gtkrc:/home/gregor/.gtkrc-1.2-gnome2</value>
     <value type="QString" >HOME=/home/gregor</value>
     <value type="QString" >LANG=en_GB.UTF-8</value>
@@ -238,15 +238,15 @@
     <value type="QString" >PATH=/usr/bin:/home/gregor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games</value>
     <value type="QString" >PWD=/home/gregor</value>
     <value type="QString" >QTDIR=/usr</value>
-    <value type="QString" >SESSION_MANAGER=local/c815-pc43:/tmp/.ICE-unix/5970</value>
+    <value type="QString" >SESSION_MANAGER=local/c815-pc43:/tmp/.ICE-unix/5776</value>
     <value type="QString" >SHELL=/bin/bash</value>
-    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-g2V5OF/ssh</value>
+    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-sqo6Kr/ssh</value>
     <value type="QString" >USER=gregor</value>
     <value type="QString" >USERNAME=gregor</value>
     <value type="QString" >WINDOWPATH=7</value>
     <value type="QString" >XAUTHORITY=/home/gregor/.Xauthority</value>
     <value type="QString" >XDG_DATA_DIRS=/usr/local/share/:/usr/share/:/usr/share/gdm/</value>
-    <value type="QString" >XDG_SESSION_COOKIE=c5516441131aed83a207d14049759d2a-1235375596.621220-1231385830</value>
+    <value type="QString" >XDG_SESSION_COOKIE=c5516441131aed83a207d14049759d2a-1235542266.596254-432717936</value>
    </valuelist>
    <valuelist key="abstractProcess.arguments" type="QVariantList" >
     <value type="QString" >/home/gregor/workspace/cd3-1/cd3.pro</value>
@@ -266,8 +266,8 @@
   <valuemap type="QVariantMap" >
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >deug</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList" >
-    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-HthZxjygM7,guid=a516531ac7a6f05439d7397b49a255ed</value>
-    <value type="QString" >DESKTOP_AUTOSTART_ID=1066837fc5eb3a84a4123537560039144900000059700001</value>
+    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-BrDGN2VRgr,guid=7689e0166f5064eba1269c0a49a4e0fb</value>
+    <value type="QString" >DESKTOP_AUTOSTART_ID=10e47a44953a73c4f0123554227061979600000057760001</value>
     <value type="QString" >DESKTOP_SESSION=default</value>
     <value type="QString" >DESKTOP_STARTUP_ID=</value>
     <value type="QString" >DISPLAY=:0.0</value>
@@ -275,9 +275,9 @@
     <value type="QString" >GDM_LANG=en_GB.UTF-8</value>
     <value type="QString" >GDM_XSERVER_LOCATION=local</value>
     <value type="QString" >GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
-    <value type="QString" >GNOME_KEYRING_PID=5959</value>
-    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-g2V5OF/socket</value>
-    <value type="QString" >GPG_AGENT_INFO=/tmp/seahorse-1t4jk5/S.gpg-agent:6105:1</value>
+    <value type="QString" >GNOME_KEYRING_PID=5765</value>
+    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-sqo6Kr/socket</value>
+    <value type="QString" >GPG_AGENT_INFO=/tmp/seahorse-HMv49y/S.gpg-agent:5911:1</value>
     <value type="QString" >GTK_RC_FILES=/etc/gtk/gtkrc:/home/gregor/.gtkrc-1.2-gnome2</value>
     <value type="QString" >HOME=/home/gregor</value>
     <value type="QString" >LANG=en_GB.UTF-8</value>
@@ -287,15 +287,15 @@
     <value type="QString" >PATH=/usr/bin:/home/gregor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games</value>
     <value type="QString" >PWD=/home/gregor</value>
     <value type="QString" >QTDIR=/usr</value>
-    <value type="QString" >SESSION_MANAGER=local/c815-pc43:/tmp/.ICE-unix/5970</value>
+    <value type="QString" >SESSION_MANAGER=local/c815-pc43:/tmp/.ICE-unix/5776</value>
     <value type="QString" >SHELL=/bin/bash</value>
-    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-g2V5OF/ssh</value>
+    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-sqo6Kr/ssh</value>
     <value type="QString" >USER=gregor</value>
     <value type="QString" >USERNAME=gregor</value>
     <value type="QString" >WINDOWPATH=7</value>
     <value type="QString" >XAUTHORITY=/home/gregor/.Xauthority</value>
     <value type="QString" >XDG_DATA_DIRS=/usr/local/share/:/usr/share/:/usr/share/gdm/</value>
-    <value type="QString" >XDG_SESSION_COOKIE=c5516441131aed83a207d14049759d2a-1235375596.621220-1231385830</value>
+    <value type="QString" >XDG_SESSION_COOKIE=c5516441131aed83a207d14049759d2a-1235542266.596254-432717936</value>
    </valuelist>
    <valuelist key="abstractProcess.arguments" type="QVariantList" >
     <value type="QString" >-w</value>
@@ -316,8 +316,8 @@
   <valuemap type="QVariantMap" >
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >deug</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList" >
-    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-HthZxjygM7,guid=a516531ac7a6f05439d7397b49a255ed</value>
-    <value type="QString" >DESKTOP_AUTOSTART_ID=1066837fc5eb3a84a4123537560039144900000059700001</value>
+    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-BrDGN2VRgr,guid=7689e0166f5064eba1269c0a49a4e0fb</value>
+    <value type="QString" >DESKTOP_AUTOSTART_ID=10e47a44953a73c4f0123554227061979600000057760001</value>
     <value type="QString" >DESKTOP_SESSION=default</value>
     <value type="QString" >DESKTOP_STARTUP_ID=</value>
     <value type="QString" >DISPLAY=:0.0</value>
@@ -325,9 +325,9 @@
     <value type="QString" >GDM_LANG=en_GB.UTF-8</value>
     <value type="QString" >GDM_XSERVER_LOCATION=local</value>
     <value type="QString" >GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
-    <value type="QString" >GNOME_KEYRING_PID=5959</value>
-    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-g2V5OF/socket</value>
-    <value type="QString" >GPG_AGENT_INFO=/tmp/seahorse-1t4jk5/S.gpg-agent:6105:1</value>
+    <value type="QString" >GNOME_KEYRING_PID=5765</value>
+    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-sqo6Kr/socket</value>
+    <value type="QString" >GPG_AGENT_INFO=/tmp/seahorse-HMv49y/S.gpg-agent:5911:1</value>
     <value type="QString" >GTK_RC_FILES=/etc/gtk/gtkrc:/home/gregor/.gtkrc-1.2-gnome2</value>
     <value type="QString" >HOME=/home/gregor</value>
     <value type="QString" >LANG=en_GB.UTF-8</value>
@@ -337,15 +337,15 @@
     <value type="QString" >PATH=/usr/bin:/home/gregor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games</value>
     <value type="QString" >PWD=/home/gregor</value>
     <value type="QString" >QTDIR=/usr</value>
-    <value type="QString" >SESSION_MANAGER=local/c815-pc43:/tmp/.ICE-unix/5970</value>
+    <value type="QString" >SESSION_MANAGER=local/c815-pc43:/tmp/.ICE-unix/5776</value>
     <value type="QString" >SHELL=/bin/bash</value>
-    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-g2V5OF/ssh</value>
+    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-sqo6Kr/ssh</value>
     <value type="QString" >USER=gregor</value>
     <value type="QString" >USERNAME=gregor</value>
     <value type="QString" >WINDOWPATH=7</value>
     <value type="QString" >XAUTHORITY=/home/gregor/.Xauthority</value>
     <value type="QString" >XDG_DATA_DIRS=/usr/local/share/:/usr/share/:/usr/share/gdm/</value>
-    <value type="QString" >XDG_SESSION_COOKIE=c5516441131aed83a207d14049759d2a-1235375596.621220-1231385830</value>
+    <value type="QString" >XDG_SESSION_COOKIE=c5516441131aed83a207d14049759d2a-1235542266.596254-432717936</value>
    </valuelist>
    <valuelist key="abstractProcess.arguments" type="QVariantList" >
     <value type="QString" >clean</value>
