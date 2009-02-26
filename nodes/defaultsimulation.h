@@ -1,10 +1,10 @@
 #ifndef DEFAULTSIMULATION_H
 #define DEFAULTSIMULATION_H
 
-#include "simulation.h"
-
-#include <vector>
+#include <simulation.h>
 #include <map>
+
+class SimPriv;
 
 CD3_DECLARE_SIMULATION(DefaultSimulation)
 public:
@@ -18,11 +18,13 @@ public:
 	void addController(IController *controller);
 
 private: //methods
-	void run(IModel *model, Node *n, int time, std::map<Node *, int> &deps);
-	std::map<Node *, int> getDepends(IModel *model);
+	void run(Node *n, int time, std::map<Node *, int> &deps);
+	std::map<Node *, int> createDependsMap() const;
+	int getMaxDt() const;
+
+
 private: //data member
-	SimulationParameters sp;
-	std::vector<IController *> controller;
+	SimPriv *sp;
 };
 
 #endif // DEFAULTSIMULATION_H

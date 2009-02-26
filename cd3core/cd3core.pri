@@ -11,12 +11,15 @@ HEADERS += calculationunit.h \
     mapbasedmodel.h \
     cd3typeinfo.h \
     controller.h \
-    defaultsimulation.h \
-    cd3assert.h
+    cd3assert.h \
+    flowbuffer.h \
+    simulationfactory.h \
+    simulationregistry.h
 SOURCES += calculationunit.cpp \
     flow.cpp \
     nodeconnection.cpp \
     node.cpp \
     noderegistry.cpp \
     mapbasedmodel.cpp \
-    defaultsimulation.cpp
+    flowbuffer.cpp \
+    simulationregistry.cpp

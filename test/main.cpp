@@ -1,10 +1,11 @@
 #include <xmlloader.h>
 #include <model.h>
+#include <simulation.h>
 
 #include <iostream>
 #include <QFile>
 #include <mapbasedmodel.h>
-#include <defaultsimulation.h>
+
 #include <set>
 #include <boost/foreach.hpp>
 #include <node.h>
@@ -22,13 +23,10 @@ int main(int argc, char **argv) {
 	QFile f(argv[1]);
 
 	MapBasedModel m;
-	DefaultSimulation s;
 
-	XmlLoader loader(&s, &m);
+	XmlLoader loader(&m);
 
-	if (!loader.load(f)) {
-		std::cout << "could not load xml file" << std::endl;
-	}
-
-	s.start(&m);
+	ISimulation *s = loader.load(f);
+	assert(s);
+	s->start(&m);
 }

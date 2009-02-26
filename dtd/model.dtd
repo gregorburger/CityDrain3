@@ -17,7 +17,7 @@
 	version CDATA #REQUIRED >
 	
 <!ATTLIST simulation
-	name CDATA #REQUIRED >
+	class CDATA #REQUIRED >
 	
 <!ATTLIST node
 	id ID #REQUIRED

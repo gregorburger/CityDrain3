@@ -1,5 +1,6 @@
 #include "node.h"
 #include <flow.h>
+#include <simulation.h>
 
 void Node::init(int start, int end, int dt) {
 	(void) start;
@@ -10,8 +11,12 @@ void Node::init(int start, int end, int dt) {
 void Node::deinit() {
 }
 
-int Node::getDT() {
-	return -1;
+int Node::getDT(const SimulationParameters &p) const {
+	return dt == -1 ? p.dt : dt;
+}
+
+void Node::setDT(int dt) {
+	this->dt = dt;
 }
 
 void Node::setInPort(const std::string &name, const Flow *inflow) {

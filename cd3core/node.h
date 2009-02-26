@@ -24,6 +24,8 @@ typedef std::map<std::string, ltvp>			ssltvp;
 #define ADD_PARAMETERS(var) #var, &var
 #define ADD_PARAMETERS_P(var) #var, var
 
+class SimulationParameters;
+
 class Node
 {
 public:
@@ -32,6 +34,7 @@ public:
 		const_states(&states),
 		const_in_ports(&in_ports),
 		const_out_ports(&out_ports)  {
+		dt = -1;
 	}
 
 	virtual ~Node() {}
@@ -44,7 +47,8 @@ public:
 	virtual void init(int start, int end, int dt);
 	virtual void deinit();
 
-	virtual int getDT();
+	virtual int getDT(const SimulationParameters &sp) const;
+	virtual void setDT(int dt);
 
 	void setInPort(const std::string &, const Flow *in);
 	const Flow *getOutPort(const std::string &);
@@ -115,6 +119,7 @@ protected:
 	ssltvp	parameters;
 	ssf		in_ports;
 	ssf		out_ports;
+	int		dt;
 };
 
 #endif // NODE_H
