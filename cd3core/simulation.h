@@ -37,9 +37,15 @@ public:
 	virtual const char *getClassName() const = 0;
 
 	virtual void addController(IController *controller) = 0;
-	virtual void setSimulationParameters(const SimulationParameters &params) = 0;
-	virtual SimulationParameters getSimulationParameters() const = 0;
+	virtual void setSimulationParameters(const SimulationParameters &params) {
+		sim_param = params;
+	}
+	virtual SimulationParameters getSimulationParameters() const {
+		return sim_param;
+	}
 	virtual void start(IModel *model) = 0;
+protected:
+	SimulationParameters sim_param;
 };
 
 #endif // SIMULATION_H
