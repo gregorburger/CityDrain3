@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <string.h>
 #include <execinfo.h>
+#include <iostream>
 
 /*#define BACK_TRACE_SIZE 100
 static void *buffer[BACK_TRACE_SIZE];
