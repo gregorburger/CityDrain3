@@ -3,7 +3,6 @@
 #include <node.h>
 #include <boost/foreach.hpp>
 #include <iostream>
-#include <flowbuffer.h>
 #include <boost/tuple/tuple.hpp>
 #include <boost/tuple/tuple_comparison.hpp>
 #include <map>
