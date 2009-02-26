@@ -5,10 +5,12 @@ HEADERS += constsource.h \
     flowtypefactory.h \
     fileout.h \
     mixer.h \
-    defaultsimulation.h
+    defaultsimulation.h \
+    vardtsimulation.h
 SOURCES += nodes.cpp \
     constsource.cpp \
     flowtypefactory.cpp \
     fileout.cpp \
     mixer.cpp \
-    defaultsimulation.cpp
+    defaultsimulation.cpp \
+    vardtsimulation.cpp

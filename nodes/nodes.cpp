@@ -3,6 +3,7 @@
 #include "fileout.h"
 #include "mixer.h"
 #include "defaultsimulation.h"
+#include "vardtsimulation.h"
 
 #include <noderegistry.h>
 #include <nodefactory.h>
@@ -25,5 +26,6 @@ extern "C" {
 
 	void registerSimulations(SimulationRegistry *registry) {
 		registry->addSimulationFactory(new SimulationFactory<DefaultSimulation>());
+		registry->addSimulationFactory(new SimulationFactory<VarDTSimulation>());
 	}
 }
