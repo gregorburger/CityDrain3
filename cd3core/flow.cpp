@@ -87,6 +87,13 @@ const std::vector<std::string> & Flow::getUnitNames(const CalculationUnit *unit)
 	return fd->unit_names[unit];
 }
 
+void Flow::dump() const {
+	BOOST_FOREACH(std::string name, fd->names) {
+		std::cout << "flow.dump.names " << name << std::endl;
+	}
+}
+
+
 void mix(Flow *f, const Flow * const *inputs, int num_inputs) {
 	assert(num_inputs > 1, "cannot mix one input");
 	double qe = 0;
@@ -175,8 +182,14 @@ Flow mix(const std::vector<const Flow *> &inputs) {
 	return f;
 }
 
-void Flow::dump() const {
-	BOOST_FOREACH(std::string name, fd->names) {
-		std::cout << "flow.dump.names " << name << std::endl;
-	}
+std::pair<Flow, Flow> split(const Flow flow, float ratio) {
+	assert(ratio <= 1.0 && ratio >= 0.0, "ratio must me between 0 and 1");
+	Flow f1 = flow;
+	Flow f2 = flow;
+
+	std::string qename = flow.getUnitNames(CalculationUnit::flow)[0];
+	f1.setValue(qename, flow.getValue(qename) * ratio);
+	f2.setValue(qename, flow.getValue(qename) * (1 - ratio));
+
+	return std::pair<Flow, Flow>(f1, f2);
 }
