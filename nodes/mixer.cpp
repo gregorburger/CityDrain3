@@ -39,12 +39,12 @@ void Mixer::init(int start, int end, int dt) {
 	inited = true;
 }
 
-void Mixer::f(int time, int dt) {
+int Mixer::f(int time, int dt) {
 	(void) time;
-	(void) dt;
 	Flow *mixed = mix(inputs, num_inputs);
 	
 	*out = *mixed;
 	delete mixed;
+	return dt;
 }
 

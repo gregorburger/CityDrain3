@@ -1,46 +1,60 @@
 #include "flowbuffer.h"
+
 #include <flow.h>
-#include <queue>
 #include <calculationunit.h>
 #include <cd3assert.h>
 
+#include <vector>
+#include <boost/foreach.hpp>
+
 FlowBuffer::FlowBuffer() {
-	buffer = new Flow();
+	buffereddt = 0;
 }
 
 FlowBuffer::~FlowBuffer() {
-	delete buffer;
 }
 
-void FlowBuffer::put(const Flow *f, int dt) {
+void FlowBuffer::put(const Flow f, int dt) {
 	assert(dt > 0, "cannot buffer negative dt flow");
-	assert(f, "cannot buffer null flow");
-	if (!buffereddt) {
-		*buffer = *f;
-		buffer->copy();
-		return;
-	}
-	const Flow *inputs[2];
-	inputs[0] = buffer;
-	inputs[1] = f;
-
-	Flow *tmp = mix(inputs, 2);
-	delete buffer;
-	buffer = tmp;
+	//assert(f, "cannot buffer null flow");
+	buffer.push(buf_item(f, dt));
 	buffereddt += dt;
 }
 
-Flow *FlowBuffer::take(int dt) {
+Flow FlowBuffer::take(int dt) {
 	assert(dt <= buffereddt, "cannot take more flow than available");
-	assert(buffer->getUnitNames(CalculationUnit::flow).size() == 1, "no more than onw flow allowed");
-	Flow *f = new Flow(*buffer);
-	std::string qename = f->getUnitNames(CalculationUnit::flow)[0];
-	double allQe = buffer->getValue(qename);
-	double dtQe = static_cast<double>(buffereddt) / dt * allQe;
-	buffer->setValue(qename, allQe - dtQe);
-	f->setValue(qename, dtQe);
-	buffereddt -= dt;
-	return f;
+	//assert(buffer->getUnitNames(CalculationUnit::flow).size() == 1, "no more than onw flow allowed");
+
+	if (buffer.size() == 1) {
+		assert(buffereddt == dt, "TODO implement rest mixing in flow buffer");
+		Flow single = buffer.front().first;
+		buffer.pop();
+		buffereddt -= dt;
+		return single;
+	}
+
+	std::vector<const Flow *> tmp;
+	int taken_dt = 0;
+
+	while (taken_dt < dt) {
+		buf_item bitem = buffer.front();
+		taken_dt += bitem.second;
+		tmp.push_back(&bitem.first);
+		buffer.pop();
+	}
+	//std::cout << taken_dt << " - " << dt << std::endl;
+	assert(taken_dt == dt, "TODO implement rest mixing in flow buffer");
+
+	Flow mixed = mix(tmp);
+	buffereddt -= taken_dt;
+
+	/*BOOST_FOREACH(const Flow *f, tmp) {
+		delete f;
+	}*/
+
+	//delete all in tmp
+
+	return mixed;
 }
 
 int FlowBuffer::buffered() const {

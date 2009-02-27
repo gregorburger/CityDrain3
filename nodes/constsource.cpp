@@ -10,9 +10,9 @@ ConstSource::ConstSource() {
 ConstSource::~ConstSource() {
 }
 
-void ConstSource::f(int time, int dt) {
+int ConstSource::f(int time, int dt) {
 	(void) time;
-	(void) dt;
+	return dt;
 }
 
 void ConstSource::init(int start, int end, int dt) {

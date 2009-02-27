@@ -13,10 +13,9 @@ public:
 	VarDTSimulation();
 	virtual ~VarDTSimulation();
 	void addController(IController *c);
-	void setSimulationParameters(const SimulationParameters &sp);
 	void start(IModel *model);
 private:
-	void run(Node *n, int dt);
+	int run(Node *n, int time, int dt);
 
 private:
 	IModel *model;

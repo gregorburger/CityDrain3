@@ -32,6 +32,7 @@ XmlLoader::XmlLoader(IModel *m)
 	node_registry = new NodeRegistry();
 	type_registry = new TypeRegistry();
 	sim_registry = new SimulationRegistry();
+	simulation = 0;
 }
 
 XmlLoader::~XmlLoader() {
@@ -41,7 +42,6 @@ XmlLoader::~XmlLoader() {
 
 ISimulation *XmlLoader::load(QFile &file) {
 	assert(model, "model null");
-	assert(simulation, "simulation null");
 
 	QString errorStr;
 	QDomDocument document("citydrain");

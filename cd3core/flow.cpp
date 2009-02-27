@@ -1,6 +1,7 @@
 #include "flow.h"
 #include <map>
 #include <calculationunit.h>
+#include <boost/foreach.hpp>
 #include <cd3assert.h>
 
 struct FlowDefinition {
@@ -21,6 +22,12 @@ Flow::Flow(const Flow &other) {
 
 Flow::~Flow() {
 
+}
+
+Flow &Flow::operator =(const Flow &other) {
+	f = other.f;
+	fd = other.fd;
+	return *this;
 }
 
 void Flow::copy() {
@@ -44,7 +51,7 @@ void Flow::copyDefinition() {
 
 void Flow::addUnit(const std::string &name,
 				 const CalculationUnit *unit,
-				 const double value){
+				 const double value) {
 	assert(fd->positions.find(name) == fd->positions.end(), "name already defined");
 	assert(unit, "unit is null");
 
@@ -135,3 +142,41 @@ Flow *mix(const Flow * const *inputs, int num_inputs) {
 	return f;
 }
 
+
+Flow mix(const std::vector<const Flow *> &inputs) {
+	int num_inputs = inputs.size();
+	assert(num_inputs > 1, "cannot mix one input");
+
+	Flow f0 = *inputs[0];
+	int flowsize = f0.getUnitNames(CalculationUnit::flow).size();
+	assert(flowsize == 1, "unable to mix more than one flow");
+	std::string qename = f0.getUnitNames(CalculationUnit::flow)[0];
+
+	Flow f;
+	double qe = 0;
+
+
+	for (int i = 0; i < num_inputs; i++) {
+		qe += inputs[i]->getValue(qename);
+	}
+
+	f.addUnit(qename, CalculationUnit::flow, qe);
+
+	for (size_t c = 0;
+		 c < inputs[0]->getUnitNames(CalculationUnit::concentration).size();
+		 c++) {
+		double Ci = 0;
+		std::string cname = inputs[0]->getUnitNames(CalculationUnit::concentration).at(c);
+		for (int i = 0; i < num_inputs; i++) {
+			Ci += inputs[i]->getValue(cname);
+		}
+		f.addUnit(cname, CalculationUnit::concentration, Ci/qe);
+	}
+	return f;
+}
+
+void Flow::dump() const {
+	BOOST_FOREACH(std::string name, fd->names) {
+		std::cout << "flow.dump.names " << name << std::endl;
+	}
+}

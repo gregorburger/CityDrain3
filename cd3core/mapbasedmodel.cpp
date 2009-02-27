@@ -60,14 +60,12 @@ void MapBasedModel::addConnection(const std::string &src_node,
 		fwd_connections[source] = std::vector<next_node_type>();
 	}
 	fwd_connections[source].push_back(next_node_type(src_port, sink, sin_port));
-	//fwd_connections[source]. = end_point_type(sink, sin_port);
 
 	if (bwd_connections.find(sink) == bwd_connections.end()) {
 		bwd_connections[sink] = std::vector<next_node_type>();
 	}
 
-	//BOOST_ENABLE_ASSERT_HANDLERbwd_connections[sink][sin_port] = end_point_type(source, src_port);
-	bwd_connections[sink].push_back(next_node_type(sin_port, source, src_port));
+	bwd_connections[sink].push_back(next_node_type(src_port, source, sin_port));
 }
 
 void dumpParameters(Node *n) {

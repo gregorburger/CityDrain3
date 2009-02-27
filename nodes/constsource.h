@@ -8,7 +8,7 @@ CD3_DECLARE_NODE(ConstSource)
 public:
 	ConstSource();
 	~ConstSource();
-	virtual void f(int time, int dt);
+	virtual int f(int time, int dt);
 	virtual void init(int start, int end, int dt);
 private:
 	Flow const_flow;

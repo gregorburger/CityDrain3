@@ -5,7 +5,7 @@
 
 	<pluginpath path="nodes/libnodes.so.1.0.0" />
 
-	<simulation class="DefaultSimulation">
+	<simulation class="VarDTSimulation">
 		<time start="0" stop="7200" dt="300" />
 	</simulation>
 
@@ -22,7 +22,7 @@
 			</node>
 			
 			<node id="fileout" class="FileOut">
-				<parameter name="out_file_name" type="string" value="/tmp/test-default.txt" />
+				<parameter name="out_file_name" type="string" value="/tmp/test-vardt.txt" />
 			</node>
 		</nodelist>
 		

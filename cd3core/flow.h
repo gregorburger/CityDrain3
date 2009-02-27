@@ -14,6 +14,9 @@ public:
 	Flow();
 	Flow (const Flow &other);
 	virtual ~Flow();
+
+	Flow &operator =(const Flow &rhs);
+
 	void addUnit(const std::string &name,
 				 const CalculationUnit *unit,
 				 const double value);
@@ -28,6 +31,7 @@ public:
 
 	void copy();
 	
+	void dump() const;
 private:
 	void copyData();
 	void copyDefinition();
@@ -37,5 +41,6 @@ private:
 
 void mix(Flow *out, const Flow *const *inputs, int num_inputs);
 Flow *mix(const Flow * const *inputs, int num_inputs);
+Flow mix(const std::vector<const Flow *> &inputs);
 
 #endif // FLOW_H

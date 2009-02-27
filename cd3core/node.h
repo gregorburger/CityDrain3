@@ -40,7 +40,7 @@ public:
 	virtual ~Node() {}
 
 	virtual const char *getNodeName() const = 0;
-	virtual void f(int time, int dt) = 0;
+	virtual int f(int time, int dt) = 0;
 
 	//setup ports here called after all parameters are set
 	//virtual void initPorts();
@@ -51,7 +51,7 @@ public:
 	virtual void setDT(int dt);
 
 	void setInPort(const std::string &, const Flow *in);
-	const Flow *getOutPort(const std::string &);
+	const Flow *getOutPort(const std::string &) const;
 
 	template<class T> T *getState(const std::string &name) {
 		assert(states.find(name) != states.end());

@@ -1,6 +1,7 @@
 #include "defaultsimulation.h"
 #include <model.h>
 #include <node.h>
+#include <flow.h>
 #include <boost/foreach.hpp>
 #include <iostream>
 #include <boost/tuple/tuple.hpp>

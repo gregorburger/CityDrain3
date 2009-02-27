@@ -8,7 +8,7 @@ CD3_DECLARE_NODE(Mixer)
 public:
 	Mixer();
 	~Mixer();
-	void f(int time, int dt);
+	int f(int time, int dt);
 	void init(int start, int end, int dt);
 private:
 	int num_inputs;

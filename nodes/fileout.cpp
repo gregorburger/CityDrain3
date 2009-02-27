@@ -37,9 +37,8 @@ void FileOut::deinit() {
 	//file->close();
 }
 
-void FileOut::f(int time, int dt) {
+int FileOut::f(int time, int dt) {
 	(void) time;
-	(void) dt;
 	static bool first = true;
 	if (first) {
 		stream << "time";
@@ -56,4 +55,5 @@ void FileOut::f(int time, int dt) {
 	}
 	stream << endl;
 	stream.flush();
+	return dt;
 }
