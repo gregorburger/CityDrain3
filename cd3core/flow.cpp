@@ -193,3 +193,12 @@ std::pair<Flow, Flow> split(const Flow flow, float ratio) {
 
 	return std::pair<Flow, Flow>(f1, f2);
 }
+
+double Flow::getIth(const CalculationUnit *unit, int i) const {
+	return (*f)[fd->positions[fd->unit_names[unit][i]]];
+}
+
+void Flow::setIth(const CalculationUnit *unit, int i, double value) {
+	copyData();
+	(*f)[fd->positions[fd->unit_names[unit][i]]] = value;
+}
