@@ -26,6 +26,9 @@ public:
 
 	double getValue(const std::string &name) const;
 
+	double getIth(const CalculationUnit *unit, int i) const;
+	void setIth(const CalculationUnit *unit, int i, double value);
+
 	const std::vector<std::string> &getNames() const;
 	const std::vector<std::string> &getUnitNames(const CalculationUnit *unit) const;
 
