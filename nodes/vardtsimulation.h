@@ -7,6 +7,7 @@ class IController;
 class SimulationParameters;
 class IModel;
 class Node;
+struct VarDTPriv;
 
 CD3_DECLARE_SIMULATION(VarDTSimulation)
 public:
@@ -18,7 +19,7 @@ private:
 	int run(Node *n, int time, int dt);
 
 private:
-	IModel *model;
+	VarDTPriv *priv;
 };
 
 #endif // VARDTSIMULATION_H
