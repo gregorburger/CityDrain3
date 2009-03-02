@@ -54,8 +54,7 @@ ISimulation *XmlLoader::load(QFile &file) {
 	}
 
 	if (!document.setContent(&file, true, &errorStr, &errorLine, &errorColumn)) {
-		std::string s = boost::str(boost::format("%1%") % 1);
-		std::cout << s << std::endl;
+		std::cerr << "xml error[" << errorLine << ":" << errorColumn << errorStr.toStdString() << std::endl;
 		return 0;
 	}
 
@@ -221,10 +220,7 @@ void XmlLoader::loadNode(QDomElement element) {
 	std::string nodeClass = element.attribute("class").toStdString();
 
 	//TODO assert here
-	if (!node_registry->contains(nodeClass)) {
-		qDebug() << "no class " << nodeClass.c_str() << " registered";
-		return;
-	}
+	assert(node_registry->contains(nodeClass), "no such Node class registered");
 	Node *node = node_registry->createNode(nodeClass);
 
 	assert(node, "node is null");
