@@ -31,6 +31,7 @@ void FileOut::init(int start, int stop, int dt) {
 	if (!file.isOpen()) {
 		file.open(QFile::WriteOnly);
 	}
+	stream.setRealNumberPrecision(10);
 }
 
 void FileOut::deinit() {
@@ -38,7 +39,8 @@ void FileOut::deinit() {
 }
 
 int FileOut::f(int time, int dt) {
-	(void) time;
+	stream << qSetFieldWidth(15);
+	stream << fixed;
 	static bool first = true;
 	if (first) {
 		stream << "time";
@@ -54,6 +56,5 @@ int FileOut::f(int time, int dt) {
 			stream << "\t" << in->getValue(name);
 	}
 	stream << endl;
-	stream.flush();
 	return dt;
 }
