@@ -4,6 +4,7 @@
 #include "mixer.h"
 #include "defaultsimulation.h"
 #include "vardtsimulation.h"
+#include "sewer.h"
 
 #include <noderegistry.h>
 #include <nodefactory.h>
@@ -18,6 +19,7 @@ extern "C" {
 		registry->addNodeFactory(new NodeFactory<ConstSource>());
 		registry->addNodeFactory(new NodeFactory<FileOut>());
 		registry->addNodeFactory(new NodeFactory<Mixer>());
+		registry->addNodeFactory(new NodeFactory<Sewer>());
 	}
 
 	void registerTypes(TypeRegistry *registry) {
