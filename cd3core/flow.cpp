@@ -194,11 +194,22 @@ std::pair<Flow, Flow> split(const Flow flow, float ratio) {
 	return std::pair<Flow, Flow>(f1, f2);
 }
 
-double Flow::getIth(const CalculationUnit *unit, int i) const {
+double Flow::getIth(const CalculationUnit *unit, size_t i) const {
+	assert(fd->unit_names.find(unit) != fd->unit_names.end(), "no such unit");
+	assert(fd->unit_names[unit].size() > i, "ith is too much");
 	return (*f)[fd->positions[fd->unit_names[unit][i]]];
 }
 
-void Flow::setIth(const CalculationUnit *unit, int i, double value) {
+void Flow::setIth(const CalculationUnit *unit, size_t i, double value) {
+	assert(fd->unit_names.find(unit) != fd->unit_names.end(), "no such unit");
+	assert(fd->unit_names[unit].size() > i, "ith is too much");
 	copyData();
 	(*f)[fd->positions[fd->unit_names[unit][i]]] = value;
+}
+
+void Flow::clear() {
+	copyData();
+	for (size_t i = 0; i < fd->names.size(); i++) {
+		(*f)[i] = 0.0;
+	}
 }
