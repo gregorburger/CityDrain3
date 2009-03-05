@@ -3,11 +3,16 @@
 #include <simulationfactory.h>
 #include <simulation.h>
 #include <cd3assert.h>
+#include <boost/foreach.hpp>
 
 SimulationRegistry::SimulationRegistry() {
 }
 
 SimulationRegistry::~SimulationRegistry() {
+	typedef std::pair<std::string, const ISimulationFactory *> ttype;
+	BOOST_FOREACH(ttype t, registry) {
+		delete t.second;
+	}
 }
 
 void SimulationRegistry::addSimulationFactory(const ISimulationFactory *factory) {
