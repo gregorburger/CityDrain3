@@ -8,7 +8,6 @@ class Test;
 
 v8::Handle<v8::Value> print(const v8::Arguments &args);
 v8::CppWrapper<Flow> *bindFlow();
-v8::CppWrapper<Test> *bindTest();
 
 v8::Handle<v8::Value> jsAddInPort(const v8::Arguments &args);
 v8::Handle<v8::Value> jsAddOutPort(const v8::Arguments &args);

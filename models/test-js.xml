@@ -12,11 +12,11 @@
 	<model>
 		<nodelist>
 			<node id="constsource" class="ConstSource">
-				<parameter name="const_flow" kind="complex" type="Flo">
+				<parameter name="const_flow" kind="complex" type="Flow">
 					<flow>
 						<unit name="Q" kind="flow" value="1.0" />
 						<unit name="V8 Rockt!!" kind="concentration" value="0.1"/>
-						<unit name="JAVASCRIPT" kind="concentration" value="0.2"/>
+						<unit name="JAVASCRIP  asdf T" kind="concentration" value="0.2"/>
 					</flow>
 				</parameter>
 			</node>

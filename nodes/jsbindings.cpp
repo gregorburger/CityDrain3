@@ -2,7 +2,6 @@
 
 
 #include <flow.h>
-#include "test.h"
 #include <calculationunit.h>
 #include "jsnode.h"
 
@@ -37,13 +36,6 @@ CppWrapper<Flow> *bindFlow() {
 	flow_wrapper->SetFunction<double, const std::string &>("getValue", &Flow::getValue);
 
 	return flow_wrapper;
-}
-
-CppWrapper<Test> *bindTest() {
-	CppWrapper<Test> *test_wrapper = new CppWrapper<Test>();
-	//test_wrapper.SetAccessor<char *>("test", &Test::getTest, &Test::setTest);
-	test_wrapper->SetAccessor<int>("num", &Test::getNum, &Test::setNum);
-	return test_wrapper;
 }
 
 v8::Handle<v8::Value> jsAddInPort(const v8::Arguments &args) {

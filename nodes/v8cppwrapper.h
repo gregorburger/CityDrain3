@@ -56,10 +56,10 @@ namespace v8 {
 namespace ConvertFunctions
 {
  template <class S>
- static Handle<Value> ToV8Value(S value) { }
+ static Handle<Value> ToV8Value(S ) { return Undefined(); }
 
  template <class S>
- static S FromV8Value(Local<Value> value) { }
+ static S FromV8Value(Local<Value> ) { }
 
 
  template <>

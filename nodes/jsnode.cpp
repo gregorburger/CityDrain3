@@ -10,7 +10,6 @@
 struct JSNodePrivate {
 	Handle<Script> script;
 	Persistent<Context> context;
-	CppWrapper<Test> *test_wrapper;
 	CppWrapper<Flow> *flow_wrapper;
 	CppWrapper<Node> *node_wrapper;
 };
@@ -30,8 +29,6 @@ JSNode::~JSNode() {
 
 void JSNode::setJSFunctions(Handle<ObjectTemplate> globals) {
 	globals->Set(String::New("print"), FunctionTemplate::New(print));
-	priv->test_wrapper = bindTest();
-	globals->Set(String::New("Test"), priv->test_wrapper->NewFunctionTemplate());
 	priv->flow_wrapper = bindFlow();
 	globals->Set(String::New("Flow"), priv->flow_wrapper->NewFunctionTemplate());
 	globals->Set(String::New("addInPort"), FunctionTemplate::New(jsAddInPort));
@@ -70,7 +67,6 @@ void JSNode::init(int start, int stop, int dt) {
 
 void JSNode::deinit() {
 	delete priv->flow_wrapper;
-	delete priv->test_wrapper;
 }
 
 void JSNode::runScriptInit(int start, int stop, int dt) {
