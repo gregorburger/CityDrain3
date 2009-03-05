@@ -29,4 +29,6 @@ int main(int argc, char **argv) {
 	ISimulation *s = loader.load(f);
 	assert(s);
 	s->start(&m);
+
+	delete s;
 }

@@ -38,6 +38,7 @@ XmlLoader::XmlLoader(IModel *m)
 XmlLoader::~XmlLoader() {
 	delete type_registry;
 	delete node_registry;
+	delete sim_registry;
 }
 
 ISimulation *XmlLoader::load(QFile &file) {
