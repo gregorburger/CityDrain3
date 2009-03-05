@@ -29,7 +29,7 @@ private:
 private:
 	std::string script_path;
 	JSNodePrivate *priv;
-	//Flow *in_out;
+
 	friend Handle<Value> jsAddInPort(const Arguments &args);
 	friend Handle<Value> jsAddOutPort(const Arguments &args);
 };

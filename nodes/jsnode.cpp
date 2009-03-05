@@ -17,14 +17,10 @@ struct JSNodePrivate {
 JSNode::JSNode() {
 	priv = new JSNodePrivate();
 	addParameter(ADD_PARAMETERS(script_path));
-	//in_out = new Flow();
-	/*addInPort("in", in_out);
-	addOutPort("out", in_out);*/
 }
 
 JSNode::~JSNode() {
 	delete priv;
-	//delete in_out;
 }
 
 void JSNode::setJSFunctions(Handle<ObjectTemplate> globals) {

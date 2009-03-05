@@ -12,12 +12,12 @@ Sewer::Sewer() {
 	K = 300;
 	X = 0.1;
 	N = 11;
-	inited = false;
 }
 
 Sewer::~Sewer() {
-	if (!inited)
-		return;
+}
+
+void Sewer::deinit() {
 	for (int i = 0; i < N; i++) {
 		delete V[i];
 	}
@@ -27,7 +27,6 @@ Sewer::~Sewer() {
 void Sewer::init(int start, int end, int dt) {
 	(void) start;
 	(void) end;
-	(void) dt;
 
 	V = new Flow*[N];
 
@@ -39,7 +38,6 @@ void Sewer::init(int start, int end, int dt) {
 	}
 
 	addMuskParam(dt);
-	inited = true;
 }
 
 typedef CalculationUnit CU;

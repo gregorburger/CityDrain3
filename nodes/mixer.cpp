@@ -9,18 +9,17 @@
 Mixer::Mixer() {
 	num_inputs = 2;
 	addParameter(ADD_PARAMETERS(num_inputs));
-	inited = false;
 }
 
 Mixer::~Mixer() {
-	if (inited) {
-		for (int i = 0; i < num_inputs; i++) {
-			delete inputs[i];
-		}
-		delete[] inputs;
-		delete out;
-	}
+}
 
+void Mixer::deinit() {
+	for (int i = 0; i < num_inputs; i++) {
+		delete inputs[i];
+	}
+	delete[] inputs;
+	delete out;
 }
 
 void Mixer::init(int start, int end, int dt) {
@@ -36,7 +35,6 @@ void Mixer::init(int start, int end, int dt) {
 		name << "inputs[" << i << "]";
 		addInPort(name.str(), inputs[i]);
 	}
-	inited = true;
 }
 
 int Mixer::f(int time, int dt) {

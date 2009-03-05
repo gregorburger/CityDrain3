@@ -10,9 +10,9 @@ public:
 	~Mixer();
 	int f(int time, int dt);
 	void init(int start, int end, int dt);
+	void deinit();
 private:
 	int num_inputs;
-	bool inited;
 	Flow *out;
 	Flow **inputs;
 };
