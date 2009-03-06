@@ -23,24 +23,11 @@ public:
 	const std::string &getDescritption() const;
 	const std::string &getUnit() const;
 
-
-	/*static CalculationUnit null();
-	static CalculationUnit flow();
-	static CalculationUnit volume();
-	static CalculationUnit concentration();
-	*/
-
 	static CalculationUnit *null;
 	static CalculationUnit *flow;
 	static CalculationUnit *volume;
 	static CalculationUnit *concentration;
-
-	/*CalculationUnit &operator=(const CalculationUnit &other) {
-		name = other.name;
-		description = other.description;
-		unit = other.unit;
-		return *this;
-	}*/
+	static CalculationUnit *rain;
 
 	bool operator == (const ICalculationUnit &other) const;
 	bool operator < (const CalculationUnit &other) const;
@@ -58,5 +45,6 @@ private:
 	std::string unit;
 };
 
-//bool operator == (const CalculationUnit &lhs, const CalculationUnit &rhs);
+typedef CalculationUnit CU;
+
 #endif // CALCULATIONUNIT_H

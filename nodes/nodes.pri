@@ -13,7 +13,8 @@ HEADERS += constsource.h \
     sewer.h \
     jsnode.h \
     jsbindings.h \
-    v8cppwrapper.h
+    v8cppwrapper.h \
+    rainread.h
 SOURCES += nodes.cpp \
     constsource.cpp \
     flowtypefactory.cpp \
@@ -23,4 +24,5 @@ SOURCES += nodes.cpp \
     vardtsimulation.cpp \
     sewer.cpp \
     jsnode.cpp \
-    jsbindings.cpp
+    jsbindings.cpp \
+    rainread.cpp

@@ -6,6 +6,7 @@
 #include "vardtsimulation.h"
 #include "sewer.h"
 #include "jsnode.h"
+#include "rainread.h"
 
 #include <noderegistry.h>
 #include <nodefactory.h>
@@ -15,6 +16,7 @@
 
 #include <typefactory.h>
 
+
 extern "C" {
 	void registerNodes(NodeRegistry *registry) {
 		registry->addNodeFactory(new NodeFactory<ConstSource>());
@@ -22,6 +24,7 @@ extern "C" {
 		registry->addNodeFactory(new NodeFactory<Mixer>());
 		registry->addNodeFactory(new NodeFactory<Sewer>());
 		registry->addNodeFactory(new NodeFactory<JSNode>());
+		registry->addNodeFactory(new NodeFactory<RainRead>());
 	}
 
 	void registerTypes(TypeRegistry *registry) {
