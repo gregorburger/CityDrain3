@@ -6,13 +6,13 @@
 	<pluginpath path="nodes/libnodes.so.1.0.0" />
 
 	<simulation class="VarDTSimulation">
-		<time start="0" stop="7200" dt="300" />
+		<time start="0" stop="72000" dt="300" />
 	</simulation>
 
 	<model>
 		<nodelist>
 			<node id="rainread0" class="RainRead">
-				<parameter name="file_name" type="string" value="models/Station_10200.ixx" />
+				<parameter name="file_name" type="string" value="models/Station_6620.ixx" />
 			</node>
 			
 			<node id="fileout" class="FileOut">
