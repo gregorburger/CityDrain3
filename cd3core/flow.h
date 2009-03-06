@@ -19,10 +19,10 @@ public:
 
 	void addUnit(const std::string &name,
 				 const CalculationUnit *unit,
-				 const double value);
+				 double value);
 
 	void setValue(const std::string &name,
-				 const double value);
+				 double value);
 
 	void clear();
 

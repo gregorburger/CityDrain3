@@ -28,13 +28,19 @@ Handle<Value> print(const Arguments& args) {
 
 CppWrapper<Flow> *bindFlow() {
 	CppWrapper<Flow> *flow_wrapper = new CppWrapper<Flow>();
-	/*flow_wrapper.SetFunction<void,
-			const std::string &,
-			const CalculationUnit *,
-			const double>("addUnit", &Flow::addUnit);*/
 	flow_wrapper->SetFunction<void>("clear", &Flow::clear);
 	flow_wrapper->SetFunction<double, const std::string &>("getValue", &Flow::getValue);
+	//flow_wrapper->SetFunction<void, const std::string &, const double>("setValue", &Flow::setValue);
+	flow_wrapper->SetFunction<void>("copy", &Flow::copy);
+	flow_wrapper->SetFunction<void>("clear", &Flow::clear);
+	//flow_wrapper->SetFunction<void>("names", &Flow::getNames);
 
+/*	flow_wrapper->SetFunction
+			<void,
+			const std::string &,
+			const void *,
+			double>("addValue", &Flow::addUnit);
+	*/
 	return flow_wrapper;
 }
 

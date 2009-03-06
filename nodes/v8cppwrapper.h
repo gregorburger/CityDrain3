@@ -771,7 +771,7 @@ template <class T> class CppWrapper
   class Caller : public InvokeableBase
   {
   public:
-   Caller(S callback) : callback_(callback) {};
+   Caller(S callback) : callback_(callback) {}
 
    virtual Handle<Value> Call(T *cpp_object, const Arguments &args)
    {
@@ -1211,7 +1211,7 @@ template <class T> class CppWrapper
   class Caller : public InvokeableBase
   {
   public:
-   Caller(S callback) : callback_(callback) {};
+   Caller(S callback) : callback_(callback) {}
 
    virtual Handle<Value> Call(T *cpp_object, const Arguments &args)
    {

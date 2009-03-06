@@ -51,7 +51,7 @@ void Flow::copyDefinition() {
 
 void Flow::addUnit(const std::string &name,
 				 const CalculationUnit *unit,
-				 const double value) {
+				 double value) {
 	assert(fd->positions.find(name) == fd->positions.end(), "name already defined");
 	assert(unit, "unit is null");
 
@@ -66,13 +66,13 @@ void Flow::addUnit(const std::string &name,
 }
 
 void Flow::setValue(const std::string &name,
-			 const double value){
+					double value) {
 	assert(fd->positions.find(name) != fd->positions.end(), "no such name");
 	copyData();
 	(*f)[fd->positions[name]] = value;
 }
 
-double Flow::getValue(const std::string &name) const{
+double Flow::getValue(const std::string &name) const {
 	assert(fd->positions.find(name) != fd->positions.end(), "no such name");
 	return (*f)[fd->positions[name]];
 }
@@ -81,7 +81,8 @@ const std::vector<std::string> & Flow::getNames() const {
 	return fd->names;
 }
 
-const std::vector<std::string> & Flow::getUnitNames(const CalculationUnit *unit) const{
+const std::vector<std::string> &
+Flow::getUnitNames(const CalculationUnit *unit) const{
 	assert(unit, "null unit not allowed");
 	assert(fd->unit_names.find(unit) != fd->unit_names.end(), "no such unit");
 	return fd->unit_names[unit];
