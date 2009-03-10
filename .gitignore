@@ -7,3 +7,4 @@ testcore/testcore
 *.pro.user
 callgrind.*
 qtc-gdbmacros
+tmp/*
