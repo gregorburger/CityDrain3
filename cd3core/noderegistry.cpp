@@ -37,6 +37,10 @@ Node *NodeRegistry::createNode(const std::string &name) {
 	return registered_nodes[name]->doCreateNode();
 }
 
+Node *NodeRegistry::createNode(const std::string &name, const std::string &script) {
+	return registered_nodes[name]->doCreateNode(script);
+}
+
 bool NodeRegistry::contains(const std::string &name) const {
 	return registered_nodes.find(name) != registered_nodes.end();
 }

@@ -14,6 +14,7 @@ class Flow;
 #define CD3_DECLARE_NODE(name)  \
 class name : public Node { \
 public: \
+	name(const std::string &){assert(false);} \
 	const char *getNodeName() const {return #name;} \
 private:
 
@@ -49,6 +50,8 @@ public:
 
 	virtual int getDT(const SimulationParameters &sp) const;
 	virtual void setDT(int dt);
+
+	virtual const std::string &getScript() const;
 
 	void setInPort(const std::string &, const Flow *in);
 	const Flow *getOutPort(const std::string &) const;
@@ -120,6 +123,7 @@ protected:
 	ssf		in_ports;
 	ssf		out_ports;
 	int		dt;
+	std::string script;
 };
 
 #endif // NODE_H

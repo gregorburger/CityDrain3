@@ -41,3 +41,7 @@ void Node::addOutPort(const std::string &name, Flow *outflow) {
 	assert(out_ports.find(name) == out_ports.end());
 	out_ports[name] = outflow;
 }
+
+const std::string &Node::getScript() const {
+	return script;
+}

@@ -10,9 +10,15 @@
 class INodeFactory {
 private:
 	virtual Node *createNode() const = 0;
+	virtual Node *createNode(const std::string &s) const = 0;
 	virtual std::string getNodeName() = 0;
 public:
 	virtual ~INodeFactory(){}
+
+	Node *doCreateNode(const std::string &s) {
+		return createNode(s);
+	}
+
 	Node *doCreateNode() {
 		return createNode();
 	}
@@ -29,6 +35,7 @@ public:
 	NodeFactory();
 private:
 	virtual Node *createNode() const;
+	virtual Node *createNode(const std::string &) const;
 	virtual std::string getNodeName();
 	std::string nodeName;
 };
@@ -46,8 +53,46 @@ Node *NodeFactory<T>::createNode() const {
 }
 
 template <typename T>
+Node *NodeFactory<T>::createNode(const std::string &s) const {
+	return (new T(s));
+}
+
+template <typename T>
 std::string NodeFactory<T>::getNodeName() {
 	return nodeName;
 }
+/*
+template <typename T>
+class ScriptNodeFactory
+	: public INodeFactory {
+public:
+	ScriptNodeFactory();
+	void setScript(const std::string &s);
+private:
+	virtual Node *createNode() const;
+	virtual std::string getNodeName();
+	std::string nodeName;
+	std::string script;
+};
+
+
+
+template <typename T>
+ScriptNodeFactory<T>::ScriptNodeFactory() {
+	Node *tmp = createNode();
+	nodeName = tmp->getNodeName();
+	delete tmp;
+}
+
+template <typename T>
+Node *ScriptNodeFactory<T>::createNode() const {
+	return (new T(script));
+}
+
+template <typename T>
+std::string ScriptNodeFactory<T>::getNodeName() {
+	return nodeName;
+}*/
+
 
 #endif // NODEFACTORY_H

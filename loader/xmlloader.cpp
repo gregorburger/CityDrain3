@@ -219,10 +219,10 @@ void XmlLoader::loadNode(QDomElement element) {
 	CONSUME(element);
 	std::string id = element.attribute("id", "").toStdString();
 	std::string nodeClass = element.attribute("class").toStdString();
-
+	std::string script = element.attribute("script", "").toStdString();
 	//TODO assert here
 	assert(node_registry->contains(nodeClass), "no such Node class registered");
-	Node *node = node_registry->createNode(nodeClass);
+	Node *node = script == "" ? node_registry->createNode(nodeClass) : node_registry->createNode(nodeClass, script);
 
 	assert(node, "node is null");
 

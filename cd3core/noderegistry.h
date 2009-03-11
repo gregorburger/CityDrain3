@@ -19,6 +19,7 @@ public:
 
 	//std::list<std::string> getRegisteredNames() const;
 	Node *createNode(const std::string &name);
+	Node *createNode(const std::string &name, const std::string &script);
 	bool contains(const std::string &name) const;
 
 private:
