@@ -9,6 +9,8 @@
 #include <map>
 #include <cd3assert.h>
 
+CD3_DECLARE_SIMULATION_NAME(DefaultSimulation)
+
 struct SimPriv {
 	IModel *model;
 	SimulationParameters sp;

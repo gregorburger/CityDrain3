@@ -26,13 +26,10 @@ public:
 private:
 	Node *createNode(Int2Type<true>, const std::string &s = "") const;
 	Node *createNode(Int2Type<false>, const std::string &s = "") const;
-	std::string nodeName;
 };
 
 template <typename T, bool scripted>
 NodeFactory<T, scripted>::NodeFactory() {
-	nodeName = T::name;
-	std::cout << T::name << std::endl;
 }
 
 template <typename T, bool scripted>
@@ -42,7 +39,7 @@ Node *NodeFactory<T, scripted>::createNode(const std::string &s) const {
 
 template <typename T, bool scripted>
 std::string NodeFactory<T, scripted>::getNodeName() {
-	return nodeName;
+	return T::name;
 }
 
 template <typename T, bool scripted>

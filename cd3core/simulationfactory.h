@@ -27,10 +27,7 @@ ISimulation *SimulationFactory<SimTemp>::createSimulation() const {
 
 template<class SimTemp>
 std::string SimulationFactory<SimTemp>::getSimulationName() const {
-	ISimulation *sim = createSimulation();
-	std::string name = sim->getClassName();
-	delete sim;
-	return name;
+	return SimTemp::name;
 }
 
 #endif // ISIMULATIONFACTORY_H

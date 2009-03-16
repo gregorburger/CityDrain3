@@ -11,6 +11,7 @@
 
 using namespace boost::tuples;
 
+CD3_DECLARE_SIMULATION_NAME(VarDTSimulation)
 
 typedef tuple<Node *, std::string, Node *, std::string> con_type;
 typedef std::map<con_type, FlowBuffer *> buf_type;

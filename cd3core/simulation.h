@@ -13,7 +13,6 @@ struct SimulationParameters {
 	SimulationParameters(int start,
 						 int stop,
 						 int dt)
-
 	: start(start), stop(stop), dt(dt) {
 
 	}
@@ -23,19 +22,19 @@ struct SimulationParameters {
 	int dt;
 };
 
-#define CD3_DECLARE_SIMULATION(name)  \
-class name : public ISimulation { \
+#define CD3_DECLARE_SIMULATION_NAME(simulation) \
+const char *simulation::name = #simulation;
+
+#define CD3_DECLARE_SIMULATION(simulation) \
+class simulation : public ISimulation { \
 public: \
-	const char *getClassName() const {return #name;} \
+	static const char *name; \
 private:
 
 class ISimulation
 {
 public:
 	virtual ~ISimulation(){}
-
-	virtual const char *getClassName() const = 0;
-
 	virtual void addController(IController *controller) = 0;
 	virtual void setSimulationParameters(const SimulationParameters &params) {
 		sim_param = params;
