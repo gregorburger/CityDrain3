@@ -2,6 +2,8 @@
 
 #include <flow.h>
 
+CD3_DECLARE_NODE_NAME(ConstSource)
+
 ConstSource::ConstSource() {
 	addParameter(ADD_PARAMETERS(const_flow));
 	addOutPort(ADD_PARAMETERS(out));

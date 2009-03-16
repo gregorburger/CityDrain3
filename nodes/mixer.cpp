@@ -6,6 +6,8 @@
 #include <cd3assert.h>
 #include <calculationunit.h>
 
+CD3_DECLARE_NODE_NAME(Mixer)
+
 Mixer::Mixer() {
 	num_inputs = 2;
 	addParameter(ADD_PARAMETERS(num_inputs));

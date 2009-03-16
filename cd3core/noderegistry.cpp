@@ -17,8 +17,8 @@ NodeRegistry::~NodeRegistry() {
 }
 
 bool NodeRegistry::addNodeFactory(INodeFactory *factory) {
-	assert(registered_nodes.find(factory->doGetNodeName()) == registered_nodes.end());
-	registered_nodes[factory->doGetNodeName()] = factory;
+	assert(registered_nodes.find(factory->getNodeName()) == registered_nodes.end());
+	registered_nodes[factory->getNodeName()] = factory;
 	return true;
 }
 
@@ -34,11 +34,11 @@ bool NodeRegistry::addNodeFactory(INodeFactory *factory) {
 }*/
 
 Node *NodeRegistry::createNode(const std::string &name) {
-	return registered_nodes[name]->doCreateNode();
+	return registered_nodes[name]->createNode();
 }
 
 Node *NodeRegistry::createNode(const std::string &name, const std::string &script) {
-	return registered_nodes[name]->doCreateNode(script);
+	return registered_nodes[name]->createNode(script);
 }
 
 bool NodeRegistry::contains(const std::string &name) const {

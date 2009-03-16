@@ -14,6 +14,7 @@ class Flow;
 CD3_DECLARE_NODE(JSNode)
 public:
 	///
+	JSNode(const std::string &s){(void) s;}
 	JSNode();
 	virtual ~JSNode();
 	void init(int start, int end, int dt);

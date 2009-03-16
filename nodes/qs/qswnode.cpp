@@ -10,6 +10,9 @@
 
 #include "qswflow.h"
 
+
+CD3_DECLARE_NODE_NAME(QSWNode)
+
 struct QSWNodePrivate {
 	QScriptEngine engine;
 };

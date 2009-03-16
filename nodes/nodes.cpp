@@ -24,9 +24,9 @@ extern "C" {
 		registry->addNodeFactory(new NodeFactory<FileOut>());
 		registry->addNodeFactory(new NodeFactory<Mixer>());
 		registry->addNodeFactory(new NodeFactory<Sewer>());
-		registry->addNodeFactory(new NodeFactory<JSNode>());
+		registry->addNodeFactory(new NodeFactory<JSNode, true>());
 		registry->addNodeFactory(new NodeFactory<RainRead>());
-		registry->addNodeFactory(new NodeFactory<QSWNode>());
+		registry->addNodeFactory(new NodeFactory<QSWNode, true>());
 	}
 
 	void registerTypes(TypeRegistry *registry) {

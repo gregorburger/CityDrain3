@@ -13,6 +13,7 @@ class Flow;
 class QSWNode : public QObject, public Node, protected QScriptable {
 	Q_OBJECT
 public:
+	static const char *name;
 	QSWNode(const std::string &script);
 	QSWNode();
 	~QSWNode();

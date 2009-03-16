@@ -11,12 +11,14 @@
 
 class Flow;
 
-#define CD3_DECLARE_NODE(name)  \
-class name : public Node { \
+#define CD3_DECLARE_NODE(node)  \
+class node : public Node { \
 public: \
-	name(const std::string &){assert(false);} \
-	const char *getNodeName() const {return #name;} \
+	static const char *name; \
 private:
+
+#define CD3_DECLARE_NODE_NAME(nodename) \
+const char *nodename::name = #nodename;
 
 typedef std::map<std::string, Flow *>		ssf;
 typedef std::pair<cd3::TypeInfo, void *>	ltvp;
@@ -39,8 +41,6 @@ public:
 	}
 
 	virtual ~Node() {}
-
-	virtual const char *getNodeName() const = 0;
 	virtual int f(int time, int dt) = 0;
 
 	//setup ports here called after all parameters are set

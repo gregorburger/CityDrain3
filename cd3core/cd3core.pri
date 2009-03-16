@@ -14,7 +14,8 @@ HEADERS += calculationunit.h \
     cd3assert.h \
     simulationfactory.h \
     simulationregistry.h \
-    flowbuffer.h
+    flowbuffer.h \
+    cd3utils.h
 SOURCES += calculationunit.cpp \
     flow.cpp \
     nodeconnection.cpp \

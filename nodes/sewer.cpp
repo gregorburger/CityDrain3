@@ -3,6 +3,8 @@
 #include <calculationunit.h>
 #include <boost/foreach.hpp>
 
+CD3_DECLARE_NODE_NAME(Sewer)
+
 Sewer::Sewer() {
 	addInPort(ADD_PARAMETERS(in));
 	addOutPort(ADD_PARAMETERS(out));

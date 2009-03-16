@@ -7,6 +7,8 @@
 #include <cd3assert.h>
 #include "v8cppwrapper.h"
 
+CD3_DECLARE_NODE_NAME(JSNode)
+
 struct JSNodePrivate {
 	Handle<Script> script;
 	Persistent<Context> context;

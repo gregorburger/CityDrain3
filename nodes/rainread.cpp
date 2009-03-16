@@ -9,6 +9,8 @@
 
 #include <cd3assert.h>
 
+CD3_DECLARE_NODE_NAME(RainRead)
+
 struct RainReadPriv {
 	QFile *rain_file;
 	int delta;

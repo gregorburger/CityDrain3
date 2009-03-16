@@ -5,94 +5,56 @@
 #include <typeinfo>
 
 #include "node.h"
+#include "cd3utils.h"
 #include <boost/utility.hpp>
 
 class INodeFactory {
-private:
-	virtual Node *createNode() const = 0;
-	virtual Node *createNode(const std::string &s) const = 0;
-	virtual std::string getNodeName() = 0;
 public:
 	virtual ~INodeFactory(){}
-
-	Node *doCreateNode(const std::string &s) {
-		return createNode(s);
-	}
-
-	Node *doCreateNode() {
-		return createNode();
-	}
-
-	std::string doGetNodeName() {
-		return getNodeName();
-	}
+	virtual Node *createNode(const std::string &s = "") const = 0;
+	virtual std::string getNodeName() = 0;
 };
 
-template <typename T>
+template <typename T, bool scripted = false>
 class NodeFactory
 	: public INodeFactory {
 public:
 	NodeFactory();
-private:
-	virtual Node *createNode() const;
-	virtual Node *createNode(const std::string &) const;
+	virtual Node *createNode(const std::string & = "") const;
 	virtual std::string getNodeName();
+
+private:
+	Node *createNode(Int2Type<true>, const std::string &s = "") const;
+	Node *createNode(Int2Type<false>, const std::string &s = "") const;
 	std::string nodeName;
 };
 
-template <typename T>
-NodeFactory<T>::NodeFactory() {
-	Node *tmp = createNode();
-	nodeName = tmp->getNodeName();
-	delete tmp;
+template <typename T, bool scripted>
+NodeFactory<T, scripted>::NodeFactory() {
+	nodeName = T::name;
+	std::cout << T::name << std::endl;
 }
 
-template <typename T>
-Node *NodeFactory<T>::createNode() const {
-	return (new T());
+template <typename T, bool scripted>
+Node *NodeFactory<T, scripted>::createNode(const std::string &s) const {
+	return createNode(Int2Type<scripted>(), s);
 }
 
-template <typename T>
-Node *NodeFactory<T>::createNode(const std::string &s) const {
-	return (new T(s));
-}
-
-template <typename T>
-std::string NodeFactory<T>::getNodeName() {
+template <typename T, bool scripted>
+std::string NodeFactory<T, scripted>::getNodeName() {
 	return nodeName;
 }
-/*
-template <typename T>
-class ScriptNodeFactory
-	: public INodeFactory {
-public:
-	ScriptNodeFactory();
-	void setScript(const std::string &s);
-private:
-	virtual Node *createNode() const;
-	virtual std::string getNodeName();
-	std::string nodeName;
-	std::string script;
-};
 
-
-
-template <typename T>
-ScriptNodeFactory<T>::ScriptNodeFactory() {
-	Node *tmp = createNode();
-	nodeName = tmp->getNodeName();
-	delete tmp;
+template <typename T, bool scripted>
+Node *NodeFactory<T, scripted>::createNode(Int2Type<true>, const std::string &s) const {
+	return new T(s);
 }
 
-template <typename T>
-Node *ScriptNodeFactory<T>::createNode() const {
-	return (new T(script));
+template <typename T, bool scripted>
+Node *NodeFactory<T, scripted>::createNode(Int2Type<false>, const std::string &s) const {
+	(void) s;
+	return new T();
 }
-
-template <typename T>
-std::string ScriptNodeFactory<T>::getNodeName() {
-	return nodeName;
-}*/
 
 
 #endif // NODEFACTORY_H
