@@ -10,63 +10,16 @@
 
 #include <cd3assert.h>
 
-struct BoolSer : public IStateSerializer {
+template <class T>
+struct BasicSer : public IStateSerializer {
 	std::string serialize(const std::string &name, Node *node) {
-		return boost::lexical_cast<std::string, bool>(*node->getState<bool>(name));
+		return boost::lexical_cast<std::string, T>(*node->getState<T>(name));
 	}
 
 	void deserialize(const std::string &value,
 					 const std::string &name,  Node *node) {
-		bool ivalue = boost::lexical_cast<bool>(value);
-		node->setState<bool>(name, ivalue);
-	}
-};
-
-struct IntSer : public IStateSerializer {
-	std::string serialize(const std::string &name, Node *node) {
-		return boost::lexical_cast<std::string, int>(*node->getState<int>(name));
-	}
-
-	void deserialize(const std::string &value,
-					 const std::string &name,  Node *node) {
-		int ivalue = boost::lexical_cast<int>(value);
-		node->setState<int>(name, ivalue);
-	}
-};
-
-struct LongSer : public IStateSerializer {
-	std::string serialize(const std::string &name, Node *node) {
-		return boost::lexical_cast<std::string, long>(*node->getState<long>(name));
-	}
-
-	void deserialize(const std::string &value,
-					 const std::string &name,  Node *node) {
-		long ivalue = boost::lexical_cast<long>(value);
-		node->setState<long>(name, ivalue);
-	}
-};
-
-struct FloatSer : public IStateSerializer {
-	std::string serialize(const std::string &name, Node *node) {
-		return boost::lexical_cast<std::string, float>(*node->getState<float>(name));
-	}
-
-	void deserialize(const std::string &value,
-					 const std::string &name,  Node *node) {
-		float fvalue = boost::lexical_cast<float>(value);
-		node->setState<float>(name, fvalue);
-	}
-};
-
-struct DoubleSer : public IStateSerializer {
-	std::string serialize(const std::string &name, Node *node) {
-		return boost::lexical_cast<std::string, double>(*node->getState<double>(name));
-	}
-
-	void deserialize(const std::string &value,
-					 const std::string &name,  Node *node) {
-		double dvalue = boost::lexical_cast<double, std::string>(value);
-		node->setState<double>(name, dvalue);
+		T Tval = boost::lexical_cast<T>(value);
+		node->setState<T>(name, Tval);
 	}
 };
 
@@ -76,7 +29,7 @@ struct FlowSer : public IStateSerializer {
 	}
 
 	void deserialize(const std::string &value,
-					 const std::string &name,  Node *node) {
+					 const std::string &name, Node *node) {
 		Flow f = FlowSerializer::fromString(value);
 		node->setState<Flow>(name, f);
 	}
@@ -96,16 +49,15 @@ struct StringSer : public IStateSerializer {
 
 type_ser_map IStateSerializer::standard() {
 	type_ser_map s;
-	s[cd3::TypeInfo(typeid(bool))] = boost::shared_ptr<IStateSerializer>(new BoolSer());
-	s[cd3::TypeInfo(typeid(int))] = boost::shared_ptr<IStateSerializer>(new IntSer());
-	s[cd3::TypeInfo(typeid(long))] = boost::shared_ptr<IStateSerializer>(new LongSer());
-	s[cd3::TypeInfo(typeid(double))] = boost::shared_ptr<IStateSerializer>(new DoubleSer());
-	s[cd3::TypeInfo(typeid(float))] =boost::shared_ptr<IStateSerializer>( new FloatSer());
+	s[cd3::TypeInfo(typeid(bool))] = boost::shared_ptr<IStateSerializer>(new BasicSer<bool>());
+	s[cd3::TypeInfo(typeid(int))] = boost::shared_ptr<IStateSerializer>(new BasicSer<int>());
+	s[cd3::TypeInfo(typeid(long))] = boost::shared_ptr<IStateSerializer>(new BasicSer<long>());
+	s[cd3::TypeInfo(typeid(double))] = boost::shared_ptr<IStateSerializer>(new BasicSer<double>());
+	s[cd3::TypeInfo(typeid(float))] =boost::shared_ptr<IStateSerializer>(new BasicSer<float>());
 	s[cd3::TypeInfo(typeid(Flow))] = boost::shared_ptr<IStateSerializer>(new FlowSer());
 	s[cd3::TypeInfo(typeid(std::string))] = boost::shared_ptr<IStateSerializer>(new StringSer());
 	return s;
 }
-
 
 std::string FlowSerializer::toString(Flow f) {
 	std::ostringstream ss;
