@@ -63,11 +63,3 @@ std::map<Node *, int> DefaultSimulation::createDependsMap() const {
 
 	return deps;
 }
-
-/*int DefaultSimulation::getMaxDt() const {
-	int dt = sp->sp.dt;
-	BOOST_FOREACH(Node *node, *sp->model->getNodes()) {
-		dt = std::max(dt, node->getDT(sp->sp));
-	}
-	return dt;
-}*/
