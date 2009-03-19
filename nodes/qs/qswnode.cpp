@@ -37,10 +37,6 @@ QSWNode::~QSWNode() {
 	delete priv;
 }
 
-const char *QSWNode::getNodeName() const {
-	return "QSWNode";
-}
-
 void QSWNode::addInPort(const QString &name, QSWFlow *flow) {
 	qDebug() << "addInPort";
 	Node::addInPort(name.toStdString(), flow->flow);

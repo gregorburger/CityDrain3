@@ -1,22 +1,20 @@
 #include <iostream>
+#include <testnode.h>
 #include <flow.h>
 #include <calculationunit.h>
 
 int main() {
+	TestNode t;
+	t.init(0, 7200, 300);
+	t.f(0, 300);
+	t.f(300, 300);
+
 	Flow f;
+	f.addUnit("oida", CalculationUnit::rain, 20.0);
 
-	f.addUnit("oida", CalculationUnit::flow, 100.0);
-	f.addUnit("sick", CalculationUnit::concentration, 4.0);
+	t.setState<Flow>("test", f);
 
-	std::pair<Flow, Flow> splitted = split(f, 0.2);
-
-	std::cout << splitted.first.getValue("oida") << std::endl;
-	std::cout << splitted.first.getValue("sick") << std::endl;
-	std::cout << std::endl;
-
-	std::cout << splitted.second.getValue("oida") << std::endl;
-	std::cout << splitted.second.getValue("sick") << std::endl;
-
+	t.f(600, 300);
 
 	return 0;
 }

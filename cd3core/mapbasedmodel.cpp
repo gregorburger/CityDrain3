@@ -23,6 +23,10 @@ const node_set_type *MapBasedModel::getNodes() const {
 	return &all_nodes;
 }
 
+Node *MapBasedModel::getNode(const std::string &name) const {
+	return names_nodes.find(name)->second;
+}
+
 void MapBasedModel::addNode(const std::string &name, Node *node) {
 	assert(node, "added node null");
 	assert(name != "", "node name empty");
@@ -74,7 +78,7 @@ void dumpParameters(Node *n) {
 }
 
 /*void MapBasedModel::dump() {
-	std::cout << "number of nodes: " << names_nodes.size() << std::endl;
+virtual name_node_map getNamesAndNodes() const = 0;	std::cout << "number of nodes: " << names_nodes.size() << std::endl;
 	node_map::iterator it = names_nodes.begin();
 	while (it != names_nodes.end()) {
 		std::cout << "node[" << it->first << "]=" << it->second->getNodeName() << std::endl;
@@ -105,4 +109,9 @@ std::vector<next_node_type> MapBasedModel::forward(Node *n) {
 
 std::vector<next_node_type> MapBasedModel::backward(Node *n) {
 	return bwd_connections[n];
+}
+
+
+name_node_map MapBasedModel::getNamesAndNodes() const {
+	return names_nodes;
 }

@@ -4,7 +4,7 @@
 #include <map>
 #include <string>
 
-class INodeFactory;//#include "nodefactory.h"
+class INodeFactory;
 class Node;
 
 typedef std::map<std::string, INodeFactory *> reg_node_type;
@@ -18,8 +18,8 @@ public:
 	bool addNodeFactory(INodeFactory *factory);
 
 	//std::list<std::string> getRegisteredNames() const;
-	Node *createNode(const std::string &name);
-	Node *createNode(const std::string &name, const std::string &script);
+	Node *createNode(const std::string &name) const;
+	Node *createNode(const std::string &name, const std::string &script) const;
 	bool contains(const std::string &name) const;
 
 private:

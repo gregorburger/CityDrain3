@@ -25,6 +25,12 @@ void Node::setInPort(const std::string &name, const Flow *inflow) {
 	*in_ports[name] = *inflow;
 }
 
+void Node::setOutPort(const std::string &name, const Flow *outflow) {
+	assert(out_ports.find(name) != out_ports.end());
+	assert(outflow);
+	*out_ports[name] = *outflow;
+}
+
 const Flow *Node::getOutPort(const std::string &name) const {
 	assert(out_ports.find(name) != out_ports.end());
 	return out_ports.find(name)->second;

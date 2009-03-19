@@ -149,7 +149,7 @@ void XmlLoader::loadNodesFromPlugins(
 		QStringList paths) {
 
 	QString path;
-	foreach (path, paths) {
+	Q_FOREACH (path, paths) {
 		QLibrary l(path);
 		//l.setLoadHints(QLibrary::ExportExternalSymbolsHint);
 		l.load();
@@ -168,7 +168,7 @@ void XmlLoader::loadTypesFromPlugins(
 		TypeRegistry *registry,
 		QStringList paths) {
 	QString path;
-	foreach (path, paths) {
+	Q_FOREACH (path, paths) {
 		QLibrary l(path);
 		//l.setLoadHints(QLibrary::ExportExternalSymbolsHint);
 		l.load();
@@ -188,7 +188,7 @@ void XmlLoader::loadSimulationsFromPlugins(
 		QStringList paths) {
 
 	QString path;
-	foreach (path, paths) {
+	Q_FOREACH (path, paths) {
 		QLibrary l(path);
 		//l.setLoadHints(QLibrary::ExportExternalSymbolsHint);
 		l.load();

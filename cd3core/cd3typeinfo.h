@@ -18,17 +18,17 @@ public:
 
 
 inline bool operator==(const TypeInfo &lhs, const TypeInfo &rhs) {
-	(void) rhs;
-	(void) lhs;
 	return lhs.type_name.compare(rhs.type_name.c_str()) == 0;
 	return true;
 }
 
 inline bool operator!=(const TypeInfo &lhs, const TypeInfo &rhs) {
-	(void) rhs;
-	(void) lhs;
 	return !(rhs == lhs);
 	return true;
+}
+
+inline bool operator < (const TypeInfo &lhs, const TypeInfo &rhs) {
+	return lhs.type_name.compare(rhs.type_name.c_str()) < 0;
 }
 
 inline TypeInfo::TypeInfo() {

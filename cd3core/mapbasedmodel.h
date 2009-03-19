@@ -6,7 +6,6 @@
 #include <map>
 #include <set>
 
-typedef std::map<std::string, Node *> node_map;
 typedef std::map<Node *, std::vector<next_node_type > > connection_type;
 
 
@@ -42,11 +41,15 @@ public:
 
 	const node_set_type *getNodes() const;
 
+	name_node_map getNamesAndNodes() const;
+
+	Node *getNode(const std::string &name) const;
+
 private:
 	node_set_type all_nodes;
 	node_set_type sink_nodes;
 	node_set_type source_nodes;
-	node_map names_nodes;
+	name_node_map names_nodes;
 	connection_type fwd_connections;
 	connection_type bwd_connections;
 

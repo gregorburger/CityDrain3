@@ -29,6 +29,8 @@ public:
 	static CalculationUnit *concentration;
 	static CalculationUnit *rain;
 
+	static CalculationUnit *fromString(const std::string &name);
+
 	bool operator == (const ICalculationUnit &other) const;
 	bool operator < (const CalculationUnit &other) const;
 

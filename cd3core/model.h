@@ -10,6 +10,8 @@
 class Node;
 class SimulationParameters;
 
+
+typedef std::map<std::string, Node *> name_node_map;
 typedef std::set<Node *> node_set_type;
 typedef std::pair<Node *, std::string> end_point_type;
 typedef boost::tuple<std::string, Node *, std::string> next_node_type;
@@ -35,6 +37,8 @@ public:
 	virtual std::vector<next_node_type> backward(Node *n) = 0;
 
 	virtual const node_set_type *getNodes() const = 0;
+	virtual name_node_map getNamesAndNodes() const = 0;
+	virtual Node *getNode(const std::string &name) const = 0;
 };
 
 #endif // MODEL_H

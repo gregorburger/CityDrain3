@@ -11,11 +11,7 @@ public:
     DefaultSimulation();
 	~DefaultSimulation();
 
-	void start(IModel *model);
-	void setSimulationParameters(const SimulationParameters &param);
-	SimulationParameters getSimulationParameters() const;
-	void suspend();
-	void addController(IController *controller);
+	int run(int time, int dt);
 
 private: //methods
 	void run(Node *n, int time, std::map<Node *, int> &deps);

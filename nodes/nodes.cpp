@@ -7,6 +7,7 @@
 #include "sewer.h"
 #include "jsnode.h"
 #include "rainread.h"
+#include "testnode.h"
 #include "qs/qswnode.h"
 
 #include <noderegistry.h>
@@ -26,6 +27,7 @@ extern "C" {
 		registry->addNodeFactory(new NodeFactory<Sewer>());
 		registry->addNodeFactory(new NodeFactory<JSNode, true>());
 		registry->addNodeFactory(new NodeFactory<RainRead>());
+		registry->addNodeFactory(new NodeFactory<TestNode>());
 		registry->addNodeFactory(new NodeFactory<QSWNode, true>());
 	}
 

@@ -3,7 +3,8 @@ DEPENDPATH += $$PWD
 VEIGHT = /home/gregor/download/v8
 INCLUDEPATH += $$VEIGHT/include
 LIBS += $$VEIGHT/libv8_g.a
-QT += xml script
+QT += xml \
+    script
 HEADERS += constsource.h \
     flowtypefactory.h \
     fileout.h \
@@ -14,7 +15,8 @@ HEADERS += constsource.h \
     jsnode.h \
     jsbindings.h \
     v8cppwrapper.h \
-    rainread.h
+    rainread.h \
+    testnode.h
 SOURCES += nodes.cpp \
     constsource.cpp \
     flowtypefactory.cpp \
@@ -25,5 +27,6 @@ SOURCES += nodes.cpp \
     sewer.cpp \
     jsnode.cpp \
     jsbindings.cpp \
-    rainread.cpp
+    rainread.cpp \
+    testnode.cpp
 include(qs/qs.pri)

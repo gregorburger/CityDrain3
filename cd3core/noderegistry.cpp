@@ -1,9 +1,9 @@
 #include "noderegistry.h"
 
 #include "nodefactory.h"
-#include "node.h"
 #include <boost/foreach.hpp>
-#include <iostream>
+
+#include <cd3assert.h>
 
 NodeRegistry::NodeRegistry() {
 }
@@ -17,7 +17,7 @@ NodeRegistry::~NodeRegistry() {
 }
 
 bool NodeRegistry::addNodeFactory(INodeFactory *factory) {
-	assert(registered_nodes.find(factory->getNodeName()) == registered_nodes.end());
+	assert(!contains(factory->getNodeName()), "NodeFactory already registered for that name");
 	registered_nodes[factory->getNodeName()] = factory;
 	return true;
 }
@@ -33,12 +33,14 @@ bool NodeRegistry::addNodeFactory(INodeFactory *factory) {
 	return names;
 }*/
 
-Node *NodeRegistry::createNode(const std::string &name) {
-	return registered_nodes[name]->createNode();
+Node *NodeRegistry::createNode(const std::string &name) const {
+	assert(contains(name), "no such node registered");
+	return registered_nodes.find(name)->second->createNode();
 }
 
-Node *NodeRegistry::createNode(const std::string &name, const std::string &script) {
-	return registered_nodes[name]->createNode(script);
+Node *NodeRegistry::createNode(const std::string &name, const std::string &script) const {
+	assert(contains(name), "no such node registered");
+	return registered_nodes.find(name)->second->createNode(script);
 }
 
 bool NodeRegistry::contains(const std::string &name) const {

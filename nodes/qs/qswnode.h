@@ -17,12 +17,12 @@ public:
 	QSWNode(const std::string &script);
 	QSWNode();
 	~QSWNode();
-	const char *getNodeName() const;
+	const char *getClassName() const;
 	int f(int time, int dt);
 	void init(int start, int end, int dt);
 	void deinit();
 
-public slots:
+public Q_SLOTS:
 	void addInPort(const QString &name, QSWFlow *flow);
 	void addOutPort(const QString &name, QSWFlow *flow);
 	void addParameter(const QString &name, bool *b);

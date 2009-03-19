@@ -7,6 +7,22 @@ CalculationUnit *CalculationUnit::volume = new CalculationUnit("Volume","cubic m
 CalculationUnit *CalculationUnit::concentration = new CalculationUnit("Concentration","gram per cubic meter","g/m^3");
 CalculationUnit *CalculationUnit::rain = new CalculationUnit("Rain","rain millimeter per time","mm/s");
 
+CalculationUnit *CalculationUnit::fromString(const std::string &kind) {
+	if (kind == "Flow") {
+		return CalculationUnit::flow;
+	}
+	if (kind == "Concentration") {
+		return CalculationUnit::concentration;
+	}
+	if (kind == "Volume") {
+		return CalculationUnit::volume;
+	}
+	if (kind == "Rain") {
+		return CalculationUnit::rain;
+	}
+	return CalculationUnit::null;
+}
+
 CalculationUnit::CalculationUnit(const std::string &name, const std::string & description, const std::string &unit)
  : name(name), description(description), unit(unit) {
 

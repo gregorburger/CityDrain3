@@ -15,7 +15,7 @@ public:
 	QSWFlow(Flow *f, QObject *parent = 0);
 	QSWFlow(QObject *parent = 0);
 
-public slots:
+public Q_SLOTS:
 	void clear();
 	void addUnit(QString name, QSWCalcUnit *unit, double value);
 	void setValue(QString name, double value);

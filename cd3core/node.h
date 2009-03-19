@@ -15,10 +15,12 @@ class Flow;
 class node : public Node { \
 public: \
 	static const char *name; \
+	const char *getClassName() const; \
 private:
 
 #define CD3_DECLARE_NODE_NAME(nodename) \
-const char *nodename::name = #nodename;
+const char *nodename::name = #nodename; \
+const char *nodename::getClassName() const { return nodename::name; }
 
 typedef std::map<std::string, Flow *>		ssf;
 typedef std::pair<cd3::TypeInfo, void *>	ltvp;
@@ -31,6 +33,7 @@ class SimulationParameters;
 
 class Node
 {
+	friend class ModelSerializer;
 public:
 	Node()
 		: const_parameters(&parameters),
@@ -43,6 +46,7 @@ public:
 	virtual ~Node() {}
 	virtual int f(int time, int dt) = 0;
 
+	virtual const char *getClassName() const = 0;
 	//setup ports here called after all parameters are set
 	//virtual void initPorts();
 	virtual void init(int start, int end, int dt);
@@ -54,6 +58,7 @@ public:
 	virtual const std::string &getScript() const;
 
 	void setInPort(const std::string &, const Flow *in);
+	void setOutPort(const std::string &, const Flow *in);
 	const Flow *getOutPort(const std::string &) const;
 
 	template<class T> T *getState(const std::string &name) {
@@ -93,7 +98,6 @@ public:
 		*vp = param;
 	}
 
-public:
 	const ssltvp	* const const_parameters;
 	const ssltvp	* const const_states;
 	const ssf		* const const_in_ports;

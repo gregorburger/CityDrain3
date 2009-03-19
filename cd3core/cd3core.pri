@@ -1,5 +1,9 @@
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
+CONFIG += link_pkgconfig \
+    no_keywords
+LIBS += -lboost_signals \
+    -lboost_filesystem
 HEADERS += calculationunit.h \
     flow.h \
     model.h \
@@ -15,7 +19,10 @@ HEADERS += calculationunit.h \
     simulationfactory.h \
     simulationregistry.h \
     flowbuffer.h \
-    cd3utils.h
+    cd3utils.h \
+    cd3.h \
+    stateserializer.h \
+    modelserializer.h
 SOURCES += calculationunit.cpp \
     flow.cpp \
     nodeconnection.cpp \
@@ -23,4 +30,7 @@ SOURCES += calculationunit.cpp \
     noderegistry.cpp \
     mapbasedmodel.cpp \
     simulationregistry.cpp \
-    flowbuffer.cpp
+    flowbuffer.cpp \
+    simulation.cpp \
+    stateserializer.cpp \
+    modelserializer.cpp

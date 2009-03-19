@@ -43,6 +43,7 @@ void Sewer::init(int start, int end, int dt) {
 }
 
 typedef CalculationUnit CU;
+
 Flow route(const Flow inflow, Flow *volume, double C_x, double C_y, int dt) {
 	Flow newvolume = *volume;
 	Flow out = inflow;

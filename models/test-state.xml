@@ -21,11 +21,15 @@
 				</parameter>
 			</node>
 			
+			<node id="test" class="TestNode" />
+			
 			<node id="fileout" class="FileOut">
-				<parameter name="out_file_name" type="string" value="sewerout.txt" />
+				<parameter name="out_file_name" type="string" value="tmp/stateout.txt" />
 			</node>
 			
-			<node id="musk1" class="Sewer" />
+			<node id="musk1" class="Sewer">
+				<parameter name="N" type="int" value="3" />
+			</node>
 			
 		</nodelist>
 		
@@ -33,6 +37,11 @@
 		
 			<connection id="con1">
 				<source node="constsource" port="out" />
+				<sink	node="test" port="in" />
+			</connection>
+			
+			<connection id="con3">
+				<source node="test" port="out" />
 				<sink	node="musk1" port="in" />
 			</connection>
 			

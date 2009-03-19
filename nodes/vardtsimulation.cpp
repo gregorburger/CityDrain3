@@ -29,19 +29,20 @@ VarDTSimulation::~VarDTSimulation() {
 	delete priv;
 }
 
-void VarDTSimulation::addController(IController *c) {
+/*void VarDTSimulation::addController(IController *c) {
 	(void) c;
-}
+}*/
 
-void VarDTSimulation::start(IModel *model) {
+int VarDTSimulation::run(int time, int dt) {
+//void VarDTSimulation::start(IModel *model) {
 	std::cout << "starting" << std::endl;
-	priv->model = model;
 	assert(model->getSinkNodes().size() == 1,
 		   "can not handle more than one sink node aka there is only one see");
-	for (int time = 0; time <= sim_param.stop; time += sim_param.dt) {
+	//for (int time = 0; time <= sim_param.stop; time += sim_param.dt) {
 		run(*model->getSinkNodes().begin(), time, sim_param.dt);
 		std::cout << time << std::endl;
-	}
+	//}
+	return dt;
 }
 
 

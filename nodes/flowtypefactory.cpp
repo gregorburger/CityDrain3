@@ -37,22 +37,8 @@ Flow *FlowTypeFactory::flowFromDom(QDomElement &e) {
 		QDomNamedNodeMap attr = node.attributes();
 		std::string name = attr.namedItem("name").toAttr().value().toStdString();
 		QString kind = attr.namedItem("kind").toAttr().value();
-		CalculationUnit *unit = CalculationUnit::null;
-		if (kind == "flow") {
-			unit = CalculationUnit::flow;
-		}
-		if (kind == "concentration") {
-			unit = CalculationUnit::concentration;
-		}
-		if (kind == "volume") {
-			unit = CalculationUnit::volume;
-		}
-		assert(unit != 0, "unknown unit type");
-		/*if (unit == 0) {
-			int line = attr.namedItem("kind").lineNumber();
-			int column = attr.namedItem("kind").columnNumber();
-			std::cerr << line << ":" << column << ":" << "wrong unit" << std::endl;
-		}*/
+		CalculationUnit *unit = CalculationUnit::fromString(kind.toStdString());
+		assert(unit != CalculationUnit::null, "unknown unit type");
 		double value = attr.namedItem("value").toAttr().value().toDouble();
 		f->addUnit(name, unit, value);
 	}

@@ -25,8 +25,10 @@ public:
 				 double value);
 
 	void clear();
+	bool empty() const;
 
 	double getValue(const std::string &name) const;
+	const CalculationUnit *getUnit(const std::string &name) const;
 
 	double getIth(const CalculationUnit *unit, size_t i) const;
 	void setIth(const CalculationUnit *unit, size_t i, double value);
