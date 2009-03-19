@@ -5,4 +5,3 @@ CONFIG += 	ordered debug
 SUBDIRS =		nodes \
                         test #\
 #            testcore
-

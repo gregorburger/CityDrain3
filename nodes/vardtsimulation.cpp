@@ -17,7 +17,6 @@ typedef tuple<Node *, std::string, Node *, std::string> con_type;
 typedef std::map<con_type, FlowBuffer *> buf_type;
 
 struct VarDTPriv {
-	IModel *model;
 	buf_type buffer;
 };
 
@@ -34,21 +33,16 @@ VarDTSimulation::~VarDTSimulation() {
 }*/
 
 int VarDTSimulation::run(int time, int dt) {
-//void VarDTSimulation::start(IModel *model) {
-	std::cout << "starting" << std::endl;
 	assert(model->getSinkNodes().size() == 1,
 		   "can not handle more than one sink node aka there is only one see");
-	//for (int time = 0; time <= sim_param.stop; time += sim_param.dt) {
-		run(*model->getSinkNodes().begin(), time, sim_param.dt);
-		std::cout << time << std::endl;
-	//}
+	run(*model->getSinkNodes().begin(), time, sim_param.dt);
 	return dt;
 }
 
 
 
 int VarDTSimulation::run(Node *n, int time, int dt) {
-	BOOST_FOREACH(next_node_type nn, priv->model->backward(n)) {
+	BOOST_FOREACH(next_node_type nn, model->backward(n)) {
 		int calced_dt = 0;	//holds the calculated dts of the predecessors
 		std::string src_port, snk_port;
 		Node *next;

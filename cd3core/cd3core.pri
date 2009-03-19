@@ -20,7 +20,6 @@ HEADERS += calculationunit.h \
     simulationregistry.h \
     flowbuffer.h \
     cd3utils.h \
-    cd3.h \
     stateserializer.h \
     modelserializer.h
 SOURCES += calculationunit.cpp \

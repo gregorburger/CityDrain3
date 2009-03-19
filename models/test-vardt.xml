@@ -14,15 +14,15 @@
 			<node id="constsource" class="ConstSource">
 				<parameter name="const_flow" kind="complex" type="Flow">
 					<flow>
-						<unit name="Q" kind="flow" value="3.0" />
-						<unit name="Scheiss Grusigs Michi" kind="concentration" value="0.0"/>
-						<unit name="Ei" kind="concentration" value="10.0"/>
+						<unit name="Q" kind="Flow" value="3.0" />
+						<unit name="Scheiss Grusigs Michi" kind="Concentration" value="0.0"/>
+						<unit name="Ei" kind="Concentration" value="10.0"/>
 					</flow>
 				</parameter>
 			</node>
 			
 			<node id="fileout" class="FileOut">
-				<parameter name="out_file_name" type="string" value="/tmp/test-vardt.txt" />
+				<parameter name="out_file_name" type="string" value="tmp/test-vardt.txt" />
 			</node>
 		</nodelist>
 		
