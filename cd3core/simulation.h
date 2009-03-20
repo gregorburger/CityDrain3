@@ -48,7 +48,7 @@ public:
 
 	virtual int run(int time, int dt) = 0;
 
-	boost::signal1<void, float> progress;
+	boost::signal1<void, int> progress;
 	boost::signal2<void, ISimulation *, int> timestep;
 
 protected:

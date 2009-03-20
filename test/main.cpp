@@ -9,8 +9,10 @@
 
 namespace po = boost::program_options;
 
-void progress(float percent) {
-	std::cout << "progress: " << percent << std::endl;
+void progress(int percent) {
+	std::cout << "                                       \r";
+	std::cout << "progress: " << percent << "%";
+	std::cout.flush();
 }
 
 
