@@ -14,14 +14,15 @@ FileOut::FileOut()
 	out_file_name = new std::string();
 	addParameter(ADD_PARAMETERS_P(out_file_name));
 	addInPort(ADD_PARAMETERS_P(in));
+
+	first_run = true;
 }
 
 FileOut::~FileOut() {
 	//std::cout << "closing file" << std::endl;
 	delete out_file_name;
 	delete in;
-	if (file.isOpen())
-		file.close();
+
 }
 
 void FileOut::init(int start, int stop, int dt) {
@@ -38,19 +39,20 @@ void FileOut::init(int start, int stop, int dt) {
 
 void FileOut::deinit() {
 	//file->close();
+	if (file.isOpen())
+		file.close();
 }
 
 int FileOut::f(int time, int dt) {
 	stream << qSetFieldWidth(15);
 	stream << fixed;
-	static bool first = true;
-	if (first) {
+	if (first_run) {
 		stream << "time";
 		BOOST_FOREACH(std::string name, in->getNames()) {
 			stream << "\t" << QString::fromStdString(name);
 		}
 		stream << endl;
-		first = false;
+		first_run = false;
 	}
 	stream << time;
 

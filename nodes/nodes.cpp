@@ -9,6 +9,8 @@
 #include "rainread.h"
 #include "testnode.h"
 #include "qs/qswnode.h"
+#include "cso.h"
+#include "splitter.h"
 
 #include <noderegistry.h>
 #include <nodefactory.h>
@@ -29,6 +31,8 @@ extern "C" {
 		registry->addNodeFactory(new NodeFactory<RainRead>());
 		registry->addNodeFactory(new NodeFactory<TestNode>());
 		registry->addNodeFactory(new NodeFactory<QSWNode, true>());
+		registry->addNodeFactory(new NodeFactory<CSO>());
+		registry->addNodeFactory(new NodeFactory<Splitter>());
 	}
 
 	void registerTypes(TypeRegistry *registry) {

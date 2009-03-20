@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!DOCTYPE citydrain SYSTEM "model.dtd">
+
+<citydrain version="1.0">
+
+	<pluginpath path="nodes/libnodes.so.1.0.0" />
+
+	<simulation class="DefaultSimulation">
+		<time start="0" stop="7200" dt="300" />
+	</simulation>
+
+	<model>
+		<nodelist>
+			<node id="constsource" class="ConstSource">
+				<parameter name="const_flow" kind="complex" type="Flow">
+					<flow>
+							<unit name="Q" kind="Flow" value="12.0" />
+						<unit name="C0" kind="Concentration" value="0.1"/>
+						<unit name="C1" kind="Concentration" value="0.2"/>
+					</flow>
+				</parameter>
+			</node>
+			
+			
+			
+			<node id="out1" class="FileOut">
+				<parameter name="out_file_name" type="string" value="tmp/split-out1.txt" />
+			</node>
+			
+			<node id="out2" class="FileOut">
+				<parameter name="out_file_name" type="string" value="tmp/split-out2.txt" />
+			</node>
+			
+			<node id="splitter" class="Splitter">
+				<parameter name="ratio" type="float" value="0.3333333" />
+			</node>
+			
+		</nodelist>
+		
+		<connectionlist>
+		
+			<connection id="con1">
+				<source node="constsource" port="out" />
+				<sink	node="splitter" port="in" />
+			</connection>
+						
+			<connection id="con2">
+				<source node="splitter" port="out1" />
+				<sink node="out1" port="in" />
+			</connection>
+			
+			<connection id="con3">
+				<source node="splitter" port="out2" />
+				<sink node="out2" port="in" />
+			</connection>
+			
+		</connectionlist>
+	</model>
+</citydrain>

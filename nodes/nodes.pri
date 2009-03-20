@@ -17,7 +17,8 @@ HEADERS += constsource.h \
     v8cppwrapper.h \
     rainread.h \
     testnode.h \
-    cso.h
+    cso.h \
+    splitter.h
 SOURCES += nodes.cpp \
     constsource.cpp \
     flowtypefactory.cpp \
@@ -30,5 +31,6 @@ SOURCES += nodes.cpp \
     jsbindings.cpp \
     rainread.cpp \
     testnode.cpp \
-    cso.cpp
+    cso.cpp \
+    splitter.cpp
 include(qs/qs.pri)

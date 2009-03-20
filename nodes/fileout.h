@@ -17,6 +17,7 @@ private:
 	std::string *out_file_name;
 	QFile file;
 	QTextStream stream;
+	bool first_run;
 };
 
 #endif // FILEOUT_H

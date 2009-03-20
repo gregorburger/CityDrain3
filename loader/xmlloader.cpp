@@ -321,6 +321,12 @@ void XmlLoader::setNodeParameter(Node *node, QDomElement element) {
 			return;
 		}
 
+		if (type == "float") {
+			float d = value.toFloat();
+			node->setParameter<float>(name, d);
+			return;
+		}
+
 		if (type == "int") {
 			int ivalue = value.toInt();
 			node->setParameter<int>(name, ivalue);

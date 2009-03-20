@@ -2,8 +2,8 @@
 #define CSO_H
 
 #include <node.h>
-
-class Flow;
+#include <flow.h>
+//class Flow;
 
 CD3_DECLARE_NODE(CSO)
 public:
