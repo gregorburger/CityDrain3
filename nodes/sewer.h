@@ -2,8 +2,6 @@
 #define SEWER_H
 
 #include <node.h>
-#include <flow.h>
-
 
 CD3_DECLARE_NODE(Sewer)
 public:
@@ -18,8 +16,8 @@ private:
 	void addMuskParam(int dt);
 	void setMuskParam(double *C_x, double *C_y, int dt);
 private:
-	Flow in;
-	Flow out;
+	Flow *in;
+	Flow *out;
 	int K;
 	double X;
 	int N;

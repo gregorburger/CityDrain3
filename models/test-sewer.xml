@@ -14,7 +14,7 @@
 			<node id="constsource" class="ConstSource">
 				<parameter name="const_flow" kind="complex" type="Flow">
 					<flow>
-						<unit name="Q" kind="Flow" value="1.0" />
+						<unit name="Q" kind="Flow" value="234.0" />
 						<unit name="C0" kind="Concentration" value="0.1"/>
 						<unit name="C1" kind="Concentration" value="0.2"/>
 					</flow>

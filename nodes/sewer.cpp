@@ -1,4 +1,7 @@
 #include "sewer.h"
+
+#include <flow.h>
+
 #include <sstream>
 #include <calculationunit.h>
 #include <boost/foreach.hpp>
@@ -6,8 +9,10 @@
 CD3_DECLARE_NODE_NAME(Sewer)
 
 Sewer::Sewer() {
-	addInPort(ADD_PARAMETERS(in));
-	addOutPort(ADD_PARAMETERS(out));
+	in = new Flow();
+	out = new Flow();
+	addInPort(ADD_PARAMETERS_P(in));
+	addOutPort(ADD_PARAMETERS_P(out));
 	addParameter(ADD_PARAMETERS(K));
 	addParameter(ADD_PARAMETERS(X));
 	addParameter(ADD_PARAMETERS(N));
@@ -17,6 +22,8 @@ Sewer::Sewer() {
 }
 
 Sewer::~Sewer() {
+	delete in;
+	delete out;
 }
 
 void Sewer::deinit() {
@@ -72,17 +79,17 @@ int Sewer::f(int time, int dt) {
 	double C_x, C_y;
 	setMuskParam(&C_x, &C_y, dt);
 
-	Flow tmp = in;
+	Flow tmp = *in;
 
 	for (int i = 0; i < N; i++) {
 		if (!volinited) {
-			*V[i] = in;
+			*V[i] = *in;
 			V[i]->clear();
 		}
 
 		tmp = route(tmp, V[i], C_x, C_y, dt);
 	}
-	out = tmp;
+	*out = tmp;
 	volinited = true;
 
 	return dt;
