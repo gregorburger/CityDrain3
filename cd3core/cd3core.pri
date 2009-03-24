@@ -21,7 +21,8 @@ HEADERS += calculationunit.h \
     flowbuffer.h \
     cd3utils.h \
     stateserializer.h \
-    modelserializer.h
+    modelserializer.h \
+    flowfuns.h
 SOURCES += calculationunit.cpp \
     flow.cpp \
     nodeconnection.cpp \
@@ -32,4 +33,5 @@ SOURCES += calculationunit.cpp \
     flowbuffer.cpp \
     simulation.cpp \
     stateserializer.cpp \
-    modelserializer.cpp
+    modelserializer.cpp \
+    flowfuns.cpp
