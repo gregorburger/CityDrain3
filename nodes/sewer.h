@@ -2,6 +2,7 @@
 #define SEWER_H
 
 #include <node.h>
+#include <vector>
 
 CD3_DECLARE_NODE(Sewer)
 public:
@@ -21,7 +22,7 @@ private:
 	int K;
 	double X;
 	int N;
-	Flow **V;
+	std::vector<Flow*> V;
 	std::map<int, std::pair<double, double> > musk_param;
 };
 

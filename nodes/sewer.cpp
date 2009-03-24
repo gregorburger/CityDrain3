@@ -1,10 +1,11 @@
 #include "sewer.h"
 
 #include <flow.h>
-
-#include <sstream>
 #include <calculationunit.h>
 #include <boost/foreach.hpp>
+#include <boost/format.hpp>
+
+using namespace boost;
 
 CD3_DECLARE_NODE_NAME(Sewer)
 
@@ -30,20 +31,15 @@ void Sewer::deinit() {
 	for (int i = 0; i < N; i++) {
 		delete V[i];
 	}
-	delete[] V;
 }
 
 void Sewer::init(int start, int end, int dt) {
 	(void) start;
 	(void) end;
 
-	V = new Flow*[N];
-
 	for (int i = 0; i < N; i++) {
-		V[i] = new Flow();
-		std::ostringstream name;
-		name << "V[" << i << "]";
-		addState(name.str(), V[i]);
+		V.push_back(new Flow());
+		addState(str(format("V[%1%]") % i), V[i]);
 	}
 
 	addMuskParam(dt);
@@ -75,14 +71,13 @@ Flow route(const Flow inflow, Flow *volume, double C_x, double C_y, int dt) {
 
 int Sewer::f(int time, int dt) {
 	(void) time;
-	static bool volinited = false;
 	double C_x, C_y;
 	setMuskParam(&C_x, &C_y, dt);
 
 	Flow tmp = *in;
 
 	for (int i = 0; i < N; i++) {
-		if (!volinited) {
+		if (V[i]->empty()) {
 			*V[i] = *in;
 			V[i]->clear();
 		}
@@ -90,7 +85,6 @@ int Sewer::f(int time, int dt) {
 		tmp = route(tmp, V[i], C_x, C_y, dt);
 	}
 	*out = tmp;
-	volinited = true;
 
 	return dt;
 }
