@@ -7,7 +7,7 @@
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
 #include <sstream>
-
+#include <cmath>
 #include <cd3assert.h>
 
 template <class T>
@@ -47,12 +47,32 @@ struct StringSer : public IStateSerializer {
 	}
 };
 
+struct FPSer : public IStateSerializer {
+	std::string serialize(const std::string &name, Node *node) {
+		std::ostringstream stream;
+		int exp;
+		double r = *node->getState<double>(name);
+		double fract = std::frexp(r, &exp);
+		stream << fract << " " << exp;
+		return stream.str();
+	}
+	void deserialize(const std::string &invalue,
+					 const std::string &name,  Node *node) {
+		std::istringstream stream(invalue);
+		double fract;
+		int exp;
+		stream >> fract >> exp;
+		double r = ldexp(fract, exp);
+		node->setState<double>(name, r);
+	}
+};
+
 type_ser_map IStateSerializer::standard() {
 	type_ser_map s;
 	s[cd3::TypeInfo(typeid(bool))] = boost::shared_ptr<IStateSerializer>(new BasicSer<bool>());
 	s[cd3::TypeInfo(typeid(int))] = boost::shared_ptr<IStateSerializer>(new BasicSer<int>());
 	s[cd3::TypeInfo(typeid(long))] = boost::shared_ptr<IStateSerializer>(new BasicSer<long>());
-	s[cd3::TypeInfo(typeid(double))] = boost::shared_ptr<IStateSerializer>(new BasicSer<double>());
+	s[cd3::TypeInfo(typeid(double))] = boost::shared_ptr<IStateSerializer>(new FPSer());
 	s[cd3::TypeInfo(typeid(float))] =boost::shared_ptr<IStateSerializer>(new BasicSer<float>());
 	s[cd3::TypeInfo(typeid(Flow))] = boost::shared_ptr<IStateSerializer>(new FlowSer());
 	s[cd3::TypeInfo(typeid(std::string))] = boost::shared_ptr<IStateSerializer>(new StringSer());
@@ -63,7 +83,10 @@ std::string FlowSerializer::toString(Flow f) {
 	std::ostringstream ss;
 
 	BOOST_FOREACH(std::string name, f.getNames()) {
-		ss << name << " " << f.getValue(name) << " " << f.getUnit(name)->getName() << " ";
+		double r = f.getValue(name);
+		int exp;
+		double fract = frexp(r, &exp);
+		ss << name << " " << fract << " " << exp << " " << f.getUnit(name)->getName() << " ";
 	}
 	return ss.str();
 }
@@ -75,11 +98,13 @@ Flow FlowSerializer::fromString(const std::string &value) {
 	std::istringstream ss(value);
 	Flow f;
 	while (!ss.eof()) {
-		std::string cname, cvalue, cunit;
-		ss >> cname >> cvalue >> cunit;
+		std::string cname, cunit;
+		double fract;
+		int exp;
+		ss >> cname >> fract >> exp >> cunit;
 		CalculationUnit *unit = CalculationUnit::fromString(cunit);
 		assert(unit != CalculationUnit::null, str(format("%2%\nunknown calculation unit: %1%") % cunit % value));
-		f.addUnit(cname, unit, boost::lexical_cast<double>(cvalue));
+		f.addUnit(cname, unit, ldexp(fract, exp));
 	}
 	return f;
 }

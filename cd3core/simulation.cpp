@@ -23,16 +23,22 @@ void ISimulation::setModel(IModel *m) {
 void ISimulation::start(int time) {
 	static double one_perc = 1.0f / sim_param.stop;
 	static int old_perc_progress = 0;
-	for (current_time = time;
+
+	current_time = time;
+
+	while (current_time <= sim_param.stop) {
+	/*for (current_time = time;
 		 current_time <= sim_param.stop;
 		 current_time += run(current_time, sim_param.dt)) {
-
+		 */
 		int percent = static_cast<int>(one_perc * current_time * 100);
 		if (percent != old_perc_progress) {
 			old_perc_progress = percent;
 			progress(percent);
 		}
+		current_time += run(current_time, sim_param.dt);
 		timestep(this, current_time);
+
 	}
 	progress(100);
 }
