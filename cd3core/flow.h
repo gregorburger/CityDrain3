@@ -46,9 +46,4 @@ private:
 	boost::shared_ptr<FlowDefinition> fd;
 };
 
-void mix(Flow *out, const Flow *const *inputs, int num_inputs);
-Flow *mix(const Flow * const *inputs, int num_inputs);
-Flow mix(const std::vector<const Flow *> &inputs);
-std::pair<Flow, Flow> split(const Flow f, float ratio);
-
 #endif // FLOW_H

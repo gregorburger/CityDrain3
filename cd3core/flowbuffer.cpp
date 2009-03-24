@@ -1,6 +1,7 @@
 #include "flowbuffer.h"
 
 #include <flow.h>
+#include <flowfuns.h>
 #include <calculationunit.h>
 #include <cd3assert.h>
 

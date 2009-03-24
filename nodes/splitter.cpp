@@ -1,5 +1,6 @@
 #include "splitter.h"
 #include <flow.h>
+#include <flowfuns.h>
 
 CD3_DECLARE_NODE_NAME(Splitter)
 

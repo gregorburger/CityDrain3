@@ -1,6 +1,7 @@
 #include "mixer.h"
 
 #include <flow.h>
+#include <flowfuns.h>
 #include <boost/foreach.hpp>
 #include <sstream>
 #include <cd3assert.h>
