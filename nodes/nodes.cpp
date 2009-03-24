@@ -5,12 +5,13 @@
 #include "defaultsimulation.h"
 #include "vardtsimulation.h"
 #include "sewer.h"
-#include "jsnode.h"
+//#include "jsnode.h"
 #include "rainread.h"
 #include "testnode.h"
 #include "qs/qswnode.h"
 #include "cso.h"
 #include "splitter.h"
+#include "catchmentcss.h"
 
 #include <noderegistry.h>
 #include <nodefactory.h>
@@ -27,12 +28,13 @@ extern "C" {
 		registry->addNodeFactory(new NodeFactory<FileOut>());
 		registry->addNodeFactory(new NodeFactory<Mixer>());
 		registry->addNodeFactory(new NodeFactory<Sewer>());
-		registry->addNodeFactory(new NodeFactory<JSNode, true>());
+		//registry->addNodeFactory(new NodeFactory<JSNode, true>());
 		registry->addNodeFactory(new NodeFactory<RainRead>());
 		registry->addNodeFactory(new NodeFactory<TestNode>());
 		registry->addNodeFactory(new NodeFactory<QSWNode, true>());
 		registry->addNodeFactory(new NodeFactory<CSO>());
 		registry->addNodeFactory(new NodeFactory<Splitter>());
+		registry->addNodeFactory(new NodeFactory<CatchmentCSS>());
 	}
 
 	void registerTypes(TypeRegistry *registry) {

@@ -34,13 +34,13 @@ Flow FlowBuffer::take(int dt) {
 		return single;
 	}
 
-	std::vector<const Flow *> tmp;
+	std::vector<Flow> tmp;
 	int taken_dt = 0;
 
 	while (taken_dt < dt) {
 		buf_item bitem = buffer.front();
 		taken_dt += bitem.second;
-		tmp.push_back(&bitem.first);
+		tmp.push_back(bitem.first);
 		buffer.pop();
 	}
 	//std::cout << taken_dt << " - " << dt << std::endl;

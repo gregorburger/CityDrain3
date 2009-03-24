@@ -1,8 +1,8 @@
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
-VEIGHT = /home/gregor/download/v8
-INCLUDEPATH += $$VEIGHT/include
-LIBS += $$VEIGHT/libv8_g.a
+#VEIGHT = /home/gregor/download/v8
+#INCLUDEPATH += $$VEIGHT/include
+#LIBS += $$VEIGHT/libv8_g.a
 QT += xml \
     script
 HEADERS += constsource.h \
@@ -12,13 +12,14 @@ HEADERS += constsource.h \
     defaultsimulation.h \
     vardtsimulation.h \
     sewer.h \
-    jsnode.h \
-    jsbindings.h \
-    v8cppwrapper.h \
+#    jsnode.h \
+#    jsbindings.h \
+#    v8cppwrapper.h \
     rainread.h \
     testnode.h \
     cso.h \
-    splitter.h
+    splitter.h \
+    catchmentcss.h
 SOURCES += nodes.cpp \
     constsource.cpp \
     flowtypefactory.cpp \
@@ -27,10 +28,11 @@ SOURCES += nodes.cpp \
     defaultsimulation.cpp \
     vardtsimulation.cpp \
     sewer.cpp \
-    jsnode.cpp \
-    jsbindings.cpp \
+#    jsnode.cpp \
+#    jsbindings.cpp \
     rainread.cpp \
     testnode.cpp \
     cso.cpp \
-    splitter.cpp
+    splitter.cpp \
+    catchmentcss.cpp
 include(qs/qs.pri)

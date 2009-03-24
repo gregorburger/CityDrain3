@@ -11,7 +11,7 @@ namespace po = boost::program_options;
 
 void progress(int percent) {
 	std::cout << "                                       \r";
-	std::cout << "progress: " << percent << "%";
+	std::cout << "progress: " << percent << "%\n";
 	std::cout.flush();
 }
 

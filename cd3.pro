@@ -3,5 +3,5 @@
 TEMPLATE = 	subdirs
 CONFIG += 	ordered debug
 SUBDIRS =		nodes \
-                        test #\
-#            testcore
+                        test# \
+                        #testcore
