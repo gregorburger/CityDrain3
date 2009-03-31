@@ -22,7 +22,9 @@ private:
 private:
 	Flow out;
 	std::string file_name;
+	std::string base_date;
 	RainReadPriv *priv;
+	double rain;
 };
 
 #endif // RAINREAD_H
