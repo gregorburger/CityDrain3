@@ -54,7 +54,7 @@ void RainRead::init(int start, int stop, int dt) {
 		QDateTime current_date = parseLine().get<0>();
 		priv->file_date = current_date;
 	}
-
+	priv->file_date.addSecs(-dt);
 }
 
 void RainRead::deinit() {

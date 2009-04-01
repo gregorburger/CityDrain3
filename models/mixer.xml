@@ -3,7 +3,7 @@
 
 <citydrain version="1.0">
 
-	<pluginpath path="nodes/libnodes.so.1.0.0" />
+	<pluginpath path="./libnodes.so.1.0.0" />
 
 	<simulation class="DefaultSimulation">
 		<time start="0" stop="7200" dt="300" />
@@ -14,9 +14,10 @@
 			<node id="constsource1" class="ConstSource">
 				<parameter name="const_flow" kind="complex" type="Flow">
 					<flow>
-						<unit name="Q" kind="flow" value="100.0" />
-						<unit name="C0" kind="concentration" value="1.0" />
-						<unit name="C1" kind="concentration" value="2.0" />
+						<unit name="Q" kind="Flow" value="100.0" />
+						<unit name="C0" kind="Concentration" value="1.0" />
+						<unit name="C1" kind="Concentration" value="2.0" />
+						<unit name="C3" kind="Concentration" value="6.0" />
 					</flow>
 				</parameter>
 			</node>
@@ -24,9 +25,9 @@
 			<node id="constsource2" class="ConstSource">
 				<parameter name="const_flow" kind="complex" type="Flow">
 					<flow>
-						<unit name="Q" kind="Flow" value="1000.0" />
+						<unit name="Q" kind="Flow" value="100.0" />
 						<unit name="C0" kind="Concentration" value="1.0" />
-						<unit name="C1" kind="Concentration" value="10.0" />
+						<unit name="C1" kind="Concentration" value="2.0" />
 					</flow>
 				</parameter>
 			</node>
@@ -36,7 +37,7 @@
 			</node>
 			
 			<node id="fileout" class="FileOut">
-				<parameter name="out_file_name" type="string" value="/tmp/out.txt" />
+				<parameter name="out_file_name" type="string" value="tmp/mixer-out.txt" />
 			</node>
 		</nodelist>
 		

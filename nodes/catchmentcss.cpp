@@ -119,14 +119,16 @@ int CatchmentCSS::f(int time, int dt) {
 	double C_x, C_y;
 	setMuskParam(&C_x, &C_y, dt);
 	
-	std::vector<Flow> inputs;
-	Flow loss = catchement_lossmodel(*rain_in, loss_basin, initial_loss, permanent_loss, run_off_coeff);
-	Flow flow = catchment_flowmodel(loss, area, dt, rain_con_value, rain_con_name);
-	inputs.push_back(flow);
-	inputs.push_back(*dwf_in);
-	inputs.push_back(*parasite_in);
+	std::vector<Flow *> inputs;
+	Flow loss = FlowFuns::catchement_lossmodel(*rain_in, loss_basin, initial_loss, permanent_loss, run_off_coeff);
+	Flow flow = FlowFuns::catchment_flowmodel(loss, area, dt, rain_con_value, rain_con_name);
+	inputs.push_back(&flow);
+	if (!dwf_in->empty())
+		inputs.push_back(dwf_in);
+	if (!parasite_in->empty())
+		inputs.push_back(parasite_in);
 
-	Flow rain = muskingum_catchment(mix(inputs));
+	Flow rain = inputs.size() > 1 ? FlowFuns::mix(inputs) : flow;
 
 	for (int i = 0; i < N; i++) {
 		if (V[i]->empty()) {

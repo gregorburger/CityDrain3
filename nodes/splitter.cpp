@@ -20,7 +20,7 @@ Splitter::Splitter() {
 int Splitter::f(int time, int dt) {
 	(void) time;
 
-	std::pair<Flow, Flow> splitted = split(*in, ratio);
+	std::pair<Flow, Flow> splitted = FlowFuns::split(*in, ratio);
 	*out1 = splitted.first;
 	*out2 = splitted.second;
 	return dt;
