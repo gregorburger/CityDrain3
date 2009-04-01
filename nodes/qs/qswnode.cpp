@@ -15,6 +15,9 @@ CD3_DECLARE_NODE_NAME(QSWNode)
 
 struct QSWNodePrivate {
 	QScriptEngine engine;
+	QStringList in_ports, out_ports;
+	QStringList parameters;
+	QStringList states;
 };
 
 Q_SCRIPT_DECLARE_QMETAOBJECT(QSWFlow, QObject*);
@@ -25,12 +28,7 @@ QSWNode::QSWNode(const std::string &s) {
 	priv = new QSWNodePrivate();
 	priv->engine.setGlobalObject(priv->engine.newQObject(this));
 	QScriptValue flowClass = priv->engine.scriptValueFromQMetaObject<QSWFlow>();
-
 	priv->engine.globalObject().setProperty("Flow", flowClass);
-}
-
-QSWNode::QSWNode() {
-	priv = new QSWNodePrivate();
 }
 
 QSWNode::~QSWNode() {
@@ -47,25 +45,28 @@ void QSWNode::addOutPort(const QString &name, QSWFlow *flow) {
 	Node::addOutPort(name.toStdString(), flow->flow);
 }
 
-void QSWNode::quadMe(QScriptValue value) {
-	assert(value.isNumber(), "value not a numer");
-	int i = value.toInteger();
-	qDebug() << "quad me: " << i;
-	value = QScriptValue(i*i);
+void QSWNode::addParameter(const QString &name, double dval) {
+	priv->parameters.append(name);
+	double *d = new double(dval);
+	Node::addParameter(name.toStdString(), d);
 }
 
-void QSWNode::addParameter(const QString &n, bool *b) {
-	(void) n;
-	(void) b;
-	/*qDebug() << QTime::currentTime() << " QSWNode()::addParameter";
-	std::string name = n.toStdString();
-	if (value.isBoolean()) {
-		if (value.toVariant().canConvert<void*>()) {
-			qDebug() << "can convert to pointer";
-		} else {
-			qDebug() << "can not convert to pointer";
-		}
-	}*/
+void QSWNode::addParameter(const QString &name, int dval) {
+	priv->parameters.append(name);
+	int *d = new int(dval);
+	Node::addParameter(name.toStdString(), d);
+}
+
+void QSWNode::addParameter(const QString &name, QString dval) {
+	priv->parameters.append(name);
+	std::string *d = new std::string(dval.toStdString());
+	Node::addParameter(name.toStdString(), d);
+}
+
+void QSWNode::addParameter(const QString &name, bool dval) {
+	priv->parameters.append(name);
+	bool *d = new bool(dval);
+	Node::addParameter(name.toStdString(), d);
 }
 
 int QSWNode::f(int time, int dt) {

@@ -1,5 +1,6 @@
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
+QT += script
 HEADERS += qswnode.h \
     qswflow.h \
     qswcalcunit.h

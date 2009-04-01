@@ -15,7 +15,6 @@ class QSWNode : public QObject, public Node, protected QScriptable {
 public:
 	static const char *name;
 	QSWNode(const std::string &script);
-	QSWNode();
 	~QSWNode();
 	const char *getClassName() const;
 	int f(int time, int dt);
@@ -25,12 +24,15 @@ public:
 public Q_SLOTS:
 	void addInPort(const QString &name, QSWFlow *flow);
 	void addOutPort(const QString &name, QSWFlow *flow);
-	void addParameter(const QString &name, bool *b);
+	void addParameter(const QString &name, double);
+	void addParameter(const QString &name, int);
+	void addParameter(const QString &name, QString);
+	void addParameter(const QString &name, bool);
+
 	void quadMe(QScriptValue value);
 private:
 	std::string script_path;
 	QSWNodePrivate *priv;
-	//Flow *in_out;
 };
 
 #endif // QSWNODE_H
