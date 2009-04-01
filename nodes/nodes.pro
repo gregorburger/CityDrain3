@@ -1,9 +1,8 @@
 TEMPLATE = lib
+CONFIG += dll
 TARGET = nodes
-CONFIG += debug
 QT -= gui
 QT += xml
-
 include(nodes.pri)
 include(../build.pri)
 include(../cd3core/cd3core.pri)
