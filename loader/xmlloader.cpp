@@ -6,6 +6,8 @@
 #include <boost/format.hpp>
 #include <iostream>
 
+using namespace boost;
+
 #include <node.h>
 #include <simulation.h>
 #include <model.h>
@@ -150,9 +152,10 @@ void XmlLoader::loadNodesFromPlugins(
 
 	QString path;
 	Q_FOREACH (path, paths) {
+		assert(QFile::exists(path), str(format("could not find plugin %1%") % path.toStdString()));
 		QLibrary l(path);
 		//l.setLoadHints(QLibrary::ExportExternalSymbolsHint);
-		l.load();
+		assert(l.load(), str(format("could not load plugin: %1%") % path.toStdString()));
 		regNodeFunProto regFun = (regNodeFunProto) l.resolve("registerNodes");
 		if (regFun) {
 			regFun(registry);
