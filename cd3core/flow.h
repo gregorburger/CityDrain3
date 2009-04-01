@@ -29,12 +29,14 @@ public:
 
 	double getValue(const std::string &name) const;
 	const CalculationUnit *getUnit(const std::string &name) const;
+	unsigned int countUnits(const CalculationUnit *unit) const;
 
 	double getIth(const CalculationUnit *unit, size_t i) const;
 	void setIth(const CalculationUnit *unit, size_t i, double value);
 
 	const std::vector<std::string> &getNames() const;
 	const std::vector<std::string> &getUnitNames(const CalculationUnit *unit) const;
+	bool hasName(const std::string &name) const;
 
 	void copy();
 	

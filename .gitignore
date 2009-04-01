@@ -8,3 +8,4 @@ testcore/testcore
 callgrind.*
 qtc-gdbmacros
 tmp/*
+*object_script.*

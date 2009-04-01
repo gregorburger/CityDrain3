@@ -3,7 +3,6 @@
 
 #include <cstdlib>
 #include <string.h>
-#include <execinfo.h>
 #include <iostream>
 
 /*#define BACK_TRACE_SIZE 100

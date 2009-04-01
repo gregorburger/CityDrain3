@@ -95,6 +95,10 @@ Flow::getUnitNames(const CalculationUnit *unit) const{
 	return fd->unit_names[unit];
 }
 
+bool Flow::hasName(const std::string &name) const {
+	return std::count(fd->names.begin(), fd->names.end(), name) > 0;
+}
+
 bool Flow::empty() const {
 	return fd->names.empty();
 }
@@ -103,6 +107,10 @@ void Flow::dump() const {
 	BOOST_FOREACH(std::string name, fd->names) {
 		std::cout << "flow.dump.names " << name << std::endl;
 	}
+}
+
+unsigned int Flow::countUnits(const CalculationUnit *unit) const {
+	return fd->unit_names[unit].size();
 }
 
 void Flow::setIth(const CalculationUnit *unit, size_t i, double value) {
