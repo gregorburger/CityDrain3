@@ -15,6 +15,8 @@ public:
 	QSWFlow(Flow *f, QObject *parent = 0);
 	QSWFlow(QObject *parent = 0);
 
+	Flow *flow;
+
 public Q_SLOTS:
 	void clear();
 	void addUnit(QString name, QSWCalcUnit *unit, double value);
@@ -25,8 +27,9 @@ public Q_SLOTS:
 
 	QStringList getNames() const;
 	QStringList getUnitNames(QSWCalcUnit *unit) const;
+
+
 private:
-	Flow *flow;
 	friend class QSWNode;
 };
 

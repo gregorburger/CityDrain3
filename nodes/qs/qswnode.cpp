@@ -1,14 +1,16 @@
 #include "qswnode.h"
 
-
 #include <QDebug>
 #include <QTime>
 #include <string>
+#include <boost/format.hpp>
+
+using namespace boost;
 
 #include <flow.h>
-#include <cd3assert.h>
-
 #include "qswflow.h"
+#include "statemigrator.h"
+#include <cd3assert.h>
 
 
 CD3_DECLARE_NODE_NAME(QSWNode)
@@ -18,6 +20,9 @@ struct QSWNodePrivate {
 	QStringList in_ports, out_ports;
 	QStringList parameters;
 	QStringList states;
+
+	QScriptValue f_function;
+	QScriptValue init_function;
 };
 
 Q_SCRIPT_DECLARE_QMETAOBJECT(QSWFlow, QObject*);
@@ -29,6 +34,25 @@ QSWNode::QSWNode(const std::string &s) {
 	priv->engine.setGlobalObject(priv->engine.newQObject(this));
 	QScriptValue flowClass = priv->engine.scriptValueFromQMetaObject<QSWFlow>();
 	priv->engine.globalObject().setProperty("Flow", flowClass);
+
+	executeScript(priv->engine);
+
+	assert(priv->engine.globalObject().property("init").isFunction(),
+		   "no init function defined");
+	assert(priv->engine.globalObject().property("f").isFunction(),
+		   "no 'f' function defined");
+
+	priv->init_function = priv->engine.globalObject().property("init");
+	priv->f_function = priv->engine.globalObject().property("f");
+}
+
+void QSWNode::executeScript(QScriptEngine &engine) {
+	QFile f(QString::fromStdString(script_path));
+	assert(f.exists(), "script file does not exist");
+	assert(f.open(QIODevice::ReadOnly), "could not read open script file");
+	QString script = f.readAll();
+	QScriptValue script_ret = engine.evaluate(script, f.fileName());
+	assert(!script_ret.isError(), script_ret.toString().toStdString());
 }
 
 QSWNode::~QSWNode() {
@@ -44,7 +68,7 @@ void QSWNode::addOutPort(const QString &name, QSWFlow *flow) {
 	qDebug() << "addOutPort";
 	Node::addOutPort(name.toStdString(), flow->flow);
 }
-
+;
 void QSWNode::addParameter(const QString &name, double dval) {
 	priv->parameters.append(name);
 	double *d = new double(dval);
@@ -69,53 +93,65 @@ void QSWNode::addParameter(const QString &name, bool dval) {
 	Node::addParameter(name.toStdString(), d);
 }
 
-int QSWNode::f(int time, int dt) {
-	QScriptValue f_fun_value = priv->engine.globalObject().property("f");
+void QSWNode::addParameter(const QString &name, QSWFlow *flow) {
+	priv->parameters.append(name);
+	Node::addParameter(name.toStdString(), flow);
+}
 
-	assert(!f_fun_value.isUndefined(), "no f function defined in script");
-	assert(f_fun_value.isFunction(), "f is not a function maybe it was overwritten");
-	QScriptValue f_ret = f_fun_value.call(
+void QSWNode::addState(const QString &name) {
+	priv->states.append(name);
+}
+
+void QSWNode::pullOutStates() {
+	Q_FOREACH(QString qsname, priv->states) {
+		std::string stdname = qsname.toStdString();
+		QVariant state_value = priv->engine.globalObject().property(qsname).toVariant();
+		assert(
+				IStateMigrator::qt.count(state_value.type()) == 1,
+				str(format("can not pull state %1%") % stdname));
+		IStateMigrator::qt[state_value.type()]->pull(stdname, this, priv->engine);
+	}
+}
+
+void QSWNode::pushInStates() {
+	Q_FOREACH(QString qsname, priv->states) {
+		std::string stdname = qsname.toStdString();
+		cd3::TypeInfo type = Node::states[stdname].first;
+		assert(
+				IStateMigrator::cd3.count(type) == 1,
+				str(format("can not push state %1%") % stdname));
+		IStateMigrator::cd3[type]->push(stdname, this, priv->engine);
+	}
+}
+
+void QSWNode::pushParameters() {
+	Q_FOREACH(QString qsname, priv->parameters) {
+		std::string stdname = qsname.toStdString();
+		cd3::TypeInfo type = Node::states[stdname].first;
+		assert(
+				IStateMigrator::cd3.count(type) == 1,
+				str(format("can not push parameter %1%") % stdname));
+		IStateMigrator::cd3[type]->pushParameter(stdname, this, priv->engine);
+	}
+}
+
+int QSWNode::f(int time, int dt) {
+	QScriptValue f_ret = priv->f_function.call(
 			priv->engine.globalObject(),
 			QScriptValueList() << time << dt);
 
 	assert(!f_ret.isError(), f_ret.toString().toStdString());
 
-	/*QScriptValueIterator it(priv->engine.globalObject());
-	while(it.hasNext()) {
-		it.next();
-		if (it.flags() & QScriptValue::SkipInEnumeration)
-			continue;
-		qDebug() << "global has: " << it.name();
-	}*/
-
-	assert(f_ret.isNumber(), "f did not return a number");
+	assert(f_ret.isNumber(), "f must return the calculated delta time");
 	return f_ret.toInteger();
 }
 
 void QSWNode::init(int start,int end, int dt) {
-	QFile f(QString::fromStdString(script_path));
-	assert(f.exists(), "script file does not exist");
-	assert(f.open(QIODevice::ReadOnly), "could not read open script file");
-	QString script = f.readAll();
-	QScriptValue script_ret = priv->engine.evaluate(script, f.fileName());
-	assert(!script_ret.isError(), script_ret.toString().toStdString());
-
-	QScriptValue init_fun_value = priv->engine.globalObject().property("init");
-	assert(init_fun_value.isFunction(), "no init function defined in script");
-	QScriptValue init_ret = init_fun_value.call(
+	pushParameters();
+	QScriptValue init_ret = priv->init_function.call(
 			priv->engine.globalObject(),
 			QScriptValueList() << start << end << dt);
-
 	assert(!init_ret.isError(), init_ret.toString().toStdString());
-
-	/*QScriptValueIterator it(priv->engine.globalObject());
-	while(it.hasNext()) {
-		it.next();
-		if (it.flags() & QScriptValue::SkipInEnumeration)
-			continue;
-		qDebug() << "global has: " << it.name() << " and is : " << it.value().toString();
-	}*/
-
 }
 
 void QSWNode::deinit() {

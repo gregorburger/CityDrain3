@@ -28,9 +28,17 @@ public Q_SLOTS:
 	void addParameter(const QString &name, int);
 	void addParameter(const QString &name, QString);
 	void addParameter(const QString &name, bool);
+	void addParameter(const QString &name, QSWFlow *flow);
 
-	void quadMe(QScriptValue value);
+	void addState(const QString &name);
+
+	void pushInStates();
+	void pullOutStates();
+
 private:
+	void executeScript(QScriptEngine &engine);
+	void pushParameters();
+
 	std::string script_path;
 	QSWNodePrivate *priv;
 };
