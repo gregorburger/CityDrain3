@@ -27,7 +27,8 @@ struct QSWNodePrivate {
 
 Q_SCRIPT_DECLARE_QMETAOBJECT(QSWFlow, QObject*);
 
-QSWNode::QSWNode(const std::string &s) {
+QSWNode::QSWNode(const std::string &s)
+	: Node() {
 	script_path = s;
 	qDebug() << QTime::currentTime() << " QSWNode()";
 	priv = new QSWNodePrivate();
@@ -59,6 +60,10 @@ QSWNode::~QSWNode() {
 	delete priv;
 }
 
+void QSWNode::print(QScriptValue v) {
+	qDebug() << v.toString();
+}
+
 void QSWNode::addInPort(const QString &name, QSWFlow *flow) {
 	qDebug() << "addInPort";
 	Node::addInPort(name.toStdString(), flow->flow);
@@ -81,10 +86,11 @@ void QSWNode::addParameter(const QString &name, int dval) {
 	Node::addParameter(name.toStdString(), d);
 }
 
-void QSWNode::addParameter(const QString &name, QString dval) {
-	priv->parameters.append(name);
+void QSWNode::addParameter(const QString &qname, QString dval) {
+	priv->parameters.append(qname);
 	std::string *d = new std::string(dval.toStdString());
-	Node::addParameter(name.toStdString(), d);
+	std::string name = qname.toStdString();
+	Node::addParameter(name, d);
 }
 
 void QSWNode::addParameter(const QString &name, bool dval) {
@@ -127,7 +133,7 @@ void QSWNode::pushInStates() {
 void QSWNode::pushParameters() {
 	Q_FOREACH(QString qsname, priv->parameters) {
 		std::string stdname = qsname.toStdString();
-		cd3::TypeInfo type = Node::states[stdname].first;
+		cd3::TypeInfo type = Node::parameters[stdname].first;
 		cd3assert(
 				IStateMigrator::cd3.count(type) == 1,
 				str(format("can not push parameter %1%") % stdname));

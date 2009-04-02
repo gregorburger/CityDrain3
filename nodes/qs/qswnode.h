@@ -35,6 +35,8 @@ public Q_SLOTS:
 	void pushInStates();
 	void pullOutStates();
 
+	void print(QScriptValue v);
+
 private:
 	void executeScript(QScriptEngine &engine);
 	void pushParameters();

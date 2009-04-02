@@ -26,7 +26,8 @@
 			</node>
 			
 			<node id="js1" class="QSWNode" script="scripts/qscript.js">
-
+				<parameter name="teststring" type="string" value="jo faaa asdf sadfaat oida" />
+				<parameter name="testdouble" type="double" value="3.142" />
 			</node>
 			
 		</nodelist>
