@@ -229,13 +229,6 @@ void XmlLoader::loadNode(QDomElement element) {
 
 	assert(node, "node is null");
 
-	if (element.attributes().contains("dt")) {
-		int dt = element.attribute("dt").toInt();
-		assert(simulation->getSimulationParameters().dt % dt == 0, "node dt must be a divider of simulation dt");
-		assert(dt > 0, "dt must be bigger than 0");
-		node->setDT(dt);
-	}
-
 	QDomNodeList childs = element.childNodes();
 
 	for (int i = 0; i < childs.count(); i++) {
