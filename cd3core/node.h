@@ -40,7 +40,6 @@ public:
 		const_states(&states),
 		const_in_ports(&in_ports),
 		const_out_ports(&out_ports)  {
-		dt = -1;
 	}
 
 	virtual ~Node() {}
@@ -52,10 +51,15 @@ public:
 	virtual void init(int start, int end, int dt);
 	virtual void deinit();
 
-	virtual int getDT(const SimulationParameters &sp) const;
-	virtual void setDT(int dt);
+	/*virtual int getDT(const SimulationParameters &sp) const;
+	virtual void setDT(int dt);*/
 
-	virtual const std::string &getScript() const;
+	//pull out states from a script
+	//gets called before saving states
+	virtual void pullOutStates(){}
+	//push states into a script
+	//gets called after states have been loaded
+	virtual void pushInStates(){}
 
 	void setInPort(const std::string &, const Flow *in);
 	void setOutPort(const std::string &, const Flow *in);
@@ -127,7 +131,6 @@ protected:
 	ssf		in_ports;
 	ssf		out_ports;
 	int		dt;
-	std::string script;
 };
 
 #endif // NODE_H
