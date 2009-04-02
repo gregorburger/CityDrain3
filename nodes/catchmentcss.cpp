@@ -91,7 +91,7 @@ void CatchmentCSS::deinit() {
 typedef CalculationUnit CU;
 
 Flow route(const Flow inflow, Flow rain, Flow *volume, int N, double C_x, double C_y, int dt) {
-	//assert(inflow.compatible(rain), "flows not compatible");
+	//cd3assert(inflow.compatible(rain), "flows not compatible");
 	Flow newvolume = *volume;
 	Flow out = inflow;
 	double inqe = inflow.getIth(CU::flow, 0);

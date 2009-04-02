@@ -16,18 +16,18 @@ FlowBuffer::~FlowBuffer() {
 }
 
 void FlowBuffer::put(const Flow f, int dt) {
-	assert(dt > 0, "cannot buffer negative dt flow");
-	//assert(f, "cannot buffer null flow");
+	cd3assert(dt > 0, "cannot buffer negative dt flow");
+	//cd3assert(f, "cannot buffer null flow");
 	buffer.push(buf_item(f, dt));
 	buffereddt += dt;
 }
 
 Flow FlowBuffer::take(int dt) {
-	assert(dt <= buffereddt, "cannot take more flow than available");
-	//assert(buffer->getUnitNames(CalculationUnit::flow).size() == 1, "no more than onw flow allowed");
+	cd3assert(dt <= buffereddt, "cannot take more flow than available");
+	//cd3assert(buffer->getUnitNames(CalculationUnit::flow).size() == 1, "no more than onw flow allowed");
 
 	if (buffer.size() == 1) {
-		assert(buffereddt == dt, "TODO implement rest mixing in flow buffer");
+		cd3assert(buffereddt == dt, "TODO implement rest mixing in flow buffer");
 		Flow single = buffer.front().first;
 		buffer.pop();
 		buffereddt -= dt;
@@ -44,7 +44,7 @@ Flow FlowBuffer::take(int dt) {
 		buffer.pop();
 	}
 	//std::cout << taken_dt << " - " << dt << std::endl;
-	assert(taken_dt == dt, "TODO implement rest mixing in flow buffer");
+	cd3assert(taken_dt == dt, "TODO implement rest mixing in flow buffer");
 
 	Flow mixed = FlowFuns::mix(tmp);
 	buffereddt -= taken_dt;

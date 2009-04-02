@@ -103,7 +103,7 @@ Flow FlowSerializer::fromString(const std::string &value) {
 		int exp;
 		ss >> cname >> fract >> exp >> cunit;
 		CalculationUnit *unit = CalculationUnit::fromString(cunit);
-		assert(unit != CalculationUnit::null, str(format("%2%\nunknown calculation unit: %1%") % cunit % value));
+		cd3assert(unit != CalculationUnit::null, str(format("%2%\nunknown calculation unit: %1%") % cunit % value));
 		f.addUnit(cname, unit, ldexp(fract, exp));
 	}
 	return f;

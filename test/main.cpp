@@ -6,6 +6,7 @@
 #include <mapbasedmodel.h>
 #include <boost/foreach.hpp>
 #include <boost/program_options.hpp>
+#include <cd3assert.h>
 
 namespace po = boost::program_options;
 
@@ -64,7 +65,7 @@ int main(int argc, char **argv) {
 	XmlLoader loader(&m);
 
 	ISimulation *s = loader.load(f);
-	assert(s);
+	cd3assert(s, "simulation loading failed");
 
 	if (vm.count("state-dir")) {
 		s->timestep.connect(PerStateHandler(vm["state-dir"].as<std::string>()));

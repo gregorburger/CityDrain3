@@ -86,7 +86,7 @@ int CSO::f(int time, int dt) {
 
 	if (V_Prime > 0) {
 
-		assert(V_Prime > 0, str(format("V_Prime (%1% needs to be bigger than 0") % V_Prime));
+		cd3assert(V_Prime > 0, str(format("V_Prime (%1% needs to be bigger than 0") % V_Prime));
 		double V_Prime_Inv = 1 / V_Prime;
 
 		BOOST_FOREACH(std::string cname, in->getUnitNames(CU::concentration)) {

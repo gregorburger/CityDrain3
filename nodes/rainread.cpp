@@ -35,7 +35,7 @@ void RainRead::init(int start, int stop, int dt) {
 	(void) start;
 	(void) stop;
 	priv->rain_file = new QFile(QString::fromStdString(file_name));
-	assert(priv->rain_file->exists(), "no such rain file");
+	cd3assert(priv->rain_file->exists(), "no such rain file");
 	priv->rain_file->open(QIODevice::ReadOnly);
 
 	priv->file_date = parseLine().get<0>();
@@ -72,7 +72,7 @@ int RainRead::f(int time, int dt) {
 		rain += current_rain;
 		priv->file_date = current_date;
 	}
-	assert(calc_date <= priv->file_date, "asdf");
+	cd3assert(calc_date <= priv->file_date, "asdf");
 
 	int rdt = QDateTime(priv->base_date.addSecs(time)).secsTo(priv->file_date);
 
@@ -87,7 +87,7 @@ int RainRead::f(int time, int dt) {
 tuple<QDateTime, double> RainRead::parseLine() {
 	QString line = priv->rain_file->readLine();
 	QStringList splitted = line.split(QRegExp("[ \\t]+"));
-	assert(splitted.count() == 3, "wrong rain file format");
+	cd3assert(splitted.count() == 3, "wrong rain file format");
 
 	double rr = splitted[2].toDouble();
 	QString date_time = QString("%1 %2").arg(splitted[0]).arg(splitted[1]);

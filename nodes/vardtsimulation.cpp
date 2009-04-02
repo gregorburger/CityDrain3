@@ -33,7 +33,7 @@ VarDTSimulation::~VarDTSimulation() {
 }*/
 
 int VarDTSimulation::run(int time, int dt) {
-	assert(model->getSinkNodes().size() == 1,
+	cd3assert(model->getSinkNodes().size() == 1,
 		   "can not handle more than one sink node aka there is only one see");
 	run(*model->getSinkNodes().begin(), time, sim_param.dt);
 	return dt;
@@ -67,7 +67,7 @@ int VarDTSimulation::run(Node *n, int time, int dt) {
 		}
 		Flow f = fb->take(dt);
 		n->setInPort(snk_port, &f);
-		assert(fb->buffered() == 0, "connection buffer not empty");
+		cd3assert(fb->buffered() == 0, "connection buffer not empty");
 	}
 	return n->f(time, dt);
 }

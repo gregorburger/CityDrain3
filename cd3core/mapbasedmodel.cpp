@@ -2,7 +2,6 @@
 #include <iostream>
 #include <node.h>
 #include <boost/foreach.hpp>
-#include <boost/assert.hpp>
 #include <simulation.h>
 #include <vector>
 #include <cd3assert.h>
@@ -28,9 +27,9 @@ Node *MapBasedModel::getNode(const std::string &name) const {
 }
 
 void MapBasedModel::addNode(const std::string &name, Node *node) {
-	assert(node, "added node null");
-	assert(name != "", "node name empty");
-	assert(names_nodes.find(name) == names_nodes.end(), "node name already defined");
+	cd3assert(node, "added node null");
+	cd3assert(name != "", "node name empty");
+	cd3assert(names_nodes.find(name) == names_nodes.end(), "node name already defined");
 	
 	names_nodes[name] = node;
 	all_nodes.insert(node);
@@ -44,8 +43,8 @@ void MapBasedModel::addConnection(const std::string &src_node,
 					   const std::string &sin_node,
 					   const std::string &sin_port) {
 
-	assert(names_nodes.find(src_node) != names_nodes.end(), "source node not found");
-	assert(names_nodes.find(sin_node) != names_nodes.end(), "sink node not found");
+	cd3assert(names_nodes.find(src_node) != names_nodes.end(), "source node not found");
+	cd3assert(names_nodes.find(sin_node) != names_nodes.end(), "sink node not found");
 
 	Node *source = names_nodes.find(src_node)->second;
 	Node *sink = names_nodes.find(sin_node)->second;
@@ -53,11 +52,11 @@ void MapBasedModel::addConnection(const std::string &src_node,
 	sink_nodes.erase(source);
 	source_nodes.erase(sink);
 
-	assert(source->const_out_ports->find(src_port)
+	cd3assert(source->const_out_ports->find(src_port)
 		   !=
 		   source->const_out_ports->end(), "source node port not found");
 
-	assert(sink->const_in_ports->find(sin_port)
+	cd3assert(sink->const_in_ports->find(sin_port)
 		   !=
 		   sink->const_in_ports->end(), "sink node port not found");
 

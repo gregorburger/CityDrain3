@@ -58,7 +58,7 @@ void ModelSerializer::serializeNode(std::ostream &os, std::string &node_name, No
 	BOOST_FOREACH(sltvpp state, n->states) {
 		std::string name = state.first;
 		cd3::TypeInfo type(state.second.first);
-		assert(serializers.find(type) != serializers.end(), "no serializer for the type");
+		cd3assert(serializers.find(type) != serializers.end(), "no serializer for the type");
 		os << boost::format("\t\t<state name=\"%1%\" type=\"%2%\">\n") % name % type.type_name;
 		os << "\t\t\t" << serializers[type]->serialize(name, n) << "\n";
 		os << "\t\t</state>\n";
@@ -87,15 +87,15 @@ void ModelSerializer::serializeNode(std::ostream &os, std::string &node_name, No
 
 void ModelSerializer::deserialize(int time) {
 	std::string path = pathForTimeStep(time);
-	assert(boost::filesystem::exists(path), "no such state file");
+	cd3assert(boost::filesystem::exists(path), "no such state file");
 	Deserializer deser(model);
 	QXmlSimpleReader reader;
 	QFile f(QString::fromStdString(path));
-	assert(f.open(QIODevice::ReadOnly), "could not open state file for reading");
+	cd3assert(f.open(QIODevice::ReadOnly), "could not open state file for reading");
 	QXmlInputSource s(&f);
 	reader.setContentHandler(&deser);
 	reader.setErrorHandler(&deser);
-	assert(reader.parse(s), "could no load state into  model");
+	cd3assert(reader.parse(s), "could no load state into  model");
 }
 
 Deserializer::Deserializer(IModel *m) {
@@ -171,7 +171,7 @@ bool Deserializer::characters(const QString &ch) {
 		cd3::TypeInfo info;
 		info.type_name = stateType;
 
-		assert(mapper.find(info) != mapper.end(),
+		cd3assert(mapper.find(info) != mapper.end(),
 			   str(format("no serializer for type %1%") % info.type_name));
 		mapper[info]->deserialize(boost::algorithm::trim_copy(ch.toStdString()),
 								  boost::algorithm::trim_copy(stateName), current);

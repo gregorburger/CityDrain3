@@ -29,7 +29,7 @@ void FileOut::init(int start, int stop, int dt) {
 	(void) start;
 	(void) stop;
 	(void) dt;
-	assert(out_file_name);
+	cd3assert(out_file_name, "out_file_name not defined");
 	file.setFileName(QString::fromStdString(*out_file_name));
 	if (!file.isOpen()) {
 		file.open(QFile::WriteOnly);

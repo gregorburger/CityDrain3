@@ -53,8 +53,8 @@ void Flow::copyDefinition() {
 void Flow::addUnit(const std::string &name,
 				 const CalculationUnit *unit,
 				 double value) {
-	assert(fd->positions.find(name) == fd->positions.end(), "name already defined");
-	assert(unit, "unit is null");
+	cd3assert(fd->positions.find(name) == fd->positions.end(), "name already defined");
+	cd3assert(unit, "unit is null");
 
 	copyDefinition();
 	copyData();
@@ -69,18 +69,18 @@ void Flow::addUnit(const std::string &name,
 
 void Flow::setValue(const std::string &name,
 					double value) {
-	assert(fd->positions.find(name) != fd->positions.end(), "no such name");
+	cd3assert(fd->positions.find(name) != fd->positions.end(), "no such name");
 	copyData();
 	(*f)[fd->positions[name]] = value;
 }
 
 double Flow::getValue(const std::string &name) const {
-	assert(fd->positions.find(name) != fd->positions.end(), "no such name");
+	cd3assert(fd->positions.find(name) != fd->positions.end(), "no such name");
 	return (*f)[fd->positions[name]];
 }
 
 const CalculationUnit *Flow::getUnit(const std::string &name) const {
-	assert(fd->positions.find(name) != fd->positions.end(), "no such name");
+	cd3assert(fd->positions.find(name) != fd->positions.end(), "no such name");
 	return fd->units[name];
 }
 
@@ -90,8 +90,8 @@ const std::vector<std::string> & Flow::getNames() const {
 
 const std::vector<std::string> &
 Flow::getUnitNames(const CalculationUnit *unit) const{
-	assert(unit, "null unit not allowed");
-	assert(fd->unit_names.find(unit) != fd->unit_names.end(), "no such unit");
+	cd3assert(unit, "null unit not allowed");
+	cd3assert(fd->unit_names.find(unit) != fd->unit_names.end(), "no such unit");
 	return fd->unit_names[unit];
 }
 
@@ -114,15 +114,15 @@ unsigned int Flow::countUnits(const CalculationUnit *unit) const {
 }
 
 void Flow::setIth(const CalculationUnit *unit, size_t i, double value) {
-	assert(fd->unit_names.find(unit) != fd->unit_names.end(), "no such unit");
-	assert(fd->unit_names[unit].size() > i, "ith is too much");
+	cd3assert(fd->unit_names.find(unit) != fd->unit_names.end(), "no such unit");
+	cd3assert(fd->unit_names[unit].size() > i, "ith is too much");
 	copyData();
 	(*f)[fd->positions[fd->unit_names[unit][i]]] = value;
 }
 
 double Flow::getIth(const CalculationUnit *unit, size_t i) const {
-	assert(fd->unit_names.find(unit) != fd->unit_names.end(), "no such unit");
-	assert(fd->unit_names[unit].size() > i, "ith is too much");
+	cd3assert(fd->unit_names.find(unit) != fd->unit_names.end(), "no such unit");
+	cd3assert(fd->unit_names[unit].size() > i, "ith is too much");
 	return (*f)[fd->positions[fd->unit_names[unit][i]]];
 }
 

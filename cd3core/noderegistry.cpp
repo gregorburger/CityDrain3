@@ -17,7 +17,7 @@ NodeRegistry::~NodeRegistry() {
 }
 
 bool NodeRegistry::addNodeFactory(INodeFactory *factory) {
-	assert(!contains(factory->getNodeName()), "NodeFactory already registered for that name");
+	cd3assert(!contains(factory->getNodeName()), "NodeFactory already registered for that name");
 	registered_nodes[factory->getNodeName()] = factory;
 	return true;
 }
@@ -34,12 +34,12 @@ bool NodeRegistry::addNodeFactory(INodeFactory *factory) {
 }*/
 
 Node *NodeRegistry::createNode(const std::string &name) const {
-	assert(contains(name), "no such node registered");
+	cd3assert(contains(name), "no such node registered");
 	return registered_nodes.find(name)->second->createNode();
 }
 
 Node *NodeRegistry::createNode(const std::string &name, const std::string &script) const {
-	assert(contains(name), "no such node registered");
+	cd3assert(contains(name), "no such node registered");
 	return registered_nodes.find(name)->second->createNode(script);
 }
 

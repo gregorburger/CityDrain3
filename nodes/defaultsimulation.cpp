@@ -7,7 +7,6 @@
 #include <boost/tuple/tuple.hpp>
 #include <boost/tuple/tuple_comparison.hpp>
 #include <map>
-#include <cd3assert.h>
 
 CD3_DECLARE_SIMULATION_NAME(DefaultSimulation)
 

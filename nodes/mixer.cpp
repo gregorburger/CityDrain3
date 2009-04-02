@@ -4,7 +4,6 @@
 #include <flowfuns.h>
 #include <boost/foreach.hpp>
 #include <sstream>
-#include <cd3assert.h>
 #include <calculationunit.h>
 
 CD3_DECLARE_NODE_NAME(Mixer)

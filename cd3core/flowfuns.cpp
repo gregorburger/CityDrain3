@@ -5,12 +5,12 @@
 #include <set>
 
 /*void FlowFuns::mix(Flow *f, const Flow * const *inputs, int num_inputs) {
-	assert(num_inputs > 1, "cannot mix one input");
+	cd3assert(num_inputs > 1, "cannot mix one input");
 	double qe = 0;
 	std::string qename = inputs[0]->getUnitNames(CalculationUnit::flow)[0];
 
 	for (int i = 0; i < num_inputs; i++) {
-		assert(inputs[0]->getUnitNames(CalculationUnit::flow).size() == 1,
+		cd3assert(inputs[0]->getUnitNames(CalculationUnit::flow).size() == 1,
 			   "unable to mix more than one flow");
 		qe += inputs[i]->getValue(qename);
 	}
@@ -32,14 +32,14 @@
 }
 
 Flow *FlowFuns::mix(const Flow * const *inputs, int num_inputs) {
-	assert(num_inputs > 1, "cannot mix one input");
+	cd3assert(num_inputs > 1, "cannot mix one input");
 	double qe = 0;
 	std::string qename = inputs[0]->getUnitNames(CalculationUnit::flow)[0];
 
 	Flow *f = new Flow();
 
 	for (int i = 0; i < num_inputs; i++) {
-		assert(inputs[0]->getUnitNames(CalculationUnit::flow).size() == 1,
+		cd3assert(inputs[0]->getUnitNames(CalculationUnit::flow).size() == 1,
 			   "unable to mix more than one flow");
 		qe += inputs[i]->getValue(qename);
 	}
@@ -62,11 +62,11 @@ Flow *FlowFuns::mix(const Flow * const *inputs, int num_inputs) {
 
 Flow FlowFuns::mix(const std::vector<Flow*> &inputs) {
 	int num_inputs = inputs.size();
-	assert(num_inputs > 1, "cannot mix one input");
+	cd3assert(num_inputs > 1, "cannot mix one input");
 
 	Flow f0 = *inputs[0];
 	int flowsize = f0.getUnitNames(CalculationUnit::flow).size();
-	assert(flowsize == 1, "unable to mix more than one flow");
+	cd3assert(flowsize == 1, "unable to mix more than one flow");
 	std::string qename = f0.getUnitNames(CalculationUnit::flow)[0];
 
 	Flow f;
@@ -82,7 +82,7 @@ Flow FlowFuns::mix(const std::vector<Flow*> &inputs) {
 			qe += inputs[i]->getIth(CU::rain, 0);
 			continue;
 		}
-		assert(false, "can not mix without either flow or rain");
+		cd3assert(false, "can not mix without either flow or rain");
 	}
 
 	f.addUnit(qename, CalculationUnit::flow, qe);
@@ -110,7 +110,7 @@ Flow FlowFuns::mix(const std::vector<Flow*> &inputs) {
 }
 
 std::pair<Flow, Flow> FlowFuns::split(const Flow flow, float ratio) {
-	assert(ratio <= 1.0 && ratio >= 0.0, "ratio must me between 0 and 1");
+	cd3assert(ratio <= 1.0 && ratio >= 0.0, "ratio must me between 0 and 1");
 	Flow f1 = flow;
 	Flow f2 = flow;
 
@@ -129,7 +129,7 @@ Flow FlowFuns::catchement_lossmodel(Flow in,
 						  double perma_loss,
 						  double rf_coeff) {
 
-	assert(in.getUnitNames(CU::rain).size() == 1, "lossmodel: rain flow count must be one");
+	cd3assert(in.getUnitNames(CU::rain).size() == 1, "lossmodel: rain flow count must be one");
 	Flow out = in;
 	out.clear();
 	if (basin->empty()) {
@@ -160,8 +160,8 @@ Flow FlowFuns::catchment_flowmodel	(Flow in,
 							 int dt,
 							 const std::vector<double *> &cvalues,
 							 const std::vector<std::string *> &cnames) {
-	assert(in.getUnitNames(CU::rain).size() == 1, "flowmodel: rain flow count must be one");
-	assert(cvalues.size() == cnames.size(), "flowmodel: concentration values and names must be of same dimensions");
+	cd3assert(in.getUnitNames(CU::rain).size() == 1, "flowmodel: rain flow count must be one");
+	cd3assert(cvalues.size() == cnames.size(), "flowmodel: concentration values and names must be of same dimensions");
 	Flow out;
 	double rain = in.getIth(CU::rain, 0);
 

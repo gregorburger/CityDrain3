@@ -16,7 +16,7 @@ SimulationRegistry::~SimulationRegistry() {
 }
 
 void SimulationRegistry::addSimulationFactory(const ISimulationFactory *factory) {
-	assert(factory, "factory null");
+	cd3assert(factory, "factory null");
 	registry[factory->getSimulationName()] = factory;
 }
 
@@ -25,7 +25,7 @@ bool SimulationRegistry::contains(const std::string &name) const {
 }
 
 ISimulation *SimulationRegistry::createSimulation(const std::string &name) const {
-	assert(contains(name), "no such simulation registered");
+	cd3assert(contains(name), "no such simulation registered");
 	sim_reg_type::const_iterator it = registry.find(name);
 	return it->second->createSimulation();
 }

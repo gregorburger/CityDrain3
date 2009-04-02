@@ -44,7 +44,7 @@ XmlLoader::~XmlLoader() {
 }
 
 ISimulation *XmlLoader::load(QFile &file) {
-	assert(model, "model null");
+	cd3assert(model, "model null");
 
 	QString errorStr;
 	QDomDocument document("citydrain");
@@ -98,16 +98,16 @@ void XmlLoader::loadModel(QDomDocument document) {
 }
 
 void XmlLoader::loadSimulation(QDomDocument document) {
-	//assert(simulation, "simulation null");
+	//cd3assert(simulation, "simulation null");
 
 	QDomElement simElem = document.firstChildElement("citydrain")
 					   .firstChildElement("simulation");
 
-	assert(simElem.hasAttribute("class"), "sim element has no class attribute");
+	cd3assert(simElem.hasAttribute("class"), "sim element has no class attribute");
 
 	std::string simclass = simElem.attribute("class").toStdString();
-	assert(simclass != "", "sim class may not be empty");
-	assert(sim_registry->contains(simclass), "no such simulation class registered");
+	cd3assert(simclass != "", "sim class may not be empty");
+	cd3assert(sim_registry->contains(simclass), "no such simulation class registered");
 
 	simulation = sim_registry->createSimulation(simclass);
 
@@ -120,9 +120,9 @@ void XmlLoader::loadSimulation(QDomDocument document) {
 
 	QDomNamedNodeMap attrs = time.attributes();
 
-	assert(attrs.contains("start"), "no start attribute found");
-	assert(attrs.contains("stop"), "no stop attribute found");
-	assert(attrs.contains("dt"), "no dt attribute found");
+	cd3assert(attrs.contains("start"), "no start attribute found");
+	cd3assert(attrs.contains("stop"), "no stop attribute found");
+	cd3assert(attrs.contains("dt"), "no dt attribute found");
 
 	CONSUME(time);
 
@@ -152,10 +152,10 @@ void XmlLoader::loadNodesFromPlugins(
 
 	QString path;
 	Q_FOREACH (path, paths) {
-		assert(QFile::exists(path), str(format("could not find plugin %1%") % path.toStdString()));
+		cd3assert(QFile::exists(path), str(format("could not find plugin %1%") % path.toStdString()));
 		QLibrary l(path);
 		//l.setLoadHints(QLibrary::ExportExternalSymbolsHint);
-		assert(l.load(), str(format("could not load plugin: %1%") % path.toStdString()));
+		cd3assert(l.load(), str(format("could not load plugin: %1%") % path.toStdString()));
 		regNodeFunProto regFun = (regNodeFunProto) l.resolve("registerNodes");
 		if (regFun) {
 			regFun(registry);
@@ -205,29 +205,29 @@ void XmlLoader::loadSimulationsFromPlugins(
 }
 
 void XmlLoader::loadNodes(QDomElement element) {
-	assert(element.nodeName() == "nodelist", "no nodelist element found");
+	cd3assert(element.nodeName() == "nodelist", "no nodelist element found");
 	CONSUME(element);
 	//qDebug() << "start loading nodes";
 	QDomNodeList childs = element.childNodes();
 	for (int i = 0; i < childs.count(); i++) {
 		QDomNode child = childs.at(i);
-		assert(child.nodeName() == "node", "no child node \"node\" found");
-		assert(child.isElement(), "not an element");
+		cd3assert(child.nodeName() == "node", "no child node \"node\" found");
+		cd3assert(child.isElement(), "not an element");
 		loadNode(child.toElement());
 	}
 }
 
 void XmlLoader::loadNode(QDomElement element) {
-	assert(element.nodeName() == "node", "not a \"node\" element");
+	cd3assert(element.nodeName() == "node", "not a \"node\" element");
 	CONSUME(element);
 	std::string id = element.attribute("id", "").toStdString();
 	std::string nodeClass = element.attribute("class").toStdString();
 	std::string script = element.attribute("script", "").toStdString();
 	//TODO assert here
-	assert(node_registry->contains(nodeClass), "no such Node class registered");
+	cd3assert(node_registry->contains(nodeClass), "no such Node class registered");
 	Node *node = script == "" ? node_registry->createNode(nodeClass) : node_registry->createNode(nodeClass, script);
 
-	assert(node, "node is null");
+	cd3assert(node, "node is null");
 
 	QDomNodeList childs = element.childNodes();
 
@@ -241,8 +241,8 @@ void XmlLoader::loadNode(QDomElement element) {
 
 void XmlLoader::loadConnections(QDomElement element) {
 	//xmlError(element, element.nodeName());
-	//assert(false);
-	assert(element.nodeName() == "connectionlist", "not a connectionlist element");
+	//cd3assert(false);
+	cd3assert(element.nodeName() == "connectionlist", "not a connectionlist element");
 
 	CONSUME(element);
 
@@ -251,7 +251,7 @@ void XmlLoader::loadConnections(QDomElement element) {
 	for (int i = 0; i < childs.count(); i++) {
 		QDomNode child = childs.at(i);
 
-		assert(child.nodeName() == "connection", "not a connectionlist element");
+		cd3assert(child.nodeName() == "connection", "not a connectionlist element");
 
 		QDomNamedNodeMap source_attrs = child
 										.firstChildElement("source")
@@ -263,10 +263,10 @@ void XmlLoader::loadConnections(QDomElement element) {
 		CONSUME(child.firstChildElement("source"));
 		CONSUME(child.firstChildElement("sink"));
 
-		assert(source_attrs.contains("node"), "connection has no source node");
-		assert(source_attrs.contains("port"), "connection has no source port");
-		assert(sink_attrs.contains("node"), "connection has no sink node");
-		assert(sink_attrs.contains("port"), "connection has no sink port");
+		cd3assert(source_attrs.contains("node"), "connection has no source node");
+		cd3assert(source_attrs.contains("port"), "connection has no source port");
+		cd3assert(sink_attrs.contains("node"), "connection has no sink node");
+		cd3assert(sink_attrs.contains("port"), "connection has no sink port");
 
 		CONSUME(child.toElement());
 
@@ -294,8 +294,8 @@ void XmlLoader::loadConnections(QDomElement element) {
 }
 
 void XmlLoader::setNodeParameter(Node *node, QDomElement element) {
-	assert(node, "can not set null node parameters");
-	assert(element.nodeName() == "parameter", "no parameter node");
+	cd3assert(node, "can not set null node parameters");
+	cd3assert(element.nodeName() == "parameter", "no parameter node");
 	CONSUME(element);
 	bool simple = element.attribute("kind", "simple") == "simple";
 

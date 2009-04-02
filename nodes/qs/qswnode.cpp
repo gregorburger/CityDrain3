@@ -37,9 +37,9 @@ QSWNode::QSWNode(const std::string &s) {
 
 	executeScript(priv->engine);
 
-	assert(priv->engine.globalObject().property("init").isFunction(),
+	cd3assert(priv->engine.globalObject().property("init").isFunction(),
 		   "no init function defined");
-	assert(priv->engine.globalObject().property("f").isFunction(),
+	cd3assert(priv->engine.globalObject().property("f").isFunction(),
 		   "no 'f' function defined");
 
 	priv->init_function = priv->engine.globalObject().property("init");
@@ -48,11 +48,11 @@ QSWNode::QSWNode(const std::string &s) {
 
 void QSWNode::executeScript(QScriptEngine &engine) {
 	QFile f(QString::fromStdString(script_path));
-	assert(f.exists(), "script file does not exist");
-	assert(f.open(QIODevice::ReadOnly), "could not read open script file");
+	cd3assert(f.exists(), "script file does not exist");
+	cd3assert(f.open(QIODevice::ReadOnly), "could not read open script file");
 	QString script = f.readAll();
 	QScriptValue script_ret = engine.evaluate(script, f.fileName());
-	assert(!script_ret.isError(), script_ret.toString().toStdString());
+	cd3assert(!script_ret.isError(), script_ret.toString().toStdString());
 }
 
 QSWNode::~QSWNode() {
@@ -106,7 +106,7 @@ void QSWNode::pullOutStates() {
 	Q_FOREACH(QString qsname, priv->states) {
 		std::string stdname = qsname.toStdString();
 		QVariant state_value = priv->engine.globalObject().property(qsname).toVariant();
-		assert(
+		cd3assert(
 				IStateMigrator::qt.count(state_value.type()) == 1,
 				str(format("can not pull state %1%") % stdname));
 		IStateMigrator::qt[state_value.type()]->pull(stdname, this, priv->engine);
@@ -117,7 +117,7 @@ void QSWNode::pushInStates() {
 	Q_FOREACH(QString qsname, priv->states) {
 		std::string stdname = qsname.toStdString();
 		cd3::TypeInfo type = Node::states[stdname].first;
-		assert(
+		cd3assert(
 				IStateMigrator::cd3.count(type) == 1,
 				str(format("can not push state %1%") % stdname));
 		IStateMigrator::cd3[type]->push(stdname, this, priv->engine);
@@ -128,7 +128,7 @@ void QSWNode::pushParameters() {
 	Q_FOREACH(QString qsname, priv->parameters) {
 		std::string stdname = qsname.toStdString();
 		cd3::TypeInfo type = Node::states[stdname].first;
-		assert(
+		cd3assert(
 				IStateMigrator::cd3.count(type) == 1,
 				str(format("can not push parameter %1%") % stdname));
 		IStateMigrator::cd3[type]->pushParameter(stdname, this, priv->engine);
@@ -140,9 +140,9 @@ int QSWNode::f(int time, int dt) {
 			priv->engine.globalObject(),
 			QScriptValueList() << time << dt);
 
-	assert(!f_ret.isError(), f_ret.toString().toStdString());
+	cd3assert(!f_ret.isError(), f_ret.toString().toStdString());
 
-	assert(f_ret.isNumber(), "f must return the calculated delta time");
+	cd3assert(f_ret.isNumber(), "f must return the calculated delta time");
 	return f_ret.toInteger();
 }
 
@@ -151,7 +151,7 @@ void QSWNode::init(int start,int end, int dt) {
 	QScriptValue init_ret = priv->init_function.call(
 			priv->engine.globalObject(),
 			QScriptValueList() << start << end << dt);
-	assert(!init_ret.isError(), init_ret.toString().toStdString());
+	cd3assert(!init_ret.isError(), init_ret.toString().toStdString());
 }
 
 void QSWNode::deinit() {
