@@ -19,10 +19,8 @@ FileOut::FileOut()
 }
 
 FileOut::~FileOut() {
-	//std::cout << "closing file" << std::endl;
 	delete out_file_name;
 	delete in;
-
 }
 
 void FileOut::init(int start, int stop, int dt) {
