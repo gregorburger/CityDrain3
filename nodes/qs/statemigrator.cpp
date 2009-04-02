@@ -19,7 +19,12 @@ struct BasicStateMigrator : public IStateMigrator {
 	void pull(const string &name, Node *node, QScriptEngine &engine) {
 		QVariant var = engine.globalObject().property(QString::fromStdString(name)).toVariant();
 		T val = var.value<T>();
-		node->setState(name, val);
+		if (node->const_states->find(name) == node->const_states->end()) {
+			T *pval = new T(val);
+			node->addState(name, pval);
+		} else {
+			node->setState(name, val);
+		}
 	}
 
 	void push(const string &name, Node *node, QScriptEngine &engine) {
@@ -37,7 +42,12 @@ struct StrStateMigrator : public IStateMigrator {
 	void pull(const string &name, Node *node, QScriptEngine &engine) {
 		QString var = engine.globalObject().property(QString::fromStdString(name)).toString();
 		string std_var = var.toStdString();
-		node->setState(name, std_var);
+		if (node->const_states->find(name) == node->const_states->end()) {
+			string *pstring = new string(std_var);
+			node->addState(name, pstring);
+		} else {
+			node->setState(name, std_var);
+		}
 	}
 
 	void push(const string &name, Node *node, QScriptEngine &engine) {
@@ -58,7 +68,11 @@ struct FlowStateMigrator : public IStateMigrator {
 		QString qname = QString::fromStdString(name);
 
 		QSWFlow *f = qobject_cast<QSWFlow*>(engine.globalObject().property(qname).toQObject());
-		node->setState<Flow>(name, *f->flow);
+		if (node->const_states->find(name) == node->const_states->end()) {
+			node->addState(name, f->flow);
+		} else {
+			node->setState(name, *f->flow);
+		}
 	}
 
 	void push(const string &name, Node *node, QScriptEngine &engine) {
@@ -94,4 +108,3 @@ qt_to_ism IStateMigrator::qt = assign::map_list_of
 	(QVariant::Int, spsm(new BasicStateMigrator<int>()))
 	(QVariant::String, spsm(new StrStateMigrator()))
 	(QVariant::UserType, spsm(new FlowStateMigrator()));
-

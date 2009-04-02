@@ -30,7 +30,6 @@ Q_SCRIPT_DECLARE_QMETAOBJECT(QSWFlow, QObject*);
 QSWNode::QSWNode(const std::string &s)
 	: Node() {
 	script_path = s;
-	qDebug() << QTime::currentTime() << " QSWNode()";
 	priv = new QSWNodePrivate();
 	priv->engine.setGlobalObject(priv->engine.newQObject(this));
 	QScriptValue flowClass = priv->engine.scriptValueFromQMetaObject<QSWFlow>();

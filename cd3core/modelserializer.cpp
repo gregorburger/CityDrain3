@@ -55,6 +55,8 @@ void ModelSerializer::serializeNode(std::ostream &os, std::string &node_name, No
 	os << boost::format("\t<node name=\"%1%\" class=\"%2%\">\n") % node_name % n->getClassName();
 	type_ser_map serializers = IStateSerializer::standard();
 
+	n->pullOutStates();
+
 	BOOST_FOREACH(sltvpp state, n->states) {
 		std::string name = state.first;
 		cd3::TypeInfo type(state.second.first);
@@ -163,6 +165,9 @@ bool Deserializer::endElement(const QString &namespaceURI,
 		in_outport = false;
 	}
 
+	if (qName == "node") {
+		current->pushInStates();
+	}
 	return true;
 }
 

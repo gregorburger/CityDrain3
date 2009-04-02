@@ -37,6 +37,7 @@ class SimulationParameters;
 class Node
 {
 	friend class ModelSerializer;
+	friend class IStateMigrator;
 public:
 	Node()
 		: const_parameters(&parameters),
@@ -118,7 +119,6 @@ public:
 	const ssf		* const const_in_ports;
 	const ssf		* const const_out_ports;
 
-protected:
 	template<class T>
 	void addState(const std::string &name, T *ptr) {
 		cd3assert(ptr, "adding null state");
@@ -135,6 +135,7 @@ protected:
 		parameters[name] = ltvp(cd3::TypeInfo(typeid(T)), ptr);
 	}
 
+protected:
 	void addInPort	(const std::string &name, Flow *p);
 	void addOutPort	(const std::string &name, Flow *p);
 

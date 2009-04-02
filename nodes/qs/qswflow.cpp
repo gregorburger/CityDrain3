@@ -9,17 +9,14 @@
 
 QSWFlow::QSWFlow(Flow *f, QObject *parent)
  : QObject(parent), flow(f) {
-	qDebug() << QTime::currentTime() << " QSWFlow(Flow)";
 }
 
 QSWFlow::QSWFlow(QObject *parent)
  : QObject(parent) {
 	flow = new Flow();
-	qDebug() << QTime::currentTime() << " QSWFlow()";
 }
 
 void QSWFlow::clear() {
-	qDebug() << QTime::currentTime() << "QSWFlow::clear()";
 	flow->clear();
 }
 
