@@ -2,9 +2,12 @@
 #include <iostream>
 #include <node.h>
 #include <boost/foreach.hpp>
+#include <boost/format.hpp>
 #include <simulation.h>
 #include <vector>
 #include <cd3assert.h>
+
+using namespace boost;
 
 typedef std::pair<std::string, Node*> nodes_pair_type;
 
@@ -43,8 +46,10 @@ void MapBasedModel::addConnection(const std::string &src_node,
 					   const std::string &sin_node,
 					   const std::string &sin_port) {
 
-	cd3assert(names_nodes.find(src_node) != names_nodes.end(), "source node not found");
-	cd3assert(names_nodes.find(sin_node) != names_nodes.end(), "sink node not found");
+	cd3assert(names_nodes.count(src_node),
+			  str(format("source node (%1%) not found") % src_node));
+	cd3assert(names_nodes.count(sin_node),
+			  str(format("sink node (%1%) not found") % sin_node));
 
 	Node *source = names_nodes.find(src_node)->second;
 	Node *sink = names_nodes.find(sin_node)->second;
