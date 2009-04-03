@@ -88,32 +88,6 @@ void CatchmentCSS::deinit() {
 	}
 }
 
-typedef CalculationUnit CU;
-
-Flow route(const Flow inflow, Flow rain, Flow *volume, int N, double C_x, double C_y, int dt) {
-	//cd3assert(inflow.compatible(rain), "flows not compatible");
-	Flow newvolume = *volume;
-	Flow out = inflow;
-	double inqe = inflow.getIth(CU::flow, 0);
-	double volqe = volume->getIth(CU::flow, 0);
-	double rainqe = rain.getIth(CU::rain, 0) / N;
-	double outqe = (inqe + rainqe) * C_x + volqe * C_y;
-	double newvolqe = (inqe - outqe + rainqe) * dt + volqe;
-
-	out.setIth(CU::flow, 0, outqe);
-
-	newvolume.setIth(CU::flow, 0, newvolqe);
-
-	BOOST_FOREACH(std::string cname, inflow.getUnitNames(CU::concentration)) {
-		double c0 = 0.5 * outqe + newvolqe/dt;
-		double c1 = inqe * inflow.getValue(cname) + rainqe * rain.getValue(cname) - volume->getValue(cname)*(0.5*outqe - volqe/dt);
-		newvolume.setValue(cname, std::max(0.0, c1/c0));
-		out.setValue(cname, (newvolume.getValue(cname) + volume->getValue(cname)) * 0.5);
-	}
-	*volume = newvolume;
-	return out;
-}
-
 int CatchmentCSS::f(int time, int dt) {
 	(void) time;
 	double C_x, C_y;
@@ -136,7 +110,7 @@ int CatchmentCSS::f(int time, int dt) {
 			V[i]->clear();
 		}
 
-		rain = route(*q_upstream, rain, V[i], N, C_x, C_y, dt);
+		rain = FlowFuns::route_catchment(*q_upstream, rain, V[i], N, C_x, C_y, dt);
 	}
 	*out = rain;
 	return dt;

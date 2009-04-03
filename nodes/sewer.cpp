@@ -1,6 +1,7 @@
 #include "sewer.h"
 
 #include <flow.h>
+#include <flowfuns.h>
 #include <calculationunit.h>
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
@@ -45,29 +46,6 @@ void Sewer::init(int start, int end, int dt) {
 	addMuskParam(dt);
 }
 
-typedef CalculationUnit CU;
-
-Flow route(const Flow inflow, Flow *volume, double C_x, double C_y, int dt) {
-	Flow newvolume = *volume;
-	Flow out = inflow;
-	double inqe = inflow.getIth(CalculationUnit::flow, 0);
-	double volqe = volume->getIth(CalculationUnit::flow, 0);
-	double outqe = inqe * C_x + volqe * C_y;
-	double newvolqe = (inqe - outqe) * dt + volqe;
-
-	out.setIth(CU::flow, 0, outqe);
-
-	newvolume.setIth(CU::flow, 0, newvolqe);
-
-	BOOST_FOREACH(std::string cname, inflow.getUnitNames(CU::concentration)) {
-		double c0 = 0.5 * outqe + newvolqe/dt;
-		double c1 = inqe * inflow.getValue(cname) -	volume->getValue(cname)*(0.5*outqe - volqe/dt);
-		newvolume.setValue(cname, std::max(0.0, c1/c0));
-		out.setValue(cname, (newvolume.getValue(cname) + volume->getValue(cname)) * 0.5);
-	}
-	*volume = newvolume;
-	return out;
-}
 
 int Sewer::f(int time, int dt) {
 	(void) time;
@@ -82,7 +60,7 @@ int Sewer::f(int time, int dt) {
 			V[i]->clear();
 		}
 
-		tmp = route(tmp, V[i], C_x, C_y, dt);
+		tmp = FlowFuns::route_sewer(tmp, V[i], C_x, C_y, dt);
 	}
 	*out = tmp;
 

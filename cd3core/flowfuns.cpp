@@ -3,62 +3,7 @@
 #include <cd3assert.h>
 #include <calculationunit.h>
 #include <set>
-
-/*void FlowFuns::mix(Flow *f, const Flow * const *inputs, int num_inputs) {
-	cd3assert(num_inputs > 1, "cannot mix one input");
-	double qe = 0;
-	std::string qename = inputs[0]->getUnitNames(CalculationUnit::flow)[0];
-
-	for (int i = 0; i < num_inputs; i++) {
-		cd3assert(inputs[0]->getUnitNames(CalculationUnit::flow).size() == 1,
-			   "unable to mix more than one flow");
-		qe += inputs[i]->getValue(qename);
-	}
-
-	f->setValue(qename, qe);
-	//f->addUnit(qename, CalculationUnit::flow, qe);
-
-	for (size_t c = 0;
-		 c < inputs[0]->getUnitNames(CalculationUnit::concentration).size();
-		 c++) {
-		double Ci = 0;
-		std::string cname = inputs[0]->getUnitNames(CalculationUnit::concentration).at(c);
-		for (int i = 0; i < num_inputs; i++) {
-			Ci += inputs[i]->getValue(cname);
-		}
-		//f->addUnit(cname, CalculationUnit::concentration, Ci/qe);
-		f->setValue(cname, Ci/qe);
-	}
-}
-
-Flow *FlowFuns::mix(const Flow * const *inputs, int num_inputs) {
-	cd3assert(num_inputs > 1, "cannot mix one input");
-	double qe = 0;
-	std::string qename = inputs[0]->getUnitNames(CalculationUnit::flow)[0];
-
-	Flow *f = new Flow();
-
-	for (int i = 0; i < num_inputs; i++) {
-		cd3assert(inputs[0]->getUnitNames(CalculationUnit::flow).size() == 1,
-			   "unable to mix more than one flow");
-		qe += inputs[i]->getValue(qename);
-	}
-
-	f->addUnit(qename, CalculationUnit::flow, qe);
-
-	for (size_t c = 0;
-		 c < inputs[0]->getUnitNames(CalculationUnit::concentration).size();
-		 c++) {
-		double Ci = 0;
-		std::string cname = inputs[0]->getUnitNames(CalculationUnit::concentration).at(c);
-		for (int i = 0; i < num_inputs; i++) {
-			Ci += inputs[i]->getValue(cname) ;
-		}
-		f->addUnit(cname, CalculationUnit::concentration, Ci/qe);
-	}
-	return f;
-}
-*/
+#include <boost/foreach.hpp>
 
 Flow FlowFuns::mix(const std::vector<Flow*> &inputs) {
 	int num_inputs = inputs.size();
@@ -129,7 +74,8 @@ Flow FlowFuns::catchement_lossmodel(Flow in,
 						  double perma_loss,
 						  double rf_coeff) {
 
-	cd3assert(in.getUnitNames(CU::rain).size() == 1, "lossmodel: rain flow count must be one");
+	cd3assert(in.getUnitNames(CU::rain).size() == 1,
+			  "lossmodel: rain flow count must be one");
 	Flow out = in;
 	out.clear();
 	if (basin->empty()) {
@@ -160,8 +106,11 @@ Flow FlowFuns::catchment_flowmodel	(Flow in,
 							 int dt,
 							 const std::vector<double *> &cvalues,
 							 const std::vector<std::string *> &cnames) {
-	cd3assert(in.getUnitNames(CU::rain).size() == 1, "flowmodel: rain flow count must be one");
-	cd3assert(cvalues.size() == cnames.size(), "flowmodel: concentration values and names must be of same dimensions");
+
+	cd3assert(in.getUnitNames(CU::rain).size() == 1,
+			  "flowmodel: rain flow count must be one");
+	cd3assert(cvalues.size() == cnames.size(),
+			  "flowmodel: concentration values and names must be of same dimensions");
 	Flow out;
 	double rain = in.getIth(CU::rain, 0);
 
@@ -173,3 +122,57 @@ Flow FlowFuns::catchment_flowmodel	(Flow in,
 	return out;
 }
 
+Flow FlowFuns::route_sewer(const Flow inflow,
+						   Flow *volume,
+						   double C_x,
+						   double C_y,
+						   int dt) {
+	Flow newvolume = *volume;
+	Flow out = inflow;
+	double inqe = inflow.getIth(CalculationUnit::flow, 0);
+	double volqe = volume->getIth(CalculationUnit::flow, 0);
+	double outqe = inqe * C_x + volqe * C_y;
+	double newvolqe = (inqe - outqe) * dt + volqe;
+
+	out.setIth(CU::flow, 0, outqe);
+
+	newvolume.setIth(CU::flow, 0, newvolqe);
+
+	BOOST_FOREACH(std::string cname, inflow.getUnitNames(CU::concentration)) {
+		double c0 = 0.5 * outqe + newvolqe/dt;
+		double c1 = inqe * inflow.getValue(cname) -	volume->getValue(cname)*(0.5*outqe - volqe/dt);
+		newvolume.setValue(cname, std::max(0.0, c1/c0));
+		out.setValue(cname, (newvolume.getValue(cname) + volume->getValue(cname)) * 0.5);
+	}
+	*volume = newvolume;
+	return out;
+}
+
+Flow FlowFuns::route_catchment(const Flow inflow,
+							   Flow rain,
+							   Flow *volume,
+							   int N,
+							   double C_x,
+							   double C_y,
+							   int dt) {
+	Flow newvolume = *volume;
+	Flow out = inflow;
+	double inqe = inflow.getIth(CU::flow, 0);
+	double volqe = volume->getIth(CU::flow, 0);
+	double rainqe = rain.getIth(CU::rain, 0) / N;
+	double outqe = (inqe + rainqe) * C_x + volqe * C_y;
+	double newvolqe = (inqe - outqe + rainqe) * dt + volqe;
+
+	out.setIth(CU::flow, 0, outqe);
+
+	newvolume.setIth(CU::flow, 0, newvolqe);
+
+	BOOST_FOREACH(std::string cname, inflow.getUnitNames(CU::concentration)) {
+		double c0 = 0.5 * outqe + newvolqe/dt;
+		double c1 = inqe * inflow.getValue(cname) + rainqe * rain.getValue(cname) - volume->getValue(cname)*(0.5*outqe - volqe/dt);
+		newvolume.setValue(cname, std::max(0.0, c1/c0));
+		out.setValue(cname, (newvolume.getValue(cname) + volume->getValue(cname)) * 0.5);
+	}
+	*volume = newvolume;
+	return out;
+}
