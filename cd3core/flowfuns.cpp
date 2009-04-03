@@ -4,37 +4,42 @@
 #include <calculationunit.h>
 #include <set>
 #include <boost/foreach.hpp>
+#include <sstream>
 
 Flow FlowFuns::mix(const std::vector<Flow*> &inputs) {
-	int num_inputs = inputs.size();
-	cd3assert(num_inputs > 1, "cannot mix one input");
-
-	Flow f0 = *inputs[0];
-	int flowsize = f0.getUnitNames(CalculationUnit::flow).size();
-	cd3assert(flowsize == 1, "unable to mix more than one flow");
-	std::string qename = f0.getUnitNames(CalculationUnit::flow)[0];
-
+	std::set<std::string> qe_names;
 	Flow f;
 	double qe = 0;
-
+	int num_inputs = inputs.size();
 
 	for (int i = 0; i < num_inputs; i++) {
 		if (inputs[i]->countUnits(CU::flow) > 0) {
 			qe += inputs[i]->getIth(CU::flow, 0);
+			qe_names.insert(inputs[i]->getUnitNames(CU::flow)[0]);
 			continue;
 		}
 		if (inputs[i]->countUnits(CU::rain) > 0) {
 			qe += inputs[i]->getIth(CU::rain, 0);
+			qe_names.insert(inputs[i]->getUnitNames(CU::rain)[0]);
 			continue;
 		}
 		cd3assert(false, "can not mix without either flow or rain");
 	}
 
-	f.addUnit(qename, CalculationUnit::flow, qe);
+	std::stringstream ss;
 
+	ss  << "mixed flow:";
+
+	BOOST_FOREACH(std::string name, qe_names) {
+		ss << " " << name;
+	}
+
+	f.addUnit(ss.str(), CalculationUnit::flow, qe);
 	std::set<std::string> already_mixed;
 
 	for (int i = 0; i < num_inputs; i++) {
+		if (!inputs[i]->countUnits(CU::concentration))
+			continue;
 		for (size_t c = 0;
 			 c < inputs[i]->getUnitNames(CalculationUnit::concentration).size();
 			 c++) {
@@ -155,11 +160,13 @@ Flow FlowFuns::route_catchment(const Flow inflow,
 							   double C_x,
 							   double C_y,
 							   int dt) {
+	cd3assert(rain.countUnits(CU::flow) > 0 || rain.countUnits(CU::rain) > 0,
+			  "rain_in in catchment is empty");
 	Flow newvolume = *volume;
 	Flow out = inflow;
-	double inqe = inflow.getIth(CU::flow, 0);
+	double inqe = inflow.countUnits(CU::flow) ? inflow.getIth(CU::flow, 0) : 0.0;
 	double volqe = volume->getIth(CU::flow, 0);
-	double rainqe = rain.getIth(CU::rain, 0) / N;
+	double rainqe = rain.getIth(CU::flow, 0) / N;
 	double outqe = (inqe + rainqe) * C_x + volqe * C_y;
 	double newvolqe = (inqe - outqe + rainqe) * dt + volqe;
 
@@ -167,11 +174,13 @@ Flow FlowFuns::route_catchment(const Flow inflow,
 
 	newvolume.setIth(CU::flow, 0, newvolqe);
 
-	BOOST_FOREACH(std::string cname, inflow.getUnitNames(CU::concentration)) {
-		double c0 = 0.5 * outqe + newvolqe/dt;
-		double c1 = inqe * inflow.getValue(cname) + rainqe * rain.getValue(cname) - volume->getValue(cname)*(0.5*outqe - volqe/dt);
-		newvolume.setValue(cname, std::max(0.0, c1/c0));
-		out.setValue(cname, (newvolume.getValue(cname) + volume->getValue(cname)) * 0.5);
+	if (inflow.countUnits(CU::concentration)) {
+		BOOST_FOREACH(std::string cname, inflow.getUnitNames(CU::concentration)) {
+			double c0 = 0.5 * outqe + newvolqe/dt;
+			double c1 = inqe * inflow.getValue(cname) + rainqe * rain.getValue(cname) - volume->getValue(cname)*(0.5*outqe - volqe/dt);
+			newvolume.setValue(cname, std::max(0.0, c1/c0));
+			out.setValue(cname, (newvolume.getValue(cname) + volume->getValue(cname)) * 0.5);
+		}
 	}
 	*volume = newvolume;
 	return out;

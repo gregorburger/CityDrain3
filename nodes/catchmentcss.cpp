@@ -12,8 +12,8 @@ CD3_DECLARE_NODE_NAME(CatchmentCSS)
 CatchmentCSS::CatchmentCSS() {
 	rain_in = new Flow();
 	dwf_in = new Flow();
-	parasite_in = new Flow();
-	q_upstream = new Flow();
+	parasite_in = new Flow(Flow::nullFlow());
+	q_upstream = new Flow(Flow::nullFlow());
 	out = new Flow();
 	loss_basin = new Flow();
 
@@ -102,7 +102,7 @@ int CatchmentCSS::f(int time, int dt) {
 	if (!parasite_in->empty())
 		inputs.push_back(parasite_in);
 
-	Flow rain = inputs.size() > 1 ? FlowFuns::mix(inputs) : flow;
+	Flow rain = FlowFuns::mix(inputs);
 
 	for (int i = 0; i < N; i++) {
 		if (V[i]->empty()) {

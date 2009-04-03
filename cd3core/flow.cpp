@@ -21,6 +21,12 @@ Flow::Flow(const Flow &other) {
 	fd = other.fd;
 }
 
+Flow Flow::nullFlow() {
+	Flow f;
+	f.addUnit("flow", CU::flow, 0.0);
+	return f;
+}
+
 Flow::~Flow() {
 
 }

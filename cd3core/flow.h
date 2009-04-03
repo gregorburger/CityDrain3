@@ -39,8 +39,9 @@ public:
 	bool hasName(const std::string &name) const;
 
 	void copy();
-	
 	void dump() const;
+
+	static Flow nullFlow();
 private:
 	void copyData();
 	void copyDefinition();
