@@ -17,6 +17,7 @@
 #include <typeregistry.h>
 #include <simulationregistry.h>
 #include <simulationfactory.h>
+#include <parallelsimulation.h>
 
 #include <typefactory.h>
 
@@ -42,5 +43,6 @@ extern "C" {
 	void registerSimulations(SimulationRegistry *registry) {
 		registry->addSimulationFactory(new SimulationFactory<DefaultSimulation>());
 		registry->addSimulationFactory(new SimulationFactory<VarDTSimulation>());
+		registry->addSimulationFactory(new SimulationFactory<ParallelSimulation>());
 	}
 }

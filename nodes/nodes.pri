@@ -2,6 +2,8 @@ INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 QT += xml \
     script
+QMAKE_CXXFLAGS += -fopenmp
+LIBS += -lgomp
 HEADERS += constsource.h \
     flowtypefactory.h \
     fileout.h \
@@ -13,7 +15,8 @@ HEADERS += constsource.h \
     testnode.h \
     cso.h \
     splitter.h \
-    catchmentcss.h
+    catchmentcss.h \
+    parallelsimulation.h
 SOURCES += nodes.cpp \
     constsource.cpp \
     flowtypefactory.cpp \
@@ -26,5 +29,6 @@ SOURCES += nodes.cpp \
     testnode.cpp \
     cso.cpp \
     splitter.cpp \
-    catchmentcss.cpp
+    catchmentcss.cpp \
+    parallelsimulation.cpp
 include(qs/qs.pri)
