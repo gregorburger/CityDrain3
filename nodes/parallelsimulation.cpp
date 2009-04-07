@@ -10,6 +10,9 @@ ParallelSimulation::ParallelSimulation() {
 	sources = std::vector<Node*>(set_sources.begin(), set_sources.end());
 }
 
+ParallelSimulation::~ParallelSimulation() {
+}
+
 int ParallelSimulation::run(int time, int dt) {
 
 	std::map<Node *, int> deps = createDependsMap();

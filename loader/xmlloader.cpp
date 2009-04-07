@@ -155,7 +155,10 @@ void XmlLoader::loadNodesFromPlugins(
 		cd3assert(QFile::exists(path), str(format("could not find plugin %1%") % path.toStdString()));
 		QLibrary l(path);
 		//l.setLoadHints(QLibrary::ExportExternalSymbolsHint);
-		cd3assert(l.load(), str(format("could not load plugin: %1%") % path.toStdString()));
+		cd3assert(l.load(),
+				  str(format("could not load plugin: %1%\nreason: %2%")
+				  % path.toStdString()
+				  % l.errorString().toStdString()));
 		regNodeFunProto regFun = (regNodeFunProto) l.resolve("registerNodes");
 		if (regFun) {
 			regFun(registry);
