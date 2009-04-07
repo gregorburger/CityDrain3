@@ -6,6 +6,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
+#include <boost/assign.hpp>
 #include <sstream>
 #include <cmath>
 #include <cd3assert.h>
@@ -67,17 +68,16 @@ struct FPSer : public IStateSerializer {
 	}
 };
 
-type_ser_map IStateSerializer::standard() {
-	type_ser_map s;
-	s[cd3::TypeInfo(typeid(bool))] = boost::shared_ptr<IStateSerializer>(new BasicSer<bool>());
-	s[cd3::TypeInfo(typeid(int))] = boost::shared_ptr<IStateSerializer>(new BasicSer<int>());
-	s[cd3::TypeInfo(typeid(long))] = boost::shared_ptr<IStateSerializer>(new BasicSer<long>());
-	s[cd3::TypeInfo(typeid(double))] = boost::shared_ptr<IStateSerializer>(new FPSer());
-	s[cd3::TypeInfo(typeid(float))] =boost::shared_ptr<IStateSerializer>(new BasicSer<float>());
-	s[cd3::TypeInfo(typeid(Flow))] = boost::shared_ptr<IStateSerializer>(new FlowSer());
-	s[cd3::TypeInfo(typeid(std::string))] = boost::shared_ptr<IStateSerializer>(new StringSer());
-	return s;
-}
+typedef boost::shared_ptr<IStateSerializer> bspss;
+
+type_ser_map IStateSerializer::standard = boost::assign::map_list_of
+	(cd3::TypeInfo(typeid(bool)), bspss(new BasicSer<bool>()))
+	(cd3::TypeInfo(typeid(int)), bspss(new BasicSer<int>()))
+	(cd3::TypeInfo(typeid(long)), bspss(new BasicSer<long>()))
+	(cd3::TypeInfo(typeid(double)), bspss(new FPSer()))
+	(cd3::TypeInfo(typeid(float)),bspss(new BasicSer<float>()))
+	(cd3::TypeInfo(typeid(Flow)), bspss(new FlowSer()))
+	(cd3::TypeInfo(typeid(std::string)), bspss(new StringSer()));
 
 std::string FlowSerializer::toString(Flow f) {
 	std::ostringstream ss;

@@ -53,7 +53,7 @@ void ModelSerializer::serialize(std::ostream &os) const {
 
 void ModelSerializer::serializeNode(std::ostream &os, std::string &node_name, Node *n) const {
 	os << boost::format("\t<node name=\"%1%\" class=\"%2%\">\n") % node_name % n->getClassName();
-	type_ser_map serializers = IStateSerializer::standard();
+	type_ser_map &serializers = IStateSerializer::standard;
 
 	n->pullOutStates();
 
@@ -100,9 +100,8 @@ void ModelSerializer::deserialize(int time) {
 	cd3assert(reader.parse(s), "could no load state into  model");
 }
 
-Deserializer::Deserializer(IModel *m) {
-	model = m;
-	mapper = IStateSerializer::standard();
+Deserializer::Deserializer(IModel *m)
+ :	model(m), mapper(IStateSerializer::standard) {
 	in_state_node = false;
 	in_inport = false;
 	in_outport = false;

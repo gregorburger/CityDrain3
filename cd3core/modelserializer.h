@@ -61,7 +61,7 @@ private:
 	bool in_state_node;
 	bool in_outport;
 	bool in_inport;
-	std::map<cd3::TypeInfo, boost::shared_ptr<IStateSerializer> > mapper;
+	std::map<cd3::TypeInfo, boost::shared_ptr<IStateSerializer> > &mapper;
 };
 
 #endif // DESERIALIZIER_H

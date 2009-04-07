@@ -23,7 +23,7 @@ struct IStateSerializer
 	virtual std::string serialize(const std::string &name, Node *node) = 0;
 	virtual void deserialize(const std::string &value, const std::string &name,  Node *node) = 0;
 
-	static type_ser_map standard();
+	static type_ser_map standard;
 };
 
 struct FlowSerializer {
