@@ -2,22 +2,29 @@
 #include <model.h>
 #include <node.h>
 #include <boost/foreach.hpp>
+#include <omp.h>
 
 CD3_DECLARE_SIMULATION_NAME(ParallelSimulation)
 
 ParallelSimulation::ParallelSimulation() {
-	node_set_type set_sources = model->getSourceNodes();
-	sources = std::vector<Node*>(set_sources.begin(), set_sources.end());
+    std::cout << "number of threads: " << omp_get_num_threads() << " of " <<  omp_get_max_threads() <<  std::endl;
 }
 
 ParallelSimulation::~ParallelSimulation() {
 }
 
 int ParallelSimulation::run(int time, int dt) {
+	static bool first = true;
+
+	if (first) {
+	    node_set_type set_sources = model->getSourceNodes();
+	    sources = std::vector<Node*>(set_sources.begin(), set_sources.end());
+	    first = false;
+	}
 
 	std::map<Node *, int> deps = createDependsMap();
 	int sources_size = sources.size();
-#pragma omp parallel for schedule(dynamic, 1)
+#pragma omp parallel for
 	for (int i = 0; i < sources_size; i++) {
 		Node *n = sources.at(i);
 		run(n, time, deps);

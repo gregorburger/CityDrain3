@@ -16,6 +16,7 @@ void Node::setInPort(const std::string &name, const Flow *inflow) {
 			  str(format("no such in port (%1%)") % name));
 	cd3assert(inflow,
 			  str(format("in port (%1%) may not be null") % name));
+#pragma omp critical
 	*in_ports[name] = *inflow;
 }
 

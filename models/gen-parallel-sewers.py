@@ -17,7 +17,7 @@ header_templ = """<?xml version="1.0"?>
 
 	<pluginpath path="./libnodes.so" />
 
-	<simulation class="DefaultSimulation">
+	<simulation class="ParallelSimulation">
 		<time start="0" stop="72000" dt="300" />
 	</simulation>
 
