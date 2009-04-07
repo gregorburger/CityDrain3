@@ -4,6 +4,8 @@
 #include "mixer.h"
 #include "defaultsimulation.h"
 #include "vardtsimulation.h"
+#include "parallelsimulation.h"
+#include "pipelinedsimulation.h"
 #include "sewer.h"
 #include "rainread.h"
 #include "testnode.h"
@@ -17,7 +19,6 @@
 #include <typeregistry.h>
 #include <simulationregistry.h>
 #include <simulationfactory.h>
-#include <parallelsimulation.h>
 
 #include <typefactory.h>
 
@@ -44,5 +45,6 @@ extern "C" {
 		registry->addSimulationFactory(new SimulationFactory<DefaultSimulation>());
 		registry->addSimulationFactory(new SimulationFactory<VarDTSimulation>());
 		registry->addSimulationFactory(new SimulationFactory<ParallelSimulation>());
+		registry->addSimulationFactory(new SimulationFactory<PipelinedSimulation>());
 	}
 }

@@ -16,7 +16,8 @@ HEADERS += constsource.h \
     cso.h \
     splitter.h \
     catchmentcss.h \
-    parallelsimulation.h
+    parallelsimulation.h \
+    pipelinedsimulation.h
 SOURCES += nodes.cpp \
     constsource.cpp \
     flowtypefactory.cpp \
@@ -30,5 +31,6 @@ SOURCES += nodes.cpp \
     cso.cpp \
     splitter.cpp \
     catchmentcss.cpp \
-    parallelsimulation.cpp
+    parallelsimulation.cpp \
+    pipelinedsimulation.cpp
 include(qs/qs.pri)
