@@ -10,16 +10,10 @@
 
 CD3_DECLARE_SIMULATION_NAME(DefaultSimulation)
 
-struct SimPriv {
-	int runDT;
-};
-
 DefaultSimulation::DefaultSimulation() {
-	sp = new SimPriv();
 }
 
 DefaultSimulation::~DefaultSimulation() {
-	delete sp;
 }
 
 int DefaultSimulation::run(int time, int dt) {
