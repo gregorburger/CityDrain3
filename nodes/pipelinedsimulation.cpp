@@ -41,7 +41,6 @@ int PipelinedSimulation::run(int time, int dt) {
 
 	std::map<Node *, int> deps = createDependsMap();
 	int sources_size = sources.size();
-#pragma omp parallel for
 	for (int i = 0; i < sources_size; i++) {
 		Node *n = sources.at(i);
 		run(n, time, deps);
@@ -50,7 +49,9 @@ int PipelinedSimulation::run(int time, int dt) {
 }
 
 void PipelinedSimulation::run(Node *n, int time, std::map<Node *, int> &depends) {
+#pragma omp ordered
 	n->f(time, sim_param.dt);
+
 	std::vector<next_node_type> fwd = model->forward(n);
 	int fwd_sizes = fwd.size();
 	for (int i = 0; i < fwd_sizes; i++) {
