@@ -10,3 +10,4 @@ callgrind.*
 qtc-gdbmacros
 tmp/*
 *object_script.*
+imgs/*
