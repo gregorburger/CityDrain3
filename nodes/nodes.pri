@@ -2,8 +2,7 @@ INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 QT += xml \
     script
-QMAKE_CXXFLAGS += -fopenmp
-LIBS += -lgomp
+
 HEADERS += constsource.h \
     flowtypefactory.h \
     fileout.h \

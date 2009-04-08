@@ -2,10 +2,10 @@ INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 CONFIG += link_pkgconfig \
     no_keywords
-QMAKE_CXXFLAGS += -fopenmp
+
 LIBS += -lboost_signals \
-    -lboost_filesystem \
-    -lgomp
+    -lboost_filesystem 
+
 HEADERS += calculationunit.h \
     flow.h \
     model.h \
