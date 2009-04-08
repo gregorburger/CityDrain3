@@ -2,7 +2,7 @@
 #define PARALLELSIMULATION_H
 
 #include <simulation.h>
-#include <map>
+#include <tr1/unordered_map>
 
 CD3_DECLARE_SIMULATION(ParallelSimulation)
 public:
@@ -11,8 +11,8 @@ public:
 
 	virtual int run(int time, int dt);
 private:
-	std::map<Node *, int> createDependsMap() const;
-	void run(Node *n, int time, std::map<Node *, int> &depends);
+        std::tr1::unordered_map<Node *, int> createDependsMap() const;
+        void run(Node *n, int time, std::tr1::unordered_map<Node *, int> &depends);
 	std::vector<Node*> sources;
 };
 

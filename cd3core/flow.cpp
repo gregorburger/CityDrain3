@@ -1,14 +1,14 @@
 #include "flow.h"
-#include <map>
+#include <tr1/unordered_map>
 #include <calculationunit.h>
 #include <boost/foreach.hpp>
 #include <cd3assert.h>
 
 struct FlowDefinition {
 	std::vector<std::string> names;
-	std::map<const CalculationUnit *, std::vector<std::string> > unit_names;
-	std::map<std::string, int> positions;
-	std::map<std::string, const CalculationUnit *> units;
+        std::tr1::unordered_map<const CalculationUnit *, std::vector<std::string> > unit_names;
+        std::tr1::unordered_map<std::string, int> positions;
+        std::tr1::unordered_map<std::string, const CalculationUnit *> units;
 };
 
 Flow::Flow() {

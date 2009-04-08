@@ -3,6 +3,7 @@
 
 #include <node.h>
 #include <vector>
+#include <map>
 class Flow;
 
 CD3_DECLARE_NODE(CatchmentCSS)
