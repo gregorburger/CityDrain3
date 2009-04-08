@@ -16,8 +16,9 @@ void PipelinedSimulation::start(int time) {
 	static int old_perc_progress = 0;
 
 	current_time = time;
-#pragma omp parallel
-	while (current_time <= sim_param.stop) {
+//#pragma omp parallel
+	for (current_time = time; current_time <= sim_param.stop; ) {
+	//while (current_time <= sim_param.stop) {
 		int percent = static_cast<int>(one_perc * current_time * 100);
 		if (percent != old_perc_progress) {
 			old_perc_progress = percent;
@@ -49,7 +50,7 @@ int PipelinedSimulation::run(int time, int dt) {
 }
 
 void PipelinedSimulation::run(Node *n, int time, std::map<Node *, int> &depends) {
-#pragma omp ordered
+//#pragma omp ordered
 	n->f(time, sim_param.dt);
 
 	std::vector<next_node_type> fwd = model->forward(n);
