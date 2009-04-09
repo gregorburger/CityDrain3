@@ -41,7 +41,7 @@ fi
 echo "averaging results"
 ./bench/bench.py $TIME_OUT > $AVG_FILE
 echo "plotting results"
-TMP_FILE=$(mktemp -p imgs bench.png.XXXXX)
+TMP_FILE=$(mktemp -p imgs bench-XXXX.png)
 gnuplot bench/plotbench.gp > $TMP_FILE
 eog $TMP_FILE
 echo "cleaning up"
