@@ -3,10 +3,10 @@
 
 #include "model.h"
 
-#include <map>
+#include <tr1/unordered_map>
 #include <set>
 
-typedef std::map<Node *, std::vector<next_node_type > > connection_type;
+typedef std::tr1::unordered_map<Node *, std::vector<next_node_type > > connection_type;
 
 
 class MapBasedModel : public IModel

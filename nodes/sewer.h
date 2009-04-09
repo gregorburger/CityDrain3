@@ -3,6 +3,7 @@
 
 #include <node.h>
 #include <vector>
+#include <map>
 
 CD3_DECLARE_NODE(Sewer)
 public:

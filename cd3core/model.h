@@ -2,17 +2,17 @@
 #define MODEL_H
 
 #include <string>
-#include <set>
+#include <tr1/unordered_set>
 #include <vector>
-#include <map>
+#include <tr1/unordered_map>
 #include <boost/tuple/tuple.hpp>
 
 class Node;
 class SimulationParameters;
 
 
-typedef std::map<std::string, Node *> name_node_map;
-typedef std::set<Node *> node_set_type;
+typedef std::tr1::unordered_map<std::string, Node *> name_node_map;
+typedef std::tr1::unordered_set<Node *> node_set_type;
 typedef std::pair<Node *, std::string> end_point_type;
 typedef boost::tuple<std::string, Node *, std::string> next_node_type;
 
