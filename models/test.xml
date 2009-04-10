@@ -3,34 +3,86 @@
 
 <citydrain version="1.0">
 
-	<pluginpath path="nodes/libnodes.so.1.0.0" />
-
+	<pluginpath path="./libnodes.so" />
 	<simulation class="DefaultSimulation">
 		<time start="0" stop="7200" dt="300" />
 	</simulation>
-
 	<model>
 		<nodelist>
-			<node id="constsource" class="ConstSource">
+
+			<node id="n-96c907ea-f517-4bd3-9c76-b189c080a760" class="Sewer">
+			</node>
+
+
+			<node id="n-7acc1846-7d4f-48c6-8f9a-6640296ded54" class="Sewer">
+			</node>
+
+
+			<node id="n-25097474-1d81-4784-bef2-a7025c0cb35d" class="ConstSource">
 				<parameter name="const_flow" kind="complex" type="Flow">
 					<flow>
-						<unit name="Q" kind="flow" value="3.0" />
-						<unit name="Scheiss Grusigs Michi" kind="concentration" value="0.0"/>
-						<unit name="Ei" kind="concentration" value="10.0"/>
+						<unit name="Q" kind="Flow" value="100.000000" />
+						<unit name="C2" kind="Concentration" value="3.000000" />
+						<unit name="C1" kind="Concentration" value="5.000000" />
+						<unit name="C0" kind="Concentration" value="1.000000" />
 					</flow>
 				</parameter>
 			</node>
-			
-			<node id="fileout" class="FileOut">
-				<parameter name="out_file_name" type="string" value="/tmp/test-default.txt" />
+
+
+			<node id="n-1a65c028-eb0f-4577-b02e-33f00affa099" class="ConstSource">
+				<parameter name="const_flow" kind="complex" type="Flow">
+					<flow>
+						<unit name="Q" kind="Flow" value="100.000000" />
+						<unit name="C2" kind="Concentration" value="3.000000" />
+						<unit name="C1" kind="Concentration" value="5.000000" />
+						<unit name="C0" kind="Concentration" value="1.000000" />
+					</flow>
+				</parameter>
 			</node>
+
+
+			<node id="n-1667ae05-fe51-47c8-8a19-aa8fd775ace5" class="Mixer">
+				<parameter name="num_inputs" type="int" value="2" />
+			</node>
+
+
+			<node id="n-6ead3015-36b4-4dec-a31c-493ad3b82e23" class="FileOut">
+				<parameter name="out_file_name" type="string" value="tmp/test-gen-out.txt" />
+			</node>
+
 		</nodelist>
-		
 		<connectionlist>
-			<connection id="con1">
-				<source node="constsource" port="out" />
-				<sink	node="fileout" port="in" />
+
+			<connection id="con-n-25097474-1d81-4784-bef2-a7025c0cb35d-n-96c907ea-f517-4bd3-9c76-b189c080a760">
+				<source node="n-25097474-1d81-4784-bef2-a7025c0cb35d" port="out" />
+				<sink node="n-96c907ea-f517-4bd3-9c76-b189c080a760" port="in" />
 			</connection>
+
+
+			<connection id="con-n-1a65c028-eb0f-4577-b02e-33f00affa099-n-7acc1846-7d4f-48c6-8f9a-6640296ded54">
+				<source node="n-1a65c028-eb0f-4577-b02e-33f00affa099" port="out" />
+				<sink node="n-7acc1846-7d4f-48c6-8f9a-6640296ded54" port="in" />
+			</connection>
+
+
+			<connection id="con-n-25097474-1d81-4784-bef2-a7025c0cb35d-n-1667ae05-fe51-47c8-8a19-aa8fd775ace5">
+				<source node="n-25097474-1d81-4784-bef2-a7025c0cb35d" port="out" />
+				<sink node="n-1667ae05-fe51-47c8-8a19-aa8fd775ace5" port="inputs[0]" />
+			</connection>
+
+
+			<connection id="con-n-1a65c028-eb0f-4577-b02e-33f00affa099-n-1667ae05-fe51-47c8-8a19-aa8fd775ace5">
+				<source node="n-1a65c028-eb0f-4577-b02e-33f00affa099" port="out" />
+				<sink node="n-1667ae05-fe51-47c8-8a19-aa8fd775ace5" port="inputs[1]" />
+			</connection>
+
+
+			<connection id="con-n-1667ae05-fe51-47c8-8a19-aa8fd775ace5-n-6ead3015-36b4-4dec-a31c-493ad3b82e23">
+				<source node="n-1667ae05-fe51-47c8-8a19-aa8fd775ace5" port="out" />
+				<sink node="n-6ead3015-36b4-4dec-a31c-493ad3b82e23" port="in" />
+			</connection>
+
 		</connectionlist>
 	</model>
 </citydrain>
