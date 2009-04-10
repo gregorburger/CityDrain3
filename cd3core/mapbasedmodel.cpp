@@ -57,13 +57,11 @@ void MapBasedModel::addConnection(const std::string &src_node,
 	sink_nodes.erase(source);
 	source_nodes.erase(sink);
 
-	cd3assert(source->const_out_ports->find(src_port)
-		   !=
-		   source->const_out_ports->end(), "source node port not found");
+	cd3assert(source->const_out_ports->count(src_port),
+			  str(format("source node[%1%] port[%2%] not found") % src_node % src_port));
 
-	cd3assert(sink->const_in_ports->find(sin_port)
-		   !=
-		   sink->const_in_ports->end(), "sink node port not found");
+	cd3assert(sink->const_in_ports->count(sin_port),
+			  str(format("sink node[%1%] port[%2%] not found") % sin_node % sin_port));
 
 	if (fwd_connections.find(source) == fwd_connections.end()) {
 		fwd_connections[source] = std::vector<next_node_type>();
