@@ -3,6 +3,7 @@ Makefile*
 *~
 *.so*
 *.o
+*.pyc
 cd3
 testcore/testcore
 *.pro.user
