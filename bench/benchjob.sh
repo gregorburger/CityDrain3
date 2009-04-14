@@ -33,7 +33,9 @@ then
 	for i in $(seq $THREADS); do
 		for j in $(seq $RUNS); do
 			export OMP_NUM_THREADS=$i
-			/usr/bin/time -f "$i\t%e\t%S\t%U" -a -o $TIME_OUT $APP $MODEL
+			#/usr/bin/time -f "$i\t%e\t%S\t%U" -a -o $TIME_OUT $APP $MODEL > /dev/null
+			echo -n "$i 	" >> $TIME_OUT
+			$APP $MODEL 2>> $TIME_OUT
 		done
 	done
 fi
@@ -41,7 +43,7 @@ fi
 echo "averaging results"
 ./bench/bench.py $TIME_OUT > $AVG_FILE
 echo "plotting results"
-TMP_FILE=$(mktemp -p imgs bench-XXXX.png)
+TMP_FILE=$(mktemp -p imgs bench.png.XXXX)
 gnuplot bench/plotbench.gp > $TMP_FILE
 eog $TMP_FILE
 echo "cleaning up"
