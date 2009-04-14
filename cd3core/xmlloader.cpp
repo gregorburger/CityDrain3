@@ -366,7 +366,7 @@ void XmlLoader::checkAllConsumed(QDomElement root) {
 	}
 
 	if (dont_check.contains(root)) {
-		xmlError(root, "ignoring consume");
+                //xmlError(root, "ignoring consume");
 		return;
 	}
 
