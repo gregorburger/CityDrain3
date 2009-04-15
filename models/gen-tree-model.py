@@ -3,7 +3,7 @@ from cd3modelgen import *
 import sys
 
 max_nesting = 10
-s=Simulation()
+s=Simulation("ParallelSimulation")
 
 def to_tree(parent_node, nesting = 0):
     if nesting == max_nesting:
