@@ -39,6 +39,7 @@ public:
 	virtual const node_set_type *getNodes() const = 0;
 	virtual name_node_map getNamesAndNodes() const = 0;
 	virtual Node *getNode(const std::string &name) const = 0;
+        virtual bool connected() const = 0;
 };
 
 #endif // MODEL_H

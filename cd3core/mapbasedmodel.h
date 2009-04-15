@@ -44,11 +44,13 @@ public:
 	name_node_map getNamesAndNodes() const;
 
 	Node *getNode(const std::string &name) const;
+        bool connected() const;
 
 private:
 	node_set_type all_nodes;
 	node_set_type sink_nodes;
 	node_set_type source_nodes;
+	node_set_type uncon_nodes;
 	name_node_map names_nodes;
 	connection_type fwd_connections;
 	connection_type bwd_connections;

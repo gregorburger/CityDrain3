@@ -38,6 +38,7 @@ void MapBasedModel::addNode(const std::string &name, Node *node) {
 	all_nodes.insert(node);
 	sink_nodes.insert(node);
 	source_nodes.insert(node);
+	uncon_nodes.insert(node);
 //	node->initPorts();
 }
 
@@ -56,6 +57,8 @@ void MapBasedModel::addConnection(const std::string &src_node,
 
 	sink_nodes.erase(source);
 	source_nodes.erase(sink);
+	uncon_nodes.erase(source);
+	uncon_nodes.erase(sink);
 
 	cd3assert(source->const_out_ports->count(src_port),
 			  str(format("source node[%1%] port[%2%] not found") % src_node % src_port));
@@ -116,4 +119,16 @@ std::vector<next_node_type> MapBasedModel::backward(Node *n) {
 
 name_node_map MapBasedModel::getNamesAndNodes() const {
 	return names_nodes;
+}
+
+bool MapBasedModel::connected() const {
+	std::pair<std::string, Node *> pn;
+	BOOST_FOREACH(Node * n, uncon_nodes) {
+		BOOST_FOREACH(pn, names_nodes) {
+			if (pn.second == n) {
+				std::cout << pn.first << "  is unconnected" << std::endl;
+			}
+		}
+	}
+	return uncon_nodes.empty();
 }

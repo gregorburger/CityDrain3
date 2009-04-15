@@ -1,12 +1,17 @@
 import sys
-import uuid
 
 w = sys.stdout.write
 
+klass_counts = {}
+
 class Node():
 	def __init__(self, klass):
+		try:
+			klass_counts[klass] += 1
+		except:
+			klass_counts[klass] = 0
 		self.klass = klass
-		self.name = "n-"+str(uuid.uuid4())
+		self.name = "%s-%d" % (self.klass, klass_counts[klass])
 		self.params = []
 		
 	def render(self):
@@ -54,8 +59,9 @@ class FlowParam():
 			
 		
 class Sewer(Node):
-	def __init__(self):
+	def __init__(self, N=11, K=300, X=0.1):
 		Node.__init__(self, "Sewer")
+		self.params += [SimpleParam("N", N), SimpleParam("K", K), SimpleParam("X", X)]
 		
 class ConstSource(Node):
 	def __init__(self, const_flow=None):
