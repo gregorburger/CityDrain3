@@ -35,7 +35,7 @@ then
 			export OMP_NUM_THREADS=$i
 			#/usr/bin/time -f "$i\t%e\t%S\t%U" -a -o $TIME_OUT $APP $MODEL > /dev/null
 			echo -n "$i 	" >> $TIME_OUT
-			$APP $MODEL 2>> $TIME_OUT
+			LD_PRELOAD=/usr/lib/libtcmalloc.so $APP $MODEL 2>> $TIME_OUT
 		done
 	done
 fi
