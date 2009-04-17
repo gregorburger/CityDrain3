@@ -16,7 +16,9 @@ void PipelinedSimulation::start(int time) {
 	static int old_perc_progress = 0;
 
 	current_time = time;
+#ifdef _OPENMP
 #pragma omp parallel
+#endif
 	for (current_time = time; current_time <= sim_param.stop; ) {
 	//while (current_time <= sim_param.stop) {
 		int percent = static_cast<int>(one_perc * current_time * 100);
@@ -50,7 +52,9 @@ int PipelinedSimulation::run(int time, int dt) {
 }
 
 void PipelinedSimulation::run(Node *n, int time, std::map<Node *, int> &depends) {
+#ifdef _OPENMP
 #pragma omp ordered
+#endif
 	n->f(time, sim_param.dt);
 
 	std::vector<next_node_type> fwd = model->forward(n);
@@ -62,8 +66,9 @@ void PipelinedSimulation::run(Node *n, int time, std::map<Node *, int> &depends)
 		boost::tuples::tie(src_port, next, snk_port) = con;
 
 		next->setInPort(snk_port, n->getOutPort(src_port));
-
+#ifdef _OPENMP
 #pragma omp atomic
+#endif
 		depends[next]--;
 
 		if (depends[next] > 0) {

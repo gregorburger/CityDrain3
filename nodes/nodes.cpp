@@ -21,10 +21,10 @@
 #include <simulationfactory.h>
 
 #include <typefactory.h>
-
+#include <cd3globals.h>
 
 extern "C" {
-	void registerNodes(NodeRegistry *registry) {
+	void CD3_PUBLIC registerNodes(NodeRegistry *registry) {
 		registry->addNodeFactory(new NodeFactory<ConstSource>());
 		registry->addNodeFactory(new NodeFactory<FileOut>());
 		registry->addNodeFactory(new NodeFactory<Mixer>());
@@ -37,11 +37,11 @@ extern "C" {
 		registry->addNodeFactory(new NodeFactory<CatchmentCSS>());
 	}
 
-	void registerTypes(TypeRegistry *registry) {
+	void CD3_PUBLIC registerTypes(TypeRegistry *registry) {
 		registry->addTypeFactory<Flow>(new FlowTypeFactory());
 	}
 
-	void registerSimulations(SimulationRegistry *registry) {
+	void CD3_PUBLIC registerSimulations(SimulationRegistry *registry) {
 		registry->addSimulationFactory(new SimulationFactory<DefaultSimulation>());
 		registry->addSimulationFactory(new SimulationFactory<VarDTSimulation>());
 		registry->addSimulationFactory(new SimulationFactory<ParallelSimulation>());

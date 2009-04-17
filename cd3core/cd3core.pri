@@ -21,7 +21,8 @@ HEADERS += calculationunit.h \
     flowfuns.h \
     xmlloader.h \
     typeregistry.h \
-    typefactory.h
+    typefactory.h \
+    cd3globals.h
 SOURCES += calculationunit.cpp \
     flow.cpp \
     nodeconnection.cpp \

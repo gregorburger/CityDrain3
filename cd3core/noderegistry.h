@@ -3,13 +3,14 @@
 
 #include <map>
 #include <string>
+#include <cd3globals.h>
 
 class INodeFactory;
 class Node;
 
 typedef std::map<std::string, INodeFactory *> reg_node_type;
 
-class NodeRegistry
+class CD3_PUBLIC NodeRegistry
 {
 public:
 	NodeRegistry();

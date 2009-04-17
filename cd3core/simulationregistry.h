@@ -3,13 +3,14 @@
 
 #include <map>
 #include <string>
+#include <cd3globals.h>
 
 class ISimulationFactory;
 class ISimulation;
 
 typedef std::map<std::string, const ISimulationFactory *> sim_reg_type;
 
-class SimulationRegistry
+class CD3_PUBLIC SimulationRegistry
 {
 public:
 	SimulationRegistry();

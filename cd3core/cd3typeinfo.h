@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <typeinfo>
+#include <cd3globals.h>
 
 namespace cd3 {
 

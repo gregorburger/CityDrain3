@@ -6,6 +6,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include <flow.h>
+#include <cd3globals.h>
 
 namespace cd3 {
 	struct TypeInfo;
@@ -17,7 +18,7 @@ struct IStateSerializer;
 
 typedef std::map<cd3::TypeInfo, boost::shared_ptr<IStateSerializer> > type_ser_map;
 
-struct IStateSerializer
+struct CD3_PUBLIC IStateSerializer
 {
 	virtual ~IStateSerializer(){}
 	virtual std::string serialize(const std::string &name, Node *node) = 0;
@@ -26,7 +27,7 @@ struct IStateSerializer
 	static type_ser_map standard;
 };
 
-struct FlowSerializer {
+struct CD3_PUBLIC FlowSerializer {
 	static std::string toString(Flow f);
 	static Flow fromString(const std::string &s);
 };

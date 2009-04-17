@@ -51,10 +51,13 @@ ISimulation *XmlLoader::load(QFile &file) {
 	int errorLine;
 	int errorColumn;
 
-	if (!file.open(QIODevice::ReadOnly)) {
-		qFatal("could no open file");
-		return 0;
-	}
+	cd3assert(file.exists(),
+		  str(format("no such file %1%") % file.fileName().toStdString()));
+
+	bool opened = file.open(QIODevice::ReadOnly);
+
+	cd3assert(opened,
+		  str(format("could not open file %1% readonly") % file.fileName().toStdString()));
 
 	if (!document.setContent(&file, true, &errorStr, &errorLine, &errorColumn)) {
 		std::cerr << "xml error[" << errorLine << ":" << errorColumn << errorStr.toStdString() << std::endl;
@@ -152,7 +155,7 @@ void XmlLoader::loadNodesFromPlugins(
 
 	QString path;
 	Q_FOREACH (path, paths) {
-		cd3assert(QFile::exists(path), str(format("could not find plugin %1%") % path.toStdString()));
+		cd3assert(QLibrary::isLibrary(path), str(format("could not find plugin %1%") % path.toStdString()));
 		QLibrary l(path);
 		//l.setLoadHints(QLibrary::ExportExternalSymbolsHint);
 		cd3assert(l.load(),

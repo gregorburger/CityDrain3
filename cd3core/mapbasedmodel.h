@@ -5,11 +5,12 @@
 
 #include <tr1/unordered_map>
 #include <set>
+#include <cd3globals.h>
 
 typedef std::tr1::unordered_map<Node *, std::vector<next_node_type > > connection_type;
 
 
-class MapBasedModel : public IModel
+class CD3_PUBLIC MapBasedModel : public IModel
 {
 public:
 	MapBasedModel();

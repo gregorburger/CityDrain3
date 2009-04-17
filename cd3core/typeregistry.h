@@ -5,11 +5,12 @@
 #include <boost/foreach.hpp>
 
 #include "typefactory.h"
+#include <cd3globals.h>
 
 typedef std::map<cd3::TypeInfo, ITypeFactory *> tttype;
 typedef std::map<std::string, ITypeFactory *> nttype;
 
-class TypeRegistry {
+class CD3_PUBLIC TypeRegistry {
 public:
 
 	~TypeRegistry() {

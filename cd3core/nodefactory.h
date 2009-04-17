@@ -7,8 +7,9 @@
 #include "node.h"
 #include "cd3utils.h"
 #include <boost/utility.hpp>
+#include <cd3globals.h>
 
-class INodeFactory {
+class CD3_PUBLIC INodeFactory {
 public:
 	virtual ~INodeFactory(){}
 	virtual Node *createNode(const std::string &s = "") const = 0;
@@ -16,7 +17,7 @@ public:
 };
 
 template <typename T, bool scripted = false>
-class NodeFactory
+class CD3_PUBLIC NodeFactory
 	: public INodeFactory {
 public:
 	NodeFactory();

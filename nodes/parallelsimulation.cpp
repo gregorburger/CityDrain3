@@ -2,12 +2,16 @@
 #include <model.h>
 #include <node.h>
 #include <boost/foreach.hpp>
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 
 CD3_DECLARE_SIMULATION_NAME(ParallelSimulation)
 
 ParallelSimulation::ParallelSimulation() {
-    std::cout << "number of threads: " << omp_get_num_threads() << " of " <<  omp_get_max_threads() <<  std::endl;
+#ifdef _OPENMP
+	std::cout << "number of threads: " << omp_get_num_threads() << " of " <<  omp_get_max_threads() <<  std::endl;
+#endif
 }
 
 ParallelSimulation::~ParallelSimulation() {
@@ -22,9 +26,11 @@ int ParallelSimulation::run(int time, int dt) {
 	    first = false;
 	}
 
-        std::tr1::unordered_map<Node *, int> deps = createDependsMap();
+	std::tr1::unordered_map<Node *, int> deps = createDependsMap();
 	int sources_size = sources.size();
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 	for (int i = 0; i < sources_size; i++) {
 		Node *n = sources.at(i);
 		run(n, time, deps);
@@ -44,8 +50,9 @@ void ParallelSimulation::run(Node *n, int time, std::tr1::unordered_map<Node *, 
 		boost::tuples::tie(src_port, next, snk_port) = con;
 
 		next->setInPort(snk_port, n->getOutPort(src_port));
-
+#ifdef _OPENMP
 #pragma omp atomic
+#endif
 		depends[next]--;
 
 		if (depends[next] > 0) {
@@ -57,7 +64,7 @@ void ParallelSimulation::run(Node *n, int time, std::tr1::unordered_map<Node *, 
 }
 
 std::tr1::unordered_map<Node *, int> ParallelSimulation::createDependsMap() const {
-        std::tr1::unordered_map<Node *, int> deps;
+	std::tr1::unordered_map<Node *, int> deps;
 	BOOST_FOREACH(Node *node, *model->getNodes()) {
 		deps[node] = model->backward(node).size();
 	}

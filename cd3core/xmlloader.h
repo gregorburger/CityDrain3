@@ -1,7 +1,13 @@
 #ifndef XMLLOADER_H
 #define XMLLOADER_H
 
+#include <QtXml>
+#include <QStringList>
+#include <cd3globals.h>
 
+#ifdef DEBUG
+#include <QList>
+#endif
 class QFile;
 class IModel;
 class NodeRegistry;
@@ -10,15 +16,8 @@ class SimulationRegistry;
 class Node;
 class ISimulation;
 
-#include <QtXml>
-#include <QStringList>
 
-#ifdef DEBUG
-#include <QList>
-#endif
-
-
-class XmlLoader
+class CD3_PUBLIC XmlLoader
 {
 public:
 	XmlLoader(IModel *m);

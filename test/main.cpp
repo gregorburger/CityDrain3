@@ -5,10 +5,13 @@
 #include <QFile>
 #include <mapbasedmodel.h>
 #include <boost/foreach.hpp>
-#include <boost/program_options.hpp>
 #include <cd3assert.h>
 
-namespace po = boost::program_options;
+#ifdef __MINGW32__
+/* Required header file */
+#include <fcntl.h>
+#endif
+
 
 void progress(int percent) {
 	std::cout << "                                       \r";
@@ -30,6 +33,12 @@ private:
 };
 
 int main(int argc, char **argv) {
+#ifdef __MINGW32__
+	/* Switch to binary mode */
+	_setmode(_fileno(stdout),_O_BINARY);
+	_setmode(_fileno(stdin),_O_BINARY);
+	_setmode(_fileno(stderr),_O_BINARY);
+#endif
 	printf("hurendreck-%d\n", argc);
 	if (argc < 2) {
 		std::cout << "provide model file" << std::endl;

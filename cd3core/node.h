@@ -5,6 +5,7 @@
 #include <cd3typeinfo.h>
 #include <cd3assert.h>
 #include <boost/format.hpp>
+#include <cd3globals.h>
 
 using namespace boost;
 
@@ -15,7 +16,7 @@ using namespace boost;
 class Flow;
 
 #define CD3_DECLARE_NODE(node)  \
-class node : public Node { \
+class CD3_PUBLIC node : public Node { \
 public: \
 	static const char *name; \
 	const char *getClassName() const; \
@@ -34,7 +35,7 @@ typedef std::tr1::unordered_map<std::string, ltvp>			ssltvp;
 
 class SimulationParameters;
 
-class Node
+class CD3_PUBLIC Node
 {
 	friend class ModelSerializer;
 	friend class IStateMigrator;

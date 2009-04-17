@@ -3,12 +3,13 @@
 
 #include <utility>
 #include <string>
+#include <cd3globals.h>
 
 class Node;
 
 typedef std::pair<const std::string &, Node *> endpoint;
 
-class NodeConnection
+class CD3_PUBLIC NodeConnection
 {
 public:
 	NodeConnection(const std::string &soport, Node * source,

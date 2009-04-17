@@ -4,9 +4,11 @@
 #include <utility>
 #include <vector>
 #include <string>
+#include <cd3globals.h>
+
 class Flow;
 
-struct FlowFuns {
+struct CD3_PUBLIC FlowFuns {
 
 static Flow mix(const std::vector<Flow*> &inputs);
 

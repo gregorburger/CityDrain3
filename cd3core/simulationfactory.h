@@ -2,8 +2,9 @@
 #define ISIMULATIONFACTORY_H
 
 #include <simulation.h>
+#include <cd3globals.h>
 
-class ISimulationFactory
+class CD3_PUBLIC ISimulationFactory
 {
 public:
 	virtual ~ISimulationFactory() {
@@ -13,7 +14,7 @@ public:
 };
 
 template<class SimTemp>
-class SimulationFactory : public ISimulationFactory {
+class CD3_PUBLIC SimulationFactory : public ISimulationFactory {
 	virtual ~SimulationFactory() {
 	}
 	ISimulation *createSimulation() const;

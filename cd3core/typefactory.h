@@ -5,10 +5,11 @@
 #include <string>
 #include <QDomElement>
 #include <boost/shared_ptr.hpp>
+#include <cd3globals.h>
 
 class Node;
 
-class ITypeFactory {
+class CD3_PUBLIC ITypeFactory {
 public:
 	virtual std::string getTypeName() = 0;
 
@@ -23,7 +24,7 @@ public:
 
 
 #define CD3_DECLARE_TYPE_FACTORY(Type) \
-class Type##TypeFactory : public ITypeFactory { \
+class CD3_PUBLIC Type##TypeFactory : public ITypeFactory { \
 public: \
 	std::string getTypeName() { return #Type; } \
 private:

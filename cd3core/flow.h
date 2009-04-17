@@ -3,13 +3,14 @@
 
 #include <boost/shared_ptr.hpp>
 #include <vector>
+#include <cd3globals.h>
 
 class CalculationUnit;
 class FlowDefinition;
 
 typedef std::vector<double> FlowPriv;
 
-class Flow {
+class CD3_PUBLIC Flow {
 public:
 	Flow();
 	Flow (const Flow &other);

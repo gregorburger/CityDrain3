@@ -1,6 +1,8 @@
 #include "simulation.h"
 #include "modelserializer.h"
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 #include <iostream>
 #include "model.h"
 #include "cd3assert.h"
@@ -31,7 +33,9 @@ void ISimulation::start(int time) {
 	cd3assert(model->connected(), "some nodes are not connected");
 
 	current_time = time;
+#ifdef _OPENMP
 	double sim_start_time = omp_get_wtime();
+#endif
 	while (current_time <= sim_param.stop) {
 		int percent = static_cast<int>(one_perc * current_time * 100);
 		if (percent != old_perc_progress) {
@@ -40,12 +44,16 @@ void ISimulation::start(int time) {
 		}
 		current_time += run(current_time, sim_param.dt);
 		//Q_EMIT timestep(this, current_time);
+#ifdef _OPENMP
 #pragma omp barrier
+#endif
 	}
+#ifdef _OPENMP
 	double sim_stop_time = omp_get_wtime();
 	double sim_run_time = sim_stop_time - sim_start_time;
 	std::cerr << sim_run_time << std::endl;
 #pragma omp barrier
+#endif
 }
 
 void ISimulation::addController(IController *c) {

@@ -1,5 +1,6 @@
 TEMPLATE = lib
-CONFIG += dll
+CONFIG += plugin
 TARGET = nodes
+LIBS +=  -lcd3core
 include(nodes.pri)
 include(../build.pri)

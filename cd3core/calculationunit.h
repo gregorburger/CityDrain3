@@ -3,8 +3,9 @@
 
 #include <string>
 #include <iostream>
+#include <cd3globals.h>
 
-class ICalculationUnit
+class CD3_PUBLIC ICalculationUnit
 {
 public:
 	//ICalculationUnit(){}
@@ -16,7 +17,7 @@ public:
 	//virtual bool operator == (const ICalculationUnit &other) const = 0;
 };
 
-class CalculationUnit : public ICalculationUnit {
+class CD3_PUBLIC CalculationUnit : public ICalculationUnit {
 public:
 	//virtual ~CalculationUnit()  {}
 	const std::string &getName() const;

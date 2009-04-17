@@ -1,13 +1,15 @@
 DEFINES = DEBUG
 win32 {
-    CONFIG += release rtti
-    DESTDIR=$$PWD/win32
+    CONFIG += debug rtti
+    DESTDIR = $$PWD/win32
+    LIBS += -mwindow -L$$PWD/win32
+    INCLUDEPATH += C:\Work\boost_1_38_0
 }
 
 linux* {
-    DESTDIR=$$PWD
+    DESTDIR = $$PWD
     LIBS += -L$$PWD
-    CONFIG+=debug
+    CONFIG += debug
 }
 linux-g++* {
         QMAKE_CXXFLAGS += -fopenmp 

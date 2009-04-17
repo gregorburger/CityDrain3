@@ -4,6 +4,7 @@
 #include <QXmlDefaultHandler>
 #include <boost/shared_ptr.hpp>
 #include <map>
+#include <cd3globals.h>
 
 
 class IModel;
@@ -15,7 +16,7 @@ namespace cd3 {
 class IStateSerializer;
 class Node;
 
-class ModelSerializer {
+class CD3_PUBLIC ModelSerializer {
 public:
 	ModelSerializer(IModel *model, const std::string &dir);
 	virtual ~ModelSerializer();

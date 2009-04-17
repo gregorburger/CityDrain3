@@ -6,6 +6,7 @@
 #include <vector>
 #include <tr1/unordered_map>
 #include <boost/tuple/tuple.hpp>
+#include <cd3globals.h>
 
 class Node;
 class SimulationParameters;
@@ -16,7 +17,7 @@ typedef std::tr1::unordered_set<Node *> node_set_type;
 typedef std::pair<Node *, std::string> end_point_type;
 typedef boost::tuple<std::string, Node *, std::string> next_node_type;
 
-class IModel {
+class CD3_PUBLIC IModel {
 public:
 	virtual ~IModel(){}
 
@@ -39,7 +40,7 @@ public:
 	virtual const node_set_type *getNodes() const = 0;
 	virtual name_node_map getNamesAndNodes() const = 0;
 	virtual Node *getNode(const std::string &name) const = 0;
-        virtual bool connected() const = 0;
+	virtual bool connected() const = 0;
 };
 
 #endif // MODEL_H

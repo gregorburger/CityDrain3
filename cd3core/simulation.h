@@ -1,13 +1,14 @@
 #ifndef SIMULATION_H
 #define SIMULATION_H
 
+#include <boost/signals.hpp>
+#include <cd3globals.h>
+
 class IModel;
 class IController;
 class Node;
 
-#include <boost/signals.hpp>
-
-struct SimulationParameters {
+struct CD3_PUBLIC SimulationParameters {
 	SimulationParameters()
 		:start(0), stop(7200), dt(300) {
 
@@ -33,7 +34,7 @@ public: \
 	static const char *name; \
 private:
 
-class ISimulation {
+class CD3_PUBLIC ISimulation {
 public:
 	ISimulation();
 	virtual ~ISimulation();
