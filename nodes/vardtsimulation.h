@@ -4,7 +4,7 @@
 #include <simulation.h>
 
 class IController;
-class SimulationParameters;
+struct SimulationParameters;
 class IModel;
 class Node;
 struct VarDTPriv;

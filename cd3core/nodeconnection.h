@@ -7,7 +7,7 @@
 
 class Node;
 
-typedef std::pair<const std::string &, Node *> endpoint;
+typedef std::pair<std::string, Node *> endpoint;
 
 class CD3_PUBLIC NodeConnection
 {

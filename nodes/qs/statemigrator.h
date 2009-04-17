@@ -7,11 +7,11 @@
 #include <QVariant>
 
 namespace cd3 {
-	struct TypeInfo;
+	class TypeInfo;
 }
 
 class Node;
-struct IStateMigrator;
+class IStateMigrator;
 class QScriptEngine;
 
 typedef std::map<cd3::TypeInfo, boost::shared_ptr<IStateMigrator> > cd3_to_ism;

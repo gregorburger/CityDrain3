@@ -3,11 +3,11 @@
 
 #include "model.h"
 
-#include <tr1/unordered_map>
+#include <boost/unordered/unordered_map.hpp>
 #include <set>
 #include <cd3globals.h>
 
-typedef std::tr1::unordered_map<Node *, std::vector<next_node_type > > connection_type;
+typedef unordered_map<Node *, std::vector<next_node_type > > connection_type;
 
 
 class CD3_PUBLIC MapBasedModel : public IModel

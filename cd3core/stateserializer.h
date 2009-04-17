@@ -9,7 +9,7 @@
 #include <cd3globals.h>
 
 namespace cd3 {
-	struct TypeInfo;
+	class TypeInfo;
 }
 
 class Node;

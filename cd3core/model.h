@@ -2,20 +2,21 @@
 #define MODEL_H
 
 #include <string>
-#include <tr1/unordered_set>
 #include <vector>
-#include <tr1/unordered_map>
+#include <boost/unordered/unordered_map.hpp>
+#include <boost/unordered/unordered_set.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <cd3globals.h>
 
 class Node;
-class SimulationParameters;
+struct SimulationParameters;
 
+using namespace boost;
 
-typedef std::tr1::unordered_map<std::string, Node *> name_node_map;
-typedef std::tr1::unordered_set<Node *> node_set_type;
+typedef unordered_map<std::string, Node *> name_node_map;
+typedef unordered_set<Node *> node_set_type;
 typedef std::pair<Node *, std::string> end_point_type;
-typedef boost::tuple<std::string, Node *, std::string> next_node_type;
+typedef tuple<std::string, Node *, std::string> next_node_type;
 
 class CD3_PUBLIC IModel {
 public:

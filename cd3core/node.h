@@ -1,13 +1,11 @@
 #ifndef NODE_H
 #define NODE_H
 #include <string>
-#include <tr1/unordered_map>
+#include <boost/unordered/unordered_map.hpp>
 #include <cd3typeinfo.h>
 #include <cd3assert.h>
 #include <boost/format.hpp>
 #include <cd3globals.h>
-
-using namespace boost;
 
 #ifdef DEBUG
 #include <iostream>
@@ -26,14 +24,16 @@ private:
 const char *nodename::name = #nodename; \
 const char *nodename::getClassName() const { return nodename::name; }
 
-typedef std::tr1::unordered_map<std::string, Flow *>		ssf;
+using namespace boost;
+
+typedef unordered_map<std::string, Flow *>		ssf;
 typedef std::pair<cd3::TypeInfo, void *>	ltvp;
-typedef std::tr1::unordered_map<std::string, ltvp>			ssltvp;
+typedef unordered_map<std::string, ltvp>			ssltvp;
 
 #define ADD_PARAMETERS(var) #var, &var
 #define ADD_PARAMETERS_P(var) #var, var
 
-class SimulationParameters;
+struct SimulationParameters;
 
 class CD3_PUBLIC Node
 {

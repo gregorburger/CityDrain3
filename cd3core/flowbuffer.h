@@ -6,6 +6,7 @@ class Flow;
 
 #include <queue>
 #include <cd3globals.h>
+#include <flow.h>
 
 typedef std::pair<Flow, int> buf_item;
 

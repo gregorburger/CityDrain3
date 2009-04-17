@@ -13,7 +13,7 @@ namespace cd3 {
 	class TypeInfo;
 }
 
-class IStateSerializer;
+struct IStateSerializer;
 class Node;
 
 class CD3_PUBLIC ModelSerializer {

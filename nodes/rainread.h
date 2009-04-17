@@ -7,7 +7,7 @@
 
 using namespace boost::tuples;
 
-class RainReadPriv;
+struct RainReadPriv;
 class QDateTime;
 
 CD3_DECLARE_NODE(RainRead)

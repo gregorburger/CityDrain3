@@ -6,7 +6,7 @@
 #include <cd3globals.h>
 
 class CalculationUnit;
-class FlowDefinition;
+struct FlowDefinition;
 
 typedef std::vector<double> FlowPriv;
 
