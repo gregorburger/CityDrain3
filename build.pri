@@ -2,7 +2,7 @@ DEFINES = DEBUG
 win32 {
     CONFIG += debug rtti
     DESTDIR = $$PWD/win32
-    LIBS += -mwindow -L$$PWD/win32
+    LIBS += -L$$PWD/win32
     INCLUDEPATH += C:\Work\boost_1_38_0
 }
 
@@ -25,4 +25,4 @@ INCLUDEPATH+=$$PWD/cd3core
 OBJECTS_DIR=$$PWD/tmp/
 MOC_DIR=$$PWD/tmp/
 UI_DIR=$$PWD/tmp/
-CONFIG += no_keywords
+CONFIG += no_keywords console

@@ -39,7 +39,6 @@ int main(int argc, char **argv) {
 	_setmode(_fileno(stdin),_O_BINARY);
 	_setmode(_fileno(stderr),_O_BINARY);
 #endif
-	printf("hurendreck-%d\n", argc);
 	if (argc < 2) {
 		std::cout << "provide model file" << std::endl;
 		return 1;
