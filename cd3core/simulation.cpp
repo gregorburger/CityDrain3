@@ -36,10 +36,10 @@ void ISimulation::start(int time) {
 		int percent = static_cast<int>(one_perc * current_time * 100);
 		if (percent != old_perc_progress) {
 			old_perc_progress = percent;
-			progress(percent);
+//			progress(percent);
 		}
 		current_time += run(current_time, sim_param.dt);
-		timestep(this, current_time);
+		//Q_EMIT timestep(this, current_time);
 #pragma omp barrier
 	}
 	double sim_stop_time = omp_get_wtime();

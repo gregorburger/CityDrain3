@@ -30,6 +30,25 @@ private:
 };
 
 int main(int argc, char **argv) {
+	printf("hurendreck-%d\n", argc);
+	if (argc < 2) {
+		std::cout << "provide model file" << std::endl;
+		return 1;
+	}
+	MapBasedModel m;
+	XmlLoader loader(&m);
+	QFile f(argv[1]);
+
+	ISimulation *s = loader.load(f);
+	s->setModel(&m);
+
+	int starttime = s->getSimulationParameters().start;
+
+	s->start(starttime);
+	return 0;
+}
+
+/*int main(int argc, char **argv) {
 	po::options_description desc("CityDrain3 command line options");
 
 	desc.add_options()
@@ -92,4 +111,4 @@ int main(int argc, char **argv) {
 	std::cout << std::endl; //newline the progress
 	//s->serialize("states");
 	delete s;
-}
+}*/

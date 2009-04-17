@@ -48,8 +48,10 @@ public:
 
 	virtual int run(int time, int dt) = 0;
 
-	boost::signal1<void, int> progress;
-	boost::signal2<void, ISimulation *, int> timestep;
+/*signals:
+	void progress(int i);
+	void timestep(ISimulation *, int);
+	//boost::signal2<void, ISimulation *, int> timestep;*/
 
 protected:
 	SimulationParameters sim_param;
