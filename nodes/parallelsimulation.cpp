@@ -64,7 +64,7 @@ void ParallelSimulation::run(Node *n, int time, unordered_map<Node *, int> &depe
 }
 
 unordered_map<Node *, int> ParallelSimulation::createDependsMap() const {
-	std::tr1::unordered_map<Node *, int> deps;
+	unordered_map<Node *, int> deps;
 	BOOST_FOREACH(Node *node, *model->getNodes()) {
 		deps[node] = model->backward(node).size();
 	}
