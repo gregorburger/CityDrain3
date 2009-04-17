@@ -1,8 +1,5 @@
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
-LIBS += -lboost_signals \
-    -lboost_filesystem
-
 HEADERS += calculationunit.h \
     flow.h \
     model.h \

@@ -6,6 +6,7 @@ win32 {
 
 linux* {
     DESTDIR=$$PWD
+    LIBS += -L$$PWD
     CONFIG+=debug
 }
 linux-g++* {

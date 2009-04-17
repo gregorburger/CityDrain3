@@ -1,5 +1,6 @@
 #created by gregi
 
 TEMPLATE = 	subdirs
-SUBDIRS =       nodes \
+SUBDIRS =       cd3core \
+                nodes \
                 test
