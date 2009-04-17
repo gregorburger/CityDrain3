@@ -2,6 +2,6 @@
 
 TEMPLATE = 	subdirs
 CONFIG = ordered
-SUBDIRS =	d3core \
+SUBDIRS =	cd3core \
 		nodes \
 		test
