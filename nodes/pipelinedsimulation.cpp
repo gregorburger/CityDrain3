@@ -8,6 +8,7 @@
 #include <boost/unordered/unordered_map.hpp>
 #include <QReadWriteLock>
 #include <QThreadPool>
+#include <QProcess>
 
 using namespace boost;
 
@@ -52,11 +53,14 @@ void PipelinedSimulation::setModel(IModel *model) {
 
 void PipelinedSimulation::start(int time) {
 	QThreadPool *pool = QThreadPool::globalInstance();
+	Q_FOREACH(QString envItem, QProcess::systemEnvironment()) {
+		if (envItem.split("=")[0] == "OMP_NUM_THREADS") {
+			pool->setMaxThreadCount(envItem.split("=")[1].toInt());
+		}
+	}
 	std::cout << "thread count: " << pool->maxThreadCount() << std::endl;
-	pool->setMaxThreadCount(4);
 
 	BOOST_FOREACH(Node *n, pd->nodes) {
-		std::cout << "setting node " << n << " to state " << time << std::endl;
 		pd->state[n] = time;
 	}
 
