@@ -9,6 +9,7 @@
 #include <QReadWriteLock>
 #include <QThreadPool>
 #include <QProcess>
+#include <QTime>
 
 using namespace boost;
 
@@ -63,7 +64,7 @@ void PipelinedSimulation::start(int time) {
 	BOOST_FOREACH(Node *n, pd->nodes) {
 		pd->state[n] = time;
 	}
-
+	QTime ts_before = QTime::currentTime();
 	for (current_time = time;
 	     current_time <= sim_param.stop;
 	     current_time += sim_param.dt) {
@@ -72,6 +73,9 @@ void PipelinedSimulation::start(int time) {
 		pool->start(worker);
 	}
 	pool->waitForDone();
+	QTime ts_after = QTime::currentTime();
+	int duration = ts_before.msecsTo(ts_after);
+	std::cerr << duration << std::endl;
 }
 
 int PipelinedSimulation::run(int time, int dt) {
@@ -102,15 +106,13 @@ void StateWorker::run() {
 					finished = false;
 					continue;
 				}
-				//std::cout << "runing node " << n << std::endl;
 				pd->state_lock.unlock();
 				pd->state_lock.lockForWrite();
-//QWriteLocker wlocker(&pd->state_lock);
 				updatePorts(n);
 				int fdt = n->f(time, dt);
 				cd3assert(fdt == dt, "PipelinedSimulations dont't support variable dts");
 				pd->state[n] += dt;
-				finished = false;
+				//finished = false;
 			}
 			if (pd->state[n] <= time) {
 				finished = false;
