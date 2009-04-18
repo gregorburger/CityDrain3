@@ -1,90 +1,151 @@
 #include "pipelinedsimulation.h"
 #include <model.h>
-#include <boost/foreach.hpp>
 #include <node.h>
 
-CD3_DECLARE_SIMULATION_NAME(PipelinedSimulation);
+#include <vector>
+#include <iostream>
+#include <boost/foreach.hpp>
+#include <boost/unordered/unordered_map.hpp>
+#include <QReadWriteLock>
+#include <QThreadPool>
+
+using namespace boost;
+
+
+CD3_DECLARE_SIMULATION_NAME(PipelinedSimulation)
+
+struct PipeSimPrivate {
+	std::vector<Node *>		nodes;
+	unordered_map<Node *, int>	state;
+	QReadWriteLock			state_lock;
+	IModel				*model; //StateWorker needs it
+};
+
+struct StateWorker : public QRunnable {
+	StateWorker(PipeSimPrivate *pd, int time, int dt);
+	void run();
+	bool isRunnable(Node *n) const;
+	void updatePorts(Node *n);
+	PipeSimPrivate *pd;
+	int time, dt;
+};
 
 PipelinedSimulation::PipelinedSimulation() {
+	pd = new PipeSimPrivate();
 }
 
 PipelinedSimulation::~PipelinedSimulation() {
+	delete pd;
+}
+
+void PipelinedSimulation::setModel(IModel *model) {
+	ISimulation::setModel(model);
+	pd->model = model;
+	node_set_type::const_iterator it = model->getNodes()->begin();
+	node_set_type::const_iterator end = model->getNodes()->end();
+	while (it != end) {
+		Node *n = (*it);
+		pd->nodes.push_back(n);
+		it++;
+	}
 }
 
 void PipelinedSimulation::start(int time) {
-	static double one_perc = 1.0 / sim_param.stop;
-	static int old_perc_progress = 0;
+	QThreadPool *pool = QThreadPool::globalInstance();
+	std::cout << "thread count: " << pool->maxThreadCount() << std::endl;
+	pool->setMaxThreadCount(4);
 
-	current_time = time;
-#ifdef _OPENMP
-#pragma omp parallel
-#endif
-	for (current_time = time; current_time <= sim_param.stop; ) {
-	//while (current_time <= sim_param.stop) {
-		int percent = static_cast<int>(one_perc * current_time * 100);
-		if (percent != old_perc_progress) {
-			old_perc_progress = percent;
-			//progress(percent);
-		}
-		current_time += run(current_time, sim_param.dt);
-		//timestep(this, current_time);
+	BOOST_FOREACH(Node *n, pd->nodes) {
+		std::cout << "setting node " << n << " to state " << time << std::endl;
+		pd->state[n] = time;
 	}
-	/*if (old_perc_progress != 100)
-		progress(100);*/
+
+	for (current_time = time;
+	     current_time <= sim_param.stop;
+	     current_time += sim_param.dt) {
+		StateWorker *worker = new StateWorker(pd, current_time, sim_param.dt);
+		//worker.setAutoDelete(false);
+		pool->start(worker);
+	}
+	pool->waitForDone();
 }
 
 int PipelinedSimulation::run(int time, int dt) {
-	static bool first = true;
-
-	if (first) {
-		node_set_type set_sources = model->getSourceNodes();
-		sources = std::vector<Node*>(set_sources.begin(), set_sources.end());
-		first = false;
-	}
-
-	std::map<Node *, int> deps = createDependsMap();
-	int sources_size = sources.size();
-	for (int i = 0; i < sources_size; i++) {
-		Node *n = sources.at(i);
-		run(n, time, deps);
-	}
+	cd3assert(false, "don't reach me");
+	(void) time;
 	return dt;
 }
 
-void PipelinedSimulation::run(Node *n, int time, std::map<Node *, int> &depends) {
-#ifdef _OPENMP
-#pragma omp ordered
-#endif
-	n->f(time, sim_param.dt);
 
-	std::vector<next_node_type> fwd = model->forward(n);
-	int fwd_sizes = fwd.size();
-	for (int i = 0; i < fwd_sizes; i++) {
-		next_node_type con = fwd.at(i);
-		std::string src_port, snk_port;
-		Node *next;
-		boost::tuples::tie(src_port, next, snk_port) = con;
+StateWorker::StateWorker(PipeSimPrivate *pd, int time, int dt) {
+	this->pd = pd;
+	this->time = time;
+	this->dt = dt;
+}
 
-		next->setInPort(snk_port, n->getOutPort(src_port));
-#ifdef _OPENMP
-#pragma omp atomic
-#endif
-		depends[next]--;
-
-		if (depends[next] > 0) {
-			return;
+void StateWorker::run() {
+	//std::cout << "starting StateWorker " << time << std::endl;
+	bool finished = true;
+	do {
+		finished = true;
+		//std::cout << "work needs to be done" << std::endl;
+		BOOST_FOREACH(Node *n, pd->nodes) {
+			pd->state_lock.lockForRead();
+			if (pd->state[n] == time) {
+				if (!isRunnable(n)) {
+					//std::cout << "not runnable" << std::endl;
+					pd->state_lock.unlock();
+					finished = false;
+					continue;
+				}
+				//std::cout << "runing node " << n << std::endl;
+				pd->state_lock.unlock();
+				pd->state_lock.lockForWrite();
+//QWriteLocker wlocker(&pd->state_lock);
+				updatePorts(n);
+				int fdt = n->f(time, dt);
+				cd3assert(fdt == dt, "PipelinedSimulations dont't support variable dts");
+				pd->state[n] += dt;
+				finished = false;
+			}
+			if (pd->state[n] <= time) {
+				finished = false;
+			}
+			pd->state_lock.unlock();
 		}
-		run(next, time, depends);
+	} while (!finished);
+
+	BOOST_FOREACH (Node *n, pd->nodes) {
+		cd3assert(pd->state[n] >= (time + dt), "not really finished");
 	}
-	return;
+	std::cout << time << " finished" << std::endl;
 }
 
-std::map<Node *, int> PipelinedSimulation::createDependsMap() const {
-	std::map<Node *, int> deps;
-	BOOST_FOREACH(Node *node, *model->getNodes()) {
-		deps[node] = model->backward(node).size();
+void StateWorker::updatePorts(Node *n) {
+	BOOST_FOREACH(next_node_type next, pd->model->backward(n)) {
+		std::string src_port, snk_port;
+		Node *src;
+		boost::tuples::tie(src_port, src, snk_port) = next;
+		n->setInPort(snk_port, src->getOutPort(src_port));
 	}
-
-	return deps;
 }
 
+bool StateWorker::isRunnable(Node *n) const {
+	BOOST_FOREACH(next_node_type next, pd->model->backward(n)) {
+		Node *dep_node = next.get<1>();
+		//assert here for state + dt
+		if (pd->state[dep_node] != (time + dt)) {
+			return false;
+		}
+	}
+
+	BOOST_FOREACH(next_node_type next, pd->model->forward(n)) {
+		Node *dep_node = next.get<1>();
+		//assert here for state + dt
+		if (pd->state[dep_node] != time) {
+			return false;
+		}
+	}
+
+	return true;
+}

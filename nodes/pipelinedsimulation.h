@@ -3,16 +3,18 @@
 
 #include <simulation.h>
 
+struct PipeSimPrivate;
+class IModel;
+
 CD3_DECLARE_SIMULATION(PipelinedSimulation)
 public:
 	PipelinedSimulation();
 	virtual ~PipelinedSimulation();
 	int run(int time, int dt);
 	void start(int time);
+	void setModel(IModel *model);
 private:
-	std::map<Node *, int> createDependsMap() const;
-	void run(Node *n, int time, std::map<Node *, int> &depends);
-	std::vector<Node*> sources;
+	PipeSimPrivate *pd;
 };
 
 #endif // PIPELINEDSIMULATION_H
