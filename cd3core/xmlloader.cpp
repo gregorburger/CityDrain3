@@ -110,7 +110,8 @@ void XmlLoader::loadSimulation(QDomDocument document) {
 
 	std::string simclass = simElem.attribute("class").toStdString();
 	cd3assert(simclass != "", "sim class may not be empty");
-	cd3assert(sim_registry->contains(simclass), "no such simulation class registered");
+	cd3assert(sim_registry->contains(simclass),
+			  str(format("no such simulation class registered: %1%") % simclass));
 
 	simulation = sim_registry->createSimulation(simclass);
 

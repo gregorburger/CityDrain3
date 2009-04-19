@@ -1,6 +1,8 @@
 #include "orderedpipesimulation.h"
 #include <boost/foreach.hpp>
+#include <boost/format.hpp>
 #include <queue>
+#include <set>
 #include <QRunnable>
 #include <QThreadPool>
 #include <QTime>
@@ -11,6 +13,7 @@
 #include <tqueue.h>
 
 using namespace std;
+using namespace boost;
 
 struct OPSPriv {
 	IModel *model;
@@ -82,9 +85,12 @@ int OrderedPipeSimulation::run(int time, int dt) {
 
 vector<Node *> OrderedPipeSimulation::getOrder() {
 	queue<Node *> sources;
+	set<Node *> in_source;
 	BOOST_FOREACH(Node *n, pd->model->getSourceNodes()) {
 		sources.push(n);
+		in_source.insert(n);
 	}
+
 	vector<Node*> order;
 	while (!sources.empty()) {
 		Node *n = sources.front();
@@ -92,19 +98,26 @@ vector<Node *> OrderedPipeSimulation::getOrder() {
 		order.push_back(n);
 
 		while (true) {
-			if (pd->model->forward(n).size() == 1) {
+			if (pd->model->forward(n).size() == 1 && pd->model->backward(n).size() == 1) {
 				Node *tmp = pd->model->forward(n)[0].get<1>();
 				order.push_back(tmp);
+				in_source.insert(tmp);
 				n = tmp;
 				continue;
 			}
 			BOOST_FOREACH(next_node_type next, pd->model->forward(n)) {
-				sources.push(next.get<1>());
+				Node *new_src = next.get<1>();
+				if (in_source.count(new_src) > 0)
+					continue;
+				in_source.insert(new_src);
+				sources.push(new_src);
 			}
 			break;
 		}
 	}
-	cd3assert(order.size() == pd->model->getNodes()->size(), "order calc wrong size of nodes");
+	int osize = order.size();
+	int all_size = pd->model->getNodes()->size();
+	cd3assert(osize == all_size, str(format("order calc wrong size of nodes %1% %2%") % osize % all_size));
 	return order;
 }
 

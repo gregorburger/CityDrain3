@@ -5,7 +5,7 @@
 
 	<pluginpath path="./libnodes.so" />
 
-	<simulation class="DefaultSimulation">
+	<simulation class="OrderedPipeSimulation">
 		<time start="0" stop="7200" dt="300" />
 	</simulation>
 
@@ -37,7 +37,7 @@
 			</node>
 			
 			<node id="fileout" class="FileOut">
-				<parameter name="out_file_name" type="string" value="tmp/mixer-out.txt" />
+				<parameter name="out_file_name" type="string" value="tmp/mixer-ordered-out.txt" />
 			</node>
 		</nodelist>
 		
