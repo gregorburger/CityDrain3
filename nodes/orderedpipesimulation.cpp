@@ -53,7 +53,6 @@ void OrderedPipeSimulation::start(int time) {
 		}
 	}
 	std::cout << "thread count: " << pool->maxThreadCount() << std::endl;
-	//pool->setMaxThreadCount(1);
 	tqueue<Node *> first;
 
 	vector<Node *> order = getOrder();
@@ -137,16 +136,16 @@ OrderedWorker::OrderedWorker(OPSPriv *pd, Node *last, int time, int dt) {
 }
 
 void OrderedWorker::run() {
-	std::cout << time << "| starting worker " <<  std::endl;
+	//std::cout << time << "| starting worker " <<  std::endl;
 	Node *current;
 	do {
 		current = in->dequeue();
-		std::cout << time << "| got node " << current << std::endl;
+		//std::cout << time << "| got node " << current << std::endl;
 		updatePorts(current);
 		current->f(time, dt);
 		out->enqueue(current);
 	} while (current != last);
-	std::cout << time << "| stopping worker " <<  std::endl;
+	//std::cout << time << "| stopping worker " <<  std::endl;
 }
 
 void OrderedWorker::updatePorts(Node *sink) {
