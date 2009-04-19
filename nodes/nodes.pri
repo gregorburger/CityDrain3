@@ -2,7 +2,6 @@ INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 QT += xml \
     script
-
 HEADERS += constsource.h \
     flowtypefactory.h \
     fileout.h \
@@ -16,7 +15,9 @@ HEADERS += constsource.h \
     splitter.h \
     catchmentcss.h \
     parallelsimulation.h \
-    pipelinedsimulation.h
+    pipelinedsimulation.h \
+    orderedpipesimulation.h \
+    tqueue.h
 SOURCES += nodes.cpp \
     constsource.cpp \
     flowtypefactory.cpp \
@@ -31,5 +32,6 @@ SOURCES += nodes.cpp \
     splitter.cpp \
     catchmentcss.cpp \
     parallelsimulation.cpp \
-    pipelinedsimulation.cpp
+    pipelinedsimulation.cpp \
+    orderedpipesimulation.cpp
 include(qs/qs.pri)

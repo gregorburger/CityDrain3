@@ -6,6 +6,7 @@
 #include "vardtsimulation.h"
 #include "parallelsimulation.h"
 #include "pipelinedsimulation.h"
+#include "orderedpipesimulation.h"
 #include "sewer.h"
 #include "rainread.h"
 #include "testnode.h"
@@ -46,5 +47,6 @@ extern "C" {
 		registry->addSimulationFactory(new SimulationFactory<VarDTSimulation>());
 		registry->addSimulationFactory(new SimulationFactory<ParallelSimulation>());
 		registry->addSimulationFactory(new SimulationFactory<PipelinedSimulation>());
+		registry->addSimulationFactory(new SimulationFactory<OrderedPipeSimulation>());
 	}
 }

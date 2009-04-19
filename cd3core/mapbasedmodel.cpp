@@ -109,10 +109,16 @@ node_set_type MapBasedModel::getSourceNodes() {
 }
 
 std::vector<next_node_type> MapBasedModel::forward(Node *n) {
+	cd3assert(n, "Node null");
+	cd3assert(all_nodes.count(n), "node not in model");
+	//cd3assert(fwd_connections.count(n), "no forward connection for node");
 	return fwd_connections[n];
 }
 
 std::vector<next_node_type> MapBasedModel::backward(Node *n) {
+	cd3assert(n, "Node null");
+	cd3assert(all_nodes.count(n), "node not in model");
+	//cd3assert(fwd_connections.count(n), "no backward connection for node");
 	return bwd_connections[n];
 }
 
