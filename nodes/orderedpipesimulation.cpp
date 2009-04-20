@@ -55,14 +55,12 @@ void OrderedPipeSimulation::start(int time) {
 	std::cout << "thread count: " << pool->maxThreadCount() << std::endl;
 	tqueue<Node *> first;
 
-	vector<Node *> order = getOrder();
-
-	BOOST_FOREACH(Node *n, order) {
+	BOOST_FOREACH(Node *n, pd->order) {
 		first.enqueue(n);
 	}
 
 	tqueue<Node *> *upper_queue = &first;
-	Node *last = order.back();
+	Node *last = pd->order.back();
 
 	QTime start_time = QTime::currentTime();
 	while (current_time <= sim_param.stop) {
@@ -82,9 +80,24 @@ int OrderedPipeSimulation::run(int time, int dt) {
 	return dt;
 }
 
+/*void OrderedPipeSimulation::getOrderStartingFrom(Node *n, vector<Node *> & order) {
+	int forward = model->forward(n).size();
+	int backward = model->backward(n).size();
+
+	if (forward == 0) {
+		order.push_back(n);
+		return;
+	}
+
+	if (backward > 1) {
+		if (order.back() == model->backward(n)
+	}
+}*/
+
 vector<Node *> OrderedPipeSimulation::getOrder() {
 	queue<Node *> sources;
 	set<Node *> in_source;
+
 	BOOST_FOREACH(Node *n, pd->model->getSourceNodes()) {
 		sources.push(n);
 		in_source.insert(n);
@@ -97,26 +110,47 @@ vector<Node *> OrderedPipeSimulation::getOrder() {
 		order.push_back(n);
 
 		while (true) {
-			if (pd->model->forward(n).size() == 1 && pd->model->backward(n).size() == 1) {
-				Node *tmp = pd->model->forward(n)[0].get<1>();
-				order.push_back(tmp);
-				in_source.insert(tmp);
-				n = tmp;
+			Node *next = pd->model->forward(n)[0].get<1>();
+			if (pd->model->forward(next).size() == 1 && pd->model->backward(next).size() == 1) {
+				order.push_back(next);
+				n = next;
 				continue;
 			}
-			BOOST_FOREACH(next_node_type next, pd->model->forward(n)) {
-				Node *new_src = next.get<1>();
-				if (in_source.count(new_src) > 0)
-					continue;
-				in_source.insert(new_src);
-				sources.push(new_src);
+
+			if (pd->model->forward(next).size() == 0) {
+				order.push_back(next);
+				break;
+			}
+
+			if (pd->model->backward(next).size() > 1) {
+				if (!in_source.count(next)) {
+					in_source.insert(next);
+					sources.push(next);
+				} else {
+					std::cout << "scho drin" << std::endl;
+				}
+				break;
+			}
+
+			if (pd->model->forward(next).size() > 1) {
+				order.push_back(next);
+				BOOST_FOREACH(next_node_type con, pd->model->forward(next)) {
+					Node *new_src = con.get<1>();
+					if (!in_source.count(new_src)) {
+						in_source.insert(new_src);
+						sources.push(new_src);
+					} else {
+						std::cout << "scho drin 2" << std::endl;
+					}
+				}
+				break;
 			}
 			break;
 		}
 	}
 	int osize = order.size();
 	int all_size = pd->model->getNodes()->size();
-	cd3assert(osize == all_size, str(format("order calc wrong size of nodes %1% %2%") % osize % all_size));
+	cd3assert(osize == all_size, str(format("order calc wrong size of nodes orderd=%1% all=%2%") % osize % all_size));
 	return order;
 }
 
