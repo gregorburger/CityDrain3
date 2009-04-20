@@ -160,7 +160,7 @@ class Flow():
 			
 
 header = """<?xml version="1.0"?>
-<!DOCTYPE citydrain SYSTEM "model.dtd">
+<!DOCTYPE citydrain SYSTEM "file:../dtd/model.dtd">
 
 <citydrain version="1.0">
 

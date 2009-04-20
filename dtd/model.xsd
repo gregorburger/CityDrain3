@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="time">
+    <xs:complexType>
+      <xs:attribute name="start" />
+      <xs:attribute name="stop" />
+      <xs:attribute name="dt" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="parameter">
+    <xs:complexType>
+      <xs:attribute name="name" />
+      <xs:attribute name="type" />
+      <xs:attribute name="kind" use="optional" />
+      <xs:attribute name="value" use="optional" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="unit">
+    <xs:complexType>
+      <xs:attribute name="name" />
+      <xs:attribute name="kind" />
+      <xs:attribute name="value" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="simulation">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element ref="time" />
+      </xs:choice>
+      <xs:attribute name="class" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="connection">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="source" />
+        <xs:element ref="sink" />
+      </xs:sequence>
+      <xs:attribute name="id" type="xs:ID" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="model">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="nodelist" />
+        <xs:element ref="connectionlist" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="source">
+    <xs:complexType>
+      <xs:attribute name="node" type="xs:IDREF" />
+      <xs:attribute name="port" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="node">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="parameter" />
+      </xs:choice>
+      <xs:attribute name="id" type="xs:ID" />
+      <xs:attribute name="class" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="connectionlist">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="connection" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="citydrain">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="pluginpath" />
+        <xs:element ref="simulation" />
+        <xs:element ref="model" />
+      </xs:sequence>
+      <xs:attribute name="version" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="nodelist">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="node" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="flow">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="unit" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="sink">
+    <xs:complexType>
+      <xs:attribute name="node" type="xs:IDREF" />
+      <xs:attribute name="port" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="pluginpath">
+    <xs:complexType>
+      <xs:attribute name="path" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
