@@ -80,20 +80,6 @@ int OrderedPipeSimulation::run(int time, int dt) {
 	return dt;
 }
 
-/*void OrderedPipeSimulation::getOrderStartingFrom(Node *n, vector<Node *> & order) {
-	int forward = model->forward(n).size();
-	int backward = model->backward(n).size();
-
-	if (forward == 0) {
-		order.push_back(n);
-		return;
-	}
-
-	if (backward > 1) {
-		if (order.back() == model->backward(n)
-	}
-}*/
-
 vector<Node *> OrderedPipeSimulation::getOrder() {
 	queue<Node *> sources;
 	set<Node *> in_source;
@@ -126,8 +112,6 @@ vector<Node *> OrderedPipeSimulation::getOrder() {
 				if (!in_source.count(next)) {
 					in_source.insert(next);
 					sources.push(next);
-				} else {
-					std::cout << "scho drin" << std::endl;
 				}
 				break;
 			}
@@ -139,8 +123,6 @@ vector<Node *> OrderedPipeSimulation::getOrder() {
 					if (!in_source.count(new_src)) {
 						in_source.insert(new_src);
 						sources.push(new_src);
-					} else {
-						std::cout << "scho drin 2" << std::endl;
 					}
 				}
 				break;
