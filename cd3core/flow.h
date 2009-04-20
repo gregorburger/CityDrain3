@@ -1,9 +1,14 @@
 #ifndef FLOW_H
 #define FLOW_H
 
+//#define SHARED_FLOW
+
+#ifdef SHARED_FLOW
 #include <boost/shared_ptr.hpp>
+#endif
 #include <vector>
 #include <cd3globals.h>
+#include <string>
 
 class CalculationUnit;
 struct FlowDefinition;
@@ -39,15 +44,20 @@ public:
 	const std::vector<std::string> &getUnitNames(const CalculationUnit *unit) const;
 	bool hasName(const std::string &name) const;
 
-	void copy();
+//	void copy();
 	void dump() const;
 
 	static Flow nullFlow();
 private:
 	void copyData();
 	void copyDefinition();
+#ifdef SHARED_FLOW
 	boost::shared_ptr<FlowPriv> f;
 	boost::shared_ptr<FlowDefinition> fd;
+#else
+	FlowPriv *f;
+	FlowDefinition *fd;
+#endif
 };
 
 #endif // FLOW_H

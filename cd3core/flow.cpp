@@ -14,13 +14,28 @@ struct FlowDefinition {
 };
 
 Flow::Flow() {
+#ifdef SHARED_FLOW
 	f = boost::shared_ptr<FlowPriv>(new FlowPriv());
 	fd = boost::shared_ptr<FlowDefinition>(new FlowDefinition());
+#else
+	//std::cout << "cons " << this << std::endl;
+	f = new FlowPriv();
+	fd = new FlowDefinition();
+#endif
 }
 
 Flow::Flow(const Flow &other) {
+#ifdef SHARED_FLOW
 	f = other.f;
 	fd = other.fd;
+#else
+	//std::cout << "copy " << this << std::endl;
+	f = new FlowPriv(*other.f);
+	fd = new FlowDefinition(*other.fd);
+
+	/**f = *other.f;
+	*fd = *other.fd;*/
+#endif
 }
 
 Flow Flow::nullFlow() {
@@ -30,20 +45,34 @@ Flow Flow::nullFlow() {
 }
 
 Flow::~Flow() {
-
+#ifndef SHARED_FLOW
+	delete f;
+	delete fd;
+#endif
 }
 
 Flow &Flow::operator =(const Flow &other) {
+#ifdef SHARED_FLOW
 	f = other.f;
 	fd = other.fd;
+#else
+	//std::cout << "assign " << this << std::endl;
+	delete f;
+	delete fd;
+	f = new FlowPriv(*other.f);
+	fd = new FlowDefinition(*other.fd);
+/*	*f = *other.f;
+	*fd = *other.fd;*/
+#endif
 	return *this;
 }
 
-void Flow::copy() {
+/*void Flow::copy() {
 	copyData();
 	copyDefinition();
-}
+}*/
 
+#ifdef SHARED_FLOW
 void Flow::copyData() {
 	if (!f.unique()) {
 		FlowPriv *old = f.get();
@@ -57,6 +86,7 @@ void Flow::copyDefinition() {
 		fd = boost::shared_ptr<FlowDefinition>(new FlowDefinition(*old));
 	}
 }
+#endif
 
 void Flow::addUnit(const std::string &name,
 				 const CalculationUnit *unit,
@@ -64,8 +94,10 @@ void Flow::addUnit(const std::string &name,
 	cd3assert(fd->positions.find(name) == fd->positions.end(), "name already defined");
 	cd3assert(unit, "unit is null");
 
+#ifdef SHARED_FLOW
 	copyDefinition();
 	copyData();
+#endif
 	f->push_back(value);
 	fd->names.push_back(name);
 	if (fd->unit_names.find(unit) == fd->unit_names.end())
@@ -78,7 +110,9 @@ void Flow::addUnit(const std::string &name,
 void Flow::setValue(const std::string &name,
 					double value) {
 	cd3assert(fd->positions.find(name) != fd->positions.end(), "no such name");
+#ifdef SHARED_FLOW
 	copyData();
+#endif
 	(*f)[fd->positions[name]] = value;
 }
 
@@ -124,7 +158,9 @@ unsigned int Flow::countUnits(const CalculationUnit *unit) const {
 void Flow::setIth(const CalculationUnit *unit, size_t i, double value) {
 	cd3assert(fd->unit_names.find(unit) != fd->unit_names.end(), "no such unit");
 	cd3assert(fd->unit_names[unit].size() > i, "ith is too much");
+#ifdef SHARED_FLOW
 	copyData();
+#endif
 	(*f)[fd->positions[fd->unit_names[unit][i]]] = value;
 }
 
@@ -135,7 +171,9 @@ double Flow::getIth(const CalculationUnit *unit, size_t i) const {
 }
 
 void Flow::clear() {
+#ifdef SHARED_FLOW
 	copyData();
+#endif
 	for (size_t i = 0; i < fd->names.size(); i++) {
 		(*f)[i] = 0.0;
 	}
