@@ -1,9 +1,8 @@
+#!/usr/bin/env python
 from cd3modelgen import *
 import sys
 
-s = Simulation("PipelinedSimulation")
-
-def gensewer(count):
+def gensewer(s, count):
 	c = ConstSource()
 	s.nodes += [c]
 	old = c
@@ -17,8 +16,15 @@ def gensewer(count):
 	s.cons += [Connection(old, f)]
 	
 def main():
-	gensewer(5000)
-	s.render()
-	
+    if (len(sys.argv) < 2):
+        sys.stderr.write("usage: gen-long-sewer length [sim-class]\n")
+        return
+    length = int(sys.argv[1])
+    s = Simulation("PipelinedSimulation")
+    if (len(sys.argv) > 2):
+        s = Simulation(sys.argv[2])
+    gensewer(s, length)
+    s.render()
+    
 if __name__ == "__main__":
 	main()
