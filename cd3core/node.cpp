@@ -11,13 +11,20 @@ void Node::init(int start, int end, int dt) {
 void Node::deinit() {
 }
 
+int Node::ts_f(int time, int dt) {
+	int ret;
+#pragma omp critical
+	ret = this->f(time, dt);
+	return ret;
+}
+
 void Node::setInPort(const std::string &name, const Flow *inflow) {
 	cd3assert(in_ports.find(name) != in_ports.end(),
 			  str(format("no such in port (%1%)") % name));
 	cd3assert(inflow,
 			  str(format("in port (%1%) may not be null") % name));
 #ifdef _OPENMP
-#pragma omp critical
+//#pragma omp critical
 #endif
 	*in_ports[name] = *inflow;
 }

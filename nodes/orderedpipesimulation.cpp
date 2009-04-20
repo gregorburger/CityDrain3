@@ -11,6 +11,7 @@
 #include <node.h>
 #include <model.h>
 #include <tqueue.h>
+#include <flow.h>
 
 using namespace std;
 using namespace boost;
@@ -158,7 +159,7 @@ void OrderedWorker::run() {
 		current = in->dequeue();
 		//std::cout << time << "| got node " << current << std::endl;
 		updatePorts(current);
-		current->f(time, dt);
+		current->ts_f(time, dt);
 		out->enqueue(current);
 	} while (current != last);
 	//std::cout << time << "| stopping worker " <<  std::endl;
@@ -169,6 +170,7 @@ void OrderedWorker::updatePorts(Node *sink) {
 		Node *source;
 		std::string src_port, snk_port;
 		tie(src_port, source, snk_port) = con;
-		sink->setInPort(snk_port, source->getOutPort(src_port));
+		const Flow *f = source->getOutPort(src_port);
+		sink->setInPort(snk_port, f);
 	}
 }

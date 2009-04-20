@@ -50,14 +50,15 @@ public:
 	virtual ~Node() {}
 	virtual int f(int time, int dt) = 0;
 
-	virtual const char *getClassName() const = 0;
-	//setup ports here called after all parameters are set
-	//virtual void initPorts();
-	virtual void init(int start, int end, int dt);
-	virtual void deinit();
+	virtual int ts_f(int time, int dt);
 
-	/*virtual int getDT(const SimulationParameters &sp) const;
-	virtual void setDT(int dt);*/
+	virtual const char *getClassName() const = 0;
+	virtual void init(int start, int end, int dt);
+	/*
+	  called before delete, ressources acquired in init
+	  should be deallocated in deinit.
+	  */
+	virtual void deinit();
 
 	//pull out states from a script
 	//gets called before saving states
