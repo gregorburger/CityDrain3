@@ -6,6 +6,7 @@
 
 #include "typefactory.h"
 #include <cd3globals.h>
+#include <cd3typeinfo.h>
 
 typedef std::map<cd3::TypeInfo, ITypeFactory *> tttype;
 typedef std::map<std::string, ITypeFactory *> nttype;
@@ -39,5 +40,7 @@ private:
 	tttype typed_types;
 	nttype named_types;
 };
+
+typedef void (*regTypeFunProto)(TypeRegistry *reg);
 
 #endif // TYPEREGISTRY_H

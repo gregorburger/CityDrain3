@@ -27,4 +27,6 @@ private:
 	reg_node_type registered_nodes;
 };
 
+typedef void (*regNodeFunProto) (NodeRegistry *reg);
+
 #endif // NODEREGISTRY_H

@@ -1,4 +1,4 @@
-#include <xmlloader.h>
+#include <saxloader.h>
 #include <simulation.h>
 
 #include <iostream>
@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 	MapBasedModel m;
-	XmlLoader loader(&m);
+        SaxLoader loader(&m);
 	QFile f(argv[1]);
 
 	ISimulation *s = loader.load(f);
