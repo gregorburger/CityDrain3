@@ -17,7 +17,8 @@ HEADERS += constsource.h \
     parallelsimulation.h \
     pipelinedsimulation.h \
     orderedpipesimulation.h \
-    tqueue.h
+    tqueue.h \
+    null.h
 SOURCES += nodes.cpp \
     constsource.cpp \
     flowtypefactory.cpp \
@@ -33,5 +34,6 @@ SOURCES += nodes.cpp \
     catchmentcss.cpp \
     parallelsimulation.cpp \
     pipelinedsimulation.cpp \
-    orderedpipesimulation.cpp
+    orderedpipesimulation.cpp \
+    null.cpp
 include(qs/qs.pri)
