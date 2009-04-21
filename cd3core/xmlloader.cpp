@@ -148,7 +148,7 @@ QStringList XmlLoader::loadPluginPaths(QDomNodeList dlist) {
 }
 
 //TODO globalise
-typedef void (*regNodeFunProto)(NodeRegistry *reg);
+
 
 void XmlLoader::loadNodesFromPlugins(
 		NodeRegistry *registry,
@@ -172,8 +172,6 @@ void XmlLoader::loadNodesFromPlugins(
 	}
 }
 
-typedef void (*regTypeFunProto)(TypeRegistry *reg);
-
 void XmlLoader::loadTypesFromPlugins(
 		TypeRegistry *registry,
 		QStringList paths) {
@@ -190,8 +188,6 @@ void XmlLoader::loadTypesFromPlugins(
 		}
 	}
 }
-
-typedef void (*regSimFunProto)(SimulationRegistry *reg);
 
 void XmlLoader::loadSimulationsFromPlugins(
 		SimulationRegistry *registry,

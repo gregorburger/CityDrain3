@@ -22,4 +22,6 @@ private:
 	sim_reg_type registry;
 };
 
+typedef void (*regSimFunProto)(SimulationRegistry *reg);
+
 #endif // SIMULATIONREGISTRY_H

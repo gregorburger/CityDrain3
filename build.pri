@@ -10,6 +10,7 @@ linux* {
     DESTDIR = $$PWD
     LIBS += -L$$PWD
     CONFIG += debug
+    INCLUDEPATH += $$PWD/../download/boost_1_38_0
 }
 linux-g++* {
         QMAKE_CXXFLAGS += -fopenmp 
