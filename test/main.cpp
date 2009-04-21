@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 	MapBasedModel m;
-        SaxLoader loader(&m);
+	SaxLoader loader(&m);
 	QFile f(argv[1]);
 
 	ISimulation *s = loader.load(f);
@@ -53,6 +53,8 @@ int main(int argc, char **argv) {
 	int starttime = s->getSimulationParameters().start;
 
 	s->start(starttime);
+	f.close();
+	delete s;
 	return 0;
 }
 
