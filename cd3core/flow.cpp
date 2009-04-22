@@ -1,7 +1,15 @@
+#define MAP_USE_HASH
+
 #include "flow.h"
+#ifdef MAP_USE_HASH
 #include <boost/unordered/unordered_map.hpp>
-#include <calculationunit.h>
+#else
+#include <map>
+#define unordered_map std::map
+#endif
+#include <algorithm>
 #include <boost/foreach.hpp>
+#include <calculationunit.h>
 #include <cd3assert.h>
 
 using namespace boost;
