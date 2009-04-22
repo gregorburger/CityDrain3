@@ -354,7 +354,9 @@ void XmlLoader::setNodeParameter(Node *node, QDomElement element) {
 		xmlError(element, QString().sprintf("%s simple type unknown", type.c_str()));
 	} else {
 		QDomElement sub = element.firstChild().toElement();
+#ifdef DEBUG
 		dont_check << sub;
+#endif
 		type_registry->getByTypeName(type)->setParameter(node, name, sub);
 	}
 }
