@@ -15,25 +15,23 @@ void FlowTypeFactory::setParameter(Node *n,
 							  const std::string &parameter,
 							  QDomElement &element) {
 	//n->setParameter(parameter, flowFromDom(element).get());
-	Flow * f = flowFromDom(element);
-	n->setParameter(parameter, *f);
-	delete f;
+	Flow f = flowFromDom(element);
+	n->setParameter(parameter, f);
 }
 
 void FlowTypeFactory::setState(Node *n,
 						  const std::string &state,
 						  QDomElement &element) {
-	Flow * f = flowFromDom(element);
-	n->setState(state, *f);
-	delete f;
+	Flow f = flowFromDom(element);
+	n->setState(state, f);
 }
 
-Flow *FlowTypeFactory::flowFromDom(QDomElement &e) {
-	Flow *f = new Flow();
+Flow FlowTypeFactory::flowFromDom(QDomElement &e) {
+	Flow f;
 
 	if (e.nodeName() != "flow") {
 		std::cerr << "type " << e.nodeName().toStdString() << "not known" << std::endl;
-		return 0;
+		return Flow::nullFlow();
 	}
 
 	for (int i = 0; i < e.childNodes().size(); i++) {
@@ -45,7 +43,7 @@ Flow *FlowTypeFactory::flowFromDom(QDomElement &e) {
 		cd3assert(unit != CalculationUnit::null,
 			   str(format("unknown unit type: %1%") % kind.toStdString()));
 		double value = attr.namedItem("value").toAttr().value().toDouble();
-		f->addUnit(name, unit, value);
+		f.addUnit(name, unit, value);
 	}
 	return f;
 }
