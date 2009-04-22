@@ -1,12 +1,14 @@
 #include "orderedpipesimulation.h"
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
+#include <boost/tuple/tuple.hpp>
 #include <queue>
 #include <set>
 #include <QRunnable>
 #include <QThreadPool>
 #include <QTime>
 #include <QProcess>
+#include <map>
 
 #include <node.h>
 #include <model.h>
@@ -24,14 +26,17 @@ struct OPSPriv {
 struct OrderedWorker : public QRunnable {
 	OrderedWorker(OPSPriv *pd, Node *last, int time, int dt);
 	void run();
-	void updatePorts(Node *sink);
+	void pullPorts(Node *sink);
+	void pushPorts(Node *sink);
+	bool hasForwardSibling(Node *n);
 
-	tqueue<Node *> *in;
-	tqueue<Node *> *out;
+	shared_ptr<tqueue<Node *> > in;
+	shared_ptr<tqueue<Node *> > out;
 
 	OPSPriv *pd;
 	Node *last;
 	int time, dt;
+	std::map<Node *, std::vector<tuples::tuple<Node *, bool> > > siblings;
 };
 
 CD3_DECLARE_SIMULATION_NAME(OrderedPipeSimulation);
@@ -54,13 +59,13 @@ void OrderedPipeSimulation::start(int time) {
 		}
 	}
 	std::cout << "thread count: " << pool->maxThreadCount() << std::endl;
-	tqueue<Node *> first;
+
+	shared_ptr<tqueue<Node *> > upper_queue = shared_ptr<tqueue<Node*> >(new tqueue<Node*>());
 
 	BOOST_FOREACH(Node *n, pd->order) {
-		first.enqueue(n);
+		upper_queue->enqueue(n);
 	}
 
-	tqueue<Node *> *upper_queue = &first;
 	Node *last = pd->order.back();
 
 	QTime start_time = QTime::currentTime();
@@ -149,7 +154,7 @@ OrderedWorker::OrderedWorker(OPSPriv *pd, Node *last, int time, int dt) {
 	this->last = last;
 	this->time = time;
 	this->dt = dt;
-	out = new tqueue<Node *>();//TODO leak
+	out = auto_ptr<tqueue<Node *> >(new tqueue<Node *>());
 }
 
 void OrderedWorker::run() {
@@ -158,19 +163,41 @@ void OrderedWorker::run() {
 	do {
 		current = in->dequeue();
 		//std::cout << time << "| got node " << current << std::endl;
-		updatePorts(current);
+		pullPorts(current);
 		current->ts_f(time, dt);
-		out->enqueue(current);
+		if (!hasForwardSibling(current))
+			out->enqueue(current);
 	} while (current != last);
 	//std::cout << time << "| stopping worker " <<  std::endl;
 }
 
-void OrderedWorker::updatePorts(Node *sink) {
-	BOOST_FOREACH(next_node_type con, pd->model->backward(sink)) {
+void OrderedWorker::pullPorts(Node *sink) {
+	vector<next_node_type> backward = pd->model->backward(sink);
+	bool enque = backward.size() > 1;
+	BOOST_FOREACH(next_node_type con, backward) {
 		Node *source;
 		std::string src_port, snk_port;
 		tie(src_port, source, snk_port) = con;
+		//const Flow *f = source->getOutPort(src_port);
+		sink->setInPort(snk_port, source->getOutPort(src_port));
+		if (enque)
+			out->enqueue(source);
+	}
+}
+
+void OrderedWorker::pushPorts(Node *source) {
+	BOOST_FOREACH(next_node_type con, pd->model->forward(source)) {
+		Node *sink;
+		std::string src_port, snk_port;
+		tie(src_port, sink, snk_port) = con;
 		const Flow *f = source->getOutPort(src_port);
 		sink->setInPort(snk_port, f);
 	}
+}
+
+bool OrderedWorker::hasForwardSibling(Node *n) {
+	if (!pd->model->forward(n).size())
+		return false;
+	Node *succ = pd->model->forward(n)[0].get<1>();
+	return pd->model->backward(succ).size() > 1;
 }
