@@ -84,7 +84,6 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		cd3assert(cunit != CU::null,
 				  str(format("can't determine flow unit type: [%1%]") % kind));
 		double value = lexical_cast<double>(atts.value("value").toStdString());
-		std::cout << format("unit %1% has value %2%") % atts.value("name").toStdString() % value << std::endl;
 		pd->f.addUnit(atts.value("name").toStdString(),
 					  cunit,
 					  value);
@@ -143,7 +142,6 @@ bool SaxLoader::endElement(const QString &/*ns*/,
 								 sink_port);
 	}
 	if (lname == "nodelist") {
-		qDebug() << "initing nodes";
 		pd->model->initNodes(pd->simulation->getSimulationParameters());
 	}
 	if (lname == "flow") {
@@ -180,7 +178,6 @@ void SaxLoader::loadParameter(const QXmlAttributes& atts) {
 	bool simple = atts.value("kind") != "complex";
 
 	std::string name = atts.value("name").toStdString();
-	std::cout << "loading paramter " <<  name << std::endl;
 	std::string type = "double";
 	if (atts.index("type") > 0)
 		type = atts.value("type").toStdString();
