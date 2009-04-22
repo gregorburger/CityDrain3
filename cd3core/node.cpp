@@ -1,6 +1,18 @@
 #include "node.h"
 #include <flow.h>
 #include <simulation.h>
+#include <QMutex>
+
+Node::Node() : const_parameters(&parameters),
+		const_states(&states),
+		const_in_ports(&in_ports),
+		const_out_ports(&out_ports)  {
+	lock = new QMutex();
+}
+
+Node::~Node() {
+	delete lock;
+}
 
 void Node::init(int start, int end, int dt) {
 	(void) start;
@@ -11,10 +23,14 @@ void Node::init(int start, int end, int dt) {
 void Node::deinit() {
 }
 
+/**
+* thread safe wrapper around f()
+*/
 int Node::ts_f(int time, int dt) {
 	int ret;
-#pragma omp critical
+	lock->lock();
 	ret = this->f(time, dt);
+	lock->unlock();
 	return ret;
 }
 
@@ -40,7 +56,8 @@ void Node::setOutPort(const std::string &name, const Flow *outflow) {
 const Flow *Node::getOutPort(const std::string &name) const {
 	cd3assert(out_ports.find(name) != out_ports.end(),
 			  str(format("no such out port (%1%)") % name));
-	return out_ports.find(name)->second;
+	Flow *f = out_ports.at(name);
+	return f;
 }
 
 void Node::addInPort(const std::string &name, Flow *inflow) {
