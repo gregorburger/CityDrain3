@@ -1,15 +1,17 @@
 #include "mapbasedmodel.h"
 #include <iostream>
-#include <node.h>
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
-#include <simulation.h>
 #include <vector>
+
+#include <node.h>
+#include <simulation.h>
 #include <cd3assert.h>
+#include <nodeconnection.h>
 
 using namespace boost;
 
-typedef std::pair<std::string, Node*> nodes_pair_type;
+typedef pair<string, Node*> nodes_pair_type;
 
 MapBasedModel::MapBasedModel() {
 }
@@ -25,11 +27,11 @@ const node_set_type *MapBasedModel::getNodes() const {
 	return &all_nodes;
 }
 
-Node *MapBasedModel::getNode(const std::string &name) const {
+Node *MapBasedModel::getNode(const string &name) const {
 	return names_nodes.find(name)->second;
 }
 
-void MapBasedModel::addNode(const std::string &name, Node *node) {
+void MapBasedModel::addNode(const string &name, Node *node) {
 	cd3assert(node, "added node null");
 	cd3assert(name != "", "node name empty");
 	cd3assert(names_nodes.find(name) == names_nodes.end(), "node name already defined");
@@ -39,13 +41,15 @@ void MapBasedModel::addNode(const std::string &name, Node *node) {
 	sink_nodes.insert(node);
 	source_nodes.insert(node);
 	uncon_nodes.insert(node);
+	fwd_connections[node] = vector<NodeConnection *>();
+	bwd_connections[node] = vector<NodeConnection *>();
 //	node->initPorts();
 }
 
-void MapBasedModel::addConnection(const std::string &src_node,
-					   const std::string &src_port,
-					   const std::string &sin_node,
-					   const std::string &sin_port) {
+void MapBasedModel::addConnection(const string &src_node,
+					   const string &src_port,
+					   const string &sin_node,
+					   const string &sin_port) {
 
 	cd3assert(names_nodes.count(src_node),
 			  str(format("source node (%1%) not found") % src_node));
@@ -66,16 +70,9 @@ void MapBasedModel::addConnection(const std::string &src_node,
 	cd3assert(sink->const_in_ports->count(sin_port),
 			  str(format("sink node[%1%] port[%2%] not found") % sin_node % sin_port));
 
-	if (fwd_connections.find(source) == fwd_connections.end()) {
-		fwd_connections[source] = std::vector<next_node_type>();
-	}
-	fwd_connections[source].push_back(next_node_type(src_port, sink, sin_port));
-
-	if (bwd_connections.find(sink) == bwd_connections.end()) {
-		bwd_connections[sink] = std::vector<next_node_type>();
-	}
-
-	bwd_connections[sink].push_back(next_node_type(src_port, source, sin_port));
+	NodeConnection *connection = new NodeConnection(source, src_port, sink, sin_port);
+	bwd_connections[sink].push_back(connection);
+	fwd_connections[source].push_back(connection);
 }
 
 void dumpParameters(Node *n) {
@@ -83,10 +80,10 @@ void dumpParameters(Node *n) {
 }
 
 /*void MapBasedModel::dump() {
-virtual name_node_map getNamesAndNodes() const = 0;	std::cout << "number of nodes: " << names_nodes.size() << std::endl;
+virtual name_node_map getNamesAndNodes() const = 0;	cout << "number of nodes: " << names_nodes.size() << endl;
 	node_map::iterator it = names_nodes.begin();
 	while (it != names_nodes.end()) {
-		std::cout << "node[" << it->first << "]=" << it->second->getNodeName() << std::endl;
+		cout << "node[" << it->first << "]=" << it->second->getNodeName() << endl;
 		it++;
 	}
 }*/
@@ -108,31 +105,52 @@ node_set_type MapBasedModel::getSourceNodes() {
 	return source_nodes;
 }
 
-std::vector<next_node_type> MapBasedModel::forward(Node *n) {
+vector<next_node_type> MapBasedModel::forward(Node *n) {
+	cd3assert(n, "Node null");
+	cd3assert(all_nodes.count(n), "node not in model");
+
+	vector<next_node_type> fwd;
+	BOOST_FOREACH(NodeConnection *c, fwd_connections[n]) {
+		fwd.push_back(next_node_type(c->source_port, c->sink, c->sink_port));
+	}
+	return fwd;
+}
+
+vector<next_node_type> MapBasedModel::backward(Node *n) {
+	cd3assert(n, "Node null");
+	cd3assert(all_nodes.count(n), "node not in model");
+
+	vector<next_node_type> bwd;
+	BOOST_FOREACH(NodeConnection *c, bwd_connections[n]) {
+		bwd.push_back(next_node_type(c->source_port, c->source, c->sink_port));
+	}
+	return bwd;
+}
+
+vector<NodeConnection *> MapBasedModel::forwardConnection(Node *n) {
 	cd3assert(n, "Node null");
 	cd3assert(all_nodes.count(n), "node not in model");
 	//cd3assert(fwd_connections.count(n), "no forward connection for node");
 	return fwd_connections[n];
 }
 
-std::vector<next_node_type> MapBasedModel::backward(Node *n) {
+vector<NodeConnection *> MapBasedModel::backwardConnection(Node *n) {
 	cd3assert(n, "Node null");
 	cd3assert(all_nodes.count(n), "node not in model");
 	//cd3assert(fwd_connections.count(n), "no backward connection for node");
 	return bwd_connections[n];
 }
 
-
 name_node_map MapBasedModel::getNamesAndNodes() const {
 	return names_nodes;
 }
 
 bool MapBasedModel::connected() const {
-	std::pair<std::string, Node *> pn;
+	pair<string, Node *> pn;
 	BOOST_FOREACH(Node * n, uncon_nodes) {
 		BOOST_FOREACH(pn, names_nodes) {
 			if (pn.second == n) {
-				std::cout << pn.first << "  is unconnected" << std::endl;
+				cout << pn.first << "  is unconnected" << endl;
 			}
 		}
 	}

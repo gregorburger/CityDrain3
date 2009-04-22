@@ -7,7 +7,7 @@
 #include <set>
 #include <cd3globals.h>
 
-typedef unordered_map<Node *, std::vector<next_node_type > > connection_type;
+typedef unordered_map<Node *, vector<NodeConnection *> > connection_type;
 
 
 class CD3_PUBLIC MapBasedModel : public IModel
@@ -16,19 +16,19 @@ public:
 	MapBasedModel();
 	~MapBasedModel();
 
-	std::string serialize() { //TODO implement
+	string serialize() { //TODO implement
 		return "";
 	}
 
-	void deserialize(const std::string &serialid) { //TODO implement
+	void deserialize(const string &serialid) { //TODO implement
 		(void) serialid;
 	}
 
-	void addNode(const std::string &name, Node *node);
-	void addConnection(const std::string &src_node,
-					   const std::string &src_port,
-					   const std::string &sin_node,
-					   const std::string &sin_port);
+	void addNode(const string &name, Node *node);
+	void addConnection(const string &src_node,
+					   const string &src_port,
+					   const string &sin_node,
+					   const string &sin_port);
 
 
 	//call before adding Connections
@@ -37,14 +37,17 @@ public:
 	node_set_type getSourceNodes();
 	node_set_type getSinkNodes();
 
-	std::vector<next_node_type> forward(Node *n);
-	std::vector<next_node_type> backward(Node *n);
+	vector<next_node_type> forward(Node *n);
+	vector<next_node_type> backward(Node *n);
+
+	vector<NodeConnection *> forwardConnection(Node *n);
+	vector<NodeConnection *> backwardConnection(Node *n);
 
 	const node_set_type *getNodes() const;
 
 	name_node_map getNamesAndNodes() const;
 
-	Node *getNode(const std::string &name) const;
+	Node *getNode(const string &name) const;
         bool connected() const;
 
 private:

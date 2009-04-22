@@ -1,14 +1,18 @@
 #include "nodeconnection.h"
 #include "node.h"
 
-NodeConnection::NodeConnection(const std::string &soport, Node * source, const std::string &siport, Node *sink)
-	: source(soport, source), sink(siport, sink) {
+NodeConnection::NodeConnection(Node * source, const std::string &soport,
+							   Node *sink, const std::string &siport)
+	: source(source), sink(sink), source_port(soport), sink_port(siport) {
 }
 
-const endpoint &NodeConnection::getSink() {
-	return source;
+void NodeConnection::pull() {
+	/*cd3assert(q.empty(), "q empty, can not pull");*/
+	Flow f = q.dequeue();
+	sink->setInPort(sink_port, &f);
 }
 
-const endpoint &NodeConnection::getSoure() {
-	return sink;
+void NodeConnection::push() {
+	q.enqueue(*source->getOutPort(source_port));
+	//q.push();
 }

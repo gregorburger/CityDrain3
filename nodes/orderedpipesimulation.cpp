@@ -14,6 +14,7 @@
 #include <model.h>
 #include <tqueue.h>
 #include <flow.h>
+#include <nodeconnection.h>
 
 using namespace std;
 using namespace boost;
@@ -149,11 +150,11 @@ void OrderedPipeSimulation::setModel(IModel *model) {
 	pd->order = getOrder();
 }
 
-OrderedWorker::OrderedWorker(OPSPriv *pd, Node *last, int time, int dt) {
+OrderedWorker::OrderedWorker(OPSPriv *pd, Node *last, int _time, int _dt) {
 	this->pd = pd;
 	this->last = last;
-	this->time = time;
-	this->dt = dt;
+	this->time = _time;
+	this->dt = _dt;
 	out = auto_ptr<tqueue<Node *> >(new tqueue<Node *>());
 }
 
@@ -162,36 +163,36 @@ void OrderedWorker::run() {
 	Node *current;
 	do {
 		current = in->dequeue();
-		//std::cout << time << "| got node " << current << std::endl;
+		//std::cout << time << " | got node " << current << std::endl;
 		pullPorts(current);
-		current->ts_f(time, dt);
-		if (!hasForwardSibling(current))
-			out->enqueue(current);
+		current->f(time, dt);
+		pushPorts(current);
+		/*if (!hasForwardSibling(current))*/
+		out->enqueue(current);
 	} while (current != last);
 	//std::cout << time << "| stopping worker " <<  std::endl;
 }
 
 void OrderedWorker::pullPorts(Node *sink) {
-	vector<next_node_type> backward = pd->model->backward(sink);
-	bool enque = backward.size() > 1;
-	BOOST_FOREACH(next_node_type con, backward) {
-		Node *source;
+	//vector<next_node_type> backward = pd->model->backward(sink);
+	//bool enque = backward.size() > 1;
+	BOOST_FOREACH(NodeConnection *con, pd->model->backwardConnection(sink)) {
+		con->pull();
+		/*Node *source;
 		std::string src_port, snk_port;
 		tie(src_port, source, snk_port) = con;
-		//const Flow *f = source->getOutPort(src_port);
+		const Flow *f = source->getOutPort(src_port);
 		sink->setInPort(snk_port, source->getOutPort(src_port));
 		if (enque)
-			out->enqueue(source);
+			out->enqueue(source);*/
 	}
 }
 
 void OrderedWorker::pushPorts(Node *source) {
-	BOOST_FOREACH(next_node_type con, pd->model->forward(source)) {
-		Node *sink;
-		std::string src_port, snk_port;
-		tie(src_port, sink, snk_port) = con;
-		const Flow *f = source->getOutPort(src_port);
-		sink->setInPort(snk_port, f);
+	BOOST_FOREACH(NodeConnection *con, pd->model->forwardConnection(source)) {
+		con->push();
+		/*const Flow *f = source->getOutPort(src_port);
+		sink->setInPort(snk_port, f);*/
 	}
 }
 

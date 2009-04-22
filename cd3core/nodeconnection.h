@@ -3,23 +3,27 @@
 
 #include <utility>
 #include <string>
+#include "tqueue.h"
+#include <flow.h>
 #include <cd3globals.h>
 
 class Node;
 
 typedef std::pair<std::string, Node *> endpoint;
 
-class CD3_PUBLIC NodeConnection
+struct CD3_PUBLIC NodeConnection
 {
-public:
-	NodeConnection(const std::string &soport, Node * source,
-				   const std::string &siport, Node *sink);
+	NodeConnection(Node * source, const std::string &soport,
+				   Node *sink, const std::string &siport);
 
-	const endpoint &getSink();
-	const endpoint &getSoure();
+	Node *source, *sink;
+	std::string source_port, sink_port;
+
+	void pull();
+	void push();
 
 private:
-	endpoint source, sink;
+	tqueue<Flow> q;
 };
 
 #endif // NODECONNECTION_H

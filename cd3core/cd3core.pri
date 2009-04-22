@@ -23,7 +23,8 @@ HEADERS += calculationunit.h \
     typeregistry.h \
     typefactory.h \
     cd3globals.h \
-    saxloader.h
+    saxloader.h \
+    tqueue.h
 SOURCES += calculationunit.cpp \
     flow.cpp \
     nodeconnection.cpp \

@@ -17,7 +17,6 @@ HEADERS += constsource.h \
     parallelsimulation.h \
     pipelinedsimulation.h \
     orderedpipesimulation.h \
-    tqueue.h \
     null.h
 SOURCES += nodes.cpp \
     constsource.cpp \
