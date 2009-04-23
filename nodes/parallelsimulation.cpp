@@ -1,6 +1,7 @@
 #include "parallelsimulation.h"
 #include <model.h>
 #include <node.h>
+#include <nodeconnection.h>
 #include <boost/foreach.hpp>
 #ifdef _OPENMP
 #include <omp.h>
@@ -41,26 +42,19 @@ int ParallelSimulation::run(int time, int dt) {
 
 void ParallelSimulation::run(Node *n, int time, unordered_map<Node *, int> &depends) {
 	n->f(time, sim_param.dt);
-	std::vector<next_node_type> fwd = model->forward(n);
-	int fwd_sizes = fwd.size();
-	for (int i = 0; i < fwd_sizes; i++) {
-		next_node_type con = fwd.at(i);
-		std::string src_port, snk_port;
-		Node *next;
-		boost::tuples::tie(src_port, next, snk_port) = con;
-
-		next->setInPort(snk_port, n->getOutPort(src_port));
+	BOOST_FOREACH(NodeConnection *con, model->forwardConnection(n)) {
+		con->pushDirect();
+		Node *next = con->sink;
 #ifdef _OPENMP
 #pragma omp atomic
 #endif
 		depends[next]--;
-
+		cd3assert(depends[next] >= 0, "race condition");
 		if (depends[next] > 0) {
 			return;
 		}
 		run(next, time, depends);
 	}
-	return;
 }
 
 unordered_map<Node *, int> ParallelSimulation::createDependsMap() const {
