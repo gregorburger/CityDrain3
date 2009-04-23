@@ -7,12 +7,14 @@ NodeConnection::NodeConnection(Node * source, const std::string &soport,
 }
 
 void NodeConnection::pull() {
-	/*cd3assert(q.empty(), "q empty, can not pull");*/
 	Flow f = q.dequeue();
 	sink->setInPort(sink_port, &f);
 }
 
 void NodeConnection::push() {
 	q.enqueue(*source->getOutPort(source_port));
-	//q.push();
+}
+
+void NodeConnection::pushDirect() {
+	sink->setInPort(sink_port, source->getOutPort(source_port));
 }

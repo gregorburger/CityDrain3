@@ -22,6 +22,8 @@ struct CD3_PUBLIC NodeConnection
 	void pull();
 	void push();
 
+	void pushDirect();
+
 private:
 	tqueue<Flow> q;
 };
