@@ -12,6 +12,8 @@ public:
 	virtual ~ParallelSimulation();
 
 	virtual int run(int time, int dt);
+
+	void setModel(IModel *model);
 private:
         unordered_map<Node *, int> createDependsMap() const;
 		void run(Node *n, int time, unordered_map<Node *, int> &depends);

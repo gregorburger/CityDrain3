@@ -19,14 +19,6 @@ ParallelSimulation::~ParallelSimulation() {
 }
 
 int ParallelSimulation::run(int time, int dt) {
-	static bool first = true;
-
-	if (first) {
-	    node_set_type set_sources = model->getSourceNodes();
-	    sources = std::vector<Node*>(set_sources.begin(), set_sources.end());
-	    first = false;
-	}
-
 	unordered_map<Node *, int> deps = createDependsMap();
 	int sources_size = sources.size();
 #ifdef _OPENMP
@@ -55,6 +47,13 @@ void ParallelSimulation::run(Node *n, int time, unordered_map<Node *, int> &depe
 		}
 		run(next, time, depends);
 	}
+}
+
+void ParallelSimulation::setModel(IModel *model) {
+	this->model = model;
+
+	node_set_type set_sources = model->getSourceNodes();
+	sources = std::vector<Node*>(set_sources.begin(), set_sources.end());
 }
 
 unordered_map<Node *, int> ParallelSimulation::createDependsMap() const {
