@@ -153,7 +153,9 @@ bool SaxLoader::endElement(const QString &/*ns*/,
 void SaxLoader::loadPlugin(QString path) {
 	QLibrary l(path);
 	bool loaded = l.load();
-	cd3assert(loaded, str(format("could not load plugin %1%") % path.toStdString()));
+	cd3assert(loaded, str(format("could not load plugin %1%: %2%")
+						  % path.toStdString()
+						  % l.errorString().toStdString()));
 	regTypeFunProto regTypeFun = (regTypeFunProto) l.resolve("registerTypes");
 	if (regTypeFun) {
 		regTypeFun(&pd->type_registry);
