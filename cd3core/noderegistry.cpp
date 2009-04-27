@@ -1,8 +1,11 @@
 #include "noderegistry.h"
 
-#include "nodefactory.h"
 #include <boost/foreach.hpp>
+#include <boost/format.hpp>
 
+using namespace boost;
+
+#include "nodefactory.h"
 #include <cd3assert.h>
 
 NodeRegistry::NodeRegistry() {
@@ -34,7 +37,8 @@ bool NodeRegistry::addNodeFactory(INodeFactory *factory) {
 }*/
 
 Node *NodeRegistry::createNode(const std::string &name) const {
-	cd3assert(contains(name), "no such node registered");
+	cd3assert(contains(name),
+			  str(format("no such node class registered: %1%") % name));
 	return registered_nodes.find(name)->second->createNode();
 }
 
