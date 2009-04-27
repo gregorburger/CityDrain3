@@ -17,7 +17,7 @@ linux-icc* {
         QMAKE_CXXFLAGS += -openmp -openmp-lib=compat -O3 -xHOST
         LIBS += -liomp5
 }
-INCLUDEPATH += $$PWD/3rdparty/boost_1_38_0/boost/
+INCLUDEPATH += $$PWD/3rdparty/boost_1_38_0/
 LIBS += -L$$PWD/3rdparty/boost_1_38_0/stage/lib/
 QT+=xml
 QT-=gui
