@@ -84,6 +84,21 @@ class Mixer(Node):
 	def __init__(self, num_inputs=2):
 		Node.__init__(self, "Mixer")
 		self.params += [SimpleParam("num_inputs", num_inputs)]
+		
+class Catchment(Node):
+	def __init__(self):
+		Node.__init__(self, "CatchmentCSS")
+		#TODO set params
+
+class CSO(Node):
+	def __init__(self):
+		Node.__init__(self, "CSO")
+		#TODO set params
+
+class RainRead(Node):
+	def __init__(self, file_name):
+		Node.__init__(self, "RainRead")
+		self.params += [SimpleParam("file_name", file_name)]
 
 class Connection():
 	def __init__(self, source, sink, src_port="out", snk_port="in"):
@@ -159,7 +174,7 @@ class Flow():
 		w("\t\t\t\t\t</flow>\n")
 			
 
-header = """<?xml version="1.0"?>
+header = """<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE citydrain SYSTEM "file:../dtd/model.dtd">
 
 <citydrain version="1.0">

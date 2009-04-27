@@ -19,6 +19,7 @@ class ModelHandler(ContentHandler):
 	def render(self):
 		print "digraph G {"
 		print "graph[rankdir=LR,pagedir=LT]"
+		print "node[shape=rect]"
 		for n in self.nodes:
 			print """"%s"[label="%s"]""" % (n, self.nodes[n])
 		print
