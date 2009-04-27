@@ -17,8 +17,6 @@ DefaultSimulation::~DefaultSimulation() {
 }
 
 int DefaultSimulation::run(int time, int dt) {
-	node_set_type sources = model->getSourceNodes();
-
 	std::map<Node *, int> deps = createDependsMap();
 	BOOST_FOREACH(Node *n, sources) {
 		run(n, time, deps);
@@ -55,4 +53,9 @@ std::map<Node *, int> DefaultSimulation::createDependsMap() const {
 	}
 
 	return deps;
+}
+
+void DefaultSimulation::setModel(IModel *model) {
+	ISimulation::setModel(model);
+	sources = model->getSourceNodes();
 }

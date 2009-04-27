@@ -3,6 +3,7 @@
 
 #include <simulation.h>
 #include <map>
+#include <model.h>
 
 class SimPriv;
 
@@ -16,10 +17,11 @@ public:
 private: //methods
 	void run(Node *n, int time, std::map<Node *, int> &deps);
 	std::map<Node *, int> createDependsMap() const;
-
+	void setModel(IModel *model);
 
 private: //data member
 	SimPriv *sp;
+	node_set_type sources;
 };
 
 #endif // DEFAULTSIMULATION_H
