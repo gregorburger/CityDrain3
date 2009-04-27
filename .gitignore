@@ -1,7 +1,8 @@
 core
 Makefile*
 *~
-*.so*
+libnodes.so
+libcd3core.so
 *.o
 *.pyc
 cd3
@@ -12,3 +13,4 @@ qtc-gdbmacros
 tmp/*
 *object_script.*
 imgs/*
+3rdparty/boost_1_38_0/
