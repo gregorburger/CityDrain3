@@ -1,11 +1,14 @@
 #include <saxloader.h>
 #include <simulation.h>
+#include <cd3assert.h>
+#include <mapbasedmodel.h>
 
 #include <iostream>
 #include <QFile>
-#include <mapbasedmodel.h>
 #include <boost/foreach.hpp>
-#include <cd3assert.h>
+#include <boost/program_options.hpp>
+
+namespace po = boost::program_options;
 
 #ifdef __MINGW32__
 /* Required header file */
@@ -32,9 +35,9 @@ private:
 	std::string state_dir;
 };
 
-int main(int argc, char **argv) {
+/*int main(int argc, char **argv) {
 #ifdef __MINGW32__
-	/* Switch to binary mode */
+	// Switch to binary mode
 	_setmode(_fileno(stdout),_O_BINARY);
 	_setmode(_fileno(stdin),_O_BINARY);
 	_setmode(_fileno(stderr),_O_BINARY);
@@ -56,9 +59,9 @@ int main(int argc, char **argv) {
 	f.close();
 	delete s;
 	return 0;
-}
+}*/
 
-/*int main(int argc, char **argv) {
+int main(int argc, char **argv) {
 	po::options_description desc("CityDrain3 command line options");
 
 	desc.add_options()
@@ -91,7 +94,7 @@ int main(int argc, char **argv) {
 
 	MapBasedModel m;
 
-	XmlLoader loader(&m);
+	SaxLoader loader(&m);
 
 	ISimulation *s = loader.load(f);
 	cd3assert(s, "simulation loading failed");
@@ -121,4 +124,4 @@ int main(int argc, char **argv) {
 	std::cout << std::endl; //newline the progress
 	//s->serialize("states");
 	delete s;
-}*/
+}
