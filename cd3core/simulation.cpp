@@ -24,13 +24,12 @@ SimulationParameters ISimulation::getSimulationParameters() const {
 
 void ISimulation::setModel(IModel *m) {
 	model = m;
+	cd3assert(model->connected(), "some nodes are not connected");
 }
 
 void ISimulation::start(int time) {
 	static double one_perc = 1.0f / sim_param.stop;
 	static int old_perc_progress = 0;
-
-	cd3assert(model->connected(), "some nodes are not connected");
 
 	current_time = time;
 #ifdef _OPENMP
@@ -40,10 +39,10 @@ void ISimulation::start(int time) {
 		int percent = static_cast<int>(one_perc * current_time * 100);
 		if (percent != old_perc_progress) {
 			old_perc_progress = percent;
-//			progress(percent);
+			progress(percent);
 		}
 		current_time += run(current_time, sim_param.dt);
-		//Q_EMIT timestep(this, current_time);
+		timestep(this, current_time);
 #ifdef _OPENMP
 #pragma omp barrier
 #endif
