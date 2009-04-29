@@ -1,7 +1,7 @@
 #!/bin/bash
 
 APP=./cd3
-MODEL=models/test-sewer.xml
+MODEL=nono
 THREADS=10
 RUNS=5
 TIME_OUT="time.txt"
@@ -35,7 +35,8 @@ then
 			export OMP_NUM_THREADS=$i
 			#/usr/bin/time -f "$i\t%e\t%S\t%U" -a -o $TIME_OUT $APP $MODEL > /dev/null
 			echo -n "$i 	" >> $TIME_OUT
-			LD_PRELOAD=/usr/lib/libtcmalloc.so $APP $MODEL 2>> $TIME_OUT
+			LD_PRELOAD=/usr/lib/libtcmalloc.so $APP models/paper/$MODEL 2>> $TIME_OUT
+			#$APP models/paper/$MODEL 2>> $TIME_OUT
 		done
 	done
 fi
@@ -43,9 +44,10 @@ fi
 echo "averaging results"
 ./bench/bench.py $TIME_OUT > $AVG_FILE
 echo "plotting results"
-TMP_FILE=$(mktemp -p imgs bench.png.XXXX)
-gnuplot bench/plotbench.gp > $TMP_FILE
-eog $TMP_FILE
+TMP_FILE="imgs/benc$MODEL-$$.eps"
+#TMP_FILE=$(tempfile -d imgs -s .ps -p $MODEL)
+gnuplot bench/plotwall.gp > $TMP_FILE
+xdg-open $TMP_FILE
 echo "cleaning up"
 /bin/rm $TIME_OUT
 /bin/rm $AVG_FILE

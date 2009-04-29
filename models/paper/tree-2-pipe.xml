@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE citydrain SYSTEM "file:../dtd/model.dtd">
+
+<citydrain version="1.0">
+
+	<pluginpath path="./libnodes.so" />
+	<simulation class="PipelinedSimulation">
+		<time start="0" stop="7200" dt="300" />
+	</simulation>
+	<model>
+		<nodelist>
+
+			<node id="Mixer-0" class="Mixer">
+				<parameter name="num_inputs" type="int" value="2" />
+			</node>
+
+
+			<node id="Sewer-0" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="Sewer-1" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="Mixer-1" class="Mixer">
+				<parameter name="num_inputs" type="int" value="2" />
+			</node>
+
+
+			<node id="Sewer-2" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="Sewer-3" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="ConstSource-0" class="ConstSource">
+				<parameter name="const_flow" kind="complex" type="Flow">
+					<flow>
+						<unit name="Q" kind="Flow" value="100.000000" />
+						<unit name="C2" kind="Concentration" value="3.000000" />
+						<unit name="C1" kind="Concentration" value="5.000000" />
+						<unit name="C0" kind="Concentration" value="1.000000" />
+					</flow>
+				</parameter>
+			</node>
+
+
+			<node id="ConstSource-1" class="ConstSource">
+				<parameter name="const_flow" kind="complex" type="Flow">
+					<flow>
+						<unit name="Q" kind="Flow" value="100.000000" />
+						<unit name="C2" kind="Concentration" value="3.000000" />
+						<unit name="C1" kind="Concentration" value="5.000000" />
+						<unit name="C0" kind="Concentration" value="1.000000" />
+					</flow>
+				</parameter>
+			</node>
+
+
+			<node id="Mixer-2" class="Mixer">
+				<parameter name="num_inputs" type="int" value="2" />
+			</node>
+
+
+			<node id="Sewer-4" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="Sewer-5" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="ConstSource-2" class="ConstSource">
+				<parameter name="const_flow" kind="complex" type="Flow">
+					<flow>
+						<unit name="Q" kind="Flow" value="100.000000" />
+						<unit name="C2" kind="Concentration" value="3.000000" />
+						<unit name="C1" kind="Concentration" value="5.000000" />
+						<unit name="C0" kind="Concentration" value="1.000000" />
+					</flow>
+				</parameter>
+			</node>
+
+
+			<node id="ConstSource-3" class="ConstSource">
+				<parameter name="const_flow" kind="complex" type="Flow">
+					<flow>
+						<unit name="Q" kind="Flow" value="100.000000" />
+						<unit name="C2" kind="Concentration" value="3.000000" />
+						<unit name="C1" kind="Concentration" value="5.000000" />
+						<unit name="C0" kind="Concentration" value="1.000000" />
+					</flow>
+				</parameter>
+			</node>
+
+
+			<node id="FileOut-0" class="FileOut">
+				<parameter name="out_file_name" type="string" value="tmp/tree-out.txt" />
+			</node>
+
+		</nodelist>
+		<connectionlist>
+
+			<connection id="con-Mixer-0-FileOut-0">
+				<source node="Mixer-0" port="out" />
+				<sink node="FileOut-0" port="in" />
+			</connection>
+
+
+			<connection id="con-Sewer-0-Mixer-0">
+				<source node="Sewer-0" port="out" />
+				<sink node="Mixer-0" port="inputs[0]" />
+			</connection>
+
+
+			<connection id="con-Sewer-1-Mixer-0">
+				<source node="Sewer-1" port="out" />
+				<sink node="Mixer-0" port="inputs[1]" />
+			</connection>
+
+
+			<connection id="con-Mixer-1-Sewer-0">
+				<source node="Mixer-1" port="out" />
+				<sink node="Sewer-0" port="in" />
+			</connection>
+
+
+			<connection id="con-Sewer-2-Mixer-1">
+				<source node="Sewer-2" port="out" />
+				<sink node="Mixer-1" port="inputs[0]" />
+			</connection>
+
+
+			<connection id="con-Sewer-3-Mixer-1">
+				<source node="Sewer-3" port="out" />
+				<sink node="Mixer-1" port="inputs[1]" />
+			</connection>
+
+
+			<connection id="con-ConstSource-0-Sewer-2">
+				<source node="ConstSource-0" port="out" />
+				<sink node="Sewer-2" port="in" />
+			</connection>
+
+
+			<connection id="con-ConstSource-1-Sewer-3">
+				<source node="ConstSource-1" port="out" />
+				<sink node="Sewer-3" port="in" />
+			</connection>
+
+
+			<connection id="con-Mixer-2-Sewer-1">
+				<source node="Mixer-2" port="out" />
+				<sink node="Sewer-1" port="in" />
+			</connection>
+
+
+			<connection id="con-Sewer-4-Mixer-2">
+				<source node="Sewer-4" port="out" />
+				<sink node="Mixer-2" port="inputs[0]" />
+			</connection>
+
+
+			<connection id="con-Sewer-5-Mixer-2">
+				<source node="Sewer-5" port="out" />
+				<sink node="Mixer-2" port="inputs[1]" />
+			</connection>
+
+
+			<connection id="con-ConstSource-2-Sewer-4">
+				<source node="ConstSource-2" port="out" />
+				<sink node="Sewer-4" port="in" />
+			</connection>
+
+
+			<connection id="con-ConstSource-3-Sewer-5">
+				<source node="ConstSource-3" port="out" />
+				<sink node="Sewer-5" port="in" />
+			</connection>
+
+		</connectionlist>
+	</model>
+</citydrain>

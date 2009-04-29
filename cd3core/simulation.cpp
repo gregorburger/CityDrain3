@@ -37,12 +37,12 @@ void ISimulation::start(int time) {
 #endif
 	while (current_time <= sim_param.stop) {
 		int percent = static_cast<int>(one_perc * current_time * 100);
-		if (percent != old_perc_progress) {
+/*		if (percent != old_perc_progress) {
 			old_perc_progress = percent;
 			progress(percent);
-		}
+		}*/
 		current_time += run(current_time, sim_param.dt);
-		timestep(this, current_time);
+//		timestep(this, current_time);
 #ifdef _OPENMP
 #pragma omp barrier
 #endif
