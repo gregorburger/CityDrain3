@@ -37,14 +37,17 @@ void ParallelSimulation::run(Node *n, int time, unordered_map<Node *, int> &depe
 	BOOST_FOREACH(NodeConnection *con, model->forwardConnection(n)) {
 		con->pushDirect();
 		Node *next = con->sink;
-#ifdef _OPENMP
-#pragma omp atomic
-#endif
+
+		bool finished;
+//#pragma omp atomic
 		depends[next]--;
+		finished = depends[next] == 0;
+
 		cd3assert(depends[next] >= 0, "race condition");
-		if (depends[next] > 0) {
+		if (!finished) {
 			return;
 		}
+
 		run(next, time, depends);
 	}
 }
