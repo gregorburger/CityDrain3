@@ -14,7 +14,7 @@ linux-g++* {
         LIBS+=-lgomp
 }
 linux-icc* {
-        QMAKE_CXXFLAGS += -openmp -openmp-lib=compat -O3 -xHOST
+        QMAKE_CXXFLAGS += -openmp -openmp-lib=compat -O0 -xHOST
         LIBS += -liomp5
 }
 INCLUDEPATH += $$PWD/3rdparty/boost_1_38_0/
