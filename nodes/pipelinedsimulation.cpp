@@ -1,6 +1,7 @@
 #include "pipelinedsimulation.h"
 #include <model.h>
 #include <node.h>
+#include <nodeconnection.h>
 
 #include <vector>
 #include <iostream>
@@ -17,7 +18,7 @@ using namespace boost;
 CD3_DECLARE_SIMULATION_NAME(PipelinedSimulation)
 
 struct PipeSimPrivate {
-	std::vector<Node *>		nodes;
+	node_set_type		nodes;
 	unordered_map<Node *, int>	state;
 	QReadWriteLock			state_lock;
 	IModel				*model; //StateWorker needs it
@@ -30,6 +31,7 @@ struct StateWorker : public QRunnable {
 	void updatePorts(Node *n);
 	PipeSimPrivate *pd;
 	int time, dt;
+	node_set_type not_done;
 };
 
 PipelinedSimulation::PipelinedSimulation() {
@@ -43,13 +45,7 @@ PipelinedSimulation::~PipelinedSimulation() {
 void PipelinedSimulation::setModel(IModel *model) {
 	ISimulation::setModel(model);
 	pd->model = model;
-	node_set_type::const_iterator it = model->getNodes()->begin();
-	node_set_type::const_iterator end = model->getNodes()->end();
-	while (it != end) {
-		Node *n = (*it);
-		pd->nodes.push_back(n);
-		it++;
-	}
+	pd->nodes = *model->getNodes();
 }
 
 void PipelinedSimulation::start(int time) {
@@ -69,7 +65,6 @@ void PipelinedSimulation::start(int time) {
 	     current_time <= sim_param.stop;
 	     current_time += sim_param.dt) {
 		StateWorker *worker = new StateWorker(pd, current_time, sim_param.dt);
-		//worker.setAutoDelete(false);
 		pool->start(worker);
 	}
 	pool->waitForDone();
@@ -89,64 +84,63 @@ StateWorker::StateWorker(PipeSimPrivate *pd, int time, int dt) {
 	this->pd = pd;
 	this->time = time;
 	this->dt = dt;
+	this->not_done = pd->nodes;
 }
 
 void StateWorker::run() {
-	//std::cout << "starting StateWorker " << time << std::endl;
-	bool finished = true;
-	do {
-		finished = true;
-		//std::cout << "work needs to be done" << std::endl;
-		BOOST_FOREACH(Node *n, pd->nodes) {
+	while (!not_done.empty()) {
+		/*node_set_type::iterator it = not_done.begin();
+		while (it != not_done.end()) {*/
+		node_set_type to_remove;
+		BOOST_FOREACH(Node *n, not_done) {
+			//Node *n = *it;
 			pd->state_lock.lockForRead();
 			if (pd->state[n] == time) {
 				if (!isRunnable(n)) {
-					//std::cout << "not runnable" << std::endl;
 					pd->state_lock.unlock();
-					finished = false;
 					continue;
 				}
 				pd->state_lock.unlock();
 				pd->state_lock.lockForWrite();
 				updatePorts(n);
 				int fdt = n->f(time, dt);
+				//not_done.erase(it++);
+				to_remove.insert(n);
 				cd3assert(fdt == dt, "PipelinedSimulations dont't support variable dts");
 				pd->state[n] += dt;
-				//finished = false;
-			}
-			if (pd->state[n] <= time) {
-				finished = false;
-			}
+			} /*else {
+				it++;
+			}*/
 			pd->state_lock.unlock();
 		}
-	} while (!finished);
-
-	BOOST_FOREACH (Node *n, pd->nodes) {
-		cd3assert(pd->state[n] >= (time + dt), "not really finished");
+		BOOST_FOREACH(Node *r, to_remove) {
+			not_done.erase(r);
+		}
 	}
-	std::cout << time << " finished" << std::endl;
+
+	/*BOOST_FOREACH (Node *n, pd->nodes) {
+		cd3assert(pd->state[n] >= (time + dt), "not really finished");
+	}*/
+	//std::cout << time << " finished" << std::endl;
 }
 
 void StateWorker::updatePorts(Node *n) {
-	BOOST_FOREACH(next_node_type next, pd->model->backward(n)) {
-		std::string src_port, snk_port;
-		Node *src;
-		boost::tuples::tie(src_port, src, snk_port) = next;
-		n->setInPort(snk_port, src->getOutPort(src_port));
+	BOOST_FOREACH(NodeConnection *con, pd->model->backwardConnection(n)) {
+		con->pushDirect();
 	}
 }
 
 bool StateWorker::isRunnable(Node *n) const {
-	BOOST_FOREACH(next_node_type next, pd->model->backward(n)) {
-		Node *dep_node = next.get<1>();
+	BOOST_FOREACH(NodeConnection *con, pd->model->backwardConnection(n)) {
+		Node *dep_node = con->source;
 		//assert here for state + dt
 		if (pd->state[dep_node] != (time + dt)) {
 			return false;
 		}
 	}
 
-	BOOST_FOREACH(next_node_type next, pd->model->forward(n)) {
-		Node *dep_node = next.get<1>();
+	BOOST_FOREACH(NodeConnection *con, pd->model->forwardConnection(n)) {
+		Node *dep_node = con->sink;
 		//assert here for state + dt
 		if (pd->state[dep_node] != time) {
 			return false;
