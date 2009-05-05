@@ -1,11 +1,9 @@
 #include "simulation.h"
 #include "modelserializer.h"
-#ifdef _OPENMP
-#include <omp.h>
-#endif
 #include <iostream>
 #include "model.h"
 #include "cd3assert.h"
+#include <QTime>
 
 ISimulation::ISimulation() {
 }
@@ -28,31 +26,25 @@ void ISimulation::setModel(IModel *m) {
 }
 
 void ISimulation::start(int time) {
-	static double one_perc = 1.0f / sim_param.stop;
-	static int old_perc_progress = 0;
+	(void) time;
+	/*static double one_perc = 1.0f / sim_param.stop;
+	static int old_perc_progress = 0;*/
 
-	current_time = time;
-#ifdef _OPENMP
-	double sim_start_time = omp_get_wtime();
-#endif
+//	current_time = time;
+	QTime ts_before = QTime::currentTime();
 	while (current_time <= sim_param.stop) {
-		int percent = static_cast<int>(one_perc * current_time * 100);
+		//int percent = static_cast<int>(one_perc * current_time * 100);
 /*		if (percent != old_perc_progress) {
 			old_perc_progress = percent;
 			progress(percent);
 		}*/
 		current_time += run(current_time, sim_param.dt);
 //		timestep(this, current_time);
-#ifdef _OPENMP
-#pragma omp barrier
-#endif
 	}
-#ifdef _OPENMP
-	double sim_stop_time = omp_get_wtime();
-	double sim_run_time = sim_stop_time - sim_start_time;
-	std::cerr << sim_run_time << std::endl;
-#pragma omp barrier
-#endif
+
+	QTime ts_after = QTime::currentTime();
+	int duration = ts_before.msecsTo(ts_after);
+	std::cerr << duration << std::endl;
 }
 
 void ISimulation::addController(IController *c) {
