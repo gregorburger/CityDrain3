@@ -22,12 +22,13 @@ int ParallelSimulation::run(int time, int dt) {
 	unordered_map<Node *, int> deps = createDependsMap();
 	int sources_size = sources.size();
 #ifdef _OPENMP
-#pragma omp parallel for
+#pragma omp parallel for schedule(static)
 #endif
 	for (int i = 0; i < sources_size; i++) {
 		Node *n = sources.at(i);
 		run(n, time, deps);
 	}
+
 	return dt;
 }
 
@@ -38,13 +39,11 @@ void ParallelSimulation::run(Node *n, int time, unordered_map<Node *, int> &depe
 		con->pushDirect();
 		Node *next = con->sink;
 
-		bool finished;
 //#pragma omp atomic
-		depends[next]--;
-		finished = depends[next] == 0;
+		next->num_inputed--;
 
-		cd3assert(depends[next] >= 0, "race condition");
-		if (!finished) {
+		cd3assert(next->num_inputed >= 0, "race condition");
+		if (next->num_inputed > 0) {
 			return;
 		}
 
@@ -62,7 +61,8 @@ void ParallelSimulation::setModel(IModel *model) {
 unordered_map<Node *, int> ParallelSimulation::createDependsMap() const {
 	unordered_map<Node *, int> deps;
 	BOOST_FOREACH(Node *node, *model->getNodes()) {
-		deps[node] = model->backward(node).size();
+//		deps[node] = model->backward(node).size();
+		node->num_inputed = model->backward(node).size();
 	}
 
 	return deps;

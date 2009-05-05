@@ -135,6 +135,8 @@ public:
 		parameters[name] = ltvp(cd3::TypeInfo(typeid(T)), ptr);
 	}
 
+	int num_inputed;
+
 protected:
 	void addInPort	(const std::string &name, Flow *p);
 	void addOutPort	(const std::string &name, Flow *p);
