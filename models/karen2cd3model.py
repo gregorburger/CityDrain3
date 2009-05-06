@@ -3,56 +3,59 @@
 import cd3modelgen as cd3
 import sys
 
-sim_class = "DefaultSimulation"
-
 class Catchment:
     def __init__(self, name):
         self.name = name
         self.eff1 = -1
         self.eff2 = -1
-        self.upstreamCount = 0
+        self.upstreams = []
         self.nextCon = 1
     
     def makeNodes(self, s):
-        self.mixer = cd3.Mixer(self.upstreamCount+1)
+        
         if self.type == 3:
+            self.mixer = cd3.Mixer(len(self.upstreams))
             self.fileout = cd3.FileOut("tmp/WWTP-out.txt")
             s.nodes += [self.mixer, self.fileout]
             s.cons += [cd3.Connection(self.mixer, self.fileout)]
+            self.nextCon = 0
             return
-        self.rain = cd3.RainRead(self.rain_file)
-        self.catchment = cd3.Catchment()
-        self.catchment.label = "Catchment[%s]" % self.name
+        self.mixer = cd3.Mixer(len(self.upstreams)+1)
+#        self.rain = cd3.RainRead(self.rain_file)
+#        self.catchment = cd3.Catchment()
+        self.const = cd3.ConstSource()
         self.cso = cd3.CSO()
         self.sewer = cd3.Sewer()
         self.fileout = cd3.FileOut("tmp/river-out-%s.txt" % self.name)
-        s.nodes+=[self.rain, self.catchment, self.cso, self.mixer, self.sewer, self.fileout]
-        s.cons+=[cd3.Connection(self.cso, self.fileout, "overflow", "in")]
-        s.cons+=[cd3.Connection(self.rain, self.catchment, "out", "rain_in")]
+#        s.nodes+=[self.rain, self.catchment, self.cso, self.mixer, self.sewer, self.fileout]
+        s.nodes+=[self.const, self.cso, self.mixer, self.sewer, self.fileout]
+        #rain_catch_con = cd3.Connection(self.rain, self.catchment, "out", "rain_in")
+        cso_fileout_con = cd3.Connection(self.cso, self.fileout, "overflow", "in")
+#        s.cons+=[rain_catch_con, cso_fileout_con]
+        s.cons+=[cso_fileout_con]
         if (self.type == 1):
             self.connectType1(s)
         else:
             self.connectType2(s)
         
     def connectType1(self, s):
-        catch_mixer = cd3.Connection(self.catchment, self.mixer, "out", "inputs[0]")
+        catch_mixer = cd3.Connection(self.const, self.mixer, "out", "inputs[0]")
         mixer_cso = cd3.Connection(self.mixer, self.cso)
         cso_sewer = cd3.Connection(self.cso, self.sewer)
         s.cons += [catch_mixer, mixer_cso, cso_sewer]
         pass
         
     def connectType2(self, s):
-        catch_cso = cd3.Connection(self.catchment, self.cso)
+        catch_cso = cd3.Connection(self.const, self.cso)
         cso_mixer = cd3.Connection(self.cso, self.mixer, "out", "inputs[0]")
         mixer_sewer = cd3.Connection(self.mixer, self.sewer)
         s.cons += [catch_cso, cso_mixer, mixer_sewer]
         pass
 
-def render_catchments(cs):
-    s = cd3.Simulation(sim_class)
+def render_catchments(cs, s):
     for c in cs:
         if c.eff1 >= 0:
-            cs[c.eff1].upstreamCount += 1
+            cs[c.eff1].upstreams.append(c)
     
     for c in cs:
         c.makeNodes(s)
@@ -68,8 +71,11 @@ def render_catchments(cs):
 
 def main():
     if (len(sys.argv) < 2):
-        print "usage: karen2cd3model karen_model"
+        print "usage: karen2cd3model karen_model [sim_class=DefaultSimulation]"
         return
+    s = cd3.Simulation("DefaultSimulation", 0, 72000, 300)
+    if (len(sys.argv) > 2):
+        s.klass = sys.argv[2]
     lines = []
     f = open(sys.argv[1])
 
@@ -118,7 +124,7 @@ def main():
             current_line += 1
         current_line += 1
 #    print current_line
-    render_catchments(catchments)
+    render_catchments(catchments, s)
         
 if __name__ == "__main__":
     main()
