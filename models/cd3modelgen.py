@@ -100,6 +100,11 @@ class RainRead(Node):
 		Node.__init__(self, "RainRead")
 		self.params += [SimpleParam("file_name", file_name)]
 
+class Splitter(Node):
+	def __init__(self, ratio=0.5):
+		Node.__init__(self, "Splitter")
+		self.params += [SimpleParam("ratio", ratio)]
+
 class Connection():
 	def __init__(self, source, sink, src_port="out", snk_port="in"):
 		self.sink = sink
