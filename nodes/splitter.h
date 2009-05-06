@@ -11,7 +11,7 @@ public:
 	int f(int time, int dt);
 private:
 	Flow *in, *out1, *out2;
-	float ratio;
+	double ratio;
 };
 
 #endif // SPLITTER_H
