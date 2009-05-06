@@ -48,7 +48,11 @@ public:
 	name_node_map getNamesAndNodes() const;
 
 	Node *getNode(const string &name) const;
-        bool connected() const;
+	string getNodeName(const Node *name) const;
+	con_count_type getForwardCounts() const;
+	con_count_type getBackwardCounts() const;
+	bool connected() const;
+	void checkModel() const;
 
 private:
 	node_set_type all_nodes;

@@ -19,6 +19,7 @@ typedef unordered_map<string, Node *> name_node_map;
 typedef unordered_set<Node *> node_set_type;
 typedef pair<Node *, string> end_point_type;
 typedef tuple<string, Node *, string> next_node_type;
+typedef unordered_map<Node *, int> con_count_type;
 
 class CD3_PUBLIC IModel {
 public:
@@ -46,7 +47,11 @@ public:
 	virtual const node_set_type *getNodes() const = 0;
 	virtual name_node_map getNamesAndNodes() const = 0;
 	virtual Node *getNode(const string &name) const = 0;
+	virtual string getNodeName(const Node *node) const = 0;
+	virtual con_count_type getForwardCounts() const = 0;
+	virtual con_count_type getBackwardCounts() const = 0;
 	virtual bool connected() const = 0;
+	virtual void checkModel() const = 0;
 };
 
 #endif // MODEL_H

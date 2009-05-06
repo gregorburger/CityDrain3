@@ -130,14 +130,14 @@ vector<next_node_type> MapBasedModel::backward(Node *n) {
 vector<NodeConnection *> MapBasedModel::forwardConnection(Node *n) {
 	cd3assert(n, "Node null");
 	cd3assert(all_nodes.count(n), "node not in model");
-	//cd3assert(fwd_connections.count(n), "no forward connection for node");
+	cd3assert(fwd_connections.count(n), "no forward connection for node");
 	return fwd_connections[n];
 }
 
 vector<NodeConnection *> MapBasedModel::backwardConnection(Node *n) {
 	cd3assert(n, "Node null");
 	cd3assert(all_nodes.count(n), "node not in model");
-	//cd3assert(fwd_connections.count(n), "no backward connection for node");
+	cd3assert(fwd_connections.count(n), "no backward connection for node");
 	return bwd_connections[n];
 }
 
@@ -146,13 +146,51 @@ name_node_map MapBasedModel::getNamesAndNodes() const {
 }
 
 bool MapBasedModel::connected() const {
-	pair<string, Node *> pn;
 	BOOST_FOREACH(Node * n, uncon_nodes) {
-		BOOST_FOREACH(pn, names_nodes) {
-			if (pn.second == n) {
-				cout << pn.first << "  is unconnected" << endl;
-			}
-		}
+		std::cerr << "node " << getNodeName(n) << "not connected" << std::endl;
 	}
 	return uncon_nodes.empty();
+}
+
+string MapBasedModel::getNodeName(const Node *node) const {
+//	cd3assert(all_nodes.count(node), "node not in model");
+	pair<string, Node *> pn;
+	BOOST_FOREACH(pn, names_nodes) {
+		if (pn.second == node) {
+			return pn.first;
+		}
+	}
+	cd3assert(false, "node not in model");
+	return "";
+}
+
+void MapBasedModel::checkModel() const {
+	BOOST_FOREACH(Node *node, all_nodes) {
+		size_t iports = node->const_in_ports->size();
+		size_t bcons = bwd_connections.at(node).size();
+		size_t fcons = fwd_connections.at(node).size();
+		size_t oports = node->const_out_ports->size();
+		string name = getNodeName(node);
+		cd3assert(iports == bcons, str(format("node %1% has %2% in ports but only %3% connections") % name % iports % bcons));
+		cd3assert(oports == fcons, str(format("node %1% has %2% out ports but only %3% connections") % name % oports % fcons));
+	}
+}
+
+
+con_count_type MapBasedModel::getBackwardCounts() const {
+	con_count_type counts;
+	BOOST_FOREACH(Node *node, all_nodes) {
+		counts[node] = bwd_connections.at(node).size();
+	}
+
+	return counts;
+}
+
+con_count_type MapBasedModel::getForwardCounts() const {
+	con_count_type counts;
+	BOOST_FOREACH(Node *node, all_nodes) {
+		counts[node] = fwd_connections.at(node).size();
+	}
+
+	return counts;
 }
