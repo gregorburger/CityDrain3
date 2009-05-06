@@ -19,21 +19,21 @@ ParallelSimulation::~ParallelSimulation() {
 }
 
 int ParallelSimulation::run(int time, int dt) {
-	unordered_map<Node *, int> deps = createDependsMap();
+	setNodeDepends();
 	int sources_size = sources.size();
 #ifdef _OPENMP
 #pragma omp parallel for schedule(static)
 #endif
 	for (int i = 0; i < sources_size; i++) {
 		Node *n = sources.at(i);
-		run(n, time, deps);
+		run(n, time);
 	}
 
 	return dt;
 }
 
 
-void ParallelSimulation::run(Node *n, int time, unordered_map<Node *, int> &depends) {
+void ParallelSimulation::run(Node *n, int time) {
 	n->f(time, sim_param.dt);
 	BOOST_FOREACH(NodeConnection *con, model->forwardConnection(n)) {
 		con->pushDirect();
@@ -47,23 +47,19 @@ void ParallelSimulation::run(Node *n, int time, unordered_map<Node *, int> &depe
 			return;
 		}
 
-		run(next, time, depends);
+		run(next, time);
 	}
 }
 
 void ParallelSimulation::setModel(IModel *model) {
-	this->model = model;
+	ISimulation::setModel(model);
 
 	node_set_type set_sources = model->getSourceNodes();
 	sources = std::vector<Node*>(set_sources.begin(), set_sources.end());
 }
 
-unordered_map<Node *, int> ParallelSimulation::createDependsMap() const {
-	unordered_map<Node *, int> deps;
+void ParallelSimulation::setNodeDepends() const {
 	BOOST_FOREACH(Node *node, *model->getNodes()) {
-//		deps[node] = model->backward(node).size();
 		node->num_inputed = model->backward(node).size();
 	}
-
-	return deps;
 }
