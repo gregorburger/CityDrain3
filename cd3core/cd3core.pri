@@ -19,7 +19,6 @@ HEADERS += calculationunit.h \
     stateserializer.h \
     modelserializer.h \
     flowfuns.h \
-    xmlloader.h \
     typeregistry.h \
     typefactory.h \
     cd3globals.h \
@@ -37,5 +36,4 @@ SOURCES += calculationunit.cpp \
     stateserializer.cpp \
     modelserializer.cpp \
     flowfuns.cpp \
-    xmlloader.cpp \
     saxloader.cpp
