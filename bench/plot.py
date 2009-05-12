@@ -14,6 +14,7 @@ if len(sys.argv) > 2:
 	format=sys.argv[2]
 
 rc('font', size=8)
+rc('figure.subplot', left=0.15, right=0.985, top=0.97, bottom=0.11)
 
 model = sys.argv[1]
 datas={}
@@ -28,7 +29,10 @@ x=[]
 for d in datas:
 	x.append(datas[d].runtime)
 
-f=figure(dpi=300, figsize=(6.8/inch, 5.1/inch))
+#subplots_adjust(right=0.7)
+
+f=figure(figsize=(6.8/inch, 5.1/inch))
+#f=figure(figsize=(5, 3))
 	
 lines=plot(transpose(x))
 ls = ['-', '--', ':']
@@ -44,9 +48,10 @@ for i in range(3):
 
 #axis('off')
 
-xlabel('number of threads', size=20)
-ylabel('runtime', size=20)
-legend(lines, ['ordered', 'parallel', 'pipelined'], 'best')
-savefig('%s.%s' % (model, format), dpi=200, format=format)
+xlabel('number of threads', va='bottom')
+ylabel('runtime', ha='left')
+l=legend(lines, ['ordered', 'parallel', 'pipelined'], 'best')
+l.draw_frame(False)
+savefig('%s.%s' % (model, format), format=format, dpi=400)#, bbox_inches="tight")
 #show()
 
