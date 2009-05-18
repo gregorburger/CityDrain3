@@ -21,11 +21,11 @@ datas={}
 
 sim=['ordered', 'par', 'pipe']
 
-g = glob.glob('%s-*-avg.txt' % model)
-g.sort()
+#g = glob.glob('time/%s-*-avg.txt' % model)
+#g.sort()
 
 for s in sim:
-	strat = glob.glob('%s-%s-*-avg.txt' % (model, s))[0]
+	strat = glob.glob('time/%s-%s-*-avg.txt' % (model, s))[0]
 	datas[s] = csv2rec(strat, delimiter="\t", names=['nthreads', 'runtime'])
 	
 x=[]
@@ -36,14 +36,17 @@ f=figure(figsize=(8/inch, 5.1/inch))
 	
 lines=plot(transpose(x))
 ls = ['-', '--', ':']
+ymax=0
 for i in range(3):
 	lines[i].set_linestyle(ls[i])
-
+	ymax=max(ymax, lines[i].get_ydata()[0])
+	
+ylim(ymax=ymax*1.2, ymin=0)
 xlabel('number of threads')#, va='bottom')
 ylabel('runtime (ms)')#, ha='left')
 l=legend(lines, ['ordered', 'parallel', 'pipelined'], 'best')
 #l=legend(lines, datas.keys(), 'best')
 l.draw_frame(False)
-savefig('%s.%s' % (model, format), format=format, dpi=400)#, bbox_inches="tight")
+savefig('imgs/%s.%s' % (model, format), format=format, dpi=400)#, bbox_inches="tight")
 #show()
 
