@@ -38,18 +38,16 @@ public:
 	virtual node_set_type getSourceNodes() = 0;
 	virtual node_set_type getSinkNodes() = 0;
 
-	virtual vector<next_node_type> forward(Node *n) = 0;
-	virtual vector<next_node_type> backward(Node *n) = 0;
-
 	virtual vector<NodeConnection *> forwardConnection(Node *n) = 0;
 	virtual vector<NodeConnection *> backwardConnection(Node *n) = 0;
+	virtual con_count_type getForwardCounts() const = 0;
+	virtual con_count_type getBackwardCounts() const = 0;
 
 	virtual const node_set_type *getNodes() const = 0;
 	virtual name_node_map getNamesAndNodes() const = 0;
 	virtual Node *getNode(const string &name) const = 0;
 	virtual string getNodeName(const Node *node) const = 0;
-	virtual con_count_type getForwardCounts() const = 0;
-	virtual con_count_type getBackwardCounts() const = 0;
+
 	virtual bool connected() const = 0;
 	virtual void checkModel() const = 0;
 };

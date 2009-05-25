@@ -37,9 +37,6 @@ public:
 	node_set_type getSourceNodes();
 	node_set_type getSinkNodes();
 
-	vector<next_node_type> forward(Node *n);
-	vector<next_node_type> backward(Node *n);
-
 	vector<NodeConnection *> forwardConnection(Node *n);
 	vector<NodeConnection *> backwardConnection(Node *n);
 
@@ -51,6 +48,7 @@ public:
 	string getNodeName(const Node *name) const;
 	con_count_type getForwardCounts() const;
 	con_count_type getBackwardCounts() const;
+
 	bool connected() const;
 	void checkModel() const;
 

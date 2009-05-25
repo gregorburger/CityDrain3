@@ -105,28 +105,6 @@ node_set_type MapBasedModel::getSourceNodes() {
 	return source_nodes;
 }
 
-vector<next_node_type> MapBasedModel::forward(Node *n) {
-	cd3assert(n, "Node null");
-	cd3assert(all_nodes.count(n), "node not in model");
-
-	vector<next_node_type> fwd;
-	BOOST_FOREACH(NodeConnection *c, fwd_connections[n]) {
-		fwd.push_back(next_node_type(c->source_port, c->sink, c->sink_port));
-	}
-	return fwd;
-}
-
-vector<next_node_type> MapBasedModel::backward(Node *n) {
-	cd3assert(n, "Node null");
-	cd3assert(all_nodes.count(n), "node not in model");
-
-	vector<next_node_type> bwd;
-	BOOST_FOREACH(NodeConnection *c, bwd_connections[n]) {
-		bwd.push_back(next_node_type(c->source_port, c->source, c->sink_port));
-	}
-	return bwd;
-}
-
 vector<NodeConnection *> MapBasedModel::forwardConnection(Node *n) {
 	cd3assert(n, "Node null");
 	cd3assert(all_nodes.count(n), "node not in model");

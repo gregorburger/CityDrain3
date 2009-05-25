@@ -46,7 +46,7 @@ void ModelSerializer::serialize(int time) const {
 
 void ModelSerializer::serialize(std::ostream &os) const {
 	os << "<model>" << std::endl;
-        name_node_map names_nodes = model->getNamesAndNodes();
+	name_node_map names_nodes = model->getNamesAndNodes();
 	BOOST_FOREACH(snp node, names_nodes) {
 		serializeNode(os, node.first, node.second);
 	}
