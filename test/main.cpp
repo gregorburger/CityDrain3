@@ -124,4 +124,5 @@ int main(int argc, char **argv) {
 	std::cout << std::endl; //newline the progress
 	//s->serialize("states");
 	delete s;
+	return 0;
 }
