@@ -14,5 +14,6 @@ tmp/*
 *object_script.*
 imgs/*
 time/*
+doc/html/*
 3rdparty/boost_1_38_0/
 3rdparty/threadpool-0_2_5/
