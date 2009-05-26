@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
-<!DOCTYPE citydrain SYSTEM "model.dtd">
+<!DOCTYPE citydrain SYSTEM "../dtd/model.dtd">
 
 <citydrain version="1.0">
 
-	<pluginpath path="nodes/libnodes.so.1.0.0" />
+	<pluginpath path="./libnodes" />
 
-	<simulation class="DefaultSimulation">
+	<simulation class="OrderedPipeSimulation">
 		<time start="0" stop="7200" dt="300" />
 	</simulation>
 
@@ -36,6 +36,8 @@
 				<parameter name="V_Max" type="double" value="30.0" />
 			</node>
 			
+			<node id="sewer" class="Sewer" />
+			
 		</nodelist>
 		
 		<connectionlist>
@@ -46,8 +48,13 @@
 			</connection>
 						
 			<connection id="con2">
-				<source node="cso" port="out" />
+				<source node="sewer" port="out" />
 				<sink node="cso-out" port="in" />
+			</connection>
+			
+			<connection id="con4">
+				<source node="cso" port="out" />
+				<sink node="sewer" port="in" />
 			</connection>
 			
 			<connection id="con3">
