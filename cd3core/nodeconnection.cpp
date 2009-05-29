@@ -6,15 +6,12 @@ NodeConnection::NodeConnection(Node * source, const std::string &soport,
 	: source(source), sink(sink), source_port(soport), sink_port(siport) {
 }
 
-void NodeConnection::pull() {
-	Flow f = q.dequeue();
-	sink->setInPort(sink_port, &f);
+void NodeConnection::push(int dt) {
+	(void) dt;
+	sink->setInPort(sink_port, source->getOutPort(source_port));
 }
 
-void NodeConnection::push() {
-	q.enqueue(*source->getOutPort(source_port));
-}
-
-void NodeConnection::pushDirect() {
+void NodeConnection::pull(int dt) {
+	(void) dt;
 	sink->setInPort(sink_port, source->getOutPort(source_port));
 }

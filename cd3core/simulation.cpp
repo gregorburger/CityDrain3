@@ -1,8 +1,10 @@
 #include "simulation.h"
 #include "modelserializer.h"
-#include <iostream>
 #include "model.h"
 #include "cd3assert.h"
+#include "nodeconnection.h"
+
+#include <iostream>
 #include <QTime>
 
 ISimulation::ISimulation() {
@@ -23,6 +25,7 @@ SimulationParameters ISimulation::getSimulationParameters() const {
 void ISimulation::setModel(IModel *m) {
 	model = m;
 	cd3assert(model->connected(), "some nodes are not connected");
+	m->checkModel();
 }
 
 void ISimulation::start(int time) {
@@ -39,7 +42,7 @@ void ISimulation::start(int time) {
 			progress(percent);
 		}*/
 		current_time += run(current_time, sim_param.dt);
-//		timestep(this, current_time);
+		timestep(this, current_time);
 	}
 
 	QTime ts_after = QTime::currentTime();
@@ -60,3 +63,11 @@ void ISimulation::deserialize(const std::string &dir, int time) const {
 	ModelSerializer ms(model, dir);
 	ms.deserialize(time);
 }
+
+NodeConnection *ISimulation::createConnection(Node * source,
+								 const std::string &soport,
+								 Node *sink,
+								 const std::string &siport) const {
+	return new NodeConnection(source, soport, sink, siport);
+}
+

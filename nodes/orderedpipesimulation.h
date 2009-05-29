@@ -6,6 +6,7 @@
 #include <simulation.h>
 
 struct OPSPriv;
+class NodeConnection;
 
 CD3_DECLARE_SIMULATION(OrderedPipeSimulation)
 public:
@@ -14,6 +15,8 @@ public:
 	void start(int time);
 	int run(int time, int dt);
 	void setModel(IModel *model);
+	NodeConnection *createConnection(Node *, const std::string &,
+									 Node *, const std::string &) const;
 private:
 	std::vector<Node*> getOrder();
 	void updatePorts(Node *sink);

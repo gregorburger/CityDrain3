@@ -15,8 +15,7 @@ public:
 	int run(int time, int dt);
 
 private: //methods
-	void run(Node *n, int time, std::map<Node *, int> &deps);
-	std::map<Node *, int> createDependsMap() const;
+	void run(Node *n, int time, con_count_type &deps);
 	void setModel(IModel *model);
 
 private: //data member

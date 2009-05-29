@@ -35,9 +35,11 @@ public:
 	void initNodes(const SimulationParameters &);
 
 	node_set_type getSourceNodes();
+	const node_set_type getSourceNodes() const;
 	node_set_type getSinkNodes();
 
 	vector<NodeConnection *> forwardConnection(Node *n);
+	const vector<NodeConnection *> forwardConnection(Node *n) const;
 	vector<NodeConnection *> backwardConnection(Node *n);
 
 	const node_set_type *getNodes() const;
@@ -51,8 +53,14 @@ public:
 
 	bool connected() const;
 	void checkModel() const;
+	bool cycleFree() const;
+	node_set_type cycleNodes() const;
 
 private:
+	void cycleNodesHelper(Node *n,
+						  node_set_type &cycle_nodes,
+						  node_set_type &visited) const;
+
 	node_set_type all_nodes;
 	node_set_type sink_nodes;
 	node_set_type source_nodes;
@@ -60,7 +68,6 @@ private:
 	name_node_map names_nodes;
 	connection_type fwd_connections;
 	connection_type bwd_connections;
-
 };
 
 #endif // MAPBASEMODEL_H

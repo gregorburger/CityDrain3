@@ -126,7 +126,7 @@ void StateWorker::run() {
 
 void StateWorker::updatePorts(Node *n) {
 	BOOST_FOREACH(NodeConnection *con, pd->model->backwardConnection(n)) {
-		con->pushDirect();
+		con->push(dt);
 	}
 }
 

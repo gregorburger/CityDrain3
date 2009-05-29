@@ -7,6 +7,7 @@
 class IModel;
 class IController;
 class Node;
+class NodeConnection;
 
 struct CD3_PUBLIC SimulationParameters {
 	SimulationParameters()
@@ -48,6 +49,11 @@ public:
 	virtual void deserialize(const std::string &dir, int time) const;
 
 	virtual int run(int time, int dt) = 0;
+
+	virtual NodeConnection *createConnection(Node * source,
+											const std::string &soport,
+											Node *sink,
+											const std::string &siport) const;
 
 	boost::signal1<void, int> progress;
 	boost::signal2<void, ISimulation *, int> timestep;

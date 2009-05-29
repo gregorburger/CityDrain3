@@ -4,6 +4,7 @@
 #include <flowbuffer.h>
 #include <flow.h>
 #include <cd3assert.h>
+#include <nodeconnection.h>
 
 
 #include <boost/foreach.hpp>
@@ -42,12 +43,14 @@ int VarDTSimulation::run(int time, int dt) {
 
 
 int VarDTSimulation::run(Node *n, int time, int dt) {
-	BOOST_FOREACH(next_node_type nn, model->backward(n)) {
+	BOOST_FOREACH(NodeConnection *con, model->backwardConnection(n)) {
 		int calced_dt = 0;	//holds the calculated dts of the predecessors
 		std::string src_port, snk_port;
 		Node *next;
 
-		tie(src_port, next, snk_port) = nn;
+		next = con->sink;
+		src_port = con->source_port;
+		snk_port = con->sink_port;
 
 		con_type connection(next, src_port, n, snk_port);
 

@@ -19,13 +19,8 @@ struct CD3_PUBLIC NodeConnection
 	Node *source, *sink;
 	std::string source_port, sink_port;
 
-	void pull();
-	void push();
-
-	void pushDirect();
-
-private:
-	tqueue<Flow> q;
+	virtual void pull(int dt);
+	virtual void push(int dt);
 };
 
 #endif // NODECONNECTION_H

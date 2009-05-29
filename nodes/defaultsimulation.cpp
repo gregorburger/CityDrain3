@@ -2,6 +2,7 @@
 #include <model.h>
 #include <node.h>
 #include <flow.h>
+#include <nodeconnection.h>
 #include <boost/foreach.hpp>
 #include <iostream>
 #include <boost/tuple/tuple.hpp>
@@ -17,21 +18,21 @@ DefaultSimulation::~DefaultSimulation() {
 }
 
 int DefaultSimulation::run(int time, int dt) {
-	std::map<Node *, int> deps = createDependsMap();
+	con_count_type deps = model->getBackwardCounts();
 	BOOST_FOREACH(Node *n, sources) {
 		run(n, time, deps);
 	}
 	return dt;
 }
 
-//typedef std::vector<next_node_type> vector_next_node_type;
-
-void DefaultSimulation::run(Node *n, int time, std::map<Node *, int> &depends) {
+void DefaultSimulation::run(Node *n, int time, con_count_type &depends) {
 	n->f(time, sim_param.dt);
-	BOOST_FOREACH(next_node_type con, model->forward(n)) {
+	BOOST_FOREACH(NodeConnection *con, model->forwardConnection(n)) {
 		std::string src_port, snk_port;
 		Node *next;
-		boost::tuples::tie(src_port, next, snk_port) = con;
+		next = con->sink;
+		src_port = con->source_port;
+		snk_port = con->sink_port;
 
 		next->setInPort(snk_port, n->getOutPort(src_port));
 
@@ -43,16 +44,6 @@ void DefaultSimulation::run(Node *n, int time, std::map<Node *, int> &depends) {
 		run(next, time, depends);
 	}
 	return;
-}
-
-std::map<Node *, int> DefaultSimulation::createDependsMap() const {
-	std::map<Node *, int> deps;
-
-	BOOST_FOREACH(Node *node, *model->getNodes()) {
-		deps[node] = model->backward(node).size();
-	}
-
-	return deps;
 }
 
 void DefaultSimulation::setModel(IModel *model) {

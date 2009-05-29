@@ -50,6 +50,7 @@ public:
 
 	virtual bool connected() const = 0;
 	virtual void checkModel() const = 0;
+	virtual bool cycleFree() const = 0;
 };
 
 #endif // MODEL_H

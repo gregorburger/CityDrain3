@@ -44,8 +44,13 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 	if (lname == "node") {
 		std::string id = atts.value("id").toStdString();
 		std::string klass = atts.value("class").toStdString();
-
-		current = pd->node_registry.createNode(klass);
+		std::string script = atts.value("script").toStdString();
+		if (script.empty()) {
+			current = pd->node_registry.createNode(klass);
+		} else {
+			current = pd->node_registry.createNode(klass, script);
+			qDebug() << "script node " << atts.value("class");
+		}
 		pd->model->addNode(id, current);
 		return true;
 	}

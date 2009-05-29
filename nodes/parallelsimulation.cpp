@@ -36,7 +36,7 @@ int ParallelSimulation::run(int time, int dt) {
 void ParallelSimulation::run(Node *n, int time) {
 	n->f(time, sim_param.dt);
 	BOOST_FOREACH(NodeConnection *con, model->forwardConnection(n)) {
-		con->pushDirect();
+		con->push(sim_param.dt);
 		Node *next = con->sink;
 
 //#pragma omp atomic
@@ -52,6 +52,7 @@ void ParallelSimulation::run(Node *n, int time) {
 }
 
 void ParallelSimulation::setModel(IModel *model) {
+	cd3assert(model, "model null");
 	ISimulation::setModel(model);
 
 	node_set_type set_sources = model->getSourceNodes();
@@ -60,6 +61,6 @@ void ParallelSimulation::setModel(IModel *model) {
 
 void ParallelSimulation::setNodeDepends() const {
 	BOOST_FOREACH(Node *node, *model->getNodes()) {
-		node->num_inputed = model->backward(node).size();
+		node->num_inputed = model->backwardConnection(node).size();
 	}
 }

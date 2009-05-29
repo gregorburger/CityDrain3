@@ -75,19 +75,6 @@ void MapBasedModel::addConnection(const string &src_node,
 	fwd_connections[source].push_back(connection);
 }
 
-void dumpParameters(Node *n) {
-	(void) n;
-}
-
-/*void MapBasedModel::dump() {
-virtual name_node_map getNamesAndNodes() const = 0;	cout << "number of nodes: " << names_nodes.size() << endl;
-	node_map::iterator it = names_nodes.begin();
-	while (it != names_nodes.end()) {
-		cout << "node[" << it->first << "]=" << it->second->getNodeName() << endl;
-		it++;
-	}
-}*/
-
 void MapBasedModel::initNodes(const SimulationParameters &sp) {
 	node_set_type::iterator it = all_nodes.begin();
 	while (it != all_nodes.end()) {
@@ -105,11 +92,22 @@ node_set_type MapBasedModel::getSourceNodes() {
 	return source_nodes;
 }
 
+const node_set_type MapBasedModel::getSourceNodes() const {
+	return source_nodes;
+}
+
 vector<NodeConnection *> MapBasedModel::forwardConnection(Node *n) {
 	cd3assert(n, "Node null");
 	cd3assert(all_nodes.count(n), "node not in model");
 	cd3assert(fwd_connections.count(n), "no forward connection for node");
 	return fwd_connections[n];
+}
+
+const vector<NodeConnection *> MapBasedModel::forwardConnection(Node *n) const {
+	cd3assert(n, "Node null");
+	cd3assert(all_nodes.count(n), "node not in model");
+	cd3assert(fwd_connections.count(n), "no forward connection for node");
+	return fwd_connections.at(n);
 }
 
 vector<NodeConnection *> MapBasedModel::backwardConnection(Node *n) {
@@ -171,4 +169,32 @@ con_count_type MapBasedModel::getForwardCounts() const {
 	}
 
 	return counts;
+}
+
+node_set_type MapBasedModel::cycleNodes() const {
+	node_set_type cycle_nodes;
+	node_set_type visited;
+
+	BOOST_FOREACH(Node *n, getSourceNodes()) {
+		cycleNodesHelper(n, cycle_nodes, visited);
+	}
+
+	return cycle_nodes;
+}
+
+void MapBasedModel::cycleNodesHelper(Node *n,
+									 node_set_type &cycle_nodes,
+									 node_set_type &visited) const {
+	if (visited.count(n)) {
+		cycle_nodes.insert(n);
+	} else {
+		visited.insert(n);
+	}
+	BOOST_FOREACH(NodeConnection *con, forwardConnection(n)) {
+		cycleNodesHelper(con->sink, cycle_nodes, visited);
+	}
+}
+
+bool MapBasedModel::cycleFree() const {
+	return cycleNodes().empty();
 }

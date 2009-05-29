@@ -14,10 +14,12 @@
 #include <model.h>
 #include <tqueue.h>
 #include <flow.h>
-#include <nodeconnection.h>
+#include <bufferednodeconnection.h>
 
 using namespace std;
 using namespace boost;
+
+typedef shared_ptr<tqueue<Node *> > sh_node_queue;
 
 struct OPSPriv {
 	IModel *model;
@@ -30,13 +32,12 @@ struct OrderedWorker : public QRunnable {
 	void pullPorts(Node *sink);
 	void pushPorts(Node *sink);
 
-	shared_ptr<tqueue<Node *> > in;
-	shared_ptr<tqueue<Node *> > out;
+	sh_node_queue in;
+	sh_node_queue out;
 
 	OPSPriv *pd;
 	Node *last;
 	int time, dt;
-	std::map<Node *, std::vector<tuples::tuple<Node *, bool> > > siblings;
 };
 
 CD3_DECLARE_SIMULATION_NAME(OrderedPipeSimulation);
@@ -60,7 +61,7 @@ void OrderedPipeSimulation::start(int time) {
 	}
 	std::cout << "thread count: " << pool->maxThreadCount() << std::endl;
 
-	shared_ptr<tqueue<Node *> > upper_queue = shared_ptr<tqueue<Node*> >(new tqueue<Node*>());
+	sh_node_queue upper_queue = shared_ptr<tqueue<Node*> >(new tqueue<Node*>());
 	BOOST_FOREACH(Node *n, pd->order) {
 		upper_queue->enqueue(n);
 	}
@@ -108,15 +109,26 @@ vector<Node *> OrderedPipeSimulation::getOrder() {
 	}
 	int osize = order.size();
 	int all_size = pd->model->getNodes()->size();
-	cd3assert(osize == all_size, str(format("order calc wrong size of nodes orderd=%1% all=%2%") % osize % all_size));
+	cd3assert(osize == all_size,
+			  str(format("order calc wrong size of nodes orderd=%1% all=%2%")
+				  % osize % all_size));
 	return order;
 }
 
 void OrderedPipeSimulation::setModel(IModel *model) {
 	cd3assert(model, "model null");
+	cd3assert(model->cycleFree(),
+			  "The OrderedPipeSimulation does not support cyclic models");
 	ISimulation::setModel(model);
 	pd->model = model;
 	pd->order = getOrder();
+}
+
+NodeConnection *OrderedPipeSimulation::createConnection(Node *source,
+														const std::string &srcp,
+														Node *sink,
+														const std::string &snkp) const {
+	return new BufferedNodeConnection(source, srcp, sink, snkp);
 }
 
 OrderedWorker::OrderedWorker(OPSPriv *pd, Node *last, int _time, int _dt) {
@@ -128,29 +140,24 @@ OrderedWorker::OrderedWorker(OPSPriv *pd, Node *last, int _time, int _dt) {
 }
 
 void OrderedWorker::run() {
-	//std::cout << time << "| starting worker " <<  std::endl;
 	Node *current;
 	do {
 		current = in->dequeue();
-		//std::cout << time << " | got node " << pd->model->getNodeName(current) << std::endl;
 		pullPorts(current);
-		//std::cout << time << " | running node " << pd->model->getNodeName(current) << std::endl;
 		current->f(time, dt);
 		pushPorts(current);
-		/*if (!hasForwardSibling(current))*/
 		out->enqueue(current);
 	} while (current != last);
-	//std::cout << time << "| stopping worker " <<  std::endl;
 }
 
 void OrderedWorker::pullPorts(Node *sink) {
 	BOOST_FOREACH(NodeConnection *con, pd->model->backwardConnection(sink)) {
-		con->pull();
+		con->pull(dt);
 	}
 }
 
 void OrderedWorker::pushPorts(Node *source) {
 	BOOST_FOREACH(NodeConnection *con, pd->model->forwardConnection(source)) {
-		con->push();
+		con->push(dt);
 	}
 }
