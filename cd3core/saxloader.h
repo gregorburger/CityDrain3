@@ -2,13 +2,14 @@
 #define SAXLOADER_H
 
 #include <QXmlDefaultHandler>
+#include <cd3globals.h>
 
 struct SaxLoaderPriv;
 class IModel;
 class Node;
 class ISimulation;
 
-class SaxLoader : public QXmlDefaultHandler
+class CD3_PUBLIC SaxLoader : public QXmlDefaultHandler
 {
 public:
 	SaxLoader(IModel *m);
