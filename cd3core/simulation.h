@@ -30,7 +30,7 @@ struct CD3_PUBLIC SimulationParameters {
 const char *simulation::name = #simulation;
 
 #define CD3_DECLARE_SIMULATION(simulation) \
-class simulation : public ISimulation { \
+class CD3_PUBLIC simulation : public ISimulation { \
 public: \
 	static const char *name; \
 private:

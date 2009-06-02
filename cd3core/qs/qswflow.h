@@ -4,10 +4,12 @@
 #include <QObject>
 #include <QtScript>
 
+#include <cd3globals.h>
+
 class Flow;
 class QSWCalcUnit;
 
-class QSWFlow : public QObject
+class CD3_PUBLIC QSWFlow : public QObject
 {
 	Q_OBJECT
 

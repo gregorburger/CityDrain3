@@ -5,6 +5,7 @@
 #include <map>
 #include <boost/shared_ptr.hpp>
 #include <QVariant>
+#include <cd3globals.h>
 
 namespace cd3 {
 	class TypeInfo;
@@ -17,7 +18,7 @@ class QScriptEngine;
 typedef std::map<cd3::TypeInfo, boost::shared_ptr<IStateMigrator> > cd3_to_ism;
 typedef std::map<QVariant::Type, boost::shared_ptr<IStateMigrator> > qt_to_ism;
 
-class IStateMigrator
+class CD3_PUBLIC IStateMigrator
 {
 public:
 	virtual ~IStateMigrator(){}

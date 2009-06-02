@@ -10,7 +10,7 @@ class QSWFlow;
 class QSWNodePrivate;
 class Flow;
 
-class QSWNode : public QObject, public Node, protected QScriptable {
+class CD3_PUBLIC QSWNode : public QObject, public Node, protected QScriptable {
 	Q_OBJECT
 public:
 	static const char *name;
