@@ -62,11 +62,13 @@ void QSWNode::print(QScriptValue v) {
 }
 
 void QSWNode::addInPort(const QString &name, QSWFlow *flow) {
+	cd3assert(flow, "flow is null");
 	qDebug() << "addInPort";
 	Node::addInPort(name.toStdString(), flow->flow);
 }
 
 void QSWNode::addOutPort(const QString &name, QSWFlow *flow) {
+	cd3assert(flow, "flow is null");
 	qDebug() << "addOutPort";
 	Node::addOutPort(name.toStdString(), flow->flow);
 }
