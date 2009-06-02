@@ -8,7 +8,7 @@
 using namespace boost;
 
 #include <flow.h>
-#include "qswflow.h"
+#include <qswflow.h>
 #include "statemigrator.h"
 #include <cd3assert.h>
 
@@ -24,8 +24,6 @@ struct QSWNodePrivate {
 	QScriptValue f_function;
 	QScriptValue init_function;
 };
-
-Q_SCRIPT_DECLARE_QMETAOBJECT(QSWFlow, QObject*);
 
 QSWNode::QSWNode(const std::string &s)
 	: Node() {
