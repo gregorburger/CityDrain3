@@ -17,7 +17,8 @@ HEADERS += constsource.h \
     parallelsimulation.h \
     pipelinedsimulation.h \
     orderedpipesimulation.h \
-    null.h
+    null.h \
+    bufferednodeconnection.h
 SOURCES += nodes.cpp \
     constsource.cpp \
     flowtypefactory.cpp \
@@ -34,5 +35,6 @@ SOURCES += nodes.cpp \
     parallelsimulation.cpp \
     pipelinedsimulation.cpp \
     orderedpipesimulation.cpp \
-    null.cpp
+    null.cpp \
+    bufferednodeconnection.cpp
 include(qs/qs.pri)
