@@ -6,7 +6,7 @@
 #include <iostream>
 
 #define cd3assert(expr, message) if (!(expr)) { \
-	std::cerr << __FILE__ << ":" << __LINE__ \
+	std::cerr << __FILE__ << ":" << __FUNCTION__ << ":" << __LINE__ \
 			<< " assert: " << message << std::endl; \
 	std::abort(); \
 	}
