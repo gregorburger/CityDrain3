@@ -22,6 +22,7 @@ LIBS += -L$$PWD/3rdparty/boost_1_38_0/stage/lib/
 QT+=xml
 QT-=gui
 INCLUDEPATH+=$$PWD/cd3core
+INCLUDEPATH+=$$PWD/cd3core/qs
 OBJECTS_DIR=$$PWD/tmp/
 MOC_DIR=$$PWD/tmp/
 UI_DIR=$$PWD/tmp/

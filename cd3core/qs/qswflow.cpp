@@ -55,3 +55,6 @@ QStringList QSWFlow::getUnitNames(QSWCalcUnit *unit) const {
 	}
 	return names;
 }
+
+Q_SCRIPT_DECLARE_QMETAOBJECT(QSWFlow, QObject*);
+Q_DECLARE_METATYPE(QSWFlow*);
