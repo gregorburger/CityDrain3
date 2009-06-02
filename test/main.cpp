@@ -10,19 +10,6 @@
 
 namespace po = boost::program_options;
 
-#ifdef __MINGW32__
-/* Required header file */
-#include <fcntl.h>
-#endif
-
-
-void progress(int percent) {
-	std::cout << "                                       \r";
-	std::cout << "progress: " << percent << "%\n";
-	std::cout.flush();
-}
-
-
 struct PerStateHandler {
 	PerStateHandler(const std::string dir) {
 		state_dir = dir;
@@ -35,31 +22,27 @@ private:
 	std::string state_dir;
 };
 
-/*int main(int argc, char **argv) {
-#ifdef __MINGW32__
-	// Switch to binary mode
-	_setmode(_fileno(stdout),_O_BINARY);
-	_setmode(_fileno(stdin),_O_BINARY);
-	_setmode(_fileno(stderr),_O_BINARY);
-#endif
-	if (argc < 2) {
-		std::cout << "provide model file" << std::endl;
-		return 1;
+struct ProgressHandler {
+	ProgressHandler(ISimulation *sim) {
+		sp = sim->getSimulationParameters();
+		pfactor = 100.0 / (sp.stop - sp.start);
+		lastp = 0;
 	}
-	MapBasedModel m;
-	SaxLoader loader(&m);
-	QFile f(argv[1]);
-
-	ISimulation *s = loader.load(f);
-	s->setModel(&m);
-
-	int starttime = s->getSimulationParameters().start;
-
-	s->start(starttime);
-	f.close();
-	delete s;
-	return 0;
-}*/
+	void operator()(ISimulation *s, int time) {
+		(void) s;
+		int newp = (int) round(pfactor * (time - sp.start));
+		if (newp == lastp)
+			return;
+		std::cout << "                  ";
+		std::cout << "\r" << newp << "%";
+		lastp = newp;
+		if (time == sp.stop)
+			std::cout << std::endl;
+	}
+	double pfactor;
+	int lastp;
+	SimulationParameters sp;
+};
 
 int main(int argc, char **argv) {
 	po::options_description desc("CityDrain3 command line options");
@@ -100,10 +83,9 @@ int main(int argc, char **argv) {
 	cd3assert(s, "simulation loading failed");
 
 	if (vm.count("state-dir")) {
-		s->timestep.connect(PerStateHandler(vm["state-dir"].as<std::string>()));
+		s->timestep_after.connect(PerStateHandler(vm["state-dir"].as<std::string>()));
 	}
 
-	s->progress.connect(progress);
 	s->setModel(&m);
 
 	int starttime = s->getSimulationParameters().start;
@@ -119,6 +101,7 @@ int main(int argc, char **argv) {
 		s->deserialize(vm["state-dir"].as<std::string>(), starttime);
 	}
 
+	s->timestep_after.connect(ProgressHandler(s));
 	s->start(starttime);
 
 	std::cout << std::endl; //newline the progress
