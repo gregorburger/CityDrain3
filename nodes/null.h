@@ -9,7 +9,7 @@ public:
 	Null();
 	int f(int time, int dt);
 private:
-	Flow in_out;
+	Flow out;
 };
 
 #endif // NULL_H
