@@ -33,4 +33,7 @@ private:
 	friend class QSWNode;
 };
 
+Q_SCRIPT_DECLARE_QMETAOBJECT(QSWFlow, QObject*);
+Q_DECLARE_METATYPE(QSWFlow*);
+
 #endif // QSWFLOW_H

@@ -3,9 +3,10 @@
 #include <flow.h>
 #include <QDebug>
 #include <QTime>
+#include <boost/foreach.hpp>
 
 #include "qswcalcunit.h"
-#include <boost/foreach.hpp>
+#include <cd3assert.h>
 
 QSWFlow::QSWFlow(Flow *f, QObject *parent)
  : QObject(parent), flow(f) {
@@ -55,6 +56,3 @@ QStringList QSWFlow::getUnitNames(QSWCalcUnit *unit) const {
 	}
 	return names;
 }
-
-Q_SCRIPT_DECLARE_QMETAOBJECT(QSWFlow, QObject*);
-Q_DECLARE_METATYPE(QSWFlow*);
