@@ -4,6 +4,8 @@
 #include <QDebug>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/bind.hpp>
+#include <memory>
 
 using namespace boost;
 
@@ -16,6 +18,7 @@ using namespace boost;
 #include <simulation.h>
 #include <flow.h>
 #include <calculationunit.h>
+#include <controller.h>
 
 struct SaxLoaderPriv {
 	NodeRegistry node_registry;
@@ -72,6 +75,18 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		cd3assert(pd->simulation == 0, "Simulation already set");
 		std::string klass = atts.value("class").toStdString();
 		pd->simulation = pd->sim_registry.createSimulation(klass);
+		return true;
+	}
+	if (lname == "controller") {
+		cd3assert(pd->simulation != 0, "no simulation set");
+		QString script = atts.value("script");
+		cd3assert(QFile::exists(script), "no such controller script file");
+		//Controller *c = new Controller(script.toStdString());
+		shared_ptr<Controller> c(new Controller(script.toStdString()));
+		pd->simulation->timestep_before
+				.connect(bind<void>(&Controller::controllBefore, c, _1, _2));
+		pd->simulation->timestep_after
+				.connect(bind<void>(&Controller::controllAfter, c, _1, _2));
 		return true;
 	}
 	if (lname == "time") {

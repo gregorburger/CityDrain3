@@ -1,4 +1,4 @@
-<!ELEMENT citydrain (pluginpath*, simulation, model) >
+<!ELEMENT citydrain (pluginpath*, simulation, controller*, model) >
 <!ELEMENT model (nodelist, connectionlist) >
 <!ELEMENT nodelist (node*) >
 <!ELEMENT connectionlist (connection*) >
@@ -12,6 +12,7 @@
 <!ELEMENT sink EMPTY >
 <!ELEMENT flow (unit*) >
 <!ELEMENT unit EMPTY >
+<!ELEMENT controller EMPTY >
 
 <!ATTLIST citydrain 
 	version CDATA #REQUIRED >
@@ -21,7 +22,8 @@
 	
 <!ATTLIST node
 	id ID #REQUIRED
-	class CDATA #REQUIRED >
+	class CDATA #REQUIRED 
+	script CDATA #IMPLIED >
 	
 <!ATTLIST time
 	start CDATA #REQUIRED
@@ -31,11 +33,14 @@
 <!ATTLIST pluginpath
 	path CDATA #REQUIRED >
 
+<!ATTLIST controller
+	script CDATA #REQUIRED >
+
 <!ATTLIST parameter 
 	name CDATA #REQUIRED 
 	type CDATA #REQUIRED
 	kind CDATA "simple"
-	value CDATA #IMPLIED >	
+	value CDATA #IMPLIED >
 	
 <!ATTLIST connection
 	id ID #REQUIRED >

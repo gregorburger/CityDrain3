@@ -3,11 +3,13 @@
 #include "model.h"
 #include "cd3assert.h"
 #include "nodeconnection.h"
+#include "controller.h"
 
 #include <iostream>
 #include <QTime>
 
-ISimulation::ISimulation() {
+ISimulation::ISimulation()
+ : running(true) {
 }
 
 ISimulation::~ISimulation() {
@@ -28,21 +30,18 @@ void ISimulation::setModel(IModel *m) {
 	m->checkModel();
 }
 
+IModel *ISimulation::getModel() const {
+	return model;
+}
+
 void ISimulation::start(int time) {
 	(void) time;
-	/*static double one_perc = 1.0f / sim_param.stop;
-	static int old_perc_progress = 0;*/
 
-//	current_time = time;
 	QTime ts_before = QTime::currentTime();
-	while (current_time <= sim_param.stop) {
-		//int percent = static_cast<int>(one_perc * current_time * 100);
-/*		if (percent != old_perc_progress) {
-			old_perc_progress = percent;
-			progress(percent);
-		}*/
+	while (running && current_time <= sim_param.stop) {
+		timestep_before(this, current_time);
 		current_time += run(current_time, sim_param.dt);
-		timestep(this, current_time);
+		timestep_after(this, current_time);
 	}
 
 	QTime ts_after = QTime::currentTime();
@@ -50,8 +49,8 @@ void ISimulation::start(int time) {
 	std::cerr << duration << std::endl;
 }
 
-void ISimulation::addController(IController *c) {
-	(void) c;
+void ISimulation::stop() {
+	running = false;
 }
 
 void ISimulation::serialize(const std::string &dir) const {

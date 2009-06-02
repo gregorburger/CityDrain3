@@ -5,7 +5,7 @@
 #include <cd3globals.h>
 
 class IModel;
-class IController;
+class Controller;
 class Node;
 class NodeConnection;
 
@@ -39,11 +39,12 @@ class CD3_PUBLIC ISimulation {
 public:
 	ISimulation();
 	virtual ~ISimulation();
-	virtual void addController(IController *controller);
 	virtual void setSimulationParameters(const SimulationParameters &params);
 	virtual SimulationParameters getSimulationParameters() const;
 	virtual void setModel(IModel *model);
+	virtual IModel *getModel() const;
 	virtual void start(int time);
+	virtual void stop();
 
 	virtual void serialize(const std::string &dir) const;
 	virtual void deserialize(const std::string &dir, int time) const;
@@ -55,13 +56,14 @@ public:
 											Node *sink,
 											const std::string &siport) const;
 
-	boost::signal1<void, int> progress;
-	boost::signal2<void, ISimulation *, int> timestep;
+	boost::signal2<void, ISimulation *, int> timestep_after;
+	boost::signal2<void, ISimulation *, int> timestep_before;
 
 protected:
 	SimulationParameters sim_param;
 	IModel *model;
 	int current_time;
+	bool running;
 };
 
 #endif // SIMULATION_H
