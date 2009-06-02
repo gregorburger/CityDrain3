@@ -141,7 +141,7 @@ string MapBasedModel::getNodeName(const Node *node) const {
 }
 
 void MapBasedModel::checkModel() const {
-	BOOST_FOREACH(Node *node, all_nodes) {
+	/*BOOST_FOREACH(Node *node, all_nodes) {
 		size_t iports = node->const_in_ports->size();
 		size_t bcons = bwd_connections.at(node).size();
 		size_t fcons = fwd_connections.at(node).size();
@@ -149,7 +149,7 @@ void MapBasedModel::checkModel() const {
 		string name = getNodeName(node);
 		cd3assert(iports == bcons, str(format("node %1% has %2% in ports but only %3% connections") % name % iports % bcons));
 		cd3assert(oports == fcons, str(format("node %1% has %2% out ports but only %3% connections") % name % oports % fcons));
-	}
+	}*/
 }
 
 

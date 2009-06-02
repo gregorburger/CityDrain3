@@ -5,7 +5,7 @@
 
 	<pluginpath path="nodes" />
 
-	<simulation class="VarDTSimulation">
+	<simulation class="OrderedPipeSimulation">
 		<time start="0" stop="72000" dt="100" />
 	</simulation>
 
@@ -20,6 +20,9 @@
 			</node>
 			
 			<node id="catch" class="CatchmentCSS" />
+			
+			<node id="null" class="Null" />
+			<node id="mixer" class="Mixer" />
 		</nodelist>
 		
 		<connectionlist>
@@ -29,8 +32,33 @@
 				<sink node="catch" port="rain_in" />
 			</connection>
 		
+			<connection id="con2">
+				<source node="null" port="out" />
+				<sink node="catch" port="dwf_in" />
+			</connection>
+			
+			<connection id="con3">
+				<source node="null" port="out" />
+				<sink node="catch" port="parasite_in" />
+			</connection>
+			
+			<connection id="con4">
+				<source node="null" port="out" />
+				<sink node="catch" port="q_upstream" />
+			</connection>
+		
 			<connection id="con1">
 				<source node="catch" port="out" />
+				<sink	node="mixer" port="inputs[0]" />
+			</connection>
+			
+			<connection id="con5">
+				<source node="catch" port="out" />
+				<sink	node="mixer" port="inputs[1]" />
+			</connection>
+			
+			<connection id="con6">
+				<source	node="mixer" port="out" />
 				<sink	node="fileout" port="in" />
 			</connection>
 		</connectionlist>
