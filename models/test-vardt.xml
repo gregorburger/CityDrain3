@@ -3,7 +3,7 @@
 
 <citydrain version="1.0">
 
-	<pluginpath path="nodes/libnodes.so.1.0.0" />
+	<pluginpath path="nodes" />
 
 	<simulation class="VarDTSimulation">
 		<time start="0" stop="7200" dt="300" />

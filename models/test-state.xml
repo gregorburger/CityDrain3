@@ -3,7 +3,7 @@
 
 <citydrain version="1.0">
 
-	<pluginpath path="nodes/libnodes.so.1.0.0" />
+	<pluginpath path="nodes" />
 
 	<simulation class="DefaultSimulation">
 		<time start="0" stop="31536000" dt="300" />
