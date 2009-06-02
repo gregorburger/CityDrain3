@@ -173,26 +173,26 @@ con_count_type MapBasedModel::getForwardCounts() const {
 
 node_set_type MapBasedModel::cycleNodes() const {
 	node_set_type cycle_nodes;
-	node_set_type visited;
 
-	BOOST_FOREACH(Node *n, getSourceNodes()) {
-		cycleNodesHelper(n, cycle_nodes, visited);
+	BOOST_FOREACH(Node *n, all_nodes) {
+		const vector<NodeConnection*> fwds = fwd_connections.at(n);
+		if (cycleNodesHelper(n, fwds)) {
+			cycle_nodes.insert(n);
+		}
 	}
 
 	return cycle_nodes;
 }
 
-void MapBasedModel::cycleNodesHelper(Node *n,
-									 node_set_type &cycle_nodes,
-									 node_set_type &visited) const {
-	if (visited.count(n)) {
-		cycle_nodes.insert(n);
-	} else {
-		visited.insert(n);
+bool MapBasedModel::cycleNodesHelper(Node *n,
+									 const vector<NodeConnection *> &fwds) const {
+	BOOST_FOREACH(NodeConnection *con, fwds) {
+		if (con->sink == n)
+			return true;
+		else
+			return cycleNodesHelper(n, fwd_connections.at(con->sink));
 	}
-	BOOST_FOREACH(NodeConnection *con, forwardConnection(n)) {
-		cycleNodesHelper(con->sink, cycle_nodes, visited);
-	}
+	return false;
 }
 
 bool MapBasedModel::cycleFree() const {

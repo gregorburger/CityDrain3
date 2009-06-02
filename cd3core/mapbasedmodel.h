@@ -57,9 +57,7 @@ public:
 	node_set_type cycleNodes() const;
 
 private:
-	void cycleNodesHelper(Node *n,
-						  node_set_type &cycle_nodes,
-						  node_set_type &visited) const;
+	bool cycleNodesHelper(Node *n, const vector<NodeConnection *> &fwds) const;
 
 	node_set_type all_nodes;
 	node_set_type sink_nodes;
