@@ -36,4 +36,6 @@ SOURCES += calculationunit.cpp \
     stateserializer.cpp \
     modelserializer.cpp \
     flowfuns.cpp \
-    saxloader.cpp
+    saxloader.cpp \
+    controller.cpp
+include(qs/qs.pri)
