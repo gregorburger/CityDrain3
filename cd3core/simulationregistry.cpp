@@ -40,6 +40,17 @@ void SimulationRegistry::addPlugin(const std::string plugin_path) {
 	}
 }
 
+typedef std::pair<std::string, const ISimulationFactory *> snf;
+std::vector<std::string> SimulationRegistry::getRegisteredNames() const {
+	std::vector<std::string> names;
+
+	BOOST_FOREACH(snf item, registry) {
+		names.push_back(item.first);
+	}
+
+	return names;
+}
+
 bool SimulationRegistry::contains(const std::string &name) const {
 	return (registry.find(name) != registry.end());
 }

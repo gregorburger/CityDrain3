@@ -4,6 +4,7 @@
 using namespace std;
 
 #include <noderegistry.h>
+#include <simulationregistry.h>
 #include <node.h>
 #include <flow.h>
 
@@ -12,19 +13,22 @@ typedef pair<string, Flow*> port_type;
 
 int main(int argc, char **argv) {
 	NodeRegistry r;
+	SimulationRegistry sr;
 	for (int i = 1; i < argc; i++) {
 		r.addPlugin(argv[i]);
+		sr.addPlugin(argv[i]);
 	}
+	cout << "Nodes: ";
 	BOOST_FOREACH(string klass, r.getRegisteredNames()) {
 		if (klass == "QSWNode") {
-			cout << "ignoring " << klass << endl;
+			//cout << "ignoring " << klass << endl;
 			continue;
 		}
 
 		Node *node = r.createNode(klass);
 		if (klass != "RainRead")
 			node->init(0, 7200, 300);
-		cout << endl << "Node: " << klass << endl;
+		cout << endl << klass << ":" << endl;
 
 		BOOST_FOREACH(par_type par, *node->const_parameters) {
 			cout << "\tparameter: " << par.first << endl;
@@ -41,9 +45,11 @@ int main(int argc, char **argv) {
 		BOOST_FOREACH(port_type port, *node->const_out_ports) {
 			cout << "\tout_port: " << port.first << endl;
 		}
-
-
 		delete node;
+	}
+	cout << endl << "Simulations: " << endl;
+	BOOST_FOREACH(string klass, sr.getRegisteredNames()) {
+		cout << "\t" << klass << endl;
 	}
 	return 0;
 }

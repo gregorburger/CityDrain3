@@ -3,6 +3,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 #include <cd3globals.h>
 
 class ISimulationFactory;
@@ -17,6 +18,7 @@ public:
 	virtual ~SimulationRegistry();
 	void addSimulationFactory(const ISimulationFactory *factory);
 	void addPlugin(const std::string plugin_path);
+	std::vector<std::string> getRegisteredNames() const;
 	bool contains(const std::string &name) const;
 	ISimulation *createSimulation(const std::string &name) const;
 private:
