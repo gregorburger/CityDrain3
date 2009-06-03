@@ -16,6 +16,7 @@ public:
 	SimulationRegistry();
 	virtual ~SimulationRegistry();
 	void addSimulationFactory(const ISimulationFactory *factory);
+	void addPlugin(const std::string plugin_path);
 	bool contains(const std::string &name) const;
 	ISimulation *createSimulation(const std::string &name) const;
 private:

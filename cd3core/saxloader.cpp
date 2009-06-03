@@ -110,7 +110,9 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		return true;
 	}
 	if (lname == "pluginpath") {
-		loadPlugin(atts.value("path"));
+		std::string path = atts.value("path").toStdString();
+		pd->node_registry.addPlugin(path);
+		pd->sim_registry.addPlugin(path);
 		return true;
 	}
 	if (lname == "citydrain") {
@@ -168,32 +170,6 @@ bool SaxLoader::endElement(const QString &/*ns*/,
 		current->setParameter<Flow>(pd->param_name, pd->f);
 	}
 	return true;
-}
-
-void SaxLoader::loadPlugin(QString path) {
-	QLibrary l(path);
-	bool loaded = l.load();
-	cd3assert(loaded, str(format("could not load plugin %1%: %2%")
-						  % path.toStdString()
-						  % l.errorString().toStdString()));
-	regTypeFunProto regTypeFun = (regTypeFunProto) l.resolve("registerTypes");
-	if (regTypeFun) {
-		regTypeFun(&pd->type_registry);
-	} else {
-		qWarning() << path << " has no type register hook";
-	}
-	regSimFunProto regSimFun = (regSimFunProto) l.resolve("registerSimulations");
-	if (regSimFun) {
-		regSimFun(&pd->sim_registry);
-	} else {
-		qWarning() << path << " has no node register hook";
-	}
-	regNodeFunProto regNodeFun = (regNodeFunProto) l.resolve("registerNodes");
-	if (regNodeFun) {
-		regNodeFun(&pd->node_registry);
-	} else {
-		qWarning() << path << " has no node register hook";
-	}
 }
 
 void SaxLoader::loadParameter(const QXmlAttributes& atts) {

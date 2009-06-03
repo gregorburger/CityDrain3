@@ -23,7 +23,6 @@ public:
 					const QString &qname);
 	ISimulation *load(QFile &f);
 private:
-	void loadPlugin(QString path);
 	void loadParameter(const QXmlAttributes &atts);
 	SaxLoaderPriv *pd;
 	Node *current;
