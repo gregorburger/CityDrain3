@@ -4,4 +4,4 @@ TEMPLATE = 	subdirs
 CONFIG = ordered
 SUBDIRS =	cd3core \
 		nodes \
-		test
+		app
