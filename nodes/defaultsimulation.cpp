@@ -28,20 +28,12 @@ int DefaultSimulation::run(int time, int dt) {
 void DefaultSimulation::run(Node *n, int time, con_count_type &depends) {
 	n->f(time, sim_param.dt);
 	BOOST_FOREACH(NodeConnection *con, model->forwardConnection(n)) {
-		std::string src_port, snk_port;
-		Node *next;
-		next = con->sink;
-		src_port = con->source_port;
-		snk_port = con->sink_port;
-
-		next->setInPort(snk_port, n->getOutPort(src_port));
-
-		depends[next]--;
-
-		if (depends[next] > 0) {
+		con->push(0);
+		depends[con->sink]--;
+		if (depends[con->sink] > 0) {
 			return;
 		}
-		run(next, time, depends);
+		run(con->sink, time, depends);
 	}
 	return;
 }
