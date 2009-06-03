@@ -9,7 +9,7 @@ class SimPriv;
 
 CD3_DECLARE_SIMULATION(DefaultSimulation)
 public:
-    DefaultSimulation();
+	DefaultSimulation();
 	~DefaultSimulation();
 
 	int run(int time, int dt);
