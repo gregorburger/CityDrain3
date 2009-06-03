@@ -4,4 +4,5 @@ TEMPLATE = 	subdirs
 CONFIG = ordered
 SUBDIRS =	cd3core \
 		nodes \
-		app
+		app \
+		plugindoc

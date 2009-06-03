@@ -3,7 +3,7 @@ DEPENDPATH += $$PWD
 QT += xml \
     script
 HEADERS += constsource.h \
-    flowtypefactory.h \
+#    flowtypefactory.h \
     fileout.h \
     mixer.h \
     defaultsimulation.h \
@@ -21,7 +21,7 @@ HEADERS += constsource.h \
     bufferednodeconnection.h
 SOURCES += nodes.cpp \
     constsource.cpp \
-    flowtypefactory.cpp \
+#    flowtypefactory.cpp \
     fileout.cpp \
     mixer.cpp \
     defaultsimulation.cpp \
