@@ -139,17 +139,35 @@ string MapBasedModel::getNodeName(const Node *node) const {
 	cd3assert(false, "node not in model");
 	return "";
 }
-
+typedef pair<string, Flow*> port_type;
 void MapBasedModel::checkModel() const {
-	/*BOOST_FOREACH(Node *node, all_nodes) {
-		size_t iports = node->const_in_ports->size();
-		size_t bcons = bwd_connections.at(node).size();
-		size_t fcons = fwd_connections.at(node).size();
-		size_t oports = node->const_out_ports->size();
-		string name = getNodeName(node);
-		cd3assert(iports == bcons, str(format("node %1% has %2% in ports but only %3% connections") % name % iports % bcons));
-		cd3assert(oports == fcons, str(format("node %1% has %2% out ports but only %3% connections") % name % oports % fcons));
-	}*/
+	BOOST_FOREACH(Node *node, all_nodes) {
+		BOOST_FOREACH(port_type port, *node->const_in_ports) {
+			bool found = false;
+			BOOST_FOREACH(NodeConnection *con, bwd_connections.at(node)) {
+				if (con->sink_port == port.first) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				cerr << "WARNING: inport " << port.first << " of node " << getNodeName(node) <<  " is not connected" << endl;
+			}
+		}
+
+		BOOST_FOREACH(port_type port, *node->const_out_ports) {
+			bool found = false;
+			BOOST_FOREACH(NodeConnection *con, fwd_connections.at(node)) {
+				if (con->source_port == port.first) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				cerr << "WARNING: outport " << port.first << " of node " << getNodeName(node) <<  " is not connected" << endl;
+			}
+		}
+	}
 }
 
 
