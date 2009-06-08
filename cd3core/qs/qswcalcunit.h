@@ -4,9 +4,11 @@
 #include <QObject>
 #include <QtScript>
 
+#include <cd3globals.h>
+
 class CalculationUnit;
 
-class QSWCalcUnit : public QObject
+class CD3_PUBLIC QSWCalcUnit : public QObject
 {
 	Q_OBJECT
 public:
