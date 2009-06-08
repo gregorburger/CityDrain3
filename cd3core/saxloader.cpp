@@ -52,7 +52,6 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 			current = pd->node_registry.createNode(klass);
 		} else {
 			current = pd->node_registry.createNode(klass, script);
-			qDebug() << "script node " << atts.value("class");
 		}
 		pd->model->addNode(id, current);
 		return true;
