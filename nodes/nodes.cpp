@@ -1,5 +1,4 @@
 #include "constsource.h"
-#include "flowtypefactory.h"
 #include "fileout.h"
 #include "mixer.h"
 #include "defaultsimulation.h"
@@ -41,7 +40,7 @@ extern "C" {
 	}
 
 	void CD3_PUBLIC registerTypes(TypeRegistry *registry) {
-		registry->addTypeFactory<Flow>(new FlowTypeFactory());
+	
 	}
 
 	void CD3_PUBLIC registerSimulations(SimulationRegistry *registry) {
