@@ -1,6 +1,7 @@
 flow = new Flow();
-addInPort('in', flow);
-addOutPort('out', flow);
+print(flow)
+addInPort('in', flow)
+addOutPort('out', flow)
 addParameter('teststring', 'empty')
 addParameter('testdouble',  0.0)
 

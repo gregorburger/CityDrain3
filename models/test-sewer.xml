@@ -22,7 +22,8 @@
 			</node>
 			
 			<node id="fileout" class="FileOut">
-				<parameter name="out_file_name" type="string" value="tmp/sewerout.txt" />
+				<parameter name="out_file_name" type="string" 
+											value="tmp/sewerout.txt" />
 			</node>
 			
 			<node id="musk1" class="Sewer" />

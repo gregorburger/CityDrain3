@@ -14,20 +14,23 @@
 			<node id="constsource" class="ConstSource">
 				<parameter name="const_flow" kind="complex" type="Flow">
 					<flow>
-						<unit name="Q" kind="Flow" value="1.0" />
-						<unit name="nix da" kind="Concentration" value="0.1"/>
-						<unit name="nix boese sein" kind="Concentration" value="0.2"/>
+						<unit name="Q" kind="Flow" value="3.0" />
+						<unit name="C0" kind="Concentration" value="0.1"/>
+						<unit name="C1" kind="Concentration" value="0.2"/>
 					</flow>
 				</parameter>
 			</node>
 			
-			<node id="fileout" class="FileOut">
-				<parameter name="out_file_name" type="string" value="tmp/jsout.txt" />
+			<node id="fileout1" class="FileOut">
+				<parameter name="out_file_name" type="string" 
+						value="tmp/jssplitter1.txt" />
 			</node>
 			
-			<node id="js1" class="QSWNode" script="scripts/qscript.js">
-				<parameter name="teststring" type="string" value="jo faaa asdf sadfaat oida" />
-				<parameter name="testdouble" type="double" value="3.142" />
+			<node id="fileout2" class="FileOut">
+				<parameter name="out_file_name" type="string" 
+						value="tmp/jssplitter2.txt" />
+			</node>
+			<node id="splitter" class="QSWNode" script="scripts/jssplitter.js">
 			</node>
 			
 		</nodelist>
@@ -36,14 +39,19 @@
 		
 			<connection id="con1">
 				<source node="constsource" port="out" />
-				<sink	node="js1" port="in" />
+				<sink	node="splitter" port="in" />
 			</connection>
 			
 			<connection id="con2">
-				<source node="js1" port="out" />
-				<sink node="fileout" port="in" />
+				<source node="splitter" port="out1" />
+				<sink node="fileout1" port="in" />
 			</connection>
 			
+			<connection id="con3">
+				<source node="splitter" port="out2" />
+				<sink node="fileout2" port="in" />
+			</connection>
+
 		</connectionlist>
 	</model>
 </citydrain>
