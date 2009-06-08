@@ -9,7 +9,7 @@ class CD3_PUBLIC ICalculationUnit
 {
 public:
 	//ICalculationUnit(){}
-	//virtual ~ICalculationUnit(){}
+	virtual ~ICalculationUnit(){}
 	virtual const std::string &getName() const = 0;
 	virtual const std::string &getDescritption() const = 0;
 	virtual const std::string &getUnit() const = 0;
@@ -19,7 +19,7 @@ public:
 
 class CD3_PUBLIC CalculationUnit : public ICalculationUnit {
 public:
-	//virtual ~CalculationUnit()  {}
+	virtual ~CalculationUnit(){}
 	const std::string &getName() const;
 	const std::string &getDescritption() const;
 	const std::string &getUnit() const;
