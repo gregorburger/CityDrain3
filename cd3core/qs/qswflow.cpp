@@ -56,3 +56,7 @@ QStringList QSWFlow::getUnitNames(QSWCalcUnit *unit) const {
 	}
 	return names;
 }
+
+void QSWFlow::copy(QSWFlow *other) {
+	*flow = *other->flow;
+}

@@ -30,7 +30,7 @@ public Q_SLOTS:
 	QStringList getNames() const;
 	QStringList getUnitNames(QSWCalcUnit *unit) const;
 
-
+	void copy(QSWFlow *flow);
 private:
 	friend class QSWNode;
 };

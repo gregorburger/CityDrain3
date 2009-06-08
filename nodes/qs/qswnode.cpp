@@ -9,6 +9,7 @@ using namespace boost;
 
 #include <flow.h>
 #include <qswflow.h>
+#include <qswcalcunit.h>
 #include "statemigrator.h"
 #include <cd3assert.h>
 
@@ -32,7 +33,7 @@ QSWNode::QSWNode(const std::string &s)
 	priv->engine.setGlobalObject(priv->engine.newQObject(this));
 	QScriptValue flowClass = priv->engine.scriptValueFromQMetaObject<QSWFlow>();
 	priv->engine.globalObject().setProperty("Flow", flowClass);
-
+	QSWCalcUnit::setGlobalUnits(priv->engine);
 	executeScript(priv->engine);
 
 	cd3assert(priv->engine.globalObject().property("init").isFunction(),
@@ -63,13 +64,11 @@ void QSWNode::print(QScriptValue v) {
 
 void QSWNode::addInPort(const QString &name, QSWFlow *flow) {
 	cd3assert(flow, "flow is null");
-	qDebug() << "addInPort";
 	Node::addInPort(name.toStdString(), flow->flow);
 }
 
 void QSWNode::addOutPort(const QString &name, QSWFlow *flow) {
 	cd3assert(flow, "flow is null");
-	qDebug() << "addOutPort";
 	Node::addOutPort(name.toStdString(), flow->flow);
 }
 ;
