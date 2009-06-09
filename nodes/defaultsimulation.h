@@ -2,25 +2,23 @@
 #define DEFAULTSIMULATION_H
 
 #include <simulation.h>
-#include <map>
 #include <model.h>
 
-class SimPriv;
+struct SimPriv;
 
 CD3_DECLARE_SIMULATION(DefaultSimulation)
 public:
 	DefaultSimulation();
-	~DefaultSimulation();
+	virtual ~DefaultSimulation();
 
-	int run(int time, int dt);
+	virtual int run(int time, int dt);
 
 private: //methods
-	void run(Node *n, int time, con_count_type &deps);
-	void setModel(IModel *model);
+	virtual void run(Node *n, int time, con_count_type &deps);
+	virtual void setModel(IModel *model);
 
 private: //data member
 	SimPriv *sp;
-	node_set_type sources;
 };
 
 #endif // DEFAULTSIMULATION_H
