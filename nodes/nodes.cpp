@@ -40,7 +40,7 @@ extern "C" {
 	}
 
 	void CD3_PUBLIC registerTypes(TypeRegistry *registry) {
-	
+		(void) registry;
 	}
 
 	void CD3_PUBLIC registerSimulations(SimulationRegistry *registry) {
