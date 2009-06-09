@@ -29,10 +29,7 @@ public:
 	virtual void deserialize(const string &serialid) = 0;
 
 	virtual void addNode(const string &name, Node *node) = 0;
-	virtual void addConnection(const string &src_node,
-					   const string &src_port,
-					   const string &sin_node,
-					   const string &sin_port) = 0;
+	virtual void addConnection(NodeConnection *con) = 0;
 
 	virtual void initNodes(const SimulationParameters &) = 0;
 	virtual node_set_type getSourceNodes() = 0;

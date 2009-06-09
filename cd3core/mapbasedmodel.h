@@ -25,10 +25,7 @@ public:
 	}
 
 	void addNode(const string &name, Node *node);
-	void addConnection(const string &src_node,
-					   const string &src_port,
-					   const string &sin_node,
-					   const string &sin_port);
+	void addConnection(NodeConnection *con);
 
 
 	//call before adding Connections

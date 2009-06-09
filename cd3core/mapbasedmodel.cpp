@@ -43,36 +43,31 @@ void MapBasedModel::addNode(const string &name, Node *node) {
 	uncon_nodes.insert(node);
 	fwd_connections[node] = vector<NodeConnection *>();
 	bwd_connections[node] = vector<NodeConnection *>();
-//	node->initPorts();
 }
 
-void MapBasedModel::addConnection(const string &src_node,
-					   const string &src_port,
-					   const string &sin_node,
-					   const string &sin_port) {
+void MapBasedModel::addConnection(NodeConnection *con) {
 
-	cd3assert(names_nodes.count(src_node),
+	/*cd3assert(names_nodes.count(con->source),
 			  str(format("source node (%1%) not found") % src_node));
-	cd3assert(names_nodes.count(sin_node),
-			  str(format("sink node (%1%) not found") % sin_node));
+	cd3assert(names_nodes.count(con->sink),
+			  str(format("sink node (%1%) not found") % sin_node));*/
 
-	Node *source = names_nodes.find(src_node)->second;
-	Node *sink = names_nodes.find(sin_node)->second;
+	Node *source = con->source;
+	Node *sink = con->sink;
 
 	sink_nodes.erase(source);
 	source_nodes.erase(sink);
 	uncon_nodes.erase(source);
 	uncon_nodes.erase(sink);
 
-	cd3assert(source->const_out_ports->count(src_port),
+	/*cd3assert(source->const_out_ports->count(con->source_port),
 			  str(format("source node[%1%] port[%2%] not found") % src_node % src_port));
-
+	TODO move to nodeconnection
 	cd3assert(sink->const_in_ports->count(sin_port),
-			  str(format("sink node[%1%] port[%2%] not found") % sin_node % sin_port));
+			  str(format("sink node[%1%] port[%2%] not found") % sin_node % sin_port));*/
 
-	NodeConnection *connection = new NodeConnection(source, src_port, sink, sin_port);
-	bwd_connections[sink].push_back(connection);
-	fwd_connections[source].push_back(connection);
+	bwd_connections[sink].push_back(con);
+	fwd_connections[source].push_back(con);
 }
 
 void MapBasedModel::initNodes(const SimulationParameters &sp) {

@@ -19,6 +19,7 @@ using namespace boost;
 #include <flow.h>
 #include <calculationunit.h>
 #include <controller.h>
+#include <nodeconnection.h>
 
 struct SaxLoaderPriv {
 	NodeRegistry node_registry;
@@ -157,10 +158,12 @@ bool SaxLoader::endElement(const QString &/*ns*/,
 		cd3assert(!source_port.empty(), "source port not set");
 		cd3assert(!sink_id.empty(), "sink node not set");
 		cd3assert(!sink_port.empty(), "sink port not set");
-		pd->model->addConnection(source_id,
-								 source_port,
-								 sink_id,
-								 sink_port);
+		Node *sink = pd->model->getNode(sink_id);
+		Node *source = pd->model->getNode(source_id);
+
+		pd->model->addConnection(
+				pd->simulation->createConnection(source, source_port,
+												 sink, sink_port));
 	}
 	if (lname == "nodelist") {
 		pd->model->initNodes(pd->simulation->getSimulationParameters());
