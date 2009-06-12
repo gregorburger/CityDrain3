@@ -34,6 +34,14 @@ int Node::ts_f(int time, int dt) {
 	return ret;
 }
 
+void Node::setId(const std::string &id) {
+	this->id = id;
+}
+
+std::string Node::getId() const {
+	return id;
+}
+
 void Node::setInPort(const std::string &name, const Flow *inflow) {
 	cd3assert(in_ports.find(name) != in_ports.end(),
 			  str(format("no such in port (%1%)") % name));

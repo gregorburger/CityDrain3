@@ -50,6 +50,9 @@ public:
 
 	virtual int ts_f(int time, int dt);
 
+	void setId(const std::string &id);
+	std::string getId() const;
+
 	virtual const char *getClassName() const = 0;
 	virtual void init(int start, int end, int dt);
 	/*
@@ -147,6 +150,7 @@ protected:
 	ssf		in_ports;
 	ssf		out_ports;
 	int		dt;
+	std::string		id;
 private:
 	QMutex *lock;
 };

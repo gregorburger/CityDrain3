@@ -54,7 +54,8 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		} else {
 			current = pd->node_registry.createNode(klass, script);
 		}
-		pd->model->addNode(id, current);
+		current->setId(id);
+		pd->model->addNode(current);
 		return true;
 	}
 	if (lname == "sink") {

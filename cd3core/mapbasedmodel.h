@@ -24,7 +24,7 @@ public:
 		(void) serialid;
 	}
 
-	void addNode(const string &name, Node *node);
+	void addNode(Node *node);
 	void addConnection(NodeConnection *con);
 
 
@@ -44,7 +44,6 @@ public:
 	name_node_map getNamesAndNodes() const;
 
 	Node *getNode(const string &name) const;
-	string getNodeName(const Node *name) const;
 	con_count_type getForwardCounts() const;
 	con_count_type getBackwardCounts() const;
 

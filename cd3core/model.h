@@ -28,7 +28,7 @@ public:
 	virtual string serialize() = 0;
 	virtual void deserialize(const string &serialid) = 0;
 
-	virtual void addNode(const string &name, Node *node) = 0;
+	virtual void addNode(Node *node) = 0;
 	virtual void addConnection(NodeConnection *con) = 0;
 
 	virtual void initNodes(const SimulationParameters &) = 0;
@@ -43,7 +43,6 @@ public:
 	virtual const node_set_type *getNodes() const = 0;
 	virtual name_node_map getNamesAndNodes() const = 0;
 	virtual Node *getNode(const string &name) const = 0;
-	virtual string getNodeName(const Node *node) const = 0;
 
 	virtual bool connected() const = 0;
 	virtual void checkModel() const = 0;

@@ -31,12 +31,12 @@ Node *MapBasedModel::getNode(const string &name) const {
 	return names_nodes.find(name)->second;
 }
 
-void MapBasedModel::addNode(const string &name, Node *node) {
-	cd3assert(node, "added node null");
-	cd3assert(name != "", "node name empty");
-	cd3assert(names_nodes.find(name) == names_nodes.end(), "node name already defined");
-	
-	names_nodes[name] = node;
+void MapBasedModel::addNode(Node *node) {
+	cd3assert(node->getId() != "", "node has no id");
+	cd3assert(node, "cannot add null node");
+	cd3assert(names_nodes.find(node->getId()) == names_nodes.end(), "node name already defined");
+
+	names_nodes[node->getId()] = node;
 	all_nodes.insert(node);
 	sink_nodes.insert(node);
 	source_nodes.insert(node);
@@ -46,12 +46,6 @@ void MapBasedModel::addNode(const string &name, Node *node) {
 }
 
 void MapBasedModel::addConnection(NodeConnection *con) {
-
-	/*cd3assert(names_nodes.count(con->source),
-			  str(format("source node (%1%) not found") % src_node));
-	cd3assert(names_nodes.count(con->sink),
-			  str(format("sink node (%1%) not found") % sin_node));*/
-
 	Node *source = con->source;
 	Node *sink = con->sink;
 
@@ -59,12 +53,6 @@ void MapBasedModel::addConnection(NodeConnection *con) {
 	source_nodes.erase(sink);
 	uncon_nodes.erase(source);
 	uncon_nodes.erase(sink);
-
-	/*cd3assert(source->const_out_ports->count(con->source_port),
-			  str(format("source node[%1%] port[%2%] not found") % src_node % src_port));
-	TODO move to nodeconnection
-	cd3assert(sink->const_in_ports->count(sin_port),
-			  str(format("sink node[%1%] port[%2%] not found") % sin_node % sin_port));*/
 
 	bwd_connections[sink].push_back(con);
 	fwd_connections[source].push_back(con);
@@ -118,22 +106,11 @@ name_node_map MapBasedModel::getNamesAndNodes() const {
 
 bool MapBasedModel::connected() const {
 	BOOST_FOREACH(Node * n, uncon_nodes) {
-		std::cerr << "node " << getNodeName(n) << "not connected" << std::endl;
+		std::cerr << "node " << n->getId() << "not connected" << std::endl;
 	}
 	return uncon_nodes.empty();
 }
 
-string MapBasedModel::getNodeName(const Node *node) const {
-//	cd3assert(all_nodes.count(node), "node not in model");
-	pair<string, Node *> pn;
-	BOOST_FOREACH(pn, names_nodes) {
-		if (pn.second == node) {
-			return pn.first;
-		}
-	}
-	cd3assert(false, "node not in model");
-	return "";
-}
 typedef pair<string, Flow*> port_type;
 void MapBasedModel::checkModel() const {
 	BOOST_FOREACH(Node *node, all_nodes) {
@@ -146,7 +123,7 @@ void MapBasedModel::checkModel() const {
 				}
 			}
 			if (!found) {
-				cerr << "WARNING: inport " << port.first << " of node " << getNodeName(node) <<  " is not connected" << endl;
+				cerr << "WARNING: inport " << port.first << " of node " << node->getId() <<  " is not connected" << endl;
 			}
 		}
 
@@ -159,7 +136,7 @@ void MapBasedModel::checkModel() const {
 				}
 			}
 			if (!found) {
-				cerr << "WARNING: outport " << port.first << " of node " << getNodeName(node) <<  " is not connected" << endl;
+				cerr << "WARNING: outport " << port.first << " of node " << node->getId() <<  " is not connected" << endl;
 			}
 		}
 	}
