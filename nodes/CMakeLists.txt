@@ -1,4 +1,4 @@
-set(qs_HDRS qs/qswcalcunit.h qs/qswflow.h qs/qswnode.h)
+set(qs_HDRS qs/qswnode.h)
 QT4_WRAP_CPP(moc_qs_SRCS ${qs_HDRS})
 
 add_library(nodes MODULE 
@@ -18,9 +18,8 @@ rainread.cpp
 sewer.cpp
 splitter.cpp
 testnode.cpp
-vardtsimulation.cpp
-qs/qswflow.cpp 
-qs/qswcalcunit.cpp 
+vardtsimulation.cpp 
+bufferednodeconnection.cpp
 qs/qswnode.cpp 
 qs/statemigrator.cpp
 ${moc_qs_SRCS}
@@ -28,6 +27,7 @@ ${moc_qs_SRCS}
 
 add_definitions(-DQT_NO_KEYWORDS)
 include_directories (${CD3_SOURCE_DIR}/cd3core)
+include_directories (${CD3_SOURCE_DIR}/cd3core/qs)
 include_directories (${CD3_SOURCE_DIR}/3rdparty/boost_1_38_0)
 set(QT_USE_QTSCRIPT true)
 set(QT_USE_QTXML true)
