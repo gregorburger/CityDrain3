@@ -29,7 +29,10 @@ class ModelHandler(ContentHandler):
 		
 def main():
 	mh = ModelHandler()
-	parse(sys.argv[1], mh)
+	if len(sys.argv) > 1:
+		parse(sys.argv[1], mh)
+	else:
+		parse(sys.stdin, mh)
 	mh.render()
 
 if __name__ == "__main__":
