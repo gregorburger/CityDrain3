@@ -191,6 +191,7 @@ node_set_type MapBasedModel::cycleNodes() const {
 		const vector<NodeConnection*> fwds = fwd_connections.at(n);
 		if (cycleNodesHelper(n, fwds)) {
 			cycle_nodes.insert(n);
+			return cycle_nodes;
 		}
 	}
 
