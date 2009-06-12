@@ -14,7 +14,7 @@
 #include <model.h>
 #include <tqueue.h>
 #include <flow.h>
-#include <bufferednodeconnection.h>
+#include "bufferednodeconnection.h"
 
 using namespace std;
 using namespace boost;
