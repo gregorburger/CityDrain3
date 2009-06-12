@@ -18,3 +18,5 @@ doc/html/*
 3rdparty/boost_1_38_0/
 3rdparty/threadpool-0_2_5/
 plugindoc/plugindoc
+build/*
+models/*.pdf
