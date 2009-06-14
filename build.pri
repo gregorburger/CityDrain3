@@ -27,3 +27,4 @@ OBJECTS_DIR=$$PWD/tmp/
 MOC_DIR=$$PWD/tmp/
 UI_DIR=$$PWD/tmp/
 CONFIG += no_keywords console debug
+QMAKE_LFLAGS += -Wl,--allow-shlib-undefined -Wl,--no-undefined
