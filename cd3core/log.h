@@ -13,7 +13,7 @@ class Node;
 class Simulation;
 class Logger;
 
-enum CD3_PUBLIC LogLevel {
+enum LogLevel {
 	Debug = 0,
 	Standard = 1,
 	Warning = 2,

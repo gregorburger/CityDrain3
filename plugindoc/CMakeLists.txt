@@ -1,4 +1,7 @@
 ADD_EXECUTABLE(plugindoc pdocmain)
 
-link_directories($(CD3_BINARY_DIR)/cd3core/ ${CD3_SOURCE_DIR}/3rdparty/boost_1_38_0/stage/lib)
-TARGET_LINK_LIBRARIES(plugindoc ${QT_LIBRARIES} cd3core boost_signals)
+if (Boost_FOUND)
+	target_link_libraries(plugindoc ${QT_LIBRARIES} ${Boost_LIBRARIES} cd3core)
+else()
+	TARGET_LINK_LIBRARIES(plugindoc ${QT_LIBRARIES} cd3core)
+endif()
