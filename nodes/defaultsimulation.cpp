@@ -55,7 +55,7 @@ void DefaultSimulation::setModel(IModel *model) {
 	ISimulation::setModel(model);
 	cd3assert(model->connected(), "model not fully connected");
 	if (!model->cycleFree()) {
-		Logger(Warning) << "model not cyclefree " << endl;
+		Logger(Warning) << "model not cyclefree ";
 		BOOST_FOREACH(Node *n, model->cycleNodes()) {
 			Logger(Warning) << "node:"  << n << "is a cyclenode";
 		}
