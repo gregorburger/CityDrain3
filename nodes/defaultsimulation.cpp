@@ -54,7 +54,12 @@ void DefaultSimulation::run(Node *n, int time, con_count_type &depends) {
 void DefaultSimulation::setModel(IModel *model) {
 	ISimulation::setModel(model);
 	cd3assert(model->connected(), "model not fully connected");
-	cd3assert(model->cycleFree(), "model not cyclefree");
+	if (!model->cycleFree()) {
+		Logger(Warning) << "model not cyclefree " << endl;
+		BOOST_FOREACH(Node *n, model->cycleNodes()) {
+			Logger(Warning) << "node:"  << n << "is a cyclenode";
+		}
+	}
 	model->checkModel();
 	sp->sources = model->getSourceNodes();
 }

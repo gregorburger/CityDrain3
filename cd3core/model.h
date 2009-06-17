@@ -47,6 +47,7 @@ public:
 	virtual bool connected() const = 0;
 	virtual void checkModel() const = 0;
 	virtual bool cycleFree() const = 0;
+	virtual node_set_type cycleNodes() const = 0;
 };
 
 #endif // MODEL_H
