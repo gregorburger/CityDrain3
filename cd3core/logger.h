@@ -8,6 +8,8 @@
 
 using namespace std;
 
+class QString;
+
 class CD3_PUBLIC Logger {
 public:
 	Logger(LogLevel level = Standard);
@@ -20,6 +22,7 @@ public:
 	Logger &operator<< (const double f);
 	Logger &operator<< (const float f);
 	Logger &operator<< (const string &i);
+	Logger &operator<< (const QString &s);
 private:
 	string logLevel() const;
 	string date() const;

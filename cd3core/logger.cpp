@@ -1,6 +1,7 @@
 #include "logger.h"
 #include <node.h>
 #include <QDateTime>
+#include <QString>
 
 Logger::Logger(LogLevel level)
  : out(*Log::getInstance()->out), level(level) {
@@ -87,12 +88,21 @@ Logger &Logger::operator<< (const string &s) {
 	return *this;
 }
 
+Logger &Logger::operator<< (const QString &s) {
+	if (level < max) {
+		return *this;
+	}
+	out << " " << s.toStdString();
+	dirty = true;
+	return *this;
+}
+
 
 string Logger::logLevel() const {
 	switch (level) {
 		case Debug:
 			return "DEBUG";
-		case Warn:
+		case Warning:
 			return "WARN";
 		case Standard:
 			return "STANDARD";

@@ -16,7 +16,7 @@ class Logger;
 enum CD3_PUBLIC LogLevel {
 	Debug = 0,
 	Standard = 1,
-	Warn = 2,
+	Warning = 2,
 	Error = 3
 };
 
