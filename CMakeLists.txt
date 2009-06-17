@@ -3,6 +3,22 @@ project(CD3)
 
 INCLUDE_DIRECTORIES(cd3core cd3core/qs)
 find_package(Qt4 REQUIRED)
+find_package(Boost 1.38.0 COMPONENTS signals program_options thread REQUIRED)
+
+if (Boost_FOUND) 
+	set(Boost_USE_STATIC_LIBS ON)
+	set(Boost_USE_MULTITHREADED ON)
+	include_directories(${Boost_INCLUDE_DIRS})
+else()
+	include_directories(3rdparty/boost_1_38_0)
+endif()
+
+message(STATUS ${CMAKE_CXX_COMPILER_ID})
+set(QT_USE_QTXML true)
+set(QT_USE_QTSCRIPT true)
+set(QT_NOTUSE_QTGUI true)
+add_definitions(-DQT_NO_KEYWORDS)
+INCLUDE(${QT_USE_FILE})
  
 add_subdirectory(cd3core)
 add_subdirectory(nodes)
