@@ -23,7 +23,9 @@ HEADERS += calculationunit.h \
     typefactory.h \
     cd3globals.h \
     saxloader.h \
-    tqueue.h
+    tqueue.h \
+    log.h \
+    logger.h
 SOURCES += calculationunit.cpp \
     flow.cpp \
     nodeconnection.cpp \
@@ -37,5 +39,7 @@ SOURCES += calculationunit.cpp \
     modelserializer.cpp \
     flowfuns.cpp \
     saxloader.cpp \
-    controller.cpp
+    controller.cpp \
+    log.cpp \
+    logger.cpp
 include(qs/qs.pri)
