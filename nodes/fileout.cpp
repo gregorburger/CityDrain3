@@ -1,6 +1,7 @@
 #include "fileout.h"
 
 #include <flow.h>
+#include <logger.h>
 #include <QFile>
 #include <QTextStream>
 #include <boost/foreach.hpp>
@@ -32,6 +33,7 @@ void FileOut::init(int start, int stop, int dt) {
 	if (!file.isOpen()) {
 		file.open(QFile::WriteOnly);
 	}
+	Logger() << this << "using fileout:" << *out_file_name;
 	stream.setRealNumberPrecision(10);
 }
 
@@ -49,7 +51,7 @@ int FileOut::f(int time, int dt) {
 		BOOST_FOREACH(std::string name, in->getNames()) {
 			stream << "\t" << QString::fromStdString(name);
 		}
-		stream << endl;
+		stream << "\n";
 		first_run = false;
 	}
 	stream << time;
@@ -57,6 +59,6 @@ int FileOut::f(int time, int dt) {
 	BOOST_FOREACH(std::string name, in->getNames()) {
 			stream << "\t" << in->getValue(name);
 	}
-	stream << endl;
+	stream << "\n";
 	return dt;
 }

@@ -29,10 +29,6 @@ VarDTSimulation::~VarDTSimulation() {
 	delete priv;
 }
 
-/*void VarDTSimulation::addController(IController *c) {
-	(void) c;
-}*/
-
 int VarDTSimulation::run(int time, int dt) {
 	cd3assert(model->getSinkNodes().size() == 1,
 		   "can not handle more than one sink node aka there is only one see");

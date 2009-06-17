@@ -21,6 +21,9 @@ public:
 	bool endElement(const QString &ns,
 					const QString &lname,
 					const QString &qname);
+	bool error(const QXmlParseException &exception);
+	bool fatalError(const QXmlParseException &exception);
+	bool warning(const QXmlParseException &exception);
 	ISimulation *load(QFile &f);
 private:
 	void loadParameter(const QXmlAttributes &atts);

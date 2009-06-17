@@ -36,6 +36,7 @@ void RainRead::init(int start, int stop, int dt) {
 	(void) stop;
 	priv->rain_file = new QFile(QString::fromStdString(file_name));
 	cd3assert(priv->rain_file->exists(), "no such rain file");
+	Logger(Standard) << this << "using rainfile:" << file_name;
 	priv->rain_file->open(QIODevice::ReadOnly);
 
 	priv->file_date = parseLine().get<0>();
@@ -54,6 +55,7 @@ void RainRead::init(int start, int stop, int dt) {
 		QDateTime current_date = parseLine().get<0>();
 		priv->file_date = current_date;
 	}
+	Logger(Debug) << "stargin rainreading at: " << priv->file_date.toString();
 	priv->file_date.addSecs(-dt);
 }
 

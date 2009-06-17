@@ -50,8 +50,12 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		std::string klass = atts.value("class").toStdString();
 		std::string script = atts.value("script").toStdString();
 		if (script.empty()) {
+			Logger(Debug) << "creating a" << klass << "node with id:" << id;
 			current = pd->node_registry.createNode(klass);
 		} else {
+			Logger(Debug) << "creating a scripted" << klass
+					<< "node with id:" << id
+					<< "and script:" << script;
 			current = pd->node_registry.createNode(klass, script);
 		}
 		current->setId(id);
@@ -75,6 +79,7 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 	if (lname == "simulation") {
 		cd3assert(pd->simulation == 0, "Simulation already set");
 		std::string klass = atts.value("class").toStdString();
+		Logger(Debug) << "loading simulation" << klass;
 		pd->simulation = pd->sim_registry.createSimulation(klass);
 		return true;
 	}
@@ -82,7 +87,8 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		cd3assert(pd->simulation != 0, "no simulation set");
 		QString script = atts.value("script");
 		cd3assert(QFile::exists(script), "no such controller script file");
-		//Controller *c = new Controller(script.toStdString());
+
+		Logger(Debug) << "creating JavaScript Controller with script" << script;
 		shared_ptr<Controller> c(new Controller(script.toStdString()));
 		pd->simulation->timestep_before
 				.connect(bind<void>(&Controller::controllBefore, c, _1, _2));
@@ -95,6 +101,10 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		p.dt = lexical_cast<int>(atts.value("dt").toStdString());
 		p.start = lexical_cast<int>(atts.value("start").toStdString());
 		p.stop = lexical_cast<int>(atts.value("stop").toStdString());
+		Logger(Debug) << "setting simulation time parameters" <<
+				"start:" << atts.value("start") <<
+				"stop:" << atts.value("stop") <<
+				"dt:" << atts.value("dt");
 		pd->simulation->setSimulationParameters(p);
 		return true;
 	}
@@ -136,7 +146,22 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 	if (lname == "connection") {
 		return true;
 	}
-	qWarning() << "not used element " << lname;
+	Logger(Debug) << "not used element:" << lname.toStdString();
+	return true;
+}
+
+bool SaxLoader::error(const QXmlParseException &exception) {
+	Logger(Error) << exception.message();
+	return true;
+}
+
+bool SaxLoader::fatalError(const QXmlParseException &exception) {
+	Logger(Error) << exception.message();
+	return true;
+}
+
+bool SaxLoader::warning(const QXmlParseException &exception) {
+	Logger(Warning) << exception.message();
 	return true;
 }
 
@@ -145,6 +170,8 @@ ISimulation *SaxLoader::load(QFile &file) {
 	cd3assert(opened, "could not open model");
 	QXmlSimpleReader r;
 	r.setContentHandler(this);
+	r.setErrorHandler(this);
+	r.setLexicalHandler(this);
 	QXmlInputSource source(&file);
 	r.parse(&source);
 	return pd->simulation;
@@ -161,7 +188,9 @@ bool SaxLoader::endElement(const QString &/*ns*/,
 		cd3assert(!sink_port.empty(), "sink port not set");
 		Node *sink = pd->model->getNode(sink_id);
 		Node *source = pd->model->getNode(source_id);
-
+		Logger(Debug) << "creating connection:"
+				<< source << "[" << source_port << "] => "
+				<< sink << "[" << sink_port << "]";
 		pd->model->addConnection(
 				pd->simulation->createConnection(source, source_port,
 												 sink, sink_port));

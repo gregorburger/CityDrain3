@@ -97,7 +97,7 @@ int CSO::f(int time, int dt) {
 			stored_volume->setValue(cname, Ci);
 		}
 	} else {
-		std::cout << "V_prime < 0 " << std::endl;
+		Logger(Warning) << "V_prime < 0 ";
 	}
 
 	return dt;

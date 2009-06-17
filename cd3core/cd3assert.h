@@ -2,12 +2,11 @@
 #define CD3ASSERT_H
 
 #include <cstdlib>
-#include <string.h>
-#include <iostream>
+#include <logger.h>
 
 #define cd3assert(expr, message) if (!(expr)) { \
-	std::cerr << __FILE__ << ":" << __FUNCTION__ << ":" << __LINE__ \
-			<< " assert: " << message << std::endl; \
+	Logger(Debug) << __FILE__ << ":" << __FUNCTION__ << ":" << __LINE__ \
+			<< " assert:" << message; \
 	std::abort(); \
 	}
 

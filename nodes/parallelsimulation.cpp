@@ -11,7 +11,7 @@ CD3_DECLARE_SIMULATION_NAME(ParallelSimulation)
 
 ParallelSimulation::ParallelSimulation() {
 #ifdef _OPENMP
-	std::cout << "number of threads: " << omp_get_num_threads() << " of " <<  omp_get_max_threads() <<  std::endl;
+	Logger(Standard) << "number of threads: " << omp_get_num_threads() << " of " <<  omp_get_max_threads();
 #endif
 }
 

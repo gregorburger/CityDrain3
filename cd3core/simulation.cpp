@@ -4,6 +4,8 @@
 #include "cd3assert.h"
 #include "nodeconnection.h"
 #include "controller.h"
+#include "log.h"
+#include "logger.h"
 
 #include <iostream>
 #include <QTime>
@@ -46,10 +48,11 @@ void ISimulation::start(int time) {
 
 	QTime ts_after = QTime::currentTime();
 	int duration = ts_before.msecsTo(ts_after);
-	std::cerr << duration << std::endl;
+	Logger(Standard) << "simulation took:" << duration << "ms";
 }
 
 void ISimulation::stop() {
+	Logger(Debug) << "interrupted stopping of simulation";
 	running = false;
 }
 
@@ -59,6 +62,7 @@ void ISimulation::serialize(const std::string &dir) const {
 }
 
 void ISimulation::deserialize(const std::string &dir, int time) const {
+	Logger(Debug) << "serializing timestep" << time << "into" << dir;
 	ModelSerializer ms(model, dir);
 	ms.deserialize(time);
 }

@@ -2,8 +2,11 @@
 #include <simulation.h>
 #include <cd3assert.h>
 #include <mapbasedmodel.h>
+#include <log.h>
+#include <logger.h>
 
 #include <iostream>
+#include <fstream>
 #include <QFile>
 #include <boost/foreach.hpp>
 #include <boost/program_options.hpp>
@@ -33,11 +36,8 @@ struct ProgressHandler {
 		int newp = (int) round(pfactor * (time - sp.start));
 		if (newp == lastp)
 			return;
-		std::cout << "                  ";
-		std::cout << "\r" << newp << "%";
+		Logger(Standard) << "Progress:" << newp << "%";
 		lastp = newp;
-		if (time == sp.stop)
-			std::cout << std::endl;
 	}
 	double pfactor;
 	int lastp;
@@ -51,6 +51,8 @@ int main(int argc, char **argv) {
 		("help,h", "produce help message")
 		("state-dir,d", po::value<std::string>(), "used to store and locate restart data")
 		("restart,r", po::value<int>(), "specifiy the time where to restart")
+		("log,l", po::value<std::string>(), "write log to specified file")
+		("maxlog,v", po::value<int>(), "secifiy the max loglevel")
 		("model,m", po::value<std::string>(), "the model to run the simulation");
 	;
 
@@ -67,11 +69,36 @@ int main(int argc, char **argv) {
 	}
 
 	if (!vm.count("model")) {
-		std::cerr << "provide a model file" << std::endl;
 		std::cout << desc << std::endl;
-		//std::cout << p << std::endl;
+		std::cerr << "provide a model file" << std::endl;
 		return -1;
 	}
+
+	ostream *out = &cout;
+	LogLevel max = Debug;
+	if (vm.count("log")) {
+		std::string log_file = vm["log"].as<std::string>();
+		if (ifstream(log_file.c_str())) {
+			cerr << "file already exists " << log_file << endl;
+			return -1;
+		}
+		out = new ofstream(log_file.c_str());
+	}
+
+	if (vm.count("maxlog")) {
+		int l = vm["maxlog"].as<int>();
+		if (l < 0 || l > 3) {
+			cerr << desc << endl;
+			cerr << "log level must be between 0 an 3" << endl;
+			return -1;
+		}
+		max = LogLevel(l);
+	}
+
+	Log::init(out, max);
+	Logger(Debug) << "starting";
+
+	Logger(Debug) << "loading file model:" << vm["model"].as<std::string>();
 
 	QFile f(QString::fromStdString(vm["model"].as<std::string>()));
 
@@ -97,15 +124,15 @@ int main(int argc, char **argv) {
 			return -1;
 		}
 		starttime = vm["restart"].as<int>();
-		std::cout << "restarting from " << starttime <<  std::endl;
+		Logger(Standard) << "restarting from" << starttime
+				<< "using state dir:" << vm["state-dir"].as<std::string>();
 		s->deserialize(vm["state-dir"].as<std::string>(), starttime);
 	}
 
-	s->timestep_after.connect(ProgressHandler(s));
+	s->timestep_before.connect(ProgressHandler(s));
 	s->start(starttime);
-
-	std::cout << std::endl; //newline the progress
-	//s->serialize("states");
+	Logger(Debug) << "shutting down";
+	Log::shutDown();
 	delete s;
 	return 0;
 }

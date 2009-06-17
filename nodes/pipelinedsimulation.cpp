@@ -55,7 +55,7 @@ void PipelinedSimulation::start(int time) {
 			pool->setMaxThreadCount(envItem.split("=")[1].toInt());
 		}
 	}
-	std::cout << "thread count: " << pool->maxThreadCount() << std::endl;
+	Logger(Standard) << "thread count: " << pool->maxThreadCount();
 
 	BOOST_FOREACH(Node *n, pd->nodes) {
 		pd->state[n] = time;
@@ -117,11 +117,6 @@ void StateWorker::run() {
 			not_done.erase(r);
 		}
 	}
-
-	/*BOOST_FOREACH (Node *n, pd->nodes) {
-		cd3assert(pd->state[n] >= (time + dt), "not really finished");
-	}*/
-	//std::cout << time << " finished" << std::endl;
 }
 
 void StateWorker::updatePorts(Node *n) {

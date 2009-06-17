@@ -78,6 +78,7 @@ public:
 		ltvp p = states[name];
 		cd3assert(p.first == cd3::TypeInfo(typeid(T)),
 				  str(format("wrong type for state %1%") % name));
+		Logger(Debug) << this << "getState(" << name << ")";
 		return static_cast<T*>(p.second);
 	}
 
@@ -90,6 +91,7 @@ public:
 				  str(format("wrong type for state %1%") % name));
 		T *vp = static_cast<T*>(p.second);
 		cd3assert(vp, str(format("state %1% null") % name));
+		Logger(Debug) << this << "setState(" << name << ")";
 		*vp = state;
 	}
 
@@ -100,6 +102,7 @@ public:
 		ltvp p = parameters[name];
 		cd3assert(p.first == cd3::TypeInfo(typeid(T)),
 				  str(format("wrong type for parameter %1%") % name));
+		Logger(Debug) << this << "getParameter(" << name << ")";
 		return static_cast<T*>(p.second);
 	}
 
@@ -114,6 +117,7 @@ public:
 				  str(format("wrong type for parameter %1%") % name));
 		T *vp = static_cast<T*>(p.second);
 		cd3assert(vp, str(format("parameter %1% null") % name));
+		Logger(Debug) << this << "setParameter(" << name << ")";
 		*vp = param;
 	}
 
@@ -127,6 +131,7 @@ public:
 		cd3assert(ptr, "adding null state");
 		cd3assert(states.find(name) == states.end(),
 				  str(format("state %1% already defined") % name));
+		Logger(Debug) << this << "addState(" << name << ")";
 		states[name] = ltvp(cd3::TypeInfo(typeid(T)), ptr);
 	}
 
@@ -135,6 +140,7 @@ public:
 		cd3assert(ptr, "adding nul parameter");
 		cd3assert(parameters.find(name) == parameters.end(),
 				  str(format("parameter %1% already defined") % name));
+		Logger(Debug) << this << "addParameter(" << name << ")";
 		parameters[name] = ltvp(cd3::TypeInfo(typeid(T)), ptr);
 	}
 

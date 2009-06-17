@@ -59,7 +59,7 @@ void OrderedPipeSimulation::start(int time) {
 			pool->setMaxThreadCount(envItem.split("=")[1].toInt());
 		}
 	}
-	std::cout << "thread count: " << pool->maxThreadCount() << std::endl;
+	Logger(Standard) << "thread count: " << pool->maxThreadCount();
 
 	sh_node_queue upper_queue = shared_ptr<tqueue<Node*> >(new tqueue<Node*>());
 	BOOST_FOREACH(Node *n, pd->order) {
@@ -78,7 +78,7 @@ void OrderedPipeSimulation::start(int time) {
 	}
 	pool->waitForDone();
 	QTime end_time = QTime::currentTime();
-	std::cerr << start_time.msecsTo(end_time) << std::endl;
+	Logger(Standard) << "simulation took:" << start_time.msecsTo(end_time) << "ms";
 }
 
 int OrderedPipeSimulation::run(int time, int dt) {
