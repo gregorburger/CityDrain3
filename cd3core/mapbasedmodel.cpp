@@ -165,10 +165,9 @@ node_set_type MapBasedModel::cycleNodes() const {
 	node_set_type cycle_nodes;
 
 	BOOST_FOREACH(Node *n, all_nodes) {
-		const vector<NodeConnection*> fwds = fwd_connections.at(n);
-		if (cycleNodesHelper(n, fwds)) {
+		node_set_type reachable;
+		if (cycleNodesHelper(n, reachable)) {
 			cycle_nodes.insert(n);
-			return cycle_nodes;
 		}
 	}
 
@@ -176,14 +175,16 @@ node_set_type MapBasedModel::cycleNodes() const {
 }
 
 bool MapBasedModel::cycleNodesHelper(Node *n,
-									 const vector<NodeConnection *> &fwds) const {
-	BOOST_FOREACH(NodeConnection *con, fwds) {
-		if (con->sink == n)
-			return true;
+									 node_set_type reachable) const {
+	bool cycle = false;
+	reachable.insert(n);
+	BOOST_FOREACH(NodeConnection *con, fwd_connections.at(n)) {
+		if (reachable.count(con->sink))
+			cycle = true;
 		else
-			return cycleNodesHelper(n, fwd_connections.at(con->sink));
+			cycle = cycle || cycleNodesHelper(con->sink, reachable);
 	}
-	return false;
+	return cycle;
 }
 
 bool MapBasedModel::cycleFree() const {
