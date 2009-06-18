@@ -11,7 +11,10 @@ using namespace std;
 Log *Log::instance = 0;
 
 Log *Log::getInstance() {
-	cd3assert(instance, "log not initialed, call Log::init");
+	if (!instance) {
+		cerr << "log not initialed, call Log::init" << endl;
+		assert(instance);
+	}
 	return instance;
 }
 
