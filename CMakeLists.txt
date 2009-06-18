@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.6)
 project(CD3)
 
-INCLUDE_DIRECTORIES(cd3core cd3core/qs)
+INCLUDE_DIRECTORIES(src/cd3core src/cd3core/qs)
 find_package(Qt4 REQUIRED)
 find_package(Boost 1.38.0 COMPONENTS signals program_options thread REQUIRED)
 
@@ -22,7 +22,7 @@ INCLUDE(${QT_USE_FILE})
 set(LIBRARY_OUTPUT_PATH ${CD3_SOURCE_DIR})
 set(EXECUTABLE_OUTPUT_PATH ${CD3_SOURCE_DIR})
 
-add_subdirectory(cd3core)
-add_subdirectory(nodes)
-add_subdirectory(app)
-add_subdirectory(plugindoc)
+add_subdirectory(src/cd3core)
+add_subdirectory(src/nodes)
+add_subdirectory(src/app)
+add_subdirectory(src/plugindoc)

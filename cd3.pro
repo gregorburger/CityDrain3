@@ -2,7 +2,7 @@
 
 TEMPLATE = 	subdirs
 CONFIG = ordered
-SUBDIRS =	cd3core \
-		nodes \
-		app \
-		plugindoc
+SUBDIRS =	src/cd3core \
+		src/nodes \
+		src/app \
+		src/plugindoc
