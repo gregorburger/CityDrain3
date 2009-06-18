@@ -77,7 +77,7 @@
 			</connection>
 
 
-			<connection id="con-Sewer-1-Mixer-0">
+			<connection id="con-Sewer-1-Mixer-0" cycle_break="true">
 				<source node="Sewer-1" port="out" />
 				<sink node="Mixer-0" port="inputs[1]" />
 			</connection>

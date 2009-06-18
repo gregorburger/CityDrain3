@@ -27,8 +27,10 @@ public:
 	ISimulation *load(QFile &f);
 private:
 	void loadParameter(const QXmlAttributes &atts);
+	void breakCycle();
 	SaxLoaderPriv *pd;
 	Node *current;
+	bool cycle_break;
 	std::string source_id, source_port, sink_port, sink_id;
 };
 

@@ -37,13 +37,14 @@
 	script CDATA #REQUIRED >
 
 <!ATTLIST parameter 
-	name CDATA #REQUIRED 
-	type CDATA #REQUIRED
-	kind CDATA "simple"
+	name CDATA #REQUIRED
+	type (string|bool|float|double|int|Flow) #REQUIRED
+	kind (simple|complex) "simple"
 	value CDATA #IMPLIED >
 	
 <!ATTLIST connection
-	id ID #REQUIRED >
+	id ID #REQUIRED
+	cycle_break (true|false) #IMPLIED >
 	
 <!ATTLIST sink
 	node IDREF #REQUIRED
@@ -55,5 +56,5 @@
 
 <!ATTLIST unit
 	name CDATA #REQUIRED
-	kind CDATA #REQUIRED
+	kind (Flow|Rain|Concentration|Volume) #REQUIRED
 	value CDATA #REQUIRED >

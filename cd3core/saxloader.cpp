@@ -20,6 +20,8 @@ using namespace boost;
 #include <calculationunit.h>
 #include <controller.h>
 #include <nodeconnection.h>
+#include <cyclenodestart.h>
+#include <cyclenodeend.h>
 
 struct SaxLoaderPriv {
 	NodeRegistry node_registry;
@@ -144,6 +146,10 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		return true;
 	}
 	if (lname == "connection") {
+		cycle_break = atts.value("cycle_break") == "true";
+		if (cycle_break) {
+			Logger(Standard) << "got cyclebreak";
+		}
 		return true;
 	}
 	Logger(Debug) << "not used element:" << lname.toStdString();
@@ -186,6 +192,11 @@ bool SaxLoader::endElement(const QString &/*ns*/,
 		cd3assert(!source_port.empty(), "source port not set");
 		cd3assert(!sink_id.empty(), "sink node not set");
 		cd3assert(!sink_port.empty(), "sink port not set");
+		if (cycle_break) {
+			breakCycle();
+			cycle_break = false;
+			return true;
+		}
 		Node *sink = pd->model->getNode(sink_id);
 		Node *source = pd->model->getNode(source_id);
 		Logger(Debug) << "creating connection:"
@@ -257,4 +268,23 @@ void SaxLoader::loadParameter(const QXmlAttributes& atts) {
 		return;
 	}
 	qWarning() << "unknown type " << atts.value("type");
+}
+
+void SaxLoader::breakCycle() {
+	Node *sink = pd->model->getNode(sink_id);
+	Node *source = pd->model->getNode(source_id);
+
+	CycleNodeStart *start = new CycleNodeStart();
+	start->setId(sink_id+source_id+"-cycle_start");
+	CycleNodeEnd *end = new CycleNodeEnd();
+	end->setId(sink_id+source_id+"-cycle_end");
+	pd->model->addNode(start);
+	pd->model->addNode(end);
+	end->start = start;
+	pd->model->addConnection(pd->simulation->createConnection(start, "out",
+															  sink, sink_port));
+
+
+	pd->model->addConnection(pd->simulation->createConnection(source, source_port,
+															  end, "in"));
 }
