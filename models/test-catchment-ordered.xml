@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<!DOCTYPE citydrain SYSTEM "../dtd/model.dtd">
+
+<citydrain version="1.0">
+
+	<pluginpath path="nodes" />
+
+	<simulation class="OrderedPipeSimulation">
+		<time start="0" stop="72000" dt="100" />
+	</simulation>
+
+	<model>
+		<nodelist>
+			<node id="rainread0" class="RainRead">
+				<parameter name="file_name" type="string" value="models/Station_6620.ixx" />
+			</node>
+			
+			<node id="fileout" class="FileOut">
+				<parameter name="out_file_name" type="string" value="tmp/test-catchment-ordered.txt" />
+			</node>
+			
+			<node id="catch" class="CatchmentCSS" />
+			
+			<node id="null" class="Null" />
+			<node id="mixer" class="Mixer" />
+		</nodelist>
+		
+		<connectionlist>
+		
+			<connection id="con0">
+				<source node="rainread0" port="out" />
+				<sink node="catch" port="rain_in" />
+			</connection>
+		
+			<connection id="con2">
+				<source node="null" port="out" />
+				<sink node="catch" port="dwf_in" />
+			</connection>
+			
+			<connection id="con3">
+				<source node="null" port="out" />
+				<sink node="catch" port="parasite_in" />
+			</connection>
+			
+			<connection id="con4">
+				<source node="null" port="out" />
+				<sink node="catch" port="q_upstream" />
+			</connection>
+		
+			<connection id="con1">
+				<source node="catch" port="out" />
+				<sink	node="mixer" port="inputs[0]" />
+			</connection>
+			
+			<connection id="con5">
+				<source node="catch" port="out" />
+				<sink	node="mixer" port="inputs[1]" />
+			</connection>
+			
+			<connection id="con6">
+				<source	node="mixer" port="out" />
+				<sink	node="fileout" port="in" />
+			</connection>
+		</connectionlist>
+	</model>
+</citydrain>

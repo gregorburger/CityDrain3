@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE citydrain SYSTEM "../dtd/model.dtd">
+
+<citydrain version="1.0">
+
+	<pluginpath path="nodes" />
+
+	<simulation class="OrderedPipeSimulation">
+		<time start="0" stop="7200" dt="300" />
+	</simulation>
+
+	<model>
+		<nodelist>
+			<node id="constsource" class="ConstSource">
+				<parameter name="const_flow" kind="complex" type="Flow">
+					<flow>
+						<unit name="Q" kind="Flow" value="234.0" />
+						<unit name="C0" kind="Concentration" value="0.1"/>
+						<unit name="C1" kind="Concentration" value="0.2"/>
+					</flow>
+				</parameter>
+			</node>
+			
+			<node id="fileout" class="FileOut">
+				<parameter name="out_file_name" type="string" 
+											value="tmp/sewerout-ordered.txt" />
+			</node>
+			
+			<node id="musk1" class="Sewer" />
+			
+		</nodelist>
+		
+		<connectionlist>
+		
+			<connection id="con1">
+				<source node="constsource" port="out" />
+				<sink	node="musk1" port="in" />
+			</connection>
+			
+			<connection id="con2">
+				<source node="musk1" port="out" />
+				<sink node="fileout" port="in" />
+			</connection>
+			
+		</connectionlist>
+	</model>
+</citydrain>
