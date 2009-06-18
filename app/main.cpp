@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
 		("state-dir,d", po::value<std::string>(), "used to store and locate restart data")
 		("restart,r", po::value<int>(), "specifiy the time where to restart")
 		("log,l", po::value<std::string>(), "write log to specified file")
-		("maxlog,v", po::value<int>(), "secifiy the max loglevel")
+		("maxlog,v", po::value<int>(), "secifiy the max loglevel\n0 all debug\n1 all standard\n2 all warnings\n3 only errors")
 		("model,m", po::value<std::string>(), "the model to run the simulation");
 	;
 
