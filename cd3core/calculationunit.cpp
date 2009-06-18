@@ -45,8 +45,7 @@ bool CalculationUnit::operator == (const ICalculationUnit &other) const {
 		return true;
 	}
 	bool b = (name == other.getName());
-	std::cout << "CU== " << name << " " << other.getName() << std::endl;
-	return b;//&& (description == other.getDescritption()) && (unit == other.getUnit());
+	return b;
 }
 
 bool CalculationUnit::operator < (const CalculationUnit &other) const {
