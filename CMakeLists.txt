@@ -19,8 +19,10 @@ set(QT_USE_QTSCRIPT true)
 set(QT_NOTUSE_QTGUI true)
 add_definitions(-DQT_NO_KEYWORDS)
 INCLUDE(${QT_USE_FILE})
- 
+set(LIBRARY_OUTPUT_PATH ${CD3_SOURCE_DIR})
+set(EXECUTABLE_OUTPUT_PATH ${CD3_SOURCE_DIR})
+
 add_subdirectory(cd3core)
 add_subdirectory(nodes)
 add_subdirectory(app)
-ADD_SUBDIRECTORY(plugindoc)
+add_subdirectory(plugindoc)
