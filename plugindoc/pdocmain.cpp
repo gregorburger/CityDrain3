@@ -7,11 +7,15 @@ using namespace std;
 #include <simulationregistry.h>
 #include <node.h>
 #include <flow.h>
+#include <log.h>
+#include <sstream>
 
 typedef pair<string, ltvp> par_type;
 typedef pair<string, Flow*> port_type;
 
 int main(int argc, char **argv) {
+	ostringstream out;
+	Log::init(&out);
 	NodeRegistry r;
 	SimulationRegistry sr;
 	for (int i = 1; i < argc; i++) {
