@@ -34,7 +34,7 @@ struct ProgressHandler {
 	void operator()(ISimulation *s, int time) {
 		(void) s;
 		int newp = (int) round(pfactor * (time - sp.start));
-		if (newp == lastp)
+		if (newp <= lastp)
 			return;
 		Logger(Standard) << "Progress:" << newp << "%";
 		lastp = newp;

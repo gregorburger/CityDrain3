@@ -27,7 +27,7 @@ struct OPSPriv {
 };
 
 struct OrderedWorker : public QRunnable {
-	OrderedWorker(OPSPriv *pd, Node *last, int time, int dt);
+	OrderedWorker(OrderedPipeSimulation *sim, OPSPriv *pd, Node *last, int time, int dt);
 	void run();
 	void pullPorts(Node *sink);
 	void pushPorts(Node *sink);
@@ -35,6 +35,7 @@ struct OrderedWorker : public QRunnable {
 	sh_node_queue in;
 	sh_node_queue out;
 
+	OrderedPipeSimulation *sim;
 	OPSPriv *pd;
 	Node *last;
 	int time, dt;
@@ -69,8 +70,8 @@ void OrderedPipeSimulation::start(int time) {
 	Node *last = pd->order.back();
 
 	QTime start_time = QTime::currentTime();
-	while (current_time <= sim_param.stop) {
-		OrderedWorker *worker = new OrderedWorker(pd, last, current_time, sim_param.dt);
+	while (current_time <= sim_param.stop & running) {
+		OrderedWorker *worker = new OrderedWorker(this, pd, last, current_time, sim_param.dt);
 		worker->in = upper_queue;
 		upper_queue = worker->out;
 		pool->start(worker);
@@ -131,7 +132,10 @@ NodeConnection *OrderedPipeSimulation::createConnection(Node *source,
 	return new BufferedNodeConnection(source, srcp, sink, snkp);
 }
 
-OrderedWorker::OrderedWorker(OPSPriv *pd, Node *last, int _time, int _dt) {
+OrderedWorker::OrderedWorker(OrderedPipeSimulation *sim,
+							 OPSPriv *pd, Node *last,
+							 int _time, int _dt) {
+	this->sim = sim;
 	this->pd = pd;
 	this->last = last;
 	this->time = _time;
@@ -140,6 +144,7 @@ OrderedWorker::OrderedWorker(OPSPriv *pd, Node *last, int _time, int _dt) {
 }
 
 void OrderedWorker::run() {
+	sim->timestep_before(sim, time);
 	Node *current;
 	do {
 		current = in->dequeue();
@@ -148,6 +153,7 @@ void OrderedWorker::run() {
 		pushPorts(current);
 		out->enqueue(current);
 	} while (current != last);
+	sim->timestep_before(sim, time);
 }
 
 void OrderedWorker::pullPorts(Node *sink) {
