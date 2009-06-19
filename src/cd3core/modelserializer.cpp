@@ -3,7 +3,6 @@
 #include "cd3typeinfo.h"
 #include "node.h"
 #include <model.h>
-#include <iostream>
 #include <fstream>
 #include <QDebug>
 #include <QFile>

@@ -7,8 +7,8 @@
 #include "log.h"
 #include "logger.h"
 
-#include <iostream>
 #include <QTime>
+#include <boost/foreach.hpp>
 
 ISimulation::ISimulation()
  : running(true) {
@@ -28,7 +28,15 @@ SimulationParameters ISimulation::getSimulationParameters() const {
 
 void ISimulation::setModel(IModel *m) {
 	model = m;
-	cd3assert(model->connected(), "some nodes are not connected");
+	cd3assert(model->connected(), "model not fully connected");
+	if (!model->cycleFree()) {
+		Logger(Warning) << "model not cyclefree ";
+		BOOST_FOREACH(Node *n, model->cycleNodes()) {
+			Logger(Warning) << "node:"  << n << "is a cyclenode";
+		}
+	}
+	cd3assert(model->cycleFree(), "use \"cycle_break\" attribute in connection (xml) to split up cycles");
+	model->checkModel();
 	m->checkModel();
 }
 

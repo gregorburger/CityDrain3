@@ -4,7 +4,6 @@
 #include <nodeconnection.h>
 
 #include <vector>
-#include <iostream>
 #include <boost/foreach.hpp>
 #include <boost/unordered/unordered_map.hpp>
 #include <QReadWriteLock>

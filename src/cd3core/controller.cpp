@@ -5,9 +5,7 @@
 #include "node.h"
 #include "flow.h"
 
-#include <iostream>
 #include <QtScript>
-#include <QDebug>
 
 using namespace std;
 

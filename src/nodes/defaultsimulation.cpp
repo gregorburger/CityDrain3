@@ -4,7 +4,6 @@
 #include <flow.h>
 #include <nodeconnection.h>
 #include <boost/foreach.hpp>
-#include <iostream>
 
 CD3_DECLARE_SIMULATION_NAME(DefaultSimulation)
 
@@ -53,13 +52,5 @@ void DefaultSimulation::run(Node *n, int time, con_count_type &depends) {
 
 void DefaultSimulation::setModel(IModel *model) {
 	ISimulation::setModel(model);
-	cd3assert(model->connected(), "model not fully connected");
-	if (!model->cycleFree()) {
-		Logger(Warning) << "model not cyclefree ";
-		BOOST_FOREACH(Node *n, model->cycleNodes()) {
-			Logger(Warning) << "node:"  << n << "is a cyclenode";
-		}
-	}
-	model->checkModel();
 	sp->sources = model->getSourceNodes();
 }

@@ -1,5 +1,4 @@
 #include "calculationunit.h"
-#include <iostream>
 
 CalculationUnit *CalculationUnit::null = new CalculationUnit("Null","null","null");
 CalculationUnit *CalculationUnit::flow = new CalculationUnit("Flow","cubic meter per seconds","m^3/s");

@@ -1,5 +1,4 @@
 #include "mapbasedmodel.h"
-#include <iostream>
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
 #include <vector>
