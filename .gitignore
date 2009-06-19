@@ -6,6 +6,7 @@ libcd3core.so
 *.o
 *.pyc
 cd3
+plugindoc
 testcore/testcore
 *.pro.user
 callgrind.*
