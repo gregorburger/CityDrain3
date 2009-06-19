@@ -5,7 +5,6 @@
 
 #include <vector>
 #include <boost/foreach.hpp>
-#include <boost/unordered/unordered_map.hpp>
 #include <QReadWriteLock>
 #include <QThreadPool>
 #include <QProcess>

@@ -1,4 +1,4 @@
-#define MAP_USE_HASH
+//#define MAP_USE_HASH
 
 #include "flow.h"
 #ifdef MAP_USE_HASH

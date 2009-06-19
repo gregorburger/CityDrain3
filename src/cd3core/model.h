@@ -1,10 +1,20 @@
 #ifndef MODEL_H
 #define MODEL_H
 
+#define USE_HASH
+
 #include <string>
 #include <vector>
+#ifdef USE_HASH
 #include <boost/unordered/unordered_map.hpp>
 #include <boost/unordered/unordered_set.hpp>
+#else
+#include <map>
+#include <set>
+using namespace std;
+#define unordered_map map
+#define unordered_set set
+#endif
 #include <boost/tuple/tuple.hpp>
 #include <cd3globals.h>
 
