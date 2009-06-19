@@ -20,6 +20,9 @@ MapBasedModel::~MapBasedModel() {
 		p.second->deinit();
 		delete p.second;
 	}
+	BOOST_FOREACH(NodeConnection *con, all_connections) {
+		delete con;
+	}
 }
 
 const node_set_type *MapBasedModel::getNodes() const {
@@ -55,6 +58,7 @@ void MapBasedModel::addConnection(NodeConnection *con) {
 
 	bwd_connections[sink].push_back(con);
 	fwd_connections[source].push_back(con);
+	all_connections.insert(con);
 }
 
 void MapBasedModel::initNodes(const SimulationParameters &sp) {

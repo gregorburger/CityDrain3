@@ -62,6 +62,7 @@ private:
 	name_node_map names_nodes;
 	connection_type fwd_connections;
 	connection_type bwd_connections;
+	unordered_set<NodeConnection*> all_connections;
 };
 
 #endif // MAPBASEMODEL_H
