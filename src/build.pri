@@ -1,4 +1,6 @@
-DEFINES = DEBUG
+debug {
+	DEFINES = DEBUG
+}
 win32 {
 	CONFIG += rtti
 	DESTDIR = $$PWD/../win32
