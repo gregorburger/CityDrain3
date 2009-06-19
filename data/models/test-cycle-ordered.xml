@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE citydrain SYSTEM "file:../dtd/model.dtd">
+
+<citydrain version="1.0">
+
+	<pluginpath path="./libnodes.so" />
+	<simulation class="OrderedPipeSimulation">
+		<time start="0" stop="72000" dt="300" />
+	</simulation>
+	<model>
+		<nodelist>
+
+			<node id="ConstSource-0" class="ConstSource">
+				<parameter name="const_flow" kind="complex" type="Flow">
+					<flow>
+						<unit name="Q" kind="Flow" value="100.000000" />
+						<unit name="C2" kind="Concentration" value="3.000000" />
+						<unit name="C1" kind="Concentration" value="5.000000" />
+						<unit name="C0" kind="Concentration" value="1.000000" />
+					</flow>
+				</parameter>
+			</node>
+
+
+			<node id="Mixer-0" class="Mixer">
+				<parameter name="num_inputs" type="int" value="2" />
+			</node>
+
+
+			<node id="Splitter-0" class="Splitter">
+				<parameter name="ratio" type="double" value="0.5" />
+			</node>
+
+
+			<node id="FileOut-0" class="FileOut">
+				<parameter name="out_file_name" type="string" value="tmp/genout.txt" />
+			</node>
+
+
+			<node id="Sewer-0" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="Sewer-1" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+		</nodelist>
+		<connectionlist>
+
+			<connection id="con-ConstSource-0-Mixer-0">
+				<source node="ConstSource-0" port="out" />
+				<sink node="Mixer-0" port="inputs[0]" />
+			</connection>
+
+
+			<connection id="con-Mixer-0-Splitter-0">
+				<source node="Mixer-0" port="out" />
+				<sink node="Splitter-0" port="in" />
+			</connection>
+
+
+			<connection id="con-Splitter-0-Sewer-0">
+				<source node="Splitter-0" port="out1" />
+				<sink node="Sewer-0" port="in" />
+			</connection>
+
+
+			<connection id="con-Splitter-0-Sewer-1">
+				<source node="Splitter-0" port="out2" />
+				<sink node="Sewer-1" port="in" />
+			</connection>
+
+
+			<connection id="con-Sewer-1-Mixer-0" cycle_break="true">
+				<source node="Sewer-1" port="out" />
+				<sink node="Mixer-0" port="inputs[1]" />
+			</connection>
+
+
+			<connection id="con-Sewer-0-FileOut-0">
+				<source node="Sewer-0" port="out" />
+				<sink node="FileOut-0" port="in" />
+			</connection>
+
+		</connectionlist>
+	</model>
+</citydrain>
