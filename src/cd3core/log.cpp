@@ -32,6 +32,7 @@ void Log::shutDown() {
 		delete instance->out;
 	}
 	instance->out = 0;
+	delete instance;
 }
 
 Log::Log() {
