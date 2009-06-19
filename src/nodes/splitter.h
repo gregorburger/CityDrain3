@@ -8,6 +8,7 @@ class Node;
 CD3_DECLARE_NODE(Splitter)
 public:
 	Splitter();
+	virtual ~Splitter();
 	int f(int time, int dt);
 private:
 	Flow *in, *out1, *out2;

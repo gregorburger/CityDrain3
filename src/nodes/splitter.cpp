@@ -17,6 +17,12 @@ Splitter::Splitter() {
 	addParameter(ADD_PARAMETERS(ratio));
 }
 
+Splitter::~Splitter() {
+	delete out2;
+	delete out1;
+	delete in;
+}
+
 int Splitter::f(int time, int dt) {
 	(void) time;
 
