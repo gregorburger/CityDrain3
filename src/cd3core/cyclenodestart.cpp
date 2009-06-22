@@ -13,5 +13,6 @@ CycleNodeStart::~CycleNodeStart() {
 
 int CycleNodeStart::f(int time, int dt) {
 	(void) dt;
+	(void) time;
 	return dt;
 }
