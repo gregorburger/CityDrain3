@@ -14,6 +14,8 @@
 #include "splitter.h"
 #include "catchmentcss.h"
 #include "null.h"
+#include "cyclenodestart.h"
+#include "cyclenodeend.h"
 
 #include <noderegistry.h>
 #include <nodefactory.h>
@@ -37,6 +39,8 @@ extern "C" {
 		registry->addNodeFactory(new NodeFactory<Splitter>());
 		registry->addNodeFactory(new NodeFactory<CatchmentCSS>());
 		registry->addNodeFactory(new NodeFactory<Null>());
+		registry->addNodeFactory(new NodeFactory<CycleNodeEnd>());
+		registry->addNodeFactory(new NodeFactory<CycleNodeStart>());
 	}
 
 	void CD3_PUBLIC registerTypes(TypeRegistry *registry) {
