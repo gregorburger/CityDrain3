@@ -16,9 +16,9 @@ using namespace boost;
 
 struct FlowDefinition {
 	std::vector<std::string> names;
-        unordered_map<const CalculationUnit *, std::vector<std::string> > unit_names;
-        unordered_map<std::string, int> positions;
-        unordered_map<std::string, const CalculationUnit *> units;
+	unordered_map<const CalculationUnit *, std::vector<std::string> > unit_names;
+	unordered_map<std::string, int> positions;
+	unordered_map<std::string, const CalculationUnit *> units;
 };
 
 Flow::Flow() {
