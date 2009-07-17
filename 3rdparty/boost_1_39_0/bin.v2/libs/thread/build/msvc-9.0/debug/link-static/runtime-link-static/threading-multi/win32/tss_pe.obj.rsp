@@ -1,0 +1,4 @@
+"libs\thread\src\win32\tss_pe.cpp" -Fo"bin.v2\libs\thread\build\msvc-9.0\debug\link-static\runtime-link-static\threading-multi\win32\tss_pe.obj"   -TP /Z7 /Od /Ob0 /W3 /GR /MTd /Zc:forScope /Zc:wchar_t /wd4675 /EHs -c 
+-DBOOST_ALL_NO_LIB=1 
+-DBOOST_THREAD_BUILD_LIB=1 
+"-I."
