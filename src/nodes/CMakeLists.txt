@@ -8,6 +8,10 @@ ${CPP_FILES}
 ${moc_qs_SRCS}
 )
 
+IF (MINGW)
+	SET_TARGET_PROPERTIES(nodes PROPERTIES PREFIX "")
+ENDIF()
+
 if (Boost_FOUND)
 	message(STATUS "using these boost libs: " ${Boost_LIBRARIES})
 	target_link_libraries(nodes ${QT_LIBRARIES} ${Boost_LIBRARIES} cd3core)
