@@ -45,11 +45,11 @@ do
 		for j in $(seq $RUNS); do
 			export OMP_NUM_THREADS=$i
 			echo -n "$i 	" >> $TIME_OUT
-			$APP models/paper/$MODEL-$sim.xml 2>> $TIME_OUT
+			$APP models/paper/$MODEL-$sim.xml | awk '/simulation took/ {print $9}' >> $TIME_OUT
 		done
 	done
 
 	./bench/bench.py $TIME_OUT > $AVG_FILE
 done
 
-./bench/plotthree.sh time/$MODEL-*-$$-time-avg.txt | gnuplot > imgs/$MODEL-$$.png
+#./bench/plotthree.sh time/$MODEL-*-$$-time-avg.txt | gnuplot > imgs/$MODEL-$$.png
