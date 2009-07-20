@@ -1,7 +1,10 @@
 #ifndef FLOW_H
 #define FLOW_H
 
+#ifdef USE_NON_SHARED_FLOW
+#else
 #define SHARED_FLOW
+#endif
 
 #ifdef SHARED_FLOW
 #include <boost/shared_ptr.hpp>
