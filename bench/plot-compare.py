@@ -50,7 +50,7 @@ for i in range(len(types)):
 	
 xlabel('number of threads')#, va='bottom')
 ylabel('runtime (ms)')#, ha='left')
-l=legend(lines, datas.keys(), 'best')
+l=legend(lines, types, 'best')
 l.draw_frame(False)
 savefig('imgs/%s-%s.%s' % (model, pid, format), format=format, dpi=400)#, bbox_inches="tight")
 #show()
