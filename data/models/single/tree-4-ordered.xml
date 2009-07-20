@@ -1,0 +1,864 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE citydrain SYSTEM "file:../dtd/model.dtd">
+
+<citydrain version="1.0">
+
+	<pluginpath path="nodes" />
+	<simulation class="OrderedPipeSimulation">
+		<time start="0" stop="7200" dt="300" />
+	</simulation>
+	<model>
+		<nodelist>
+
+			<node id="Mixer-0" class="Mixer">
+				<parameter name="num_inputs" type="int" value="2" />
+			</node>
+
+
+			<node id="Sewer-0" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="Sewer-1" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="Mixer-1" class="Mixer">
+				<parameter name="num_inputs" type="int" value="2" />
+			</node>
+
+
+			<node id="Sewer-2" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="Sewer-3" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="Mixer-2" class="Mixer">
+				<parameter name="num_inputs" type="int" value="2" />
+			</node>
+
+
+			<node id="Sewer-4" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="Sewer-5" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="Mixer-3" class="Mixer">
+				<parameter name="num_inputs" type="int" value="2" />
+			</node>
+
+
+			<node id="Sewer-6" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="Sewer-7" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="ConstSource-0" class="ConstSource">
+				<parameter name="const_flow" kind="complex" type="Flow">
+					<flow>
+						<unit name="Q" kind="Flow" value="100.000000" />
+						<unit name="C2" kind="Concentration" value="3.000000" />
+						<unit name="C1" kind="Concentration" value="5.000000" />
+						<unit name="C0" kind="Concentration" value="1.000000" />
+					</flow>
+				</parameter>
+			</node>
+
+
+			<node id="ConstSource-1" class="ConstSource">
+				<parameter name="const_flow" kind="complex" type="Flow">
+					<flow>
+						<unit name="Q" kind="Flow" value="100.000000" />
+						<unit name="C2" kind="Concentration" value="3.000000" />
+						<unit name="C1" kind="Concentration" value="5.000000" />
+						<unit name="C0" kind="Concentration" value="1.000000" />
+					</flow>
+				</parameter>
+			</node>
+
+
+			<node id="Mixer-4" class="Mixer">
+				<parameter name="num_inputs" type="int" value="2" />
+			</node>
+
+
+			<node id="Sewer-8" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="Sewer-9" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="ConstSource-2" class="ConstSource">
+				<parameter name="const_flow" kind="complex" type="Flow">
+					<flow>
+						<unit name="Q" kind="Flow" value="100.000000" />
+						<unit name="C2" kind="Concentration" value="3.000000" />
+						<unit name="C1" kind="Concentration" value="5.000000" />
+						<unit name="C0" kind="Concentration" value="1.000000" />
+					</flow>
+				</parameter>
+			</node>
+
+
+			<node id="ConstSource-3" class="ConstSource">
+				<parameter name="const_flow" kind="complex" type="Flow">
+					<flow>
+						<unit name="Q" kind="Flow" value="100.000000" />
+						<unit name="C2" kind="Concentration" value="3.000000" />
+						<unit name="C1" kind="Concentration" value="5.000000" />
+						<unit name="C0" kind="Concentration" value="1.000000" />
+					</flow>
+				</parameter>
+			</node>
+
+
+			<node id="Mixer-5" class="Mixer">
+				<parameter name="num_inputs" type="int" value="2" />
+			</node>
+
+
+			<node id="Sewer-10" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="Sewer-11" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="Mixer-6" class="Mixer">
+				<parameter name="num_inputs" type="int" value="2" />
+			</node>
+
+
+			<node id="Sewer-12" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="Sewer-13" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="ConstSource-4" class="ConstSource">
+				<parameter name="const_flow" kind="complex" type="Flow">
+					<flow>
+						<unit name="Q" kind="Flow" value="100.000000" />
+						<unit name="C2" kind="Concentration" value="3.000000" />
+						<unit name="C1" kind="Concentration" value="5.000000" />
+						<unit name="C0" kind="Concentration" value="1.000000" />
+					</flow>
+				</parameter>
+			</node>
+
+
+			<node id="ConstSource-5" class="ConstSource">
+				<parameter name="const_flow" kind="complex" type="Flow">
+					<flow>
+						<unit name="Q" kind="Flow" value="100.000000" />
+						<unit name="C2" kind="Concentration" value="3.000000" />
+						<unit name="C1" kind="Concentration" value="5.000000" />
+						<unit name="C0" kind="Concentration" value="1.000000" />
+					</flow>
+				</parameter>
+			</node>
+
+
+			<node id="Mixer-7" class="Mixer">
+				<parameter name="num_inputs" type="int" value="2" />
+			</node>
+
+
+			<node id="Sewer-14" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="Sewer-15" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="ConstSource-6" class="ConstSource">
+				<parameter name="const_flow" kind="complex" type="Flow">
+					<flow>
+						<unit name="Q" kind="Flow" value="100.000000" />
+						<unit name="C2" kind="Concentration" value="3.000000" />
+						<unit name="C1" kind="Concentration" value="5.000000" />
+						<unit name="C0" kind="Concentration" value="1.000000" />
+					</flow>
+				</parameter>
+			</node>
+
+
+			<node id="ConstSource-7" class="ConstSource">
+				<parameter name="const_flow" kind="complex" type="Flow">
+					<flow>
+						<unit name="Q" kind="Flow" value="100.000000" />
+						<unit name="C2" kind="Concentration" value="3.000000" />
+						<unit name="C1" kind="Concentration" value="5.000000" />
+						<unit name="C0" kind="Concentration" value="1.000000" />
+					</flow>
+				</parameter>
+			</node>
+
+
+			<node id="Mixer-8" class="Mixer">
+				<parameter name="num_inputs" type="int" value="2" />
+			</node>
+
+
+			<node id="Sewer-16" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="Sewer-17" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="Mixer-9" class="Mixer">
+				<parameter name="num_inputs" type="int" value="2" />
+			</node>
+
+
+			<node id="Sewer-18" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="Sewer-19" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="Mixer-10" class="Mixer">
+				<parameter name="num_inputs" type="int" value="2" />
+			</node>
+
+
+			<node id="Sewer-20" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="Sewer-21" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="ConstSource-8" class="ConstSource">
+				<parameter name="const_flow" kind="complex" type="Flow">
+					<flow>
+						<unit name="Q" kind="Flow" value="100.000000" />
+						<unit name="C2" kind="Concentration" value="3.000000" />
+						<unit name="C1" kind="Concentration" value="5.000000" />
+						<unit name="C0" kind="Concentration" value="1.000000" />
+					</flow>
+				</parameter>
+			</node>
+
+
+			<node id="ConstSource-9" class="ConstSource">
+				<parameter name="const_flow" kind="complex" type="Flow">
+					<flow>
+						<unit name="Q" kind="Flow" value="100.000000" />
+						<unit name="C2" kind="Concentration" value="3.000000" />
+						<unit name="C1" kind="Concentration" value="5.000000" />
+						<unit name="C0" kind="Concentration" value="1.000000" />
+					</flow>
+				</parameter>
+			</node>
+
+
+			<node id="Mixer-11" class="Mixer">
+				<parameter name="num_inputs" type="int" value="2" />
+			</node>
+
+
+			<node id="Sewer-22" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="Sewer-23" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="ConstSource-10" class="ConstSource">
+				<parameter name="const_flow" kind="complex" type="Flow">
+					<flow>
+						<unit name="Q" kind="Flow" value="100.000000" />
+						<unit name="C2" kind="Concentration" value="3.000000" />
+						<unit name="C1" kind="Concentration" value="5.000000" />
+						<unit name="C0" kind="Concentration" value="1.000000" />
+					</flow>
+				</parameter>
+			</node>
+
+
+			<node id="ConstSource-11" class="ConstSource">
+				<parameter name="const_flow" kind="complex" type="Flow">
+					<flow>
+						<unit name="Q" kind="Flow" value="100.000000" />
+						<unit name="C2" kind="Concentration" value="3.000000" />
+						<unit name="C1" kind="Concentration" value="5.000000" />
+						<unit name="C0" kind="Concentration" value="1.000000" />
+					</flow>
+				</parameter>
+			</node>
+
+
+			<node id="Mixer-12" class="Mixer">
+				<parameter name="num_inputs" type="int" value="2" />
+			</node>
+
+
+			<node id="Sewer-24" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="Sewer-25" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="Mixer-13" class="Mixer">
+				<parameter name="num_inputs" type="int" value="2" />
+			</node>
+
+
+			<node id="Sewer-26" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="Sewer-27" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="ConstSource-12" class="ConstSource">
+				<parameter name="const_flow" kind="complex" type="Flow">
+					<flow>
+						<unit name="Q" kind="Flow" value="100.000000" />
+						<unit name="C2" kind="Concentration" value="3.000000" />
+						<unit name="C1" kind="Concentration" value="5.000000" />
+						<unit name="C0" kind="Concentration" value="1.000000" />
+					</flow>
+				</parameter>
+			</node>
+
+
+			<node id="ConstSource-13" class="ConstSource">
+				<parameter name="const_flow" kind="complex" type="Flow">
+					<flow>
+						<unit name="Q" kind="Flow" value="100.000000" />
+						<unit name="C2" kind="Concentration" value="3.000000" />
+						<unit name="C1" kind="Concentration" value="5.000000" />
+						<unit name="C0" kind="Concentration" value="1.000000" />
+					</flow>
+				</parameter>
+			</node>
+
+
+			<node id="Mixer-14" class="Mixer">
+				<parameter name="num_inputs" type="int" value="2" />
+			</node>
+
+
+			<node id="Sewer-28" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="Sewer-29" class="Sewer">
+				<parameter name="N" type="int" value="11" />
+				<parameter name="K" type="int" value="300" />
+				<parameter name="X" type="double" value="0.1" />
+			</node>
+
+
+			<node id="ConstSource-14" class="ConstSource">
+				<parameter name="const_flow" kind="complex" type="Flow">
+					<flow>
+						<unit name="Q" kind="Flow" value="100.000000" />
+						<unit name="C2" kind="Concentration" value="3.000000" />
+						<unit name="C1" kind="Concentration" value="5.000000" />
+						<unit name="C0" kind="Concentration" value="1.000000" />
+					</flow>
+				</parameter>
+			</node>
+
+
+			<node id="ConstSource-15" class="ConstSource">
+				<parameter name="const_flow" kind="complex" type="Flow">
+					<flow>
+						<unit name="Q" kind="Flow" value="100.000000" />
+						<unit name="C2" kind="Concentration" value="3.000000" />
+						<unit name="C1" kind="Concentration" value="5.000000" />
+						<unit name="C0" kind="Concentration" value="1.000000" />
+					</flow>
+				</parameter>
+			</node>
+
+
+			<node id="FileOut-0" class="FileOut">
+				<parameter name="out_file_name" type="string" value="tmp/tree-out.txt" />
+			</node>
+
+		</nodelist>
+		<connectionlist>
+
+			<connection id="con-Mixer-0-FileOut-0">
+				<source node="Mixer-0" port="out" />
+				<sink node="FileOut-0" port="in" />
+			</connection>
+
+
+			<connection id="con-Sewer-0-Mixer-0">
+				<source node="Sewer-0" port="out" />
+				<sink node="Mixer-0" port="inputs[0]" />
+			</connection>
+
+
+			<connection id="con-Sewer-1-Mixer-0">
+				<source node="Sewer-1" port="out" />
+				<sink node="Mixer-0" port="inputs[1]" />
+			</connection>
+
+
+			<connection id="con-Mixer-1-Sewer-0">
+				<source node="Mixer-1" port="out" />
+				<sink node="Sewer-0" port="in" />
+			</connection>
+
+
+			<connection id="con-Sewer-2-Mixer-1">
+				<source node="Sewer-2" port="out" />
+				<sink node="Mixer-1" port="inputs[0]" />
+			</connection>
+
+
+			<connection id="con-Sewer-3-Mixer-1">
+				<source node="Sewer-3" port="out" />
+				<sink node="Mixer-1" port="inputs[1]" />
+			</connection>
+
+
+			<connection id="con-Mixer-2-Sewer-2">
+				<source node="Mixer-2" port="out" />
+				<sink node="Sewer-2" port="in" />
+			</connection>
+
+
+			<connection id="con-Sewer-4-Mixer-2">
+				<source node="Sewer-4" port="out" />
+				<sink node="Mixer-2" port="inputs[0]" />
+			</connection>
+
+
+			<connection id="con-Sewer-5-Mixer-2">
+				<source node="Sewer-5" port="out" />
+				<sink node="Mixer-2" port="inputs[1]" />
+			</connection>
+
+
+			<connection id="con-Mixer-3-Sewer-4">
+				<source node="Mixer-3" port="out" />
+				<sink node="Sewer-4" port="in" />
+			</connection>
+
+
+			<connection id="con-Sewer-6-Mixer-3">
+				<source node="Sewer-6" port="out" />
+				<sink node="Mixer-3" port="inputs[0]" />
+			</connection>
+
+
+			<connection id="con-Sewer-7-Mixer-3">
+				<source node="Sewer-7" port="out" />
+				<sink node="Mixer-3" port="inputs[1]" />
+			</connection>
+
+
+			<connection id="con-ConstSource-0-Sewer-6">
+				<source node="ConstSource-0" port="out" />
+				<sink node="Sewer-6" port="in" />
+			</connection>
+
+
+			<connection id="con-ConstSource-1-Sewer-7">
+				<source node="ConstSource-1" port="out" />
+				<sink node="Sewer-7" port="in" />
+			</connection>
+
+
+			<connection id="con-Mixer-4-Sewer-5">
+				<source node="Mixer-4" port="out" />
+				<sink node="Sewer-5" port="in" />
+			</connection>
+
+
+			<connection id="con-Sewer-8-Mixer-4">
+				<source node="Sewer-8" port="out" />
+				<sink node="Mixer-4" port="inputs[0]" />
+			</connection>
+
+
+			<connection id="con-Sewer-9-Mixer-4">
+				<source node="Sewer-9" port="out" />
+				<sink node="Mixer-4" port="inputs[1]" />
+			</connection>
+
+
+			<connection id="con-ConstSource-2-Sewer-8">
+				<source node="ConstSource-2" port="out" />
+				<sink node="Sewer-8" port="in" />
+			</connection>
+
+
+			<connection id="con-ConstSource-3-Sewer-9">
+				<source node="ConstSource-3" port="out" />
+				<sink node="Sewer-9" port="in" />
+			</connection>
+
+
+			<connection id="con-Mixer-5-Sewer-3">
+				<source node="Mixer-5" port="out" />
+				<sink node="Sewer-3" port="in" />
+			</connection>
+
+
+			<connection id="con-Sewer-10-Mixer-5">
+				<source node="Sewer-10" port="out" />
+				<sink node="Mixer-5" port="inputs[0]" />
+			</connection>
+
+
+			<connection id="con-Sewer-11-Mixer-5">
+				<source node="Sewer-11" port="out" />
+				<sink node="Mixer-5" port="inputs[1]" />
+			</connection>
+
+
+			<connection id="con-Mixer-6-Sewer-10">
+				<source node="Mixer-6" port="out" />
+				<sink node="Sewer-10" port="in" />
+			</connection>
+
+
+			<connection id="con-Sewer-12-Mixer-6">
+				<source node="Sewer-12" port="out" />
+				<sink node="Mixer-6" port="inputs[0]" />
+			</connection>
+
+
+			<connection id="con-Sewer-13-Mixer-6">
+				<source node="Sewer-13" port="out" />
+				<sink node="Mixer-6" port="inputs[1]" />
+			</connection>
+
+
+			<connection id="con-ConstSource-4-Sewer-12">
+				<source node="ConstSource-4" port="out" />
+				<sink node="Sewer-12" port="in" />
+			</connection>
+
+
+			<connection id="con-ConstSource-5-Sewer-13">
+				<source node="ConstSource-5" port="out" />
+				<sink node="Sewer-13" port="in" />
+			</connection>
+
+
+			<connection id="con-Mixer-7-Sewer-11">
+				<source node="Mixer-7" port="out" />
+				<sink node="Sewer-11" port="in" />
+			</connection>
+
+
+			<connection id="con-Sewer-14-Mixer-7">
+				<source node="Sewer-14" port="out" />
+				<sink node="Mixer-7" port="inputs[0]" />
+			</connection>
+
+
+			<connection id="con-Sewer-15-Mixer-7">
+				<source node="Sewer-15" port="out" />
+				<sink node="Mixer-7" port="inputs[1]" />
+			</connection>
+
+
+			<connection id="con-ConstSource-6-Sewer-14">
+				<source node="ConstSource-6" port="out" />
+				<sink node="Sewer-14" port="in" />
+			</connection>
+
+
+			<connection id="con-ConstSource-7-Sewer-15">
+				<source node="ConstSource-7" port="out" />
+				<sink node="Sewer-15" port="in" />
+			</connection>
+
+
+			<connection id="con-Mixer-8-Sewer-1">
+				<source node="Mixer-8" port="out" />
+				<sink node="Sewer-1" port="in" />
+			</connection>
+
+
+			<connection id="con-Sewer-16-Mixer-8">
+				<source node="Sewer-16" port="out" />
+				<sink node="Mixer-8" port="inputs[0]" />
+			</connection>
+
+
+			<connection id="con-Sewer-17-Mixer-8">
+				<source node="Sewer-17" port="out" />
+				<sink node="Mixer-8" port="inputs[1]" />
+			</connection>
+
+
+			<connection id="con-Mixer-9-Sewer-16">
+				<source node="Mixer-9" port="out" />
+				<sink node="Sewer-16" port="in" />
+			</connection>
+
+
+			<connection id="con-Sewer-18-Mixer-9">
+				<source node="Sewer-18" port="out" />
+				<sink node="Mixer-9" port="inputs[0]" />
+			</connection>
+
+
+			<connection id="con-Sewer-19-Mixer-9">
+				<source node="Sewer-19" port="out" />
+				<sink node="Mixer-9" port="inputs[1]" />
+			</connection>
+
+
+			<connection id="con-Mixer-10-Sewer-18">
+				<source node="Mixer-10" port="out" />
+				<sink node="Sewer-18" port="in" />
+			</connection>
+
+
+			<connection id="con-Sewer-20-Mixer-10">
+				<source node="Sewer-20" port="out" />
+				<sink node="Mixer-10" port="inputs[0]" />
+			</connection>
+
+
+			<connection id="con-Sewer-21-Mixer-10">
+				<source node="Sewer-21" port="out" />
+				<sink node="Mixer-10" port="inputs[1]" />
+			</connection>
+
+
+			<connection id="con-ConstSource-8-Sewer-20">
+				<source node="ConstSource-8" port="out" />
+				<sink node="Sewer-20" port="in" />
+			</connection>
+
+
+			<connection id="con-ConstSource-9-Sewer-21">
+				<source node="ConstSource-9" port="out" />
+				<sink node="Sewer-21" port="in" />
+			</connection>
+
+
+			<connection id="con-Mixer-11-Sewer-19">
+				<source node="Mixer-11" port="out" />
+				<sink node="Sewer-19" port="in" />
+			</connection>
+
+
+			<connection id="con-Sewer-22-Mixer-11">
+				<source node="Sewer-22" port="out" />
+				<sink node="Mixer-11" port="inputs[0]" />
+			</connection>
+
+
+			<connection id="con-Sewer-23-Mixer-11">
+				<source node="Sewer-23" port="out" />
+				<sink node="Mixer-11" port="inputs[1]" />
+			</connection>
+
+
+			<connection id="con-ConstSource-10-Sewer-22">
+				<source node="ConstSource-10" port="out" />
+				<sink node="Sewer-22" port="in" />
+			</connection>
+
+
+			<connection id="con-ConstSource-11-Sewer-23">
+				<source node="ConstSource-11" port="out" />
+				<sink node="Sewer-23" port="in" />
+			</connection>
+
+
+			<connection id="con-Mixer-12-Sewer-17">
+				<source node="Mixer-12" port="out" />
+				<sink node="Sewer-17" port="in" />
+			</connection>
+
+
+			<connection id="con-Sewer-24-Mixer-12">
+				<source node="Sewer-24" port="out" />
+				<sink node="Mixer-12" port="inputs[0]" />
+			</connection>
+
+
+			<connection id="con-Sewer-25-Mixer-12">
+				<source node="Sewer-25" port="out" />
+				<sink node="Mixer-12" port="inputs[1]" />
+			</connection>
+
+
+			<connection id="con-Mixer-13-Sewer-24">
+				<source node="Mixer-13" port="out" />
+				<sink node="Sewer-24" port="in" />
+			</connection>
+
+
+			<connection id="con-Sewer-26-Mixer-13">
+				<source node="Sewer-26" port="out" />
+				<sink node="Mixer-13" port="inputs[0]" />
+			</connection>
+
+
+			<connection id="con-Sewer-27-Mixer-13">
+				<source node="Sewer-27" port="out" />
+				<sink node="Mixer-13" port="inputs[1]" />
+			</connection>
+
+
+			<connection id="con-ConstSource-12-Sewer-26">
+				<source node="ConstSource-12" port="out" />
+				<sink node="Sewer-26" port="in" />
+			</connection>
+
+
+			<connection id="con-ConstSource-13-Sewer-27">
+				<source node="ConstSource-13" port="out" />
+				<sink node="Sewer-27" port="in" />
+			</connection>
+
+
+			<connection id="con-Mixer-14-Sewer-25">
+				<source node="Mixer-14" port="out" />
+				<sink node="Sewer-25" port="in" />
+			</connection>
+
+
+			<connection id="con-Sewer-28-Mixer-14">
+				<source node="Sewer-28" port="out" />
+				<sink node="Mixer-14" port="inputs[0]" />
+			</connection>
+
+
+			<connection id="con-Sewer-29-Mixer-14">
+				<source node="Sewer-29" port="out" />
+				<sink node="Mixer-14" port="inputs[1]" />
+			</connection>
+
+
+			<connection id="con-ConstSource-14-Sewer-28">
+				<source node="ConstSource-14" port="out" />
+				<sink node="Sewer-28" port="in" />
+			</connection>
+
+
+			<connection id="con-ConstSource-15-Sewer-29">
+				<source node="ConstSource-15" port="out" />
+				<sink node="Sewer-29" port="in" />
+			</connection>
+
+		</connectionlist>
+	</model>
+</citydrain>
