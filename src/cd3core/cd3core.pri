@@ -25,9 +25,7 @@ HEADERS += calculationunit.h \
     saxloader.h \
     tqueue.h \
     log.h \
-    logger.h \
-    cyclenodestart.h \
-    cyclenodeend.h
+	logger.h
 SOURCES += calculationunit.cpp \
     flow.cpp \
     nodeconnection.cpp \
@@ -43,7 +41,5 @@ SOURCES += calculationunit.cpp \
     saxloader.cpp \
     controller.cpp \
     log.cpp \
-    logger.cpp \
-    cyclenodestart.cpp \
-    cyclenodeend.cpp
+	logger.cpp
 include(qs/qs.pri)

@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <QFile>
+#include <QTime>
 #include <boost/foreach.hpp>
 #include <boost/program_options.hpp>
 
@@ -28,19 +29,28 @@ private:
 struct ProgressHandler {
 	ProgressHandler(ISimulation *sim) {
 		sp = sim->getSimulationParameters();
-		pfactor = 100.0 / (sp.stop - sp.start);
 		lastp = 0;
+		length = sp.stop - sp.start;
+		count = 0;
+		t = QTime::currentTime();
 	}
 	void operator()(ISimulation *s, int time) {
 		(void) s;
-		int newp = (int) round(pfactor * (time - sp.start));
+		int newp = (time / length) * 100;
+		count ++;
 		if (newp <= lastp)
 			return;
-		Logger(Standard) << "Progress:" << newp << "%";
+		QTime tmp_t(QTime::currentTime());
+		Logger(Standard) << "Progress:" << newp << "%" << count << "dt:" << t.msecsTo(tmp_t);
 		lastp = newp;
+		count = 0;
+		t = tmp_t;
 	}
 	double pfactor;
 	int lastp;
+	int count;
+	float length;
+	QTime t;
 	SimulationParameters sp;
 };
 

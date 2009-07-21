@@ -20,8 +20,8 @@ using namespace boost;
 #include <calculationunit.h>
 #include <controller.h>
 #include <nodeconnection.h>
-#include <cyclenodestart.h>
-#include <cyclenodeend.h>
+#include <../nodes/cyclenodeend.h>
+#include <../nodes/cyclenodestart.h>
 
 struct SaxLoaderPriv {
 	NodeRegistry node_registry;
@@ -259,7 +259,6 @@ void SaxLoader::loadParameter(const QXmlAttributes& atts) {
 			return;
 		}
 
-		//xmlError(element, QString().sprintf("%s simple type unknown", type.c_str()));
 	} else {
 		if (type == "Flow") {
 			pd->param_name = atts.value("name").toStdString();
@@ -274,9 +273,9 @@ void SaxLoader::breakCycle() {
 	Node *sink = pd->model->getNode(sink_id);
 	Node *source = pd->model->getNode(source_id);
 
-	CycleNodeStart *start = new CycleNodeStart();
+	CycleNodeStart *start = (CycleNodeStart*) pd->node_registry.createNode("CycleNodeStart");
 	start->setId(sink_id+source_id+"-cycle_start");
-	CycleNodeEnd *end = new CycleNodeEnd();
+	CycleNodeEnd *end = (CycleNodeEnd*) pd->node_registry.createNode("CycleNodeEnd");
 	end->setId(sink_id+source_id+"-cycle_end");
 	pd->model->addNode(start);
 	pd->model->addNode(end);

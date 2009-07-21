@@ -3,7 +3,6 @@ DEPENDPATH += $$PWD
 QT += xml \
     script
 HEADERS += constsource.h \
-#    flowtypefactory.h \
     fileout.h \
     mixer.h \
     defaultsimulation.h \
@@ -18,10 +17,11 @@ HEADERS += constsource.h \
     pipelinedsimulation.h \
     orderedpipesimulation.h \
     null.h \
-    bufferednodeconnection.h
+	bufferednodeconnection.h \
+	cyclenodeend.h \
+	cyclenodestart.h
 SOURCES += nodes.cpp \
     constsource.cpp \
-#    flowtypefactory.cpp \
     fileout.cpp \
     mixer.cpp \
     defaultsimulation.cpp \
@@ -36,5 +36,7 @@ SOURCES += nodes.cpp \
     pipelinedsimulation.cpp \
     orderedpipesimulation.cpp \
     null.cpp \
-    bufferednodeconnection.cpp
+	bufferednodeconnection.cpp \
+	cyclenodeend.cpp \
+	cyclenodestart.cpp
 include(qs/qs.pri)

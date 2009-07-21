@@ -1,0 +1,5 @@
+"libs\signals\src\slot.cpp" -Fo"bin.v2\libs\signals\build\msvc-9.0\release\link-static\runtime-link-static\slot.obj"   -TP /O2 /Ob2 /W3 /GR /Zc:forScope /Zc:wchar_t /MT /wd4675 /EHs -c 
+-DBOOST_ALL_NO_LIB=1 
+-DBOOST_SIGNALS_NO_LIB=1 
+-DNDEBUG 
+"-I."
