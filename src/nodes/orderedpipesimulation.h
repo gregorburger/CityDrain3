@@ -6,7 +6,7 @@
 #include <simulation.h>
 
 struct OPSPriv;
-class NodeConnection;
+struct NodeConnection;
 
 CD3_DECLARE_SIMULATION(OrderedPipeSimulation)
 public:
