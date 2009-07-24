@@ -55,7 +55,7 @@ void RainRead::init(int start, int stop, int dt) {
 		QDateTime current_date = parseLine().get<0>();
 		priv->file_date = current_date;
 	}
-	Logger(Debug) << "stargin rainreading at: " << priv->file_date.toString();
+	Logger(Debug) << "starting rainreading at: " << priv->file_date.toString();
 	priv->file_date.addSecs(-dt);
 }
 
@@ -66,6 +66,10 @@ void RainRead::deinit() {
 #define TO_D static_cast<double>
 
 int RainRead::f(int time, int dt) {
+	if (priv->rain_file->atEnd()) {
+		out.setValue("rain", 0);
+		return dt;
+	}
 	QDateTime calc_date = priv->base_date.addSecs(time+dt);
 	while (priv->file_date < calc_date) {
 		QDateTime current_date;
