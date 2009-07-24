@@ -49,7 +49,7 @@ extern "C" {
 
 	void CD3_PUBLIC registerSimulations(SimulationRegistry *registry) {
 		registry->addSimulationFactory(new SimulationFactory<DefaultSimulation>());
-		registry->addSimulationFactory(new SimulationFactory<VarDTSimulation>());
+		//registry->addSimulationFactory(new SimulationFactory<VarDTSimulation>());
 		registry->addSimulationFactory(new SimulationFactory<ParallelSimulation>());
 		registry->addSimulationFactory(new SimulationFactory<PipelinedSimulation>());
 		registry->addSimulationFactory(new SimulationFactory<OrderedPipeSimulation>());
