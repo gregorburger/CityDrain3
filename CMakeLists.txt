@@ -37,6 +37,7 @@ INCLUDE(${QT_USE_FILE})
 set(LIBRARY_OUTPUT_PATH ${CD3_BINARY_DIR})
 set(EXECUTABLE_OUTPUT_PATH ${CD3_BINARY_DIR})
 
+INCLUDE(CPack)
 
 add_subdirectory(src/cd3core)
 add_subdirectory(src/nodes)
