@@ -1,10 +1,10 @@
 cmake_minimum_required (VERSION 2.6)
-project(CD3)
+project(cd3)
 
 INCLUDE_DIRECTORIES(src/cd3core src/cd3core/qs)
 find_package(Qt4 REQUIRED)
 
-if (NOT BOOST_ROOT AND MINGW)
+if (NOT BOOST_ROOT AND WIN32)
 	set(BOOST_ROOT 3rdparty/boost_1_39_0 CACHE PATH "")
 	message(STATUS "using default boost in " ${BOOST_ROOT})
 endif()
@@ -15,11 +15,13 @@ if (Boost_FOUND)
 	set(Boost_USE_STATIC_LIBS ON)
 	set(Boost_USE_MULTITHREADED ON)
 	include_directories(${Boost_INCLUDE_DIRS})
+	link_directories(${Boost_LIBRARY_DIRS})
 endif()
 
-find_package(OpenMP REQUIRED)
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+if (UNIX)
+	find_package(OpenMP REQUIRED)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+endif()
 
 if (CMAKE_BUILD_TYPE STREQUAL Debug) 
 	message(STATUS Debug)
