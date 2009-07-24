@@ -7,7 +7,7 @@
 class IModel;
 class Controller;
 class Node;
-class NodeConnection;
+struct NodeConnection;
 
 struct CD3_PUBLIC SimulationParameters {
 	SimulationParameters()
