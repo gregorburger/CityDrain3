@@ -1,7 +1,18 @@
 #ifndef NODE_H
 #define NODE_H
+
+#define USE_HASH
+
 #include <string>
+#ifdef USE_HASH
 #include <boost/unordered/unordered_map.hpp>
+#else
+#ifndef unordered_map
+#include <map>
+using namespace std;
+#define unordered_map map
+#endif
+#endif
 #include <cd3typeinfo.h>
 #include <cd3assert.h>
 #include <boost/format.hpp>

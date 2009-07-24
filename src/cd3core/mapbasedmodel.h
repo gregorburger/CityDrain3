@@ -3,12 +3,10 @@
 
 #include "model.h"
 
-#include <boost/unordered/unordered_map.hpp>
 #include <set>
 #include <cd3globals.h>
 
 typedef unordered_map<Node *, vector<NodeConnection *> > connection_type;
-
 
 class CD3_PUBLIC MapBasedModel : public IModel
 {

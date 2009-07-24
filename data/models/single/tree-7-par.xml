@@ -4,7 +4,7 @@
 <citydrain version="1.0">
 
 	<pluginpath path="nodes" />
-	<simulation class="OrderedPipeSimulation">
+	<simulation class="ParallelSimulation">
 		<time start="0" stop="7200" dt="300" />
 	</simulation>
 	<model>
