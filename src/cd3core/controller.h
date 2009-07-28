@@ -9,7 +9,7 @@ using namespace std;
 
 class IModel;
 class ISimulation;
-class ControllerPrivate;
+struct ControllerPrivate;
 
 class Controller : public QObject
 {
