@@ -102,7 +102,7 @@ Flow FlowFuns::catchement_lossmodel(Flow in,
 		x=std::max(x - perma_loss, 0.0);
 	}
 	basin->setIth(CU::rain, 0, x);
-	out.setIth(CU::rain, 0, std::max( u - ( init_loss - x ) * rf_coeff, 0.0 ) );
+	out.setIth(CU::rain, 0, std::max((u - ( init_loss - x )) * rf_coeff, 0.0));
 	return out;
 }
 
