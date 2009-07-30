@@ -11,4 +11,4 @@ $1!=1	{ if (min == 0)
 	  if ($2 < min)
 	  	min = $2
 	  }
-END {print base / min }
+END {print ARGV[1] " "  base / min }
