@@ -15,7 +15,8 @@ format="png"
 #	format=sys.argv[3]
 
 rc('font', size=8)
-rc('figure.subplot', left=0.13, right=0.97, top=0.99, bottom=0.18)
+#rc('figure.subplot', left=0.13, right=0.97, top=0.97, bottom=0.18)
+rc('figure.subplot', left=0.15, right=0.97, top=0.97, bottom=0.15)
 
 model = sys.argv[1]
 pid = sys.argv[2]
@@ -45,5 +46,5 @@ ylabel('runtime (ms)')#, ha='left')
 l=legend(lines, lines_names, 'best')
 l.draw_frame(False)
 savefig('imgs/%s.%s' % (model, format), format=format, dpi=400)#, bbox_inches="tight")
-#show()
+show()
 
