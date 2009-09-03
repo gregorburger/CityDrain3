@@ -3,7 +3,7 @@
 
 <citydrain version="1.0">
 
-	<pluginpath path="./libnodes.so" />
+	<pluginpath path="nodes" />
 	<simulation class="ParallelSimulation">
 		<time start="0" stop="7200" dt="300" />
 	</simulation>
