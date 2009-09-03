@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APP=./cd3
+APP=./build/cd3
 THREADS=10
 RUNS=4
 
@@ -51,5 +51,4 @@ do
 
 	./bench/bench.py $TIME_OUT > $AVG_FILE
 done
-
-#./bench/plotthree.sh time/$MODEL-*-$$-time-avg.txt | gnuplot > imgs/$MODEL-$$.png
+python ./bench/plot.py $MODEL $$
