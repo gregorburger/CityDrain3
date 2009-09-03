@@ -7,7 +7,7 @@ tests="ibk long-10 long-100 long-1000 par-2-10 par-2-100 par-4-10 par-4-100 par-
 
 for t in $tests
 do
-	./bench/timejob.sh $t 4 3
+	./bench/timejob.sh $t
 #	./bench/plotthree.sh time/$t-*-avg.txt | gnuplot > imgs/$t.eps
 #	python ./bench/plot.py $t
 done 
