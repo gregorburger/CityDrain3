@@ -23,10 +23,9 @@ struct FlowDefinition {
 
 Flow::Flow() {
 #ifdef SHARED_FLOW
-	f = boost::shared_ptr<FlowPriv>(new FlowPriv());
-	fd = boost::shared_ptr<FlowDefinition>(new FlowDefinition());
+	f = shared_ptr<FlowPriv>(new FlowPriv());
+	fd = shared_ptr<FlowDefinition>(new FlowDefinition());
 #else
-	//std::cout << "cons " << this << std::endl;
 	f = new FlowPriv();
 	fd = new FlowDefinition();
 #endif
@@ -37,12 +36,8 @@ Flow::Flow(const Flow &other) {
 	f = other.f;
 	fd = other.fd;
 #else
-	//std::cout << "copy " << this << std::endl;
 	f = new FlowPriv(*other.f);
 	fd = new FlowDefinition(*other.fd);
-
-	/**f = *other.f;
-	*fd = *other.fd;*/
 #endif
 }
 
@@ -64,34 +59,28 @@ Flow &Flow::operator =(const Flow &other) {
 	f = other.f;
 	fd = other.fd;
 #else
-	//std::cout << "assign " << this << std::endl;
 	delete f;
 	delete fd;
 	f = new FlowPriv(*other.f);
 	fd = new FlowDefinition(*other.fd);
-/*	*f = *other.f;
-	*fd = *other.fd;*/
 #endif
 	return *this;
 }
-
-/*void Flow::copy() {
-	copyData();
-	copyDefinition();
-}*/
 
 #ifdef SHARED_FLOW
 void Flow::copyData() {
 	if (!f.unique()) {
 		FlowPriv *old = f.get();
-		f = boost::shared_ptr<FlowPriv>(new FlowPriv(*old));
+		f = shared_ptr<FlowPriv>
+			(new FlowPriv(*old));
 	}
 }
 
 void Flow::copyDefinition() {
 	if (!fd.unique()) {
 		FlowDefinition *old = fd.get();
-		fd = boost::shared_ptr<FlowDefinition>(new FlowDefinition(*old));
+		fd = shared_ptr<FlowDefinition>
+			 (new FlowDefinition(*old));
 	}
 }
 #endif
