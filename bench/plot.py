@@ -45,6 +45,6 @@ xlabel('number of threads')#, va='bottom')
 ylabel('runtime (ms)')#, ha='left')
 l=legend(lines, lines_names, 'best')
 l.draw_frame(False)
-savefig('imgs/%s.%s' % (model, format), format=format, dpi=400)#, bbox_inches="tight")
-show()
+savefig('imgs/%s-%s.%s' % (model, pid, format), format=format, dpi=400)#, bbox_inches="tight")
+#show()
 
