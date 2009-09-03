@@ -1,11 +1,13 @@
 #!/bin/bash
 
-tests="tree-2 ibk par-8-10 long-1000 long-10 par-2-10 par-8-100 tree-10"
+#tests="tree-2 ibk par-8-10 long-1000 long-10 par-2-10 par-8-100 tree-10"
+tests="ibk long-10 long-100 long-1000 par-2-10 par-2-100 par-4-10 par-4-100 par-8-10 par-8-100 tree-2 tree-4 tree-8"
 #tests="long-1000"
+#tests="tree-2"
 
 for t in $tests
 do
-	nice ./bench/timejob.sh $t
+	./bench/timejob.sh $t 4 3
 #	./bench/plotthree.sh time/$t-*-avg.txt | gnuplot > imgs/$t.eps
-	python ./bench/plot.py $t
+#	python ./bench/plot.py $t
 done 

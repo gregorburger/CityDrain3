@@ -1,51 +1,48 @@
+#!/usr/bin/env python
 from pylab import *
 import glob
 import sys
 
 inch=2.54
 
-if len(sys.argv) < 2:
-	print "usage: plot.py model"
+if len(sys.argv) < 3:
+	print "usage: plot.py model pid"
 	exit(-1)
 
 format="png"
 	
-if len(sys.argv) > 2:
-	format=sys.argv[2]
+#if len(sys.argv) > 3:
+#	format=sys.argv[3]
 
 rc('font', size=8)
-rc('figure.subplot', left=0.185, right=0.985, top=0.97, bottom=0.15)
+rc('figure.subplot', left=0.13, right=0.97, top=0.99, bottom=0.18)
 
 model = sys.argv[1]
-datas={}
+pid = sys.argv[2]
 
 sim=['ordered', 'par', 'pipe']
-
-#g = glob.glob('time/%s-*-avg.txt' % model)
-#g.sort()
-
-for s in sim:
-	strat = glob.glob('time/%s-%s-*-avg.txt' % (model, s))[0]
-	datas[s] = csv2rec(strat, delimiter="\t", names=['nthreads', 'runtime'])
-	
-x=[]
-for s in sim:
-	x.append(datas[s].runtime)
+appr_legend={'ordered':'OPS', 'par':'FPS', 'pipe':'PPS'}
 
 f=figure(figsize=(8/inch, 5.1/inch))
-	
-lines=plot(transpose(x))
 ls = ['-', '--', ':']
+lsi = 0
 ymax=0
-for i in range(3):
-	lines[i].set_linestyle(ls[i])
-	ymax=max(ymax, lines[i].get_ydata()[0])
-	
-ylim(ymax=ymax*1.2, ymin=0)
+lines=[]
+lines_names=[]
+for s in sim:
+	strat = 'time/%s-%s-%s-time-avg.txt' % (model, s, pid)
+	csv = csv2rec(strat, delimiter="\t", names=['nthreads', 'runtime'])
+	line=plot(csv.nthreads, csv.runtime)
+	line[0].set_linestyle(ls[lsi])
+	lines.append(line)
+	lines_names.append(appr_legend[s])
+	lsi+=1	
+	ymax=max(ymax, line[0].get_ydata()[0])
+
+#ylim(ymax=ymax*1.2, ymin=0)
 xlabel('number of threads')#, va='bottom')
 ylabel('runtime (ms)')#, ha='left')
-l=legend(lines, ['ordered', 'parallel', 'pipelined'], 'best')
-#l=legend(lines, datas.keys(), 'best')
+l=legend(lines, lines_names, 'best')
 l.draw_frame(False)
 savefig('imgs/%s.%s' % (model, format), format=format, dpi=400)#, bbox_inches="tight")
 #show()
