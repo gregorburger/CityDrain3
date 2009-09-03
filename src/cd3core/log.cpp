@@ -40,7 +40,7 @@ Log::Log() {
 
 Log::~Log() {
 	if (instance) {
-		cerr << "Log not deinitialized" << endl;
+		//cerr << "Log not deinitialized" << endl;
 	}
 }
 
