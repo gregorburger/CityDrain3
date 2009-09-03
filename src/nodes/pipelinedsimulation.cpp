@@ -68,7 +68,7 @@ void PipelinedSimulation::start(int time) {
 	pool->waitForDone();
 	QTime ts_after = QTime::currentTime();
 	int duration = ts_before.msecsTo(ts_after);
-	std::cerr << duration << std::endl;
+	Logger(Standard) << "simulation took:" << duration << "ms";
 }
 
 int PipelinedSimulation::run(int time, int dt) {
