@@ -49,6 +49,6 @@ do
 		done
 	done
 
-	./bench/bench.py $TIME_OUT > $AVG_FILE
+	./bench/mins.py $TIME_OUT > $AVG_FILE
 done
 python ./bench/plot.py $MODEL $$
