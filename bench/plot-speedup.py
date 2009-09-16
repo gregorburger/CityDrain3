@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+import matplotlib as mpl
+mpl.use('cairo')
 from pylab import *
 import glob
 import sys
@@ -50,8 +52,8 @@ for s in sim:
 #xlim(0, nthreads)
 plot(range(nthreads), range(nthreads))
 xlabel('number of threads')#, va='bottom')
-ylabel('runtime (ms)')#, ha='left')
+ylabel('speedup')#, ha='left')
 l=legend(lines, lines_names, 'best')
 l.draw_frame(False)
-#savefig('imgs/%s-%s.%s' % (model, pid, format), format=format, dpi=400)#, bbox_inches="tight")
-show()
+savefig('imgs/%s-%s-speedup.%s' % (model, pid, format), format=format, dpi=400)#, bbox_inches="tight")
+#show()

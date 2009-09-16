@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+import matplotlib as mpl
+mpl.use('cairo')
+
 from pylab import *
 import glob
 import sys
