@@ -45,7 +45,7 @@ do
 		for j in $(seq $RUNS); do
 			export OMP_NUM_THREADS=$i
 			echo -n "$i 	" >> $TIME_OUT
-			$APP data/models/paper/$MODEL-$sim.xml | awk '/simulation took/ {print $9}' >> $TIME_OUT
+			$APP -v 1 data/models/paper/$MODEL-$sim.xml | awk '/simulation took/ {print $9}' >> $TIME_OUT
 		done
 	done
 
