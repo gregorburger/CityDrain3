@@ -31,14 +31,12 @@ ymax=0
 lines=[]
 lines_names=[]
 
-linear_ploted = False
+nthreads = 0
 
 for s in sim:
 	strat = 'time/%s-%s-%s-time-avg.txt' % (model, s, pid)
 	csv = csv2rec(strat, delimiter="\t", names=['nthreads', 'speedup'])
-	if (not linear_ploted):
-		r = range(len(csv.nthreads))
-		plot(r, r)
+	nthreads = len(csv.nthreads)
 	csv.speedup = map(lambda r: csv.speedup[0] / r, csv.speedup)
 	line=plot(csv.nthreads, csv.speedup)
 	line[0].set_linestyle(ls[lsi])
@@ -47,7 +45,10 @@ for s in sim:
 	lsi+=1	
 	ymax=max(ymax, line[0].get_ydata()[0])
 
-ylim(ymax=ymax*1.2, ymin=0)
+#ylim(ymax=ymax*1.2, ymin=0)
+#ylim(0, nthreads)
+#xlim(0, nthreads)
+plot(range(nthreads), range(nthreads))
 xlabel('number of threads')#, va='bottom')
 ylabel('runtime (ms)')#, ha='left')
 l=legend(lines, lines_names, 'best')
