@@ -52,3 +52,4 @@ do
 	./bench/mins.py $TIME_OUT > $AVG_FILE
 done
 python ./bench/plot.py $MODEL $$
+python ./bench/plot-speedup.py $MODEL $$
