@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import matplotlib as mpl
 mpl.use('cairo')
+
 from pylab import *
 import glob
 import sys
@@ -11,7 +12,7 @@ if len(sys.argv) < 3:
 	print "usage: plot.py model pid"
 	exit(-1)
 
-format="png"
+format="pdf"
 	
 #if len(sys.argv) > 3:
 #	format=sys.argv[3]
