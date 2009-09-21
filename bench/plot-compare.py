@@ -20,7 +20,7 @@ if len(sys.argv) > 3:
 	format=sys.argv[3]
 
 rc('font', size=8)
-rc('figure.subplot', left=0.185, right=0.985, top=0.97, bottom=0.15)
+rc('figure.subplot', left=0.17, right=0.95, top=0.92, bottom=0.20)
 
 model = sys.argv[1]
 pid = sys.argv[2]
@@ -51,6 +51,6 @@ xlabel('number of threads')#, va='bottom')
 ylabel('runtime (ms)')#, ha='left')
 l=legend(lines, types, 'best')
 l.draw_frame(False)
-savefig('imgs/%s-%s.%s' % (model, pid, format), format=format, dpi=400)#, bbox_inches="tight")
+savefig('imgs/%s-%s-comp.%s' % (model, pid, format), format=format, dpi=400)#, bbox_inches="tight")
 #show()
 
