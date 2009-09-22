@@ -51,10 +51,11 @@ for TYPE in $TYPES; do
 			export OMP_NUM_THREADS=$i
 			echo -n "$i	" >> $TIME_OUT
 #			export LD_LIBRARY_PATH=./build-$TYPE
-			$TYPE_APP $PWD/data/models/single/$MODEL.xml | awk '/simulation took/ {print $9}' >> $TIME_OUT
+			nice -n -20 $TYPE_APP $PWD/data/models/single/$MODEL.xml | awk '/simulation took/ {print $9}' >> $TIME_OUT
 		done
 	done
 
 	./bench/bench.py $TIME_OUT > $AVG_FILE
 done
 python ./bench/plot-compare.py $MODEL $$
+python ./bench/plot-compare-speedup.py $MODEL $$
