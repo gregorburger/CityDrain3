@@ -33,7 +33,8 @@
 
 
 			<node id="FileOut-0" class="FileOut">
-				<parameter name="out_file_name" type="string" value="tmp/genout.txt" />
+				<parameter name="out_file_name" type="string" 
+					value="tmp/genout.txt" />
 			</node>
 
 
