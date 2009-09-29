@@ -43,3 +43,4 @@ SOURCES += calculationunit.cpp \
     log.cpp \
 	logger.cpp
 include(qs/qs.pri)
+include(python/python.pri)
