@@ -47,6 +47,6 @@ xlabel('number of threads')#, va='bottom')
 ylabel('speedup')#, ha='left')
 l=legend(lines, ["shared", "nonshared"], 'best')
 l.draw_frame(False)
-savefig('imgs/%s-%s-comp-speedup.%s' % (model, pid, format), format=format, dpi=400)#, bbox_inches="tight")
+savefig('imgs/%s-+%s-comp-speedup.%s' % (model, pid, format), format=format, dpi=400)#, bbox_inches="tight")
 #show()
 
