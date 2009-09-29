@@ -19,7 +19,7 @@ format="pdf"
 
 rc('font', size=8)
 #rc('figure.subplot', left=0.13, right=0.97, top=0.97, bottom=0.18)
-rc('figure.subplot', left=0.15, right=0.97, top=0.97, bottom=0.15)
+rc('figure.subplot', left=0.13, right=0.95, top=0.92, bottom=0.19)
 
 model = sys.argv[1]
 pid = sys.argv[2]
