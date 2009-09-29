@@ -5,3 +5,7 @@ if (Boost_FOUND)
 else()
 	target_link_libraries(cd3 ${QT_LIBRARIES} boost_signals boost_thread-mt boost_program_options)
 endif()
+
+INSTALL(TARGETS cd3
+  RUNTIME DESTINATION bin
+)

@@ -18,3 +18,8 @@ if (Boost_FOUND)
 else()
 	TARGET_LINK_LIBRARIES(nodes ${QT_LIBRARIES} cd3core)
 endif()
+
+
+INSTALL(TARGETS nodes
+  LIBRARY DESTINATION lib
+)
