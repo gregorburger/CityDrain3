@@ -22,7 +22,7 @@ int ParallelSimulation::run(int time, int dt) {
 	setNodeDepends();
 	int sources_size = sources.size();
 #ifdef _OPENMP
-#pragma omp parallel for schedule(static, 1)
+#pragma omp parallel for schedule(dynamic, 1)
 #endif
 	for (int i = 0; i < sources_size; i++) {
 		Node *n = sources.at(i);
