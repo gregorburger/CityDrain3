@@ -9,6 +9,7 @@ using namespace boost;
 
 #include "nodefactory.h"
 #include <cd3assert.h>
+#include "python/module.h"
 
 NodeRegistry::NodeRegistry() {
 }
@@ -27,7 +28,7 @@ bool NodeRegistry::addNodeFactory(INodeFactory *factory) {
 	return true;
 }
 
-void NodeRegistry::addPlugin(std::string plugin_path) {
+void NodeRegistry::addNativePlugin(const std::string &plugin_path) {
 	QLibrary l(QString::fromStdString(plugin_path));
 	bool loaded = l.load();
 	cd3assert(loaded, str(format("could not load plugin %1%: %2%")
@@ -39,6 +40,10 @@ void NodeRegistry::addPlugin(std::string plugin_path) {
 	} else {
 		qWarning() << QString::fromStdString(plugin_path) << " has no node register hook";
 	}
+}
+
+void NodeRegistry::addPythonPlugin(const std::string &module) {
+	PythonEnv::getInstance()->registerNodes(this, module);
 }
 
 typedef std::pair<std::string, INodeFactory *> snf;

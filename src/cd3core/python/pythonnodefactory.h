@@ -1,17 +1,17 @@
 #ifndef PYTHONNODEFACTORY_H
 #define PYTHONNODEFACTORY_H
 
+#include <Python.h>
 #include <nodefactory.h>
 #include <boost/python.hpp>
 
-using namespace boost::python;
 
 struct PNodeFactoryPriv;
 
 class PythonNodeFactory : public INodeFactory
 {
 public:
-	PythonNodeFactory(object klass, string name);
+	PythonNodeFactory(boost::python::object klass, string name);
 	virtual ~PythonNodeFactory();
 
 	Node *createNode(const std::string &s = "") const;

@@ -18,7 +18,8 @@ public:
 	~NodeRegistry();
 
 	bool addNodeFactory(INodeFactory *factory);
-	void addPlugin(const std::string plugin_path);
+	void addNativePlugin(const std::string &plugin_path);
+	void addPythonPlugin(const std::string &module);
 
 	std::vector<std::string> getRegisteredNames() const;
 	Node *createNode(const std::string &name) const;

@@ -1,5 +1,5 @@
 #include "pythonnodefactory.h"
-#include <boost/python.hpp>
+#include "module.h"
 
 using namespace boost::python;
 
@@ -19,16 +19,20 @@ PythonNodeFactory::~PythonNodeFactory() {
 }
 
 Node *PythonNodeFactory::createNode(const std::string &) const {
+	Node *n;
 	try {
 		object node = priv->klass();
-		return extract<Node*>(node);
+		set_self(node);
+		PyObject *pyobj = node.ptr();
+		Py_INCREF(pyobj);
+		n = extract<Node*>(node);
 	} catch(error_already_set const &) {
 		PyErr_Print();
 	}
+	return n;
 }
 
 std::string PythonNodeFactory::getNodeName() {
-	cout << "getnodename" << endl;
 	return priv->name;
 }
 

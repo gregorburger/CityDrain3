@@ -18,8 +18,8 @@ int main(int argc, char **argv) {
 	NodeRegistry r;
 	SimulationRegistry sr;
 	for (int i = 1; i < argc; i++) {
-		r.addPlugin(argv[i]);
-		sr.addPlugin(argv[i]);
+		r.addNativePlugin(argv[i]);
+		sr.addNativePlugin(argv[i]);
 	}
 	cout << "Nodes: ";
 	BOOST_FOREACH(string klass, r.getRegisteredNames()) {

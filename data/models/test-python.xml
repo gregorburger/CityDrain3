@@ -24,7 +24,7 @@
 			
 			<node id="fileout" class="FileOut">
 				<parameter name="out_file_name" type="string" 
-											value="tmp/sewerout.txt" />
+						value="tmp/pythonout.txt" />
 			</node>
 			
 			<node id="musk1" class="Sewer" />
@@ -40,8 +40,13 @@
 				<sink	node="musk1" port="in" />
 			</connection>
 			
-			<connection id="con2">
+			<connection id="con3">
 				<source node="musk1" port="out" />
+				<sink node="pynode" port="in" />
+			</connection>
+			
+			<connection id="con2">
+				<source node="pynode" port="out" />
 				<sink node="fileout" port="in" />
 			</connection>
 			

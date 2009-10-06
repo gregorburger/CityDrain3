@@ -124,8 +124,13 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 	}
 	if (lname == "pluginpath") {
 		std::string path = atts.value("path").toStdString();
-		pd->node_registry.addPlugin(path);
-		pd->sim_registry.addPlugin(path);
+		pd->node_registry.addNativePlugin(path);
+		pd->sim_registry.addNativePlugin(path);
+		return true;
+	}
+	if (lname == "pythonmodule") {
+		std::string module = atts.value("module").toStdString();
+		pd->node_registry.addPythonPlugin(module);
 		return true;
 	}
 	if (lname == "citydrain") {
@@ -152,7 +157,7 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		}
 		return true;
 	}
-	Logger(Debug) << "not used element:" << lname.toStdString();
+	Logger(Warning) << "not used element:" << lname.toStdString();
 	return true;
 }
 
