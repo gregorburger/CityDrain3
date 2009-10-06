@@ -39,8 +39,6 @@ fi
 
 PWD=`pwd`
 
-export KMP_AFFINITY="noverbose,disabled"
-
 for TYPE in $TYPES; do
 
 	TIME_OUT="time/$MODEL-$TYPE-$$-time.txt"

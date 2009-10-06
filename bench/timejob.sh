@@ -40,7 +40,6 @@ do
 	AVG_FILE="time/$MODEL-$sim-$$-time-avg.txt"
 	
 	echo $MODEL-$sim.xml
-	export KMP_AFFINITY="noverbose,disabled"
 	
 	for i in $(seq $THREADS); do
 		for j in $(seq $RUNS); do
