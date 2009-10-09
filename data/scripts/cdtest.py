@@ -1,13 +1,10 @@
 import cd3
 
-
-f = cd3.Flow()
-cd3.test_flow(f)
-
 class PythonNode(cd3.Node):
 	def __init__(self):
 		cd3.Node.__init__(self)
 		self.flow = cd3.Flow()
+		print "ASDFAS mcib"
 		self.addInPort('in', self.flow)
 		self.addOutPort('out', self.flow)
 		pass
@@ -16,7 +13,23 @@ class PythonNode(cd3.Node):
 		print "init"
 	
 	def f(self, time, dt):
-		print "f: %s - %s" % (time, dt)
+#		print "f: %s - %s" % (time, dt)
+		return dt
+
+class MichiPythonNode(cd3.Node):
+	def __init__(self):
+		cd3.Node.__init__(self)
+		self.flow = cd3.Flow()
+		print "ASDFAS mcib"
+		self.addInPort('in', self.flow)
+		self.addOutPort('out', self.flow)
+		pass
+	
+	def init(self, start, stop, dt):
+		print "init"
+	
+	def f(self, time, dt):
+#		print "f: %s - %s" % (time, dt)
 		return dt
 
 class DPythonNode(cd3.Node):

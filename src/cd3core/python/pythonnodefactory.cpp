@@ -8,10 +8,10 @@ struct PNodeFactoryPriv {
 	string name;
 };
 
-PythonNodeFactory::PythonNodeFactory(object klass, string name) {
+PythonNodeFactory::PythonNodeFactory(object klass) {
 	priv = new PNodeFactoryPriv();
 	priv->klass = klass;
-	priv->name = name;
+	priv->name = extract<string>(priv->klass.attr("__name__"));
 }
 
 PythonNodeFactory::~PythonNodeFactory() {
@@ -19,17 +19,18 @@ PythonNodeFactory::~PythonNodeFactory() {
 }
 
 Node *PythonNodeFactory::createNode(const std::string &) const {
-	Node *n;
 	try {
 		object node = priv->klass();
-		set_self(node);
-		PyObject *pyobj = node.ptr();
-		Py_INCREF(pyobj);
-		n = extract<Node*>(node);
+		auto_ptr<Node> nn = extract<auto_ptr<Node> >(node);
+		Node *n = nn.get();
+		nn.release();
+		return n;
 	} catch(error_already_set const &) {
+		cerr << __FILE__ << ":" << __LINE__ << endl;
 		PyErr_Print();
+		abort();
 	}
-	return n;
+	return 0;
 }
 
 std::string PythonNodeFactory::getNodeName() {

@@ -29,7 +29,7 @@
 			
 			<node id="musk1" class="Sewer" />
 			
-			<node id="pynode" class="PythonNode" />
+			<node id="pynode" class="MichiPythonNode" />
 			
 		</nodelist>
 		

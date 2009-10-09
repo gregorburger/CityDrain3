@@ -1,4 +1,3 @@
-#include <Python.h>
 #include "module.h"
 #include "../node.h"
 #include <flow.h>
@@ -28,9 +27,14 @@ void test_node(Node *n) {
 
 struct NodeWrapper : Node, wrapper<Node> {
 
+	NodeWrapper(PyObject *obj) : self(obj) {
+		Py_INCREF(self);
+		cout << "creating nodewrapper" << endl;
+	}
+
 	virtual ~NodeWrapper() {
 		cout << "deleting nodewrapper" << endl;
-		Py_DECREF(self);
+		//Py_DECREF(self);
 	}
 
 	void setSelf(PyObject *_self) {
@@ -40,22 +44,31 @@ struct NodeWrapper : Node, wrapper<Node> {
 
 	int f(int time, int dt) {
 		try {
-			return this->get_override("f")(time, dt);
+			return call_method<int>(self, "f", time, dt);
+			//return this->get_override("f")(time, dt);
 		} catch(error_already_set const &) {
+			cerr << __FILE__ << ":" << __LINE__ << endl;
 			PyErr_Print();
+			abort();
 		}
 	}
 
 	void init(int start, int stop, int dt) {
 		try {
-			this->get_override("init")(start, stop, dt);
+			call_method<void>(self, "init", start, stop, dt);
+
+			//this->get_override("init")(start, stop, dt);
 		} catch(error_already_set const &) {
+			cerr << __FILE__ << ":" << __LINE__ << endl;
 			PyErr_Print();
+			abort();
 		}
 	}
 
 	const char *getClassName() const {
-		return "";
+		object o(this);
+		const char *name = extract<const char*>(o.attr("__name__"));
+		return name;
 	}
 
 	void addInPort(const std::string &name, Flow *inflow) {
@@ -69,21 +82,17 @@ private:
 	PyObject *self;
 };
 
-void set_self(object o) {
-	NodeWrapper *nw = extract<NodeWrapper *>(o);
-	PyObject *obj = o.ptr();
-	nw->setSelf(obj);
-}
-
 BOOST_PYTHON_MODULE(cd3) {
-	class_<NodeWrapper, boost::noncopyable>("Node")
+	class_<Node, auto_ptr<NodeWrapper>, boost::noncopyable>("Node")
 			.def("f", pure_virtual(&Node::f))
 			.def("init", pure_virtual(&Node::init))
 			.def("addInPort", &NodeWrapper::addInPort)
 			.def("addOutPort", &NodeWrapper::addOutPort)
 			;
+	implicitly_convertible<auto_ptr<NodeWrapper>, auto_ptr<Node> >();
 	class_<Flow>("Flow")
 			;
+
 	def("test_node", &test_node);
 	def("test_flow", &test_flow);
 }
@@ -114,34 +123,24 @@ PythonEnv *PythonEnv::getInstance() {
 	return instance;
 }
 
+void PythonEnv::freeInstance() {
+	if (instance == 0)
+		return;
+	exec("import gc\n"
+		 "print gc.collect()\n"
+		 "print 'where is the garbage'\n"
+		 "print gc.garbage\n",
+		 instance->priv->main_namespace,instance->priv->main_namespace);
+
+	delete instance;
+	Py_Finalize();
+}
+
 Node *PythonEnv::createNode(string _name) {
 	const char *name = _name.c_str();
 }
 
 void PythonEnv::registerNodes(NodeRegistry *registry, const string &module) {
-	/*const char *prog = "import cd3\n"
-						"__import__('cdtest', None, None, [], 1)\n"
-						"clss = cd3.Node.__subclasses__()\n";
-
-	object result = exec(prog,
-						 priv->main_namespace,
-						 priv->main_namespace);
-
-	object clss = priv->main_namespace["clss"];
-	try {
-		cout << "classes " << len(clss) << endl;
-
-		for (int i = 0; i < len(clss); i++) {
-			object pKlass = clss[i];
-			object pName = pKlass["__name__"];
-			string cname = extract<string>(pName);
-			registry->addNodeFactory(new PythonNodeFactory(pKlass, cname));
-		}
-		} catch(error_already_set const &) {
-			PyErr_Print();
-		}
-	}*/
-
 	try {
 		object result = exec(
 				"import cd3\n"
@@ -150,11 +149,11 @@ void PythonEnv::registerNodes(NodeRegistry *registry, const string &module) {
 				, priv->main_namespace, priv->main_namespace);
 		object clss = priv->main_namespace["clss"];
 		for (int i = 0; i < len(clss); i++) {
-			string cname = extract<string>(clss[i].attr("__name__"));
-			registry->addNodeFactory(new PythonNodeFactory(clss[i], cname));
+			registry->addNodeFactory(new PythonNodeFactory(clss[i]));
 		}
 	} catch(error_already_set const &) {
+		cerr << __FILE__ << ":" << __LINE__ << endl;
 		PyErr_Print();
+		abort();
 	}
-
 }

@@ -22,6 +22,7 @@ class PythonEnv {
 public:
 	virtual ~PythonEnv();
 	static PythonEnv *getInstance();
+	static void freeInstance();
 	void registerNodes(NodeRegistry *registry,
 					   const string &module);
 	Node *createNode(std::string name);
@@ -32,7 +33,5 @@ private:
 };
 
 void test_node(Node *n);
-#include <boost/python.hpp>
-void set_self(boost::python::object o);
 #endif
 #endif // MODULE_H
