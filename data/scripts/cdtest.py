@@ -3,6 +3,8 @@ import cd3
 class PythonNode(cd3.Node):
 	def __init__(self):
 		cd3.Node.__init__(self)
+		self.x = 10
+		self.addParameter('x', self.x)
 		self.flow = cd3.Flow()
 		print "ASDFAS mcib"
 		self.addInPort('in', self.flow)
@@ -20,10 +22,10 @@ class MichiPythonNode(cd3.Node):
 	def __init__(self):
 		cd3.Node.__init__(self)
 		self.flow = cd3.Flow()
-		print "ASDFAS mcib"
 		self.addInPort('in', self.flow)
 		self.addOutPort('out', self.flow)
-		pass
+		self.x = 10
+		self.addParameter(self.x)
 	
 	def init(self, start, stop, dt):
 		print "init"

@@ -78,6 +78,11 @@ struct NodeWrapper : Node, wrapper<Node> {
 	void addOutPort(const std::string &name, Flow *outflow) {
 		Node::addOutPort(name, outflow);
 	}
+
+	void pyAddParameter(object value) {
+		string name = extract<string>(value.attr("__name__"));
+		cout << "parameter " << name << endl;
+	}
 private:
 	PyObject *self;
 };
@@ -88,6 +93,8 @@ BOOST_PYTHON_MODULE(cd3) {
 			.def("init", pure_virtual(&Node::init))
 			.def("addInPort", &NodeWrapper::addInPort)
 			.def("addOutPort", &NodeWrapper::addOutPort)
+			.def("bakaddParameter", &Node::addParameter<int>)
+			.def("addParameter", &NodeWrapper::pyAddParameter)
 			;
 	implicitly_convertible<auto_ptr<NodeWrapper>, auto_ptr<Node> >();
 	class_<Flow>("Flow")
