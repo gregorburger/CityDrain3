@@ -74,6 +74,7 @@ void CatchmentCSS::init(int start, int end, int dt) {
 		addState(str(format("V[%1%]") % i), f);
 		V.push_back(f);
 	}
+	permanent_loss = permanent_loss / 86400 * dt;
 }
 
 void CatchmentCSS::deinit() {
