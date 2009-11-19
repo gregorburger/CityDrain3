@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 #include <cd3globals.h>
+#include <boost/shared_ptr.hpp>
+using namespace boost;
 
 class INodeFactory;
 class Node;
@@ -22,8 +24,8 @@ public:
 	void addPythonPlugin(const std::string &module);
 
 	std::vector<std::string> getRegisteredNames() const;
-	Node *createNode(const std::string &name) const;
-	Node *createNode(const std::string &name, const std::string &script) const;
+	shared_ptr<Node> createNode(const std::string &name) const;
+	shared_ptr<Node> createNode(const std::string &name, const std::string &script) const;
 	bool contains(const std::string &name) const;
 
 private:

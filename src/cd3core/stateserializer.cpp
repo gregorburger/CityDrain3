@@ -13,43 +13,43 @@
 
 template <class T>
 struct BasicSer : public IStateSerializer {
-	std::string serialize(const std::string &name, Node *node) {
+	std::string serialize(const std::string &name, shared_ptr<Node> node) {
 		return boost::lexical_cast<std::string, T>(*node->getState<T>(name));
 	}
 
 	void deserialize(const std::string &value,
-					 const std::string &name,  Node *node) {
+					 const std::string &name,  shared_ptr<Node> node) {
 		T Tval = boost::lexical_cast<T>(value);
 		node->setState<T>(name, Tval);
 	}
 };
 
 struct FlowSer : public IStateSerializer {
-	std::string serialize(const std::string &name, Node *node) {
+	std::string serialize(const std::string &name, shared_ptr<Node> node) {
 		return FlowSerializer::toString(*node->getState<Flow>(name));
 	}
 
 	void deserialize(const std::string &value,
-					 const std::string &name, Node *node) {
+					 const std::string &name, shared_ptr<Node> node) {
 		Flow f = FlowSerializer::fromString(value);
 		node->setState<Flow>(name, f);
 	}
 };
 
 struct StringSer : public IStateSerializer {
-	std::string serialize(const std::string &name, Node *node) {
+	std::string serialize(const std::string &name, shared_ptr<Node> node) {
 		return *node->getState<std::string>(name);
 	}
 
 	void deserialize(const std::string &invalue,
-					 const std::string &name,  Node *node) {
+					 const std::string &name,  shared_ptr<Node> node) {
 		std::string value = invalue;
 		node->setState<std::string>(name, value);
 	}
 };
 
 struct FPSer : public IStateSerializer {
-	std::string serialize(const std::string &name, Node *node) {
+	std::string serialize(const std::string &name, shared_ptr<Node> node) {
 		std::ostringstream stream;
 		int exp;
 		double r = *node->getState<double>(name);
@@ -58,7 +58,7 @@ struct FPSer : public IStateSerializer {
 		return stream.str();
 	}
 	void deserialize(const std::string &invalue,
-					 const std::string &name,  Node *node) {
+					 const std::string &name,  shared_ptr<Node> node) {
 		std::istringstream stream(invalue);
 		double fract;
 		int exp;

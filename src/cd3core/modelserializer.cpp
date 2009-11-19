@@ -14,7 +14,7 @@
 
 #include <cd3assert.h>
 
-typedef std::pair<std::string, Node*> snp;
+typedef std::pair<std::string, shared_ptr<Node> > snp;
 typedef std::pair<std::string, ltvp> sltvpp;
 typedef std::pair<std::string, Flow *> ssfp;
 
@@ -52,7 +52,7 @@ void ModelSerializer::serialize(std::ostream &os) const {
 	os << "</model>" << std::endl;
 }
 
-void ModelSerializer::serializeNode(std::ostream &os, std::string &node_name, Node *n) const {
+void ModelSerializer::serializeNode(std::ostream &os, std::string &node_name, shared_ptr<Node> n) const {
 	os << boost::format("\t<node name=\"%1%\" class=\"%2%\">\n") % node_name % n->getClassName();
 	type_ser_map &serializers = IStateSerializer::standard;
 

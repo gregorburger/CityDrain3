@@ -79,14 +79,14 @@ void Controller::setInt(
 				const QString &node,
 				const QString &state,
 				int &value) {
-	Node *n = priv->simulation->getModel()->getNode(node.toStdString());
+	shared_ptr<Node> n = priv->simulation->getModel()->getNode(node.toStdString());
 	n->setState<int>(state.toStdString(), value);
 }
 
 int *Controller::getInt(
 			   const QString &node,
 			   const QString &state) {
-	Node *n = priv->simulation->getModel()->getNode(node.toStdString());
+	shared_ptr<Node> n = priv->simulation->getModel()->getNode(node.toStdString());
 	return n->getState<int>(state.toStdString());
 }
 
@@ -94,14 +94,14 @@ void Controller::setDouble(
 				const QString &node,
 				const QString &state,
 				double &value) {
-	Node *n = priv->simulation->getModel()->getNode(node.toStdString());
+	shared_ptr<Node> n = priv->simulation->getModel()->getNode(node.toStdString());
 	n->setState<double>(state.toStdString(), value);
 }
 
 double *Controller::getDouble(
 			   const QString &node,
 			   const QString &state) {
-	Node *n = priv->simulation->getModel()->getNode(node.toStdString());
+	shared_ptr<Node> n = priv->simulation->getModel()->getNode(node.toStdString());
 	return n->getState<double>(state.toStdString());
 }
 
@@ -109,14 +109,14 @@ void Controller::setString(
 				const QString &node,
 				const QString &state,
 				string &value) {
-	Node *n = priv->simulation->getModel()->getNode(node.toStdString());
+	shared_ptr<Node> n = priv->simulation->getModel()->getNode(node.toStdString());
 	n->setState<string>(state.toStdString(), value);
 }
 
 string *Controller::getString(
 			   const QString &node,
 			   const QString &state) {
-	Node *n = priv->simulation->getModel()->getNode(node.toStdString());
+	shared_ptr<Node> n = priv->simulation->getModel()->getNode(node.toStdString());
 	return n->getState<string>(state.toStdString());
 }
 
@@ -124,14 +124,14 @@ void Controller::setBool(
 				const QString &node,
 				const QString &state,
 				bool &value) {
-	Node *n = priv->simulation->getModel()->getNode(node.toStdString());
+	shared_ptr<Node> n = priv->simulation->getModel()->getNode(node.toStdString());
 	n->setState<bool>(state.toStdString(), value);
 }
 
 bool *Controller::getBool(
 			   const QString &node,
 			   const QString &state) {
-	Node *n = priv->simulation->getModel()->getNode(node.toStdString());
+	shared_ptr<Node> n = priv->simulation->getModel()->getNode(node.toStdString());
 	return n->getState<bool>(state.toStdString());
 }
 
@@ -139,14 +139,14 @@ void Controller::setFlow(
 				const QString &node,
 				const QString &state,
 				QSWFlow &value) {
-	Node *n = priv->simulation->getModel()->getNode(node.toStdString());
+	shared_ptr<Node> n = priv->simulation->getModel()->getNode(node.toStdString());
 	n->setState<Flow>(state.toStdString(), *value.flow);
 }
 
 QObject *Controller::getFlow(
 			   const QString &node,
 			   const QString &state) {
-	Node *n = priv->simulation->getModel()->getNode(node.toStdString());
+	shared_ptr<Node> n = priv->simulation->getModel()->getNode(node.toStdString());
 	return new QSWFlow(n->getState<Flow>(state.toStdString()));
 }
 

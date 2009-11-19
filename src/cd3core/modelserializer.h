@@ -3,9 +3,9 @@
 
 #include <QXmlDefaultHandler>
 #include <boost/shared_ptr.hpp>
+using namespace boost;
 #include <map>
 #include <cd3globals.h>
-
 
 class IModel;
 
@@ -26,7 +26,7 @@ public:
 
 private:
 	void serialize(std::ostream &) const;
-	void serializeNode(std::ostream &s, std::string &name, Node *n) const;
+	void serializeNode(std::ostream &s, std::string &name, shared_ptr<Node> n) const;
 
 	std::string pathForTimeStep(int time) const;
 
@@ -55,7 +55,7 @@ public:
 
 private:
 	IModel *model;
-	Node *current;
+	shared_ptr<Node> current;
 	std::string stateName;
 	std::string stateType;
 	std::string portName;

@@ -1,7 +1,7 @@
 #ifndef CYCLENODESTART_H
 #define CYCLENODESTART_H
 
-#include <node.h>
+#include "../cd3core/node.h"
 #include <flow.h>
 
 CD3_DECLARE_NODE(CycleNodeStart)

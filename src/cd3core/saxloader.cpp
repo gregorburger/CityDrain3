@@ -14,7 +14,7 @@ using namespace boost;
 #include <typeregistry.h>
 #include <model.h>
 #include <cd3assert.h>
-#include <node.h>
+#include "node.h"
 #include <simulation.h>
 #include <flow.h>
 #include <calculationunit.h>
@@ -129,7 +129,9 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		return true;
 	}
 	if (lname == "pythonmodule") {
+
 		std::string module = atts.value("module").toStdString();
+		cout << "Loading Python Module " << module << endl;
 		pd->node_registry.addPythonPlugin(module);
 		return true;
 	}
@@ -202,8 +204,8 @@ bool SaxLoader::endElement(const QString &/*ns*/,
 			cycle_break = false;
 			return true;
 		}
-		Node *sink = pd->model->getNode(sink_id);
-		Node *source = pd->model->getNode(source_id);
+		shared_ptr<Node> sink = pd->model->getNode(sink_id);
+		shared_ptr<Node> source = pd->model->getNode(source_id);
 		Logger(Debug) << "creating connection:"
 				<< source << "[" << source_port << "] => "
 				<< sink << "[" << sink_port << "]";
@@ -275,20 +277,22 @@ void SaxLoader::loadParameter(const QXmlAttributes& atts) {
 }
 
 void SaxLoader::breakCycle() {
-	Node *sink = pd->model->getNode(sink_id);
-	Node *source = pd->model->getNode(source_id);
+	shared_ptr<Node> sink = pd->model->getNode(sink_id);
+	shared_ptr<Node> source = pd->model->getNode(source_id);
 
-	CycleNodeStart *start = (CycleNodeStart*) pd->node_registry.createNode("CycleNodeStart");
+	shared_ptr<Node> sstart = pd->node_registry.createNode("CycleNodeStart");
+	CycleNodeStart *start = (CycleNodeStart *) &(*sstart);
 	start->setId(sink_id+source_id+"-cycle_start");
-	CycleNodeEnd *end = (CycleNodeEnd*) pd->node_registry.createNode("CycleNodeEnd");
+	shared_ptr<Node> send = pd->node_registry.createNode("CycleNodeEnd");
+	CycleNodeEnd *end = (CycleNodeEnd *) &(*send);
 	end->setId(sink_id+source_id+"-cycle_end");
-	pd->model->addNode(start);
-	pd->model->addNode(end);
+	pd->model->addNode(sstart);
+	pd->model->addNode(send);
 	end->start = start;
-	pd->model->addConnection(pd->simulation->createConnection(start, "out",
+	pd->model->addConnection(pd->simulation->createConnection(sstart, "out",
 															  sink, sink_port));
 
 
 	pd->model->addConnection(pd->simulation->createConnection(source, source_port,
-															  end, "in"));
+															  send, "in"));
 }

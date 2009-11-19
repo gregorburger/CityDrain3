@@ -27,7 +27,7 @@ enum LogLevel {
 class CD3_PUBLIC Log
 {
 public:
-	static void init(ostream *out = &cout, LogLevel max = Standard);
+	static void init(ostream *out = &cout, LogLevel max = Debug);
 	static void shutDown();
 	static Log *getInstance();
 	friend class Logger;

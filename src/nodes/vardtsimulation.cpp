@@ -14,7 +14,7 @@ using namespace boost::tuples;
 
 CD3_DECLARE_SIMULATION_NAME(VarDTSimulation)
 
-typedef tuple<Node *, std::string, Node *, std::string> con_type;
+typedef tuple<shared_ptr<Node> , std::string, shared_ptr<Node> , std::string> con_type;
 typedef std::map<con_type, FlowBuffer *> buf_type;
 
 struct VarDTPriv {
@@ -38,11 +38,11 @@ int VarDTSimulation::run(int time, int dt) {
 
 
 
-int VarDTSimulation::run(Node *n, int time, int dt) {
+int VarDTSimulation::run(shared_ptr<Node> n, int time, int dt) {
 	BOOST_FOREACH(NodeConnection *con, model->backwardConnection(n)) {
 		int calced_dt = 0;	//holds the calculated dts of the predecessors
 		std::string src_port, snk_port;
-		Node *next;
+		shared_ptr<Node> next;
 
 		next = con->sink;
 		src_port = con->source_port;

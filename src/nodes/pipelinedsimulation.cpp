@@ -17,7 +17,7 @@ CD3_DECLARE_SIMULATION_NAME(PipelinedSimulation)
 
 struct PipeSimPrivate {
 	node_set_type		nodes;
-	unordered_map<Node *, int>	state;
+	unordered_map<shared_ptr<Node> , int>	state;
 	QReadWriteLock			state_lock;
 	IModel				*model; //StateWorker needs it
 };
@@ -25,8 +25,8 @@ struct PipeSimPrivate {
 struct StateWorker : public QRunnable {
 	StateWorker(PipeSimPrivate *pd, int time, int dt);
 	void run();
-	bool isRunnable(Node *n) const;
-	void updatePorts(Node *n);
+	bool isRunnable(shared_ptr<Node> n) const;
+	void updatePorts(shared_ptr<Node> n);
 	PipeSimPrivate *pd;
 	int time, dt;
 	node_set_type not_done;
@@ -55,7 +55,7 @@ void PipelinedSimulation::start(int time) {
 	}
 	Logger(Standard) << "thread count: " << pool->maxThreadCount();
 
-	BOOST_FOREACH(Node *n, pd->nodes) {
+	BOOST_FOREACH(shared_ptr<Node> n, pd->nodes) {
 		pd->state[n] = time;
 	}
 	QTime ts_before = QTime::currentTime();
@@ -90,8 +90,8 @@ void StateWorker::run() {
 		/*node_set_type::iterator it = not_done.begin();
 		while (it != not_done.end()) {*/
 		node_set_type to_remove;
-		BOOST_FOREACH(Node *n, not_done) {
-			//Node *n = *it;
+		BOOST_FOREACH(shared_ptr<Node> n, not_done) {
+			//shared_ptr<Node> n = *it;
 			pd->state_lock.lockForRead();
 			if (pd->state[n] == time) {
 				if (!isRunnable(n)) {
@@ -111,21 +111,21 @@ void StateWorker::run() {
 			}*/
 			pd->state_lock.unlock();
 		}
-		BOOST_FOREACH(Node *r, to_remove) {
+		BOOST_FOREACH(shared_ptr<Node> r, to_remove) {
 			not_done.erase(r);
 		}
 	}
 }
 
-void StateWorker::updatePorts(Node *n) {
+void StateWorker::updatePorts(shared_ptr<Node> n) {
 	BOOST_FOREACH(NodeConnection *con, pd->model->backwardConnection(n)) {
 		con->push(dt);
 	}
 }
 
-bool StateWorker::isRunnable(Node *n) const {
+bool StateWorker::isRunnable(shared_ptr<Node> n) const {
 	BOOST_FOREACH(NodeConnection *con, pd->model->backwardConnection(n)) {
-		Node *dep_node = con->source;
+		shared_ptr<Node> dep_node = con->source;
 		//assert here for state + dt
 		if (pd->state[dep_node] != (time + dt)) {
 			return false;
@@ -133,7 +133,7 @@ bool StateWorker::isRunnable(Node *n) const {
 	}
 
 	BOOST_FOREACH(NodeConnection *con, pd->model->forwardConnection(n)) {
-		Node *dep_node = con->sink;
+		shared_ptr<Node> dep_node = con->sink;
 		//assert here for state + dt
 		if (pd->state[dep_node] != time) {
 			return false;

@@ -25,7 +25,7 @@ int ParallelSimulation::run(int time, int dt) {
 #pragma omp parallel for schedule(dynamic, 1)
 #endif
 	for (int i = 0; i < sources_size; i++) {
-		Node *n = sources.at(i);
+		shared_ptr<Node> n = sources.at(i);
 		run(n, time);
 	}
 
@@ -33,11 +33,11 @@ int ParallelSimulation::run(int time, int dt) {
 }
 
 
-void ParallelSimulation::run(Node *n, int time) {
+void ParallelSimulation::run(shared_ptr<Node> n, int time) {
 	n->f(time, sim_param.dt);
 	BOOST_FOREACH(NodeConnection *con, model->forwardConnection(n)) {
 		con->push(sim_param.dt);
-		Node *next = con->sink;
+		shared_ptr<Node> next = con->sink;
 
 //#pragma omp atomic
 		next->num_inputed--;
@@ -56,11 +56,11 @@ void ParallelSimulation::setModel(IModel *model) {
 	ISimulation::setModel(model);
 
 	node_set_type set_sources = model->getSourceNodes();
-	sources = std::vector<Node*>(set_sources.begin(), set_sources.end());
+	sources = std::vector<shared_ptr<Node> >(set_sources.begin(), set_sources.end());
 }
 
 void ParallelSimulation::setNodeDepends() const {
-	BOOST_FOREACH(Node *node, *model->getNodes()) {
+	BOOST_FOREACH(shared_ptr<Node> node, *model->getNodes()) {
 		node->num_inputed = model->backwardConnection(node).size();
 	}
 }

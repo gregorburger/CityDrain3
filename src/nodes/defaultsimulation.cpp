@@ -24,14 +24,14 @@ int DefaultSimulation::run(int time, int dt) {
 	sp->done.clear();
 	con_count_type deps = model->getBackwardCounts();
 
-	BOOST_FOREACH(Node *n, sp->sources) {
+	BOOST_FOREACH(shared_ptr<Node> n, sp->sources) {
 		run(n, time, deps);
 
 	}
 	return dt;
 }
 
-void DefaultSimulation::run(Node *n, int time, con_count_type &depends) {
+void DefaultSimulation::run(shared_ptr<Node> n, int time, con_count_type &depends) {
 	if (sp->done.count(n) > 0) {
 		return;
 	}

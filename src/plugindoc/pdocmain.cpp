@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
 			continue;
 		}
 
-		Node *node = r.createNode(klass);
+		shared_ptr<Node> node = r.createNode(klass);
 		if (klass != "RainRead")
 			node->init(0, 7200, 300);
 		cout << endl << klass << ":" << endl;
@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
 		BOOST_FOREACH(port_type port, *node->const_out_ports) {
 			cout << "\tout_port: " << port.first << endl;
 		}
-		delete node;
+//		delete node;
 	}
 	cout << endl << "Simulations: " << endl;
 	BOOST_FOREACH(string klass, sr.getRegisteredNames()) {

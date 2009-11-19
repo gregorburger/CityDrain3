@@ -1,7 +1,7 @@
 #ifndef CYCLENODEEND_H
 #define CYCLENODEEND_H
 
-#include <node.h>
+#include "../cd3core/node.h"
 #include <flow.h>
 
 class CycleNodeStart;
