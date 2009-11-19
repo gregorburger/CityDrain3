@@ -30,7 +30,7 @@
 			<node id="musk1" class="Sewer" />
 			
 			<node id="pynode" class="MichiPythonNode">
-				<parameter name="x" type="int" value="42" />
+				<!--parameter name="x" type="int" value="42" /-->
 			</node>
 			
 		</nodelist>
