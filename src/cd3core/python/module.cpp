@@ -19,33 +19,11 @@ void test_flow(Flow *f) {
 	f->addUnit("test", CU::flow, 43.0);
 }
 
-void test_node(Node *n) {
-	n->init(0, 900, 300);
-	n->f(0, 300);
-	n->f(300, 300);
-}
 
 struct NodeWrapper : Node, wrapper<Node> {
-
-	NodeWrapper(PyObject *obj) : self(obj) {
-		Py_INCREF(self);
-		cout << "creating nodewrapper" << endl;
-	}
-
-	virtual ~NodeWrapper() {
-		cout << "deleting nodewrapper" << endl;
-		//Py_DECREF(self);
-	}
-
-	void setSelf(PyObject *_self) {
-		cout << "setting self" << endl;
-		self = _self;
-	}
-
 	int f(int time, int dt) {
 		try {
-			return call_method<int>(self, "f", time, dt);
-			//return this->get_override("f")(time, dt);
+			return this->get_override("f")(time, dt);
 		} catch(error_already_set const &) {
 			cerr << __FILE__ << ":" << __LINE__ << endl;
 			PyErr_Print();
@@ -53,11 +31,17 @@ struct NodeWrapper : Node, wrapper<Node> {
 		}
 	}
 
-	void init(int start, int stop, int dt) {
-		try {
-			call_method<void>(self, "init", start, stop, dt);
+	void pushInStates() {
 
-			//this->get_override("init")(start, stop, dt);
+	}
+
+	void pullOutStates() {
+
+	}
+
+	void init(int start, int stop, int dt) {
+		try {		
+			this->get_override("init")(start, stop, dt);
 		} catch(error_already_set const &) {
 			cerr << __FILE__ << ":" << __LINE__ << endl;
 			PyErr_Print();
@@ -83,25 +67,23 @@ struct NodeWrapper : Node, wrapper<Node> {
 		string name = extract<string>(value.attr("__name__"));
 		cout << "parameter " << name << endl;
 	}
-private:
-	PyObject *self;
 };
 
+void test_node(shared_ptr<NodeWrapper> n) {
+	n->init(0, 900, 300);
+	n->f(0, 300);
+	n->f(300, 300);
+}
+
 BOOST_PYTHON_MODULE(cd3) {
-	class_<Node, auto_ptr<NodeWrapper>, boost::noncopyable>("Node")
+	class_<NodeWrapper, shared_ptr<NodeWrapper>, boost::noncopyable>("Node")
 			.def("f", pure_virtual(&Node::f))
 			.def("init", pure_virtual(&Node::init))
 			.def("addInPort", &NodeWrapper::addInPort)
 			.def("addOutPort", &NodeWrapper::addOutPort)
-			.def("bakaddParameter", &Node::addParameter<int>)
-			.def("addParameter", &NodeWrapper::pyAddParameter)
 			;
-	implicitly_convertible<auto_ptr<NodeWrapper>, auto_ptr<Node> >();
 	class_<Flow>("Flow")
 			;
-
-	def("test_node", &test_node);
-	def("test_flow", &test_flow);
 }
 
 struct PythonEnvPriv {
@@ -143,10 +125,6 @@ void PythonEnv::freeInstance() {
 	Py_Finalize();
 }
 
-Node *PythonEnv::createNode(string _name) {
-	const char *name = _name.c_str();
-}
-
 void PythonEnv::registerNodes(NodeRegistry *registry, const string &module) {
 	try {
 		object result = exec(
@@ -155,6 +133,7 @@ void PythonEnv::registerNodes(NodeRegistry *registry, const string &module) {
 				"clss = cd3.Node.__subclasses__()\n"
 				, priv->main_namespace, priv->main_namespace);
 		object clss = priv->main_namespace["clss"];
+		cout << "found " << len(clss) << " Nodes in module " << module << endl;
 		for (int i = 0; i < len(clss); i++) {
 			registry->addNodeFactory(new PythonNodeFactory(clss[i]));
 		}

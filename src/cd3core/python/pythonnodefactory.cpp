@@ -18,19 +18,15 @@ PythonNodeFactory::~PythonNodeFactory() {
 	delete priv;
 }
 
-Node *PythonNodeFactory::createNode(const std::string &) const {
+shared_ptr<Node> PythonNodeFactory::createNode(const std::string &) const {
 	try {
 		object node = priv->klass();
-		auto_ptr<Node> nn = extract<auto_ptr<Node> >(node);
-		Node *n = nn.get();
-		nn.release();
-		return n;
+		return extract<shared_ptr<Node> >(node);
 	} catch(error_already_set const &) {
 		cerr << __FILE__ << ":" << __LINE__ << endl;
 		PyErr_Print();
 		abort();
 	}
-	return 0;
 }
 
 std::string PythonNodeFactory::getNodeName() {

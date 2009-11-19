@@ -25,7 +25,6 @@ public:
 	static void freeInstance();
 	void registerNodes(NodeRegistry *registry,
 					   const string &module);
-	Node *createNode(std::string name);
 private:
 	PythonEnv();
 	PythonEnvPriv *priv;

@@ -12,7 +12,7 @@ public:
 	PythonNodeFactory(boost::python::object klass);
 	virtual ~PythonNodeFactory();
 
-	Node *createNode(const std::string &s = "") const;
+	shared_ptr<Node> createNode(const std::string &s = "") const;
 	std::string getNodeName();
 private:
 	PNodeFactoryPriv *priv;
