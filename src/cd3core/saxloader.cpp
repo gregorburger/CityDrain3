@@ -152,6 +152,13 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		}
 		return true;
 	}
+	if (lname == "arrayentry") {
+		cd3assert(atts.index("value") >= 0, "arrayentry must provide a value");
+		bool ok;
+		double value = atts.value("value").toDouble(&ok);
+		cd3assert(ok, "value is not a double value");
+		current->appendArrayParameter(pd->param_name, value);
+	}
 	Logger(Debug) << "not used element:" << lname.toStdString();
 	return true;
 }
@@ -216,17 +223,20 @@ bool SaxLoader::endElement(const QString &/*ns*/,
 }
 
 void SaxLoader::loadParameter(const QXmlAttributes& atts) {
-	bool simple = atts.value("kind") != "complex";
-
+	cd3assert(atts.index("name") >= 0, "no parameter name set");
 	std::string name = atts.value("name").toStdString();
+	std::string kind = "simple";
+	if (atts.index("kind") >= 0)
+		kind = atts.value("kind").toStdString();
 	std::string type = "double";
-	if (atts.index("type") > 0)
+	if (atts.index("type") >= 0)
 		type = atts.value("type").toStdString();
 
-	cd3assert(current->const_parameters->count(name),
+	cd3assert(current->const_parameters->count(name) ||
+			  current->const_array_parameters->count(name),
 			  str(format("no such parameter in node %1%") % name.c_str()));
 
-	if (simple) {
+	if (kind == "simple") {
 		QString value = atts.value("value");
 
 		if (type == "double") {
@@ -258,15 +268,16 @@ void SaxLoader::loadParameter(const QXmlAttributes& atts) {
 			current->setParameter<std::string>(name, std);
 			return;
 		}
-
-	} else {
-		if (type == "Flow") {
-			pd->param_name = atts.value("name").toStdString();
-			//pd->f.clear();
-		}
+		cd3assert(false, str(format("unnknown simple type %1%") % type.c_str()));
 		return;
 	}
-	qWarning() << "unknown type " << atts.value("type");
+	
+	if (kind == "complex" || kind == "array") {
+		pd->param_name = atts.value("name").toStdString();
+		return;
+	}
+
+	cd3assert(false, str(format("unknown kind %1%") % kind.c_str()));
 }
 
 void SaxLoader::breakCycle() {
