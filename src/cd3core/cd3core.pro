@@ -8,6 +8,6 @@ linux* {
 	CONFIG += staticlib
 	message("as static lib")
 }
-LIBS += -lboost_signals-mt -lboost_thread-mt
+LIBS += -lboost_signals-mt -lboost_thread-mt -lboost_regex-mt
 QT += script
 include(cd3core.pri)

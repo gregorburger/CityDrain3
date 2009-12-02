@@ -16,6 +16,7 @@
 #include "null.h"
 #include "cyclenodestart.h"
 #include "cyclenodeend.h"
+#include "arrayparamtest.h"
 
 #include <noderegistry.h>
 #include <nodefactory.h>
@@ -41,6 +42,7 @@ extern "C" {
 		registry->addNodeFactory(new NodeFactory<Null>());
 		registry->addNodeFactory(new NodeFactory<CycleNodeEnd>());
 		registry->addNodeFactory(new NodeFactory<CycleNodeStart>());
+		registry->addNodeFactory(new NodeFactory<ArrayParamTest>());
 	}
 
 	void CD3_PUBLIC registerTypes(TypeRegistry *registry) {

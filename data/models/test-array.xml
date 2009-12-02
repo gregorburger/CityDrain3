@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE citydrain SYSTEM "../dtd/model.dtd">
+
+<citydrain version="1.0">
+
+	<pluginpath path="nodes" />
+
+	<simulation class="DefaultSimulation">
+		<time start="0" stop="7200" dt="300" />
+	</simulation>
+
+	<model>
+		<nodelist>
+			<node id="constsource" class="ArrayParamTest">
+				<parameter name="Qe" type="double" value="200.0" />
+				<parameter name="C" kind="array" type="double">
+					<arrayentry value="3.0" />
+					<arrayentry value="1.2" />
+					<arrayentry value="3.4" />
+				</parameter>
+			</node>
+			
+			<node id="fileout" class="FileOut">
+				<parameter name="out_file_name" type="string" value="tmp/arrayout.txt" />
+			</node>
+			
+			<node id="musk1" class="Sewer" />
+			
+		</nodelist>
+		
+		<connectionlist>
+		
+			<connection id="con1">
+				<source node="constsource" port="out" />
+				<sink	node="musk1" port="in" />
+			</connection>
+			
+			<connection id="con2">
+				<source node="musk1" port="out" />
+				<sink node="fileout" port="in" />
+			</connection>
+			
+		</connectionlist>
+	</model>
+</citydrain>

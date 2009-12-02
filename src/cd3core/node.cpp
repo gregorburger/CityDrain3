@@ -4,9 +4,10 @@
 #include <QMutex>
 
 Node::Node() : const_parameters(&parameters),
+		const_array_parameters(&array_parameters),
 		const_states(&states),
 		const_in_ports(&in_ports),
-		const_out_ports(&out_ports)  {
+		const_out_ports(&out_ports) {
 	lock = new QMutex();
 }
 
