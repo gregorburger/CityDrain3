@@ -1,7 +1,6 @@
 #include "flowfuns.h"
 #include <flow.h>
 #include <cd3assert.h>
-#include <calculationunit.h>
 #include <set>
 #include <boost/foreach.hpp>
 #include <sstream>
