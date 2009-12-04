@@ -30,7 +30,7 @@
 				<parameter name="out_file_name" type="string" 
 						value="tmp/jssplitter2.txt" />
 			</node>
-			<node id="splitter" class="QSWNode" script="scripts/jssplitter.js">
+			<node id="splitter" class="QSWNode" script="data/scripts/jssplitter.js">
 			</node>
 			
 		</nodelist>
