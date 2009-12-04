@@ -1,7 +1,6 @@
 #include "flowtypefactory.h"
 #include <node.h>
 #include <flow.h>
-#include <calculationunit.h>
 #include <boost/format.hpp>
 #include <cd3assert.h>
 
@@ -39,8 +38,8 @@ Flow FlowTypeFactory::flowFromDom(QDomElement &e) {
 		QDomNamedNodeMap attr = node.attributes();
 		std::string name = attr.namedItem("name").toAttr().value().toStdString();
 		QString kind = attr.namedItem("kind").toAttr().value();
-		CalculationUnit *unit = CalculationUnit::fromString(kind.toStdString());
-		cd3assert(unit != CalculationUnit::null,
+		Flow::CalculationUnit unit = string2cu(kind.toStdString());
+		cd3assert(unit != Flow::null,
 			   str(format("unknown unit type: %1%") % kind.toStdString()));
 		double value = attr.namedItem("value").toAttr().value().toDouble();
 		f.addUnit(name, unit, value);

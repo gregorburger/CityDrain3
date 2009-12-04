@@ -1,7 +1,6 @@
 #include "catchmentcss.h"
 #include <flow.h>
 #include <flowfuns.h>
-#include <calculationunit.h>
 #include <boost/format.hpp>
 #include <boost/foreach.hpp>
 

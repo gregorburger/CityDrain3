@@ -110,11 +110,10 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		pd->simulation->setSimulationParameters(p);
 		return true;
 	}
-	typedef CalculationUnit CU;
 	if (lname == "unit") {
 		std::string kind = atts.value("kind").toStdString();
-		CU *cunit = CU::fromString(kind);
-		cd3assert(cunit != CU::null,
+		Flow::CalculationUnit cunit = string2cu(kind);
+		cd3assert(cunit != Flow::null,
 				  str(format("can't determine flow unit type: [%1%]") % kind));
 		double value = lexical_cast<double>(atts.value("value").toStdString());
 		pd->f.addUnit(atts.value("name").toStdString(),
@@ -284,13 +283,13 @@ void SaxLoader::breakCycle() {
 	Node *sink = pd->model->getNode(sink_id);
 	Node *source = pd->model->getNode(source_id);
 
-	CycleNodeStart *start = (CycleNodeStart*) pd->node_registry.createNode("CycleNodeStart");
+	Node *start = pd->node_registry.createNode("CycleNodeStart");
 	start->setId(sink_id+source_id+"-cycle_start");
-	CycleNodeEnd *end = (CycleNodeEnd*) pd->node_registry.createNode("CycleNodeEnd");
+	Node *end = pd->node_registry.createNode("CycleNodeEnd");
 	end->setId(sink_id+source_id+"-cycle_end");
 	pd->model->addNode(start);
 	pd->model->addNode(end);
-	end->start = start;
+	end->setParameter("start", start);
 	pd->model->addConnection(pd->simulation->createConnection(start, "out",
 															  sink, sink_port));
 

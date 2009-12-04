@@ -5,18 +5,17 @@
 #include <QtScript>
 
 #include <cd3globals.h>
-
-class CalculationUnit;
+#include <flow.h>
 
 class CD3_PUBLIC QSWCalcUnit : public QObject
 {
 	Q_OBJECT
 public:
 	QSWCalcUnit(QObject * = 0);
-	QSWCalcUnit(CalculationUnit *u, QObject *parent = 0);
+	QSWCalcUnit(Flow::CalculationUnit u, QObject *parent = 0);
 	virtual ~QSWCalcUnit();
 	static void setGlobalUnits(QScriptEngine &engine);
-	CalculationUnit *unit;
+	Flow::CalculationUnit unit;
 };
 
 Q_SCRIPT_DECLARE_QMETAOBJECT(QSWCalcUnit, QObject*);

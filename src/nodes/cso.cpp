@@ -1,7 +1,6 @@
 #include "cso.h"
 
 #include <flow.h>
-#include <calculationunit.h>
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
 
@@ -43,8 +42,6 @@ void CSO::init(int start, int end, int dt) {
 	(void) dt;
 }
 
-typedef CalculationUnit CU;
-
 int CSO::f(int time, int dt) {
 	(void) time;
 
@@ -52,8 +49,8 @@ int CSO::f(int time, int dt) {
 		prepareUnits();
 	}
 
-	double Q_In = in->getIth(CU::flow, 0);
-	double V_Stored = stored_volume->getIth(CU::flow, 0);
+	double Q_In = in->getIth(Flow::flow, 0);
+	double V_Stored = stored_volume->getIth(Flow::flow, 0);
 	double V_Volume = (Q_In - Q_Max) * dt + V_Stored;
 	double Q_Out = 0;
 	double Q_Overflow = 0;
@@ -78,9 +75,9 @@ int CSO::f(int time, int dt) {
 		Q_Overflow = 0;
 	}
 
-	out->setIth(CU::flow, 0, Q_Out);
-	overflow->setIth(CU::flow, 0, Q_Overflow);
-	stored_volume->setIth(CU::flow, 0, V_Stored_new);
+	out->setIth(Flow::flow, 0, Q_Out);
+	overflow->setIth(Flow::flow, 0, Q_Overflow);
+	stored_volume->setIth(Flow::flow, 0, V_Stored_new);
 
 	double V_Prime = Q_In * dt + V_Stored;
 
@@ -89,7 +86,7 @@ int CSO::f(int time, int dt) {
 		cd3assert(V_Prime > 0, str(format("V_Prime (%1% needs to be bigger than 0") % V_Prime));
 		double V_Prime_Inv = 1 / V_Prime;
 
-		BOOST_FOREACH(std::string cname, in->getUnitNames(CU::concentration)) {
+		BOOST_FOREACH(std::string cname, in->getUnitNames(Flow::concentration)) {
 			double Ci = (in->getValue(cname) * Q_In * dt
 						+ stored_volume->getValue(cname) * V_Stored) * V_Prime_Inv;
 			out->setValue(cname, Ci);

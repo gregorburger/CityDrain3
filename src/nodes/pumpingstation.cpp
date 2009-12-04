@@ -1,7 +1,6 @@
 #include "pumpingstation.h"
 #include <flowfuns.h>
 #include <sstream>
-#include <calculationunit.h>
 #include <numeric>
 #include <boost/assign.hpp>
 #include <boost/accumulators/accumulators.hpp>
@@ -66,8 +65,8 @@ int PumpingStation::f(int time, int dt) {
 		volume = in;
 		volume.clear();
 	}
-	double qin = in.getIth(CU::flow, 0);
-	double vi = volume.getIth(CU::flow, 0);
+	double qin = in.getIth(Flow::flow, 0);
+	double vi = volume.getIth(Flow::flow, 0);
 	vector<double> Qpmod, Qpplast;
 	Qpplast = Qpp;
 
@@ -89,12 +88,12 @@ int PumpingStation::f(int time, int dt) {
 		double Vii = qin*dt-sum(Qpp)*dt;
 		out_w.clear();
 		if (Vii > basin_volume) {
-			out_w.setIth(CU::flow, 0, (Vii-basin_volume) * dt);
+			out_w.setIth(Flow::flow, 0, (Vii-basin_volume) * dt);
 			Vii = basin_volume;
 		}
 		//Vip=qi*tstep+Vi; % Virtual volume after inflow
 		double Vip = qin * dt + vi;
-		BOOST_FOREACH(string c, in.getUnitNames(CU::concentration)) {
+		BOOST_FOREACH(string c, in.getUnitNames(Flow::concentration)) {
 			double Cin = in.getValue(c);
 			double C = volume.getValue(c);
 			//Cprime=(Cin.*qi.*tstep+C.*Vi)./Vip;
@@ -103,8 +102,8 @@ int PumpingStation::f(int time, int dt) {
 			out_w.setValue(c, cprime);
 			volume.setValue(c, cprime);
 		}
-		out_p.setIth(CU::flow, 0, sum(Qpp));
-		volume.setIth(CU::flow, 0, Vii);
+		out_p.setIth(Flow::flow, 0, sum(Qpp));
+		volume.setIth(Flow::flow, 0, Vii);
 	}
 
 	return dt;

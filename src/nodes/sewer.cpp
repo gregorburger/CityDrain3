@@ -2,7 +2,6 @@
 
 #include <flow.h>
 #include <flowfuns.h>
-#include <calculationunit.h>
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
 

@@ -13,13 +13,22 @@
 #include <cd3globals.h>
 #include <string>
 
-class CalculationUnit;
 struct FlowDefinition;
 
 typedef std::vector<double> FlowPriv;
 
+
 class CD3_PUBLIC Flow {
 public:
+
+	enum CalculationUnit {
+		flow,
+		concentration,
+		rain,
+		volume,
+		null
+	};
+
 	Flow();
 	Flow (const Flow &other);
 	virtual ~Flow();
@@ -27,7 +36,7 @@ public:
 	Flow &operator =(const Flow &rhs);
 
 	void addUnit(const std::string &name,
-				 const CalculationUnit *unit,
+				 CalculationUnit unit,
 				 double value);
 
 	void setValue(const std::string &name,
@@ -37,14 +46,14 @@ public:
 	bool empty() const;
 
 	double getValue(const std::string &name) const;
-	const CalculationUnit *getUnit(const std::string &name) const;
-	unsigned int countUnits(const CalculationUnit *unit) const;
+	CalculationUnit getUnit(const std::string &name) const;
+	unsigned int countUnits(CalculationUnit unit) const;
 
-	double getIth(const CalculationUnit *unit, size_t i) const;
-	void setIth(const CalculationUnit *unit, size_t i, double value);
+	double getIth(CalculationUnit unit, size_t i) const;
+	void setIth(CalculationUnit unit, size_t i, double value);
 
 	const std::vector<std::string> &getNames() const;
-	const std::vector<std::string> &getUnitNames(const CalculationUnit *unit) const;
+	const std::vector<std::string> &getUnitNames(CalculationUnit unit) const;
 	bool hasName(const std::string &name) const;
 
 //	void copy();
@@ -62,5 +71,9 @@ private:
 	FlowDefinition *fd;
 #endif
 };
+
+std::string cu2string(Flow::CalculationUnit c);
+Flow::CalculationUnit string2cu(std::string s);
+
 
 #endif // FLOW_H

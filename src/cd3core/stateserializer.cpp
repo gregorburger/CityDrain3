@@ -1,7 +1,6 @@
 #include "stateserializer.h"
 #include "node.h"
 #include "flow.h"
-#include "calculationunit.h"
 #include "cd3typeinfo.h"
 #include <boost/lexical_cast.hpp>
 #include <boost/foreach.hpp>
@@ -86,7 +85,7 @@ std::string FlowSerializer::toString(Flow f) {
 		double r = f.getValue(name);
 		int exp;
 		double fract = frexp(r, &exp);
-		ss << name << " " << fract << " " << exp << " " << f.getUnit(name)->getName() << " ";
+		ss << name << " " << fract << " " << exp << " " << cu2string(f.getUnit(name)) << " ";
 	}
 	return ss.str();
 }
@@ -102,8 +101,8 @@ Flow FlowSerializer::fromString(const std::string &value) {
 		double fract;
 		int exp;
 		ss >> cname >> fract >> exp >> cunit;
-		CalculationUnit *unit = CalculationUnit::fromString(cunit);
-		cd3assert(unit != CalculationUnit::null, str(format("%2%\nunknown calculation unit: %1%") % cunit % value));
+		Flow::CalculationUnit unit = string2cu(cunit);
+		cd3assert(unit != Flow::null, str(format("%2%\nunknown calculation unit: %1%") % cunit % value));
 		f.addUnit(cname, unit, ldexp(fract, exp));
 	}
 	return f;

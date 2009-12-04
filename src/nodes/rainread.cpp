@@ -5,7 +5,6 @@
 #include <QStringList>
 #include <QDateTime>
 
-#include <calculationunit.h>
 
 #include <cd3assert.h>
 
@@ -18,7 +17,7 @@ struct RainReadPriv {
 };
 
 RainRead::RainRead() {
-	out.addUnit("rain", CU::rain, 0.0);
+	out.addUnit("rain", Flow::rain, 0.0);
 	addOutPort(ADD_PARAMETERS(out));
 	addParameter(ADD_PARAMETERS(file_name));
 	addParameter(ADD_PARAMETERS(base_date));
