@@ -5,6 +5,7 @@ CD3_DECLARE_NODE_NAME(CycleNodeEnd)
 
 CycleNodeEnd::CycleNodeEnd() {
 	addInPort(ADD_PARAMETERS(in));
+	addParameter(ADD_PARAMETERS(start));
 }
 
 CycleNodeEnd::~CycleNodeEnd() {
@@ -13,7 +14,7 @@ CycleNodeEnd::~CycleNodeEnd() {
 int CycleNodeEnd::f(int time, int dt) {
 	(void) time;
 	cd3assert(start, "start not set");
-	start->out = in;
+	start->setState("state", in);
 	return dt;
 }
 
