@@ -72,8 +72,8 @@ private:
 #endif
 };
 
-std::string cu2string(Flow::CalculationUnit c);
-Flow::CalculationUnit string2cu(std::string s);
+CD3_PUBLIC std::string cu2string(Flow::CalculationUnit c);
+CD3_PUBLIC Flow::CalculationUnit string2cu(std::string s);
 
 
 #endif // FLOW_H
