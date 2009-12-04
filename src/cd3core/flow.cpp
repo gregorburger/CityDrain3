@@ -142,9 +142,13 @@ bool Flow::empty() const {
 }
 
 void Flow::dump() const {
+	cout << "name\tvalue\ttype\n";
 	BOOST_FOREACH(std::string name, fd->names) {
-		std::cout << "Flow::flow.dump.names " << name << std::endl;
+		std::cout << name << "\t"
+				<< getValue(name) << "\t"
+				<< cu2string(getUnit(name)) << "\n";
 	}
+	cout << endl;
 }
 
 unsigned int Flow::countUnits(Flow::CalculationUnit unit) const {
