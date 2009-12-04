@@ -1,5 +1,4 @@
 #include "qswcalcunit.h"
-#include <calculationunit.h>
 
 #include <QDebug>
 
