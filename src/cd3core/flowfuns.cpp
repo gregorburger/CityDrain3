@@ -6,7 +6,6 @@
 #include <sstream>
 
 Flow FlowFuns::mix(const std::vector<Flow*> &inputs) {
-	std::set<std::string> qe_names;
 	Flow f;
 	double qe = 0;
 	int num_inputs = inputs.size();
@@ -14,26 +13,16 @@ Flow FlowFuns::mix(const std::vector<Flow*> &inputs) {
 	for (int i = 0; i < num_inputs; i++) {
 		if (inputs[i]->countUnits(Flow::flow) > 0) {
 			qe += inputs[i]->getIth(Flow::flow, 0);
-			qe_names.insert(inputs[i]->getUnitNames(Flow::flow)[0]);
 			continue;
 		}
 		if (inputs[i]->countUnits(Flow::rain) > 0) {
 			qe += inputs[i]->getIth(Flow::rain, 0);
-			qe_names.insert(inputs[i]->getUnitNames(Flow::rain)[0]);
 			continue;
 		}
-		cd3assert(false, "can not mix without either Flow::flow or rain");
+		cd3assert(false, "can not mix without either flow or rain");
 	}
 
-	std::stringstream ss;
-
-	ss  << "mixed Flow::flow:";
-
-	BOOST_FOREACH(std::string name, qe_names) {
-		ss << " " << name;
-	}
-
-	f.addUnit(ss.str(), Flow::flow, qe);
+	f.addUnit(inputs[0]->getUnitNames(Flow::flow)[0], Flow::flow, qe);
 	std::set<std::string> already_mixed;
 
 	for (int i = 0; i < num_inputs; i++) {
