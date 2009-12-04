@@ -17,11 +17,8 @@ using namespace boost;
 #include <node.h>
 #include <simulation.h>
 #include <flow.h>
-#include <calculationunit.h>
 #include <controller.h>
 #include <nodeconnection.h>
-#include <../nodes/cyclenodeend.h>
-#include <../nodes/cyclenodestart.h>
 
 struct SaxLoaderPriv {
 	NodeRegistry node_registry;
