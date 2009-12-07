@@ -1,6 +1,8 @@
 cmake_minimum_required (VERSION 2.6)
 project(cd3)
 
+set(CMAKE_CXX_FLAGS "-g -Wall")
+
 INCLUDE_DIRECTORIES(src/cd3core src/cd3core/qs)
 find_package(Qt4 REQUIRED)
 
