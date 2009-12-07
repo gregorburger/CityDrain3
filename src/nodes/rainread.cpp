@@ -17,7 +17,6 @@ struct RainReadPriv {
 };
 
 RainRead::RainRead() {
-	out.addUnit("rain", Flow::rain, 0.0);
 	addOutPort(ADD_PARAMETERS(out));
 	addParameter(ADD_PARAMETERS(file_name));
 	addParameter(ADD_PARAMETERS(base_date));
@@ -66,7 +65,7 @@ void RainRead::deinit() {
 
 int RainRead::f(int time, int dt) {
 	if (priv->rain_file->atEnd()) {
-		out.setValue("rain", 0);
+		out[0] = 0;
 		return dt;
 	}
 	QDateTime calc_date = priv->base_date.addSecs(time+dt);
@@ -85,7 +84,7 @@ int RainRead::f(int time, int dt) {
 
 	rain -= out_rain;
 
-	out.setValue("rain", out_rain);
+	out[0] = out_rain;
 	return dt;
 }
 

@@ -5,7 +5,6 @@ using namespace std;
 CD3_DECLARE_NODE_NAME(CycleNodeStart)
 
 CycleNodeStart::CycleNodeStart() {
-	out = Flow::nullFlow();
 	state = &out;
 	addOutPort(ADD_PARAMETERS(out));
 	addState(ADD_PARAMETERS_P(state));

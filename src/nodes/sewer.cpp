@@ -10,10 +10,8 @@ using namespace boost;
 CD3_DECLARE_NODE_NAME(Sewer)
 
 Sewer::Sewer() {
-	in = new Flow();
-	out = new Flow();
-	addInPort(ADD_PARAMETERS_P(in));
-	addOutPort(ADD_PARAMETERS_P(out));
+	addInPort(ADD_PARAMETERS(in));
+	addOutPort(ADD_PARAMETERS(out));
 	addParameter(ADD_PARAMETERS(K));
 	addParameter(ADD_PARAMETERS(X));
 	addParameter(ADD_PARAMETERS(N));
@@ -23,14 +21,9 @@ Sewer::Sewer() {
 }
 
 Sewer::~Sewer() {
-	delete in;
-	delete out;
 }
 
 void Sewer::deinit() {
-	for (int i = 0; i < N; i++) {
-		delete V[i];
-	}
 }
 
 void Sewer::init(int start, int end, int dt) {
@@ -38,8 +31,8 @@ void Sewer::init(int start, int end, int dt) {
 	(void) end;
 
 	for (int i = 0; i < N; i++) {
-		V.push_back(new Flow());
-		addState(str(format("V[%1%]") % i), V[i]);
+		V.push_back(Flow());
+		addState(str(format("V[%1%]") % i), &V[i]);
 	}
 
 	addMuskParam(dt);
@@ -51,17 +44,12 @@ int Sewer::f(int time, int dt) {
 	double C_x, C_y;
 	setMuskParam(&C_x, &C_y, dt);
 
-	Flow tmp = *in;
+	Flow tmp = in;
 
 	for (int i = 0; i < N; i++) {
-		if (V[i]->empty()) {
-			*V[i] = *in;
-			V[i]->clear();
-		}
-
-		tmp = FlowFuns::route_sewer(tmp, V[i], C_x, C_y, dt);
+		tmp = FlowFuns::route_sewer(tmp, &V[i], C_x, C_y, dt);
 	}
-	*out = tmp;
+	out = tmp;
 
 	return dt;
 }

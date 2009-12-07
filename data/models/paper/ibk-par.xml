@@ -6,6 +6,12 @@
 	<pluginpath path="nodes" />
 	<simulation class="ParallelSimulation">
 		<time start="0" stop="72000" dt="300" />
+        <flowdefinition>
+		    <flow name="Q"/>
+		    <concentration name="C0"/>
+		    <concentration name="C1"/>
+		    <concentration name="C2"/>
+		</flowdefinition>
 	</simulation>
 	<model>
 		<nodelist>
@@ -23,10 +29,10 @@
 			<node id="ConstSource-0" class="ConstSource">
 				<parameter name="const_flow" kind="complex" type="Flow">
 					<flow>
-						<unit name="Q" kind="Flow" value="100.000000" />
-						<unit name="C2" kind="Concentration" value="3.000000" />
-						<unit name="C1" kind="Concentration" value="5.000000" />
-						<unit name="C0" kind="Concentration" value="1.000000" />
+						<unit name="Q" value="100.000000" />
+						<unit name="C2" value="3.000000" />
+						<unit name="C1" value="5.000000" />
+						<unit name="C0" value="1.000000" />
 					</flow>
 				</parameter>
 			</node>

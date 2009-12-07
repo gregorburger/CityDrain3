@@ -1,9 +1,10 @@
 #ifndef MIXER_H
 #define MIXER_H
 
+#include <flow.h>
+
 #include <node.h>
 #include <vector>
-class Flow;
 
 CD3_DECLARE_NODE(Mixer)
 public:
@@ -14,8 +15,8 @@ public:
 	void deinit();
 private:
 	int num_inputs;
-	Flow *out;
-	std::vector<Flow*> inputs;
+	Flow out;
+	std::vector<Flow> inputs;
 };
 
 #endif // MIXER_H

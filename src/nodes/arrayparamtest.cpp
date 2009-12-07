@@ -16,11 +16,9 @@ void ArrayParamTest::init(int start, int stop, int dt) {
 	(void) start;
 	(void) stop;
 	(void) dt;
-	out.addUnit("Qe", Flow::flow, Qe);
+	out[0] = Qe;
 	for (size_t i = 0; i < C.size(); i++) {
-		string cname = "C_";
-		cname += lexical_cast<string>(i);
-		out.addUnit(cname, Flow::concentration, C[i]);
+		out[i+1] = C[i];
 	}
 }
 

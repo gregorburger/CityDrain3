@@ -10,7 +10,7 @@ class Flow;
 
 struct CD3_PUBLIC FlowFuns {
 
-static Flow mix(const std::vector<Flow*> &inputs);
+static Flow mix(const std::vector<Flow> &inputs);
 
 static std::pair<Flow, Flow> split(const Flow f,
 								   float ratio);

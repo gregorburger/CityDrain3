@@ -21,10 +21,6 @@ void QSWFlow::clear() {
 	flow->clear();
 }
 
-void QSWFlow::addUnit(QString name, QSWCalcUnit *unit, double value) {
-	flow->addUnit(name.toStdString(), unit->unit, value);
-}
-
 void QSWFlow::setValue(QString name, double value) {
 	flow->setValue(name.toStdString(), value);
 }

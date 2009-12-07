@@ -6,7 +6,13 @@
 	<pluginpath path="nodes" />
 
 	<simulation class="DefaultSimulation">
-		<time start="0" stop="7200" dt="300" />
+		<time start="0" stop="72000000" dt="300" />
+		<flowdefinition>
+		    <flow name="Q"/>
+		    <concentration name="C0"/>
+		    <concentration name="C1"/>
+		    <concentration name="C2"/>
+		</flowdefinition>
 	</simulation>
 
 	<model>
@@ -14,9 +20,10 @@
 			<node id="constsource" class="ConstSource">
 				<parameter name="const_flow" kind="complex" type="Flow">
 					<flow>
-						<unit name="Q" kind="Flow" value="234.0" />
-						<unit name="C0" kind="Concentration" value="0.1"/>
-						<unit name="C1" kind="Concentration" value="0.2"/>
+						<unit name="Q" value="234.0" />
+						<unit name="C0" value="0.1"/>
+						<unit name="C1" value="0.2"/>
+						<unit name="C2" value="0.3" />
 					</flow>
 				</parameter>
 			</node>

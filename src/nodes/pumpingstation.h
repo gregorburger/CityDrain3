@@ -17,7 +17,7 @@ private:
 	Flow in, out_w, out_p, volume;
 
 	double basin_volume;
-	int NP;
+	size_t NP;
 	std::vector<double> Qp, Von, Voff, Qpp;
 	int number_of_pollutants;
 };
