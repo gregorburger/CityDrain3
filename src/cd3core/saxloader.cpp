@@ -214,16 +214,16 @@ bool SaxLoader::endElement(const QString &/*ns*/,
 		if (cycle_break) {
 			breakCycle();
 			cycle_break = false;
-			consumed = true;
+		} else {
+			Node *sink = pd->model->getNode(sink_id);
+			Node *source = pd->model->getNode(source_id);
+			Logger(Debug) << "creating connection:"
+					<< source << "[" << source_port << "] => "
+					<< sink << "[" << sink_port << "]";
+			pd->model->addConnection(
+					pd->simulation->createConnection(source, source_port,
+													 sink, sink_port));
 		}
-		Node *sink = pd->model->getNode(sink_id);
-		Node *source = pd->model->getNode(source_id);
-		Logger(Debug) << "creating connection:"
-				<< source << "[" << source_port << "] => "
-				<< sink << "[" << sink_port << "]";
-		pd->model->addConnection(
-				pd->simulation->createConnection(source, source_port,
-												 sink, sink_port));
 		consumed = true;
 	}
 	if (lname == "nodelist") {
