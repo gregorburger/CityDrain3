@@ -24,10 +24,10 @@ void Mixer::init(int start, int end, int dt) {
 	(void) end;
 	(void) dt;
 	for (int i = 0; i < num_inputs; i++) {
-		Flow tmp;
+		Flow *tmp = new Flow();
 		std::ostringstream name;
 		name << "inputs[" << i << "]";
-		addInPort(name.str(), &tmp);
+		addInPort(name.str(), tmp);
 		inputs.push_back(tmp);
 	}
 }

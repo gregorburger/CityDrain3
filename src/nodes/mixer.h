@@ -16,7 +16,7 @@ public:
 private:
 	int num_inputs;
 	Flow out;
-	std::vector<Flow> inputs;
+	std::vector<Flow *> inputs;
 };
 
 #endif // MIXER_H

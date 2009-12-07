@@ -5,6 +5,22 @@
 #include <boost/foreach.hpp>
 #include <sstream>
 
+Flow FlowFuns::mix(const std::vector<Flow*> &inputs) {
+	Flow f;
+	for (size_t i = 0; i < inputs.size(); i++) {
+		f[0] += (*inputs[i])[0];
+	}
+
+	for (size_t cn = 0; cn < f.countUnits(Flow::concentration); cn++) {
+		double c = 0.0;
+		for (size_t i = 0; i <  inputs.size(); i++) {
+			c += (*inputs[i])[cn+1] * (*inputs[i])[0];
+		}
+		f[cn+1] = c/f[0];
+	}
+	return f;
+}
+
 Flow FlowFuns::mix(const std::vector<Flow> &inputs) {
 	Flow f;
 	for (size_t i = 0; i < inputs.size(); i++) {
