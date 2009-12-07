@@ -1,6 +1,7 @@
 #ifndef FILEOUT_H
 #define FILEOUT_H
 
+#include <flow.h>
 #include <node.h>
 #include <QFile>
 #include <QTextStream>
@@ -13,7 +14,7 @@ public:
 	virtual void init(int start, int stop, int dt);
 	virtual void deinit();
 private:
-	Flow *in;
+	Flow in;
 	std::string *out_file_name;
 	QFile file;
 	QTextStream stream;

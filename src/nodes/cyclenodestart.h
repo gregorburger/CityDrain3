@@ -9,7 +9,6 @@ public:
 	CycleNodeStart();
 	virtual ~CycleNodeStart();
 	int f(int time, int dt);
-	Flow *state;
 	Flow out;
 };
 
