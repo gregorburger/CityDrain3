@@ -70,7 +70,7 @@ void OrderedPipeSimulation::start(int time) {
 	Node *last = pd->order.back();
 
 	QTime start_time = QTime::currentTime();
-	while (current_time <= sim_param.stop & running) {
+	while (current_time <= sim_param.stop && running) {
 		OrderedWorker *worker = new OrderedWorker(this, pd, last, current_time, sim_param.dt);
 		worker->in = upper_queue;
 		upper_queue = worker->out;
