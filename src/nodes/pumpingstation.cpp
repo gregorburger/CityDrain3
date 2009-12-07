@@ -32,7 +32,7 @@ void PumpingStation::init(int start, int end, int dt) {
 	NP = Qp.size();
 	cd3assert(Von.size() == NP, "vector Von must be of same size as Qp");
 	cd3assert(Voff.size() == NP, "vector Voff must be of same size as Qp");
-	for (int i = 0; i < NP; ++i) {
+	for (size_t i = 0; i < NP; ++i) {
 		cd3assert(Von[i] >= 0 && Von[i] <= basin_volume, "Von[i] ");
 		cd3assert(Voff[i] >= 0 && Voff[i] <= basin_volume, "Von[i] ");
 		cd3assert(Von[i] >= Voff[i], "Von[i] must be smaller than Voff[i]");
@@ -40,7 +40,7 @@ void PumpingStation::init(int start, int end, int dt) {
 
 	push_back(Qpp).repeat(NP, 0.0);
 
-	for (int i = 0; i < NP - 1; ++i) {
+	for (size_t i = 0; i < NP - 1; ++i) {
 		cd3assert(Von[i] <= Von[i+1], "Von[i] must be smaller than Von[i+1]");
 		cd3assert(Voff[i] <= Voff[i+1], "Voff[i] must be smaller than Voff[i+1]");
 	}
@@ -73,7 +73,7 @@ int PumpingStation::f(int time, int dt) {
 	Qpmod += 0.0;
 	Qpmod.insert(Qpmod.end(), Qp.begin(), Qp.end());
 	vector<double> vik(NP);
-	for (int i = 0; i < NP; i++) {
+	for (size_t i = 0; i < NP; i++) {
 		vik[i] = vi + qin * dt - accumulate(Qpmod.begin(), Qpmod.begin()+i, 0) * dt;
 		//Qopt1=(((Vik(k)-Voff(k))/tstep)+abs((Vik(k)-Voff(k))/tstep))/2;
 		double Qopt1_tmp = (vik[i]-Voff[i])/dt;
