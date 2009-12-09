@@ -1,11 +1,11 @@
-import cd3
+import pycd3
 
-class PythonNode(cd3.Node):
+class PythonNode(pycd3.Node):
 	def __init__(self):
-		cd3.Node.__init__(self)
+		pycd3.Node.__init__(self)
 		self.x = 10
 #		self.addParameter('x', self.x)
-		self.flow = cd3.Flow()
+		self.flow = pycd3.Flow()
 		self.addInPort('in', self.flow)
 		self.addOutPort('out', self.flow)
 		pass
@@ -16,10 +16,10 @@ class PythonNode(cd3.Node):
 	def f(self, time, dt):
 		return dt
 
-class MichiPythonNode(cd3.Node):
+class MichiPythonNode(pycd3.Node):
 	def __init__(self):
-		cd3.Node.__init__(self)
-		self.flow = cd3.Flow()
+		pycd3.Node.__init__(self)
+		self.flow = pycd3.Flow()
 		self.addInPort('in', self.flow)
 		self.addOutPort('out', self.flow)
 		self.x = 10
@@ -32,13 +32,13 @@ class MichiPythonNode(cd3.Node):
 #		print "f: %s - %s" % (time, dt)
 		return dt
 
-class DPythonNode(cd3.Node):
+class DPythonNode(pycd3.Node):
 	def __init__(self):
-		cd3.Node.__init__(self)
-		f = cd3.Flow()
-		cd3.test_flow(f)
+		pycd3.Node.__init__(self)
+		f = pycd3.Flow()
+		pycd3.test_flow(f)
 		#self.addInPort("in", f)
-#		fout = cd3.Flow()
+#		fout = pycd3.Flow()
 		#self.addOutPort("out", f)
 		print "ende __init__"
 		

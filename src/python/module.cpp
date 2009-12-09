@@ -73,7 +73,7 @@ void test_node(shared_ptr<NodeWrapper> n) {
 	n->f(300, 300);
 }
 
-BOOST_PYTHON_MODULE(cd3) {
+BOOST_PYTHON_MODULE(pycd3) {
 	class_<NodeWrapper, shared_ptr<NodeWrapper>, boost::noncopyable>("Node")
 			.def("f", pure_virtual(&Node::f))
 			.def("init", pure_virtual(&Node::init))
@@ -93,7 +93,7 @@ PythonEnv *PythonEnv::instance = 0;
 PythonEnv::PythonEnv() {
 	priv = new PythonEnvPriv();
 	Py_Initialize();
-	initcd3();
+	initpycd3();
 	priv->main_module = import("__main__");
 	priv->main_namespace = priv->main_module.attr("__dict__");
 }
@@ -126,9 +126,9 @@ void PythonEnv::freeInstance() {
 void PythonEnv::registerNodes(NodeRegistry *registry, const string &module) {
 	try {
 		object result = exec(
-				"import cd3\n"
+				"import pycd3\n"
 				"__import__('cdtest', None, None, [], 1)\n"
-				"clss = cd3.Node.__subclasses__()\n"
+				"clss = pycd3.Node.__subclasses__()\n"
 				, priv->main_namespace, priv->main_namespace);
 		object clss = priv->main_namespace["clss"];
 		cout << "found " << len(clss) << " Nodes in module " << module << endl;
