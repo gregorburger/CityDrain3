@@ -9,66 +9,71 @@
 #endif
 #include <algorithm>
 #include <boost/foreach.hpp>
-#include <calculationunit.h>
 #include <cd3assert.h>
 
 using namespace boost;
 
 struct FlowDefinition {
+	FlowDefinition() {
+		size = 0;
+		defined = false;
+	}
 	std::vector<std::string> names;
-	unordered_map<const CalculationUnit *, std::vector<std::string> > unit_names;
+	unordered_map<Flow::CalculationUnit, std::vector<std::string> > unit_names;
 	unordered_map<std::string, int> positions;
-	unordered_map<std::string, const CalculationUnit *> units;
+	unordered_map<std::string, Flow::CalculationUnit > units;
+	size_t size;
+	bool defined;
 };
 
+FlowDefinition Flow::fd;
+
+typedef std::pair<std::string, Flow::CalculationUnit> fdpair;
+
+void Flow::define(std::map<std::string, CalculationUnit> definition) {
+	cd3assert(!fd.defined, "flow already defined");
+	bool qfound = false;
+	BOOST_FOREACH(fdpair item, definition) {
+		if (item.second != flow)
+			continue;
+		addUnit(item.first, item.second);
+		cd3assert(qfound == false, "flow can only be defined once");
+		qfound = true;
+	}
+	cd3assert(qfound, "at least one flow must be set");
+	BOOST_FOREACH(fdpair item, definition) {
+		if (item.second != concentration)
+			continue;
+		addUnit(item.first, item.second);
+	}
+
+	cd3assert(fd.size == definition.size(), "not all units set");
+	fd.defined = true;
+}
+
 Flow::Flow() {
-#ifdef SHARED_FLOW
-	f = shared_ptr<FlowPriv>(new FlowPriv());
-	fd = shared_ptr<FlowDefinition>(new FlowDefinition());
-#else
-	f = new FlowPriv();
-	fd = new FlowDefinition();
-#endif
+	cd3assert(fd.defined, "flow not defined");
+	f = shared_ptr<FlowPriv>(new FlowPriv(fd.size));
+	fill(f->begin(), f->end(), 0.0);
 }
 
 Flow::Flow(const Flow &other) {
-#ifdef SHARED_FLOW
+	cd3assert(fd.defined, "flow not defined");
 	f = other.f;
-	fd = other.fd;
-#else
-	f = new FlowPriv(*other.f);
-	fd = new FlowDefinition(*other.fd);
-#endif
-}
-
-Flow Flow::nullFlow() {
-	Flow f;
-	f.addUnit("flow", CU::flow, 0.0);
-	return f;
 }
 
 Flow::~Flow() {
-#ifndef SHARED_FLOW
-	delete f;
-	delete fd;
-#endif
 }
 
 Flow &Flow::operator =(const Flow &other) {
-#ifdef SHARED_FLOW
+	cd3assert(fd.defined, "flow not defined");
 	f = other.f;
-	fd = other.fd;
-#else
-	delete f;
-	delete fd;
-	f = new FlowPriv(*other.f);
-	fd = new FlowDefinition(*other.fd);
-#endif
 	return *this;
 }
 
-#ifdef SHARED_FLOW
+
 void Flow::copyData() {
+	cd3assert(fd.defined, "flow not defined");
 	if (!f.unique()) {
 		FlowPriv *old = f.get();
 		f = shared_ptr<FlowPriv>
@@ -76,102 +81,118 @@ void Flow::copyData() {
 	}
 }
 
-void Flow::copyDefinition() {
-	if (!fd.unique()) {
-		FlowDefinition *old = fd.get();
-		fd = shared_ptr<FlowDefinition>
-			 (new FlowDefinition(*old));
-	}
-}
-#endif
-
 void Flow::addUnit(const std::string &name,
-				 const CalculationUnit *unit,
-				 double value) {
-	cd3assert(fd->positions.find(name) == fd->positions.end(), "name already defined");
-	cd3assert(unit, "unit is null");
+				   const Flow::CalculationUnit unit) {
+	cd3assert(unit != Flow::null, "unit is null");
+	cd3assert(fd.positions.find(name) == fd.positions.end(), "name already defined");
 
-#ifdef SHARED_FLOW
-	copyDefinition();
-	copyData();
-#endif
-	f->push_back(value);
-	fd->names.push_back(name);
-	if (fd->unit_names.find(unit) == fd->unit_names.end())
-		fd->unit_names[unit] = std::vector<std::string>();
-	fd->unit_names[unit].push_back(name);
-	fd->positions[name] = f->size()-1;
-	fd->units[name] = unit;
+	fd.names.push_back(name);
+	if (fd.unit_names.find(unit) == fd.unit_names.end())
+		fd.unit_names[unit] = std::vector<std::string>();
+	fd.unit_names[unit].push_back(name);
+	fd.positions[name] = fd.size++;
+	fd.units[name] = unit;
 }
 
 void Flow::setValue(const std::string &name,
 					double value) {
-	cd3assert(fd->positions.find(name) != fd->positions.end(), "no such name");
-#ifdef SHARED_FLOW
+	cd3assert(fd.defined, "flow not defined");
+	cd3assert(fd.positions.find(name) != fd.positions.end(), "no such name");
 	copyData();
-#endif
-	(*f)[fd->positions[name]] = value;
+	(*f)[fd.positions[name]] = value;
 }
 
 double Flow::getValue(const std::string &name) const {
-	cd3assert(fd->positions.find(name) != fd->positions.end(), "no such name");
-	return (*f)[fd->positions[name]];
+	cd3assert(fd.defined, "flow not defined");
+	cd3assert(fd.positions.find(name) != fd.positions.end(), "no such name");
+	return (*f)[fd.positions[name]];
 }
 
-const CalculationUnit *Flow::getUnit(const std::string &name) const {
-	cd3assert(fd->positions.find(name) != fd->positions.end(), "no such name");
-	return fd->units[name];
+Flow::CalculationUnit Flow::getUnit(const std::string &name) {
+	cd3assert(fd.defined, "flow not defined");
+	cd3assert(fd.positions.find(name) != fd.positions.end(), "no such name");
+	return fd.units[name];
 }
 
-const std::vector<std::string> & Flow::getNames() const {
-	return fd->names;
+const std::vector<std::string> & Flow::getNames() {
+	cd3assert(fd.defined, "flow not defined");
+	return fd.names;
 }
 
 const std::vector<std::string> &
-Flow::getUnitNames(const CalculationUnit *unit) const{
-	cd3assert(unit, "null unit not allowed");
-	cd3assert(fd->unit_names.find(unit) != fd->unit_names.end(), "no such unit");
-	return fd->unit_names[unit];
+Flow::getUnitNames(Flow::CalculationUnit unit) {
+	cd3assert(fd.defined, "flow not defined");
+	cd3assert(unit != Flow::null, "null unit not allowed");
+	cd3assert(fd.unit_names.find(unit) != fd.unit_names.end(), "no such unit");
+	return fd.unit_names[unit];
 }
 
-bool Flow::hasName(const std::string &name) const {
-	return std::count(fd->names.begin(), fd->names.end(), name) > 0;
-}
-
-bool Flow::empty() const {
-	return fd->names.empty();
+bool Flow::hasName(const std::string &name) {
+	cd3assert(fd.defined, "flow not defined");
+	return std::count(fd.names.begin(), fd.names.end(), name) > 0;
 }
 
 void Flow::dump() const {
-	BOOST_FOREACH(std::string name, fd->names) {
-		std::cout << "flow.dump.names " << name << std::endl;
+	cd3assert(fd.defined, "flow not defined");
+	cout << "name\tvalue\ttype\n";
+	BOOST_FOREACH(std::string name, fd.names) {
+		std::cout << name << "\t"
+				<< getValue(name) << "\t"
+				<< cu2string(getUnit(name)) << "\n";
 	}
+	cout << endl;
 }
 
-unsigned int Flow::countUnits(const CalculationUnit *unit) const {
-	return fd->unit_names[unit].size();
+unsigned int Flow::countUnits(Flow::CalculationUnit unit) {
+	cd3assert(fd.defined, "flow not defined");
+	return fd.unit_names[unit].size();
 }
 
-void Flow::setIth(const CalculationUnit *unit, size_t i, double value) {
-	cd3assert(fd->unit_names.find(unit) != fd->unit_names.end(), "no such unit");
-	cd3assert(fd->unit_names[unit].size() > i, "ith is too much");
-#ifdef SHARED_FLOW
+void Flow::setIth(Flow::CalculationUnit unit, size_t i, double value) {
+	cd3assert(fd.defined, "flow not defined");
+	cd3assert(fd.unit_names.find(unit) != fd.unit_names.end(), "no such unit");
+	cd3assert(fd.unit_names[unit].size() > i, "ith is too much");
 	copyData();
-#endif
-	(*f)[fd->positions[fd->unit_names[unit][i]]] = value;
+	(*f)[fd.positions[fd.unit_names[unit][i]]] = value;
 }
 
-double Flow::getIth(const CalculationUnit *unit, size_t i) const {
-	cd3assert(fd->unit_names.find(unit) != fd->unit_names.end(), "no such unit");
-	cd3assert(fd->unit_names[unit].size() > i, "ith is too much");
-	return (*f)[fd->positions[fd->unit_names[unit][i]]];
+double Flow::getIth(Flow::CalculationUnit unit, size_t i) const {
+	cd3assert(fd.defined, "flow not defined");
+	cd3assert(fd.unit_names.find(unit) != fd.unit_names.end(), "no such unit");
+	cd3assert(fd.unit_names[unit].size() > i, "ith is too much");
+	return (*f)[fd.positions[fd.unit_names[unit][i]]];
 }
 
 void Flow::clear() {
-#ifdef SHARED_FLOW
+	cd3assert(fd.defined, "flow not defined");
 	copyData();
-#endif
-	for (size_t i = 0; i < fd->names.size(); i++) {
+	for (size_t i = 0; i < fd.size; i++) {
 		(*f)[i] = 0.0;
 	}
+}
+
+string cu2string(Flow::CalculationUnit c) {
+	switch (c) {
+		case Flow::flow: return "Flow";
+		case Flow::concentration: return "Concentration";
+		case Flow::rain: return "Rain";
+		case Flow::volume: return "Volume";
+		default : return "Null";
+	}
+}
+
+Flow::CalculationUnit string2cu(string s) {
+	if (s == "Flow")
+		return Flow::flow;
+
+	if (s == "Concentration")
+		return Flow::concentration;
+
+	if (s == "Rain")
+		return Flow::rain;
+
+	if (s == "Volume")
+		return Flow::volume;
+
+	return Flow::null;
 }

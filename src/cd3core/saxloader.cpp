@@ -6,8 +6,10 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/bind.hpp>
 #include <memory>
+#include <stack>
 
 using namespace boost;
+using namespace std;
 
 #include <noderegistry.h>
 #include <simulationregistry.h>
@@ -17,11 +19,7 @@ using namespace boost;
 #include "node.h"
 #include <simulation.h>
 #include <flow.h>
-#include <calculationunit.h>
 #include <controller.h>
-#include <nodeconnection.h>
-#include <../nodes/cyclenodeend.h>
-#include <../nodes/cyclenodestart.h>
 
 struct SaxLoaderPriv {
 	NodeRegistry node_registry;
@@ -29,11 +27,14 @@ struct SaxLoaderPriv {
 	TypeRegistry type_registry;
 	IModel *model;
 	ISimulation *simulation;
-	Flow f;
+	Flow *f;
 	std::string param_name;
+	std::map<std::string, Flow::CalculationUnit> flow_definition;
+	stack<string> parent_nodes;
 };
 
 SaxLoader::SaxLoader(IModel *model) {
+	cd3assert(model, "model must not be null");
 	pd = new SaxLoaderPriv();
 	pd->model = model;
 	pd->simulation = 0;
@@ -47,6 +48,8 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 							 const QString &lname,
 							 const QString &/*qname*/,
 							 const QXmlAttributes &atts) {
+	bool consumed = false;
+
 	if (lname == "node") {
 		std::string id = atts.value("id").toStdString();
 		std::string klass = atts.value("class").toStdString();
@@ -62,28 +65,28 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		}
 		current->setId(id);
 		pd->model->addNode(current);
-		return true;
+		consumed = true;
 	}
 	if (lname == "sink") {
 		sink_id = atts.value("node").toStdString();
 		sink_port = atts.value("port").toStdString();
-		return true;
+		consumed = true;
 	}
 	if (lname == "source") {
 		source_id = atts.value("node").toStdString();
 		source_port = atts.value("port").toStdString();
-		return true;
+		consumed = true;
 	}
 	if (lname == "parameter") {
 		loadParameter(atts);
-		return true;
+		consumed = true;
 	}
 	if (lname == "simulation") {
 		cd3assert(pd->simulation == 0, "Simulation already set");
 		std::string klass = atts.value("class").toStdString();
 		Logger(Debug) << "loading simulation" << klass;
 		pd->simulation = pd->sim_registry.createSimulation(klass);
-		return true;
+		consumed = true;
 	}
 	if (lname == "controller") {
 		cd3assert(pd->simulation != 0, "no simulation set");
@@ -96,7 +99,7 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 				.connect(bind<void>(&Controller::controllBefore, c, _1, _2));
 		pd->simulation->timestep_after
 				.connect(bind<void>(&Controller::controllAfter, c, _1, _2));
-		return true;
+		consumed = true;
 	}
 	if (lname == "time") {
 		SimulationParameters p;
@@ -108,56 +111,48 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 				"stop:" << atts.value("stop") <<
 				"dt:" << atts.value("dt");
 		pd->simulation->setSimulationParameters(p);
-		return true;
+		consumed = true;
 	}
-	typedef CalculationUnit CU;
 	if (lname == "unit") {
-		std::string kind = atts.value("kind").toStdString();
-		CU *cunit = CU::fromString(kind);
-		cd3assert(cunit != CU::null,
-				  str(format("can't determine flow unit type: [%1%]") % kind));
 		double value = lexical_cast<double>(atts.value("value").toStdString());
-		pd->f.addUnit(atts.value("name").toStdString(),
-					  cunit,
-					  value);
-		return true;
+		pd->f->setValue(atts.value("name").toStdString(), value);
+		consumed = true;
 	}
 	if (lname == "pluginpath") {
 		std::string path = atts.value("path").toStdString();
 		pd->node_registry.addNativePlugin(path);
 		pd->sim_registry.addNativePlugin(path);
-		return true;
+		consumed = true;
 	}
 	if (lname == "pythonmodule") {
-
 		std::string module = atts.value("module").toStdString();
 		cout << "Loading Python Module " << module << endl;
 		pd->node_registry.addPythonPlugin(module);
-		return true;
+		consumed = true;
 	}
 	if (lname == "citydrain") {
-		return true;
+		consumed = true;
 	}
 	if (lname == "model") {
-		return true;
+		consumed = true;
 	}
 	if (lname == "nodelist") {
-		return true;
+		consumed = true;
 	}
 	if (lname == "connectionlist") {
-		return true;
+		consumed = true;
 	}
 	if (lname == "flow") {
-		//pd->f = Flow::nullFlow();
-		pd->f = Flow();
-		return true;
+		if (pd->parent_nodes.top() == "parameter")
+			pd->f = new Flow();
+		consumed = true;
 	}
 	if (lname == "connection") {
 		cycle_break = atts.value("cycle_break") == "true";
 		if (cycle_break) {
 			Logger(Standard) << "got cyclebreak";
 		}
-		return true;
+		consumed = true;
 	}
 	if (lname == "arrayentry") {
 		cd3assert(atts.index("value") >= 0, "arrayentry must provide a value");
@@ -165,9 +160,22 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		double value = atts.value("value").toDouble(&ok);
 		cd3assert(ok, "value is not a double value");
 		current->appendArrayParameter(pd->param_name, value);
+		consumed = true;
 	}
-	Logger(Debug) << "not used element:" << lname.toStdString();
-	return true;
+	if (lname == "concentration") {
+		cd3assert(atts.index("name") >= 0, "concentration must define a name");
+		std::string name = atts.value("name").toStdString();
+		cd3assert(name.length() > 0, "concentration name must not be empty");
+		pd->flow_definition[name] = Flow::concentration;
+		consumed = true;
+	}
+	if (lname == "flowdefinition") {
+		pd->flow_definition["Q"] = Flow::flow;
+		consumed = true;
+	}
+	pd->parent_nodes.push(lname.toStdString());
+	cd3assert(consumed, str(format("not used element: %1%") % lname.toStdString()));
+	return consumed;
 }
 
 bool SaxLoader::error(const QXmlParseException &exception) {
@@ -186,6 +194,7 @@ bool SaxLoader::warning(const QXmlParseException &exception) {
 }
 
 ISimulation *SaxLoader::load(QFile &file) {
+	cd3assert(file.exists(), "no such file or directory");
 	bool opened = file.open(QIODevice::ReadOnly);
 	cd3assert(opened, "could not open model");
 	QXmlSimpleReader r;
@@ -194,13 +203,15 @@ ISimulation *SaxLoader::load(QFile &file) {
 	r.setLexicalHandler(this);
 	QXmlInputSource source(&file);
 	r.parse(&source);
+	cd3assert(pd->simulation, "could not load simulation");
 	return pd->simulation;
 }
 
 bool SaxLoader::endElement(const QString &/*ns*/,
 						   const QString &lname,
 						   const QString &/*qname*/) {
-
+	pd->parent_nodes.pop();
+	bool consumed;
 	if (lname == "connection") {
 		cd3assert(!source_id.empty(), "source node not set");
 		cd3assert(!source_port.empty(), "source port not set");
@@ -209,22 +220,32 @@ bool SaxLoader::endElement(const QString &/*ns*/,
 		if (cycle_break) {
 			breakCycle();
 			cycle_break = false;
-			return true;
+		} else {
+			shared_ptr<Node> sink = pd->model->getNode(sink_id);
+			shared_ptr<Node> source = pd->model->getNode(source_id);
+			Logger(Debug) << "creating connection:"
+					<< source << "[" << source_port << "] => "
+					<< sink << "[" << sink_port << "]";
+			pd->model->addConnection(
+					pd->simulation->createConnection(source, source_port,
+													 sink, sink_port));
 		}
-		shared_ptr<Node> sink = pd->model->getNode(sink_id);
-		shared_ptr<Node> source = pd->model->getNode(source_id);
-		Logger(Debug) << "creating connection:"
-				<< source << "[" << source_port << "] => "
-				<< sink << "[" << sink_port << "]";
-		pd->model->addConnection(
-				pd->simulation->createConnection(source, source_port,
-												 sink, sink_port));
+		consumed = true;
 	}
 	if (lname == "nodelist") {
 		pd->model->initNodes(pd->simulation->getSimulationParameters());
+		consumed = true;
 	}
 	if (lname == "flow") {
-		current->setParameter<Flow>(pd->param_name, pd->f);
+		if (pd->parent_nodes.top() == "parameter") {
+			current->setParameter<Flow>(pd->param_name, *pd->f);
+			delete pd->f;
+		}
+		consumed = true;
+	}
+	if (lname == "flowdefinition") {
+		Flow::define(pd->flow_definition);
+		consumed = true;
 	}
 	return true;
 }
@@ -291,19 +312,17 @@ void SaxLoader::breakCycle() {
 	shared_ptr<Node> sink = pd->model->getNode(sink_id);
 	shared_ptr<Node> source = pd->model->getNode(source_id);
 
-	shared_ptr<Node> sstart = pd->node_registry.createNode("CycleNodeStart");
-	CycleNodeStart *start = (CycleNodeStart *) &(*sstart);
+	shared_ptr<Node> start = pd->node_registry.createNode("CycleNodeStart");
 	start->setId(sink_id+source_id+"-cycle_start");
-	shared_ptr<Node> send = pd->node_registry.createNode("CycleNodeEnd");
-	CycleNodeEnd *end = (CycleNodeEnd *) &(*send);
+	shared_ptr<Node> end = pd->node_registry.createNode("CycleNodeEnd");
 	end->setId(sink_id+source_id+"-cycle_end");
-	pd->model->addNode(sstart);
-	pd->model->addNode(send);
-	end->start = start;
-	pd->model->addConnection(pd->simulation->createConnection(sstart, "out",
+	pd->model->addNode(start);
+	pd->model->addNode(end);
+	end->setParameter("start", start);
+	pd->model->addConnection(pd->simulation->createConnection(start, "out",
 															  sink, sink_port));
 
 
 	pd->model->addConnection(pd->simulation->createConnection(source, source_port,
-															  send, "in"));
+															  end, "in"));
 }

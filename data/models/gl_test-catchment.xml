@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE citydrain SYSTEM "file:../dtd/model.dtd">
+
+<citydrain version="1.0">
+
+	<pluginpath path="nodes" />
+
+	<simulation class="DefaultSimulation">
+		<time start="0" stop="86400" dt="60" />
+		<flowdefinition>
+		    <flow name="Q"/>
+		    <concentration name="C0"/>
+		    <concentration name="C1"/>
+		    <concentration name="C2"/>
+		</flowdefinition>
+	</simulation>
+
+	<model>
+		<nodelist>
+			<node id="RainRead" class="RainRead">
+				<parameter name="file_name" type="string" value="data/models/gl_testrain_24h15min.ixx" />
+			</node>
+			
+			<node id="CatchmentCSS" class="CatchmentCSS">
+				<parameter name="area" type="int" value="10000" />
+				<parameter name="run_off_coeff" type="double" value="1.0" />
+				<parameter name="initial_loss" type="double" value="2.0" />
+				<parameter name="permanent_loss" type="double" value="1.0" />
+				<parameter name="N" type="int" value="1" />
+				<parameter name="K" type="double" value="120.0" />
+				<parameter name="X" type="double" value="0.0" />
+			</node>
+			
+			<node id="FileOut" class="FileOut">
+				<parameter name="out_file_name" type="string" value="tmp/gl_test_catchment.txt" />
+			</node>
+		</nodelist>
+		
+		<connectionlist>
+			<connection id="con-RainRead-CatchmentCSS">
+				<source node="RainRead" port="out" />
+				<sink node="CatchmentCSS" port="rain_in" />
+			</connection>
+
+
+			<connection id="con-CatchmentCSS-FileOut">
+				<source node="CatchmentCSS" port="out" />
+				<sink node="FileOut" port="in" />
+			</connection>
+
+		</connectionlist>
+	</model>
+</citydrain>

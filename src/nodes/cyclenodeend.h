@@ -4,14 +4,12 @@
 #include "../cd3core/node.h"
 #include <flow.h>
 
-class CycleNodeStart;
-
 CD3_DECLARE_NODE(CycleNodeEnd)
 public:
 	CycleNodeEnd();
 	virtual ~CycleNodeEnd();
 	int f(int time, int dt);
-	CycleNodeStart *start;
+	Node *start;
 	Flow in;
 };
 

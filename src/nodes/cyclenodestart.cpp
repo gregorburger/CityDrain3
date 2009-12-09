@@ -1,10 +1,12 @@
 #include "cyclenodestart.h"
+#include <iostream>
+using namespace std;
 
 CD3_DECLARE_NODE_NAME(CycleNodeStart)
 
 CycleNodeStart::CycleNodeStart() {
-	out = Flow::nullFlow();
 	addOutPort(ADD_PARAMETERS(out));
+	addState("state", &out);
 }
 
 CycleNodeStart::~CycleNodeStart() {

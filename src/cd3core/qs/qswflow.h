@@ -21,7 +21,6 @@ public:
 
 public Q_SLOTS:
 	void clear();
-	void addUnit(QString name, QSWCalcUnit *unit, double value);
 	void setValue(QString name, double value);
 	double getValue(QString name) const;
 	void setIth(QSWCalcUnit *unit, int i, double value);

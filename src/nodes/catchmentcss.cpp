@@ -1,7 +1,6 @@
 #include "catchmentcss.h"
 #include <flow.h>
 #include <flowfuns.h>
-#include <calculationunit.h>
 #include <boost/format.hpp>
 #include <boost/foreach.hpp>
 
@@ -12,8 +11,8 @@ CD3_DECLARE_NODE_NAME(CatchmentCSS)
 CatchmentCSS::CatchmentCSS() {
 	rain_in = new Flow();
 	dwf_in = new Flow();
-	parasite_in = new Flow(Flow::nullFlow());
-	q_upstream = new Flow(Flow::nullFlow());
+	parasite_in = new Flow();
+	q_upstream = new Flow();
 	out = new Flow();
 	loss_basin = new Flow();
 
@@ -74,6 +73,7 @@ void CatchmentCSS::init(int start, int end, int dt) {
 		addState(str(format("V[%1%]") % i), f);
 		V.push_back(f);
 	}
+	permanent_loss = permanent_loss / 86400 * dt;
 }
 
 void CatchmentCSS::deinit() {
@@ -93,23 +93,16 @@ int CatchmentCSS::f(int time, int dt) {
 	double C_x, C_y;
 	setMuskParam(&C_x, &C_y, dt);
 	
-	std::vector<Flow *> inputs;
+	std::vector<Flow> inputs;
 	Flow loss = FlowFuns::catchement_lossmodel(*rain_in, loss_basin, initial_loss, permanent_loss, run_off_coeff);
 	Flow flow = FlowFuns::catchment_flowmodel(loss, area, dt, rain_con_value, rain_con_name);
-	inputs.push_back(&flow);
-	if (!dwf_in->empty())
-		inputs.push_back(dwf_in);
-	if (!parasite_in->empty())
-		inputs.push_back(parasite_in);
+	inputs.push_back(flow);
+	inputs.push_back(*dwf_in);
+	inputs.push_back(*parasite_in);
 
 	Flow rain = FlowFuns::mix(inputs);
 
 	for (int i = 0; i < N; i++) {
-		if (V[i]->empty()) {
-			*V[i] = rain;
-			V[i]->clear();
-		}
-
 		rain = FlowFuns::route_catchment(*q_upstream, rain, V[i], N, C_x, C_y, dt);
 	}
 	*out = rain;

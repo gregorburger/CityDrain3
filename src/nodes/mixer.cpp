@@ -4,25 +4,19 @@
 #include <flowfuns.h>
 #include <boost/foreach.hpp>
 #include <sstream>
-#include <calculationunit.h>
 
 CD3_DECLARE_NODE_NAME(Mixer)
 
 Mixer::Mixer() {
 	num_inputs = 2;
 	addParameter(ADD_PARAMETERS(num_inputs));
-	out = new Flow();
-	addOutPort(ADD_PARAMETERS_P(out));
+	addOutPort(ADD_PARAMETERS(out));
 }
 
 Mixer::~Mixer() {
-	delete out;
 }
 
 void Mixer::deinit() {
-	for (size_t i = 0; i < inputs.size(); i++) {
-		delete inputs[i];
-	}
 }
 
 void Mixer::init(int start, int end, int dt) {
@@ -40,7 +34,7 @@ void Mixer::init(int start, int end, int dt) {
 
 int Mixer::f(int time, int dt) {
 	(void) time;
-	*out = FlowFuns::mix(inputs);
+	out = FlowFuns::mix(inputs);
 	return dt;
 }
 

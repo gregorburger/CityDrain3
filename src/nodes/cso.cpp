@@ -1,7 +1,5 @@
 #include "cso.h"
 
-#include <flow.h>
-#include <calculationunit.h>
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
 
@@ -12,13 +10,9 @@ using namespace boost;
 CD3_DECLARE_NODE_NAME(CSO)
 
 CSO::CSO() {
-	in = new Flow();
-	out = new Flow();
-	overflow = new Flow();
-
-	addInPort(ADD_PARAMETERS_P(in));
-	addOutPort(ADD_PARAMETERS_P(out));
-	addOutPort(ADD_PARAMETERS_P(overflow));
+	addInPort(ADD_PARAMETERS(in));
+	addOutPort(ADD_PARAMETERS(out));
+	addOutPort(ADD_PARAMETERS(overflow));
 
 	V_Max = 300;
 	Q_Max = 0.1;
@@ -26,15 +20,10 @@ CSO::CSO() {
 	addParameter(ADD_PARAMETERS(V_Max));
 	addParameter(ADD_PARAMETERS(Q_Max));
 
-	stored_volume = new Flow();
 	addState(ADD_PARAMETERS(stored_volume));
 }
 
 CSO::~CSO() {
-	delete stored_volume;
-	delete overflow;
-	delete out;
-	delete in;
 }
 
 void CSO::init(int start, int end, int dt) {
@@ -43,17 +32,11 @@ void CSO::init(int start, int end, int dt) {
 	(void) dt;
 }
 
-typedef CalculationUnit CU;
-
 int CSO::f(int time, int dt) {
 	(void) time;
 
-	if (out->empty()) {
-		prepareUnits();
-	}
-
-	double Q_In = in->getIth(CU::flow, 0);
-	double V_Stored = stored_volume->getIth(CU::flow, 0);
+	double Q_In = in[0];
+	double V_Stored = stored_volume[0];
 	double V_Volume = (Q_In - Q_Max) * dt + V_Stored;
 	double Q_Out = 0;
 	double Q_Overflow = 0;
@@ -78,9 +61,9 @@ int CSO::f(int time, int dt) {
 		Q_Overflow = 0;
 	}
 
-	out->setIth(CU::flow, 0, Q_Out);
-	overflow->setIth(CU::flow, 0, Q_Overflow);
-	stored_volume->setIth(CU::flow, 0, V_Stored_new);
+	out[0] = Q_Out;
+	overflow[0] = Q_Overflow;
+	stored_volume[0] = V_Stored_new;
 
 	double V_Prime = Q_In * dt + V_Stored;
 
@@ -89,25 +72,16 @@ int CSO::f(int time, int dt) {
 		cd3assert(V_Prime > 0, str(format("V_Prime (%1% needs to be bigger than 0") % V_Prime));
 		double V_Prime_Inv = 1 / V_Prime;
 
-		BOOST_FOREACH(std::string cname, in->getUnitNames(CU::concentration)) {
-			double Ci = (in->getValue(cname) * Q_In * dt
-						+ stored_volume->getValue(cname) * V_Stored) * V_Prime_Inv;
-			out->setValue(cname, Ci);
-			overflow->setValue(cname, Ci);
-			stored_volume->setValue(cname, Ci);
+		for (size_t i = 0; i < out.countUnits(Flow::concentration); i++) {
+			double Ci = (in[i+1] * Q_In * dt
+						+ stored_volume[i+1] * V_Stored) * V_Prime_Inv;
+			out[i+1] = Ci;
+			overflow[i+1] = Ci;
+			stored_volume[i+1] = Ci;
 		}
 	} else {
 		Logger(Warning) << "V_prime < 0 ";
 	}
 
 	return dt;
-}
-
-void CSO::prepareUnits() {
-	*out = *in;
-	out->clear();
-	*stored_volume = *in;
-	stored_volume->clear();
-	*overflow = *in;
-	overflow->clear();
 }

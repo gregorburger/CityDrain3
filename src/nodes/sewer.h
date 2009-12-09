@@ -2,6 +2,7 @@
 #define SEWER_H
 
 #include <node.h>
+#include <flow.h>
 #include <vector>
 #include <map>
 
@@ -18,12 +19,12 @@ private:
 	void addMuskParam(int dt);
 	void setMuskParam(double *C_x, double *C_y, int dt);
 private:
-	Flow *in;
-	Flow *out;
+	Flow in;
+	Flow out;
 	int K;
 	double X;
 	int N;
-	std::vector<Flow*> V;
+	std::vector<Flow> V;
 	std::map<int, std::pair<double, double> > musk_param;
 };
 
