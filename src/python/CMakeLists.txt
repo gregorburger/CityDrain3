@@ -1,0 +1,7 @@
+file(GLOB_RECURSE CPP_FILES ./ *.cpp)
+add_library(pycd3 SHARED ${CPP_FILES})
+include_directories(${PYTHON_INCLUDE_PATH})
+TARGET_LINK_LIBRARIES(pycd3 cd3core ${Boost_LIBRARIES} ${Python_LIBRARIES})
+INSTALL(TARGETS pycd3
+  LIBRARY DESTINATION lib
+)
