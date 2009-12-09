@@ -8,6 +8,11 @@
 
 	<simulation class="DefaultSimulation">
 		<time start="0" stop="72000" dt="300" />
+		<flowdefinition>
+		    <flow name="Q" />
+            <concentration name="C0" />
+            <concentration name="C1" />
+		</flowdefinition>
 	</simulation>
 
 	<model>
@@ -15,9 +20,9 @@
 			<node id="constsource" class="ConstSource">
 				<parameter name="const_flow" kind="complex" type="Flow">
 					<flow>
-						<unit name="Q" kind="Flow" value="234.0" />
-						<unit name="C0" kind="Concentration" value="0.1"/>
-						<unit name="C1" kind="Concentration" value="0.2"/>
+						<unit name="Q" value="234.0" />
+						<unit name="C0" value="0.1"/>
+						<unit name="C1" value="0.2"/>
 					</flow>
 				</parameter>
 			</node>
