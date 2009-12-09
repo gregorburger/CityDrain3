@@ -3,7 +3,6 @@
 #include <flow.h>
 #include <noderegistry.h>
 #include "pythonnodefactory.h"
-#include <calculationunit.h>
 
 #include <boost/foreach.hpp>
 #include <boost/python.hpp>
@@ -16,7 +15,6 @@ void test_flow(Flow *f) {
 	BOOST_FOREACH(string n, f->getNames()) {
 		cout << "test_flow" << n << endl;
 	}
-	f->addUnit("test", CU::flow, 43.0);
 }
 
 
