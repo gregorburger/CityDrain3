@@ -44,5 +44,5 @@ add_subdirectory(src/cd3core)
 add_subdirectory(src/nodes)
 add_subdirectory(src/app)
 add_subdirectory(src/plugindoc)
-#add_subdirectory(src/python)
+add_subdirectory(src/python)
 
