@@ -1,87 +1,25 @@
 #include "module.h"
-#include "../node.h"
-#include <flow.h>
 #include <noderegistry.h>
 #include "pythonnodefactory.h"
 
-#include <boost/foreach.hpp>
+#include "pymodel.h"
+#include "pynode.h"
+#include "pyflow.h"
+
 #include <boost/python.hpp>
 
 using namespace boost::python;
 
-void test_flow(Flow *f) {
-	assert(f);
-	cout << "test_flow" << endl;
-	BOOST_FOREACH(string n, f->getNames()) {
-		cout << "test_flow" << n << endl;
-	}
-}
 
-
-struct NodeWrapper : Node, wrapper<Node> {
-	int f(int time, int dt) {
-		try {
-			return this->get_override("f")(time, dt);
-		} catch(error_already_set const &) {
-			cerr << __FILE__ << ":" << __LINE__ << endl;
-			PyErr_Print();
-			abort();
-		}
-	}
-
-	void pushInStates() {
-
-	}
-
-	void pullOutStates() {
-
-	}
-
-	void init(int start, int stop, int dt) {
-		try {		
-			this->get_override("init")(start, stop, dt);
-		} catch(error_already_set const &) {
-			cerr << __FILE__ << ":" << __LINE__ << endl;
-			PyErr_Print();
-			abort();
-		}
-	}
-
-	const char *getClassName() const {
-		object o(this);
-		const char *name = extract<const char*>(o.attr("__name__"));
-		return name;
-	}
-
-	void addInPort(const std::string &name, Flow *inflow) {
-		Node::addInPort(name, inflow);
-	}
-
-	void addOutPort(const std::string &name, Flow *outflow) {
-		Node::addOutPort(name, outflow);
-	}
-
-	void pyAddParameter(object value) {
-		string name = extract<string>(value.attr("__name__"));
-		cout << "parameter " << name << endl;
-	}
-};
-
-void test_node(shared_ptr<NodeWrapper> n) {
-	n->init(0, 900, 300);
-	n->f(0, 300);
-	n->f(300, 300);
+void init() {
+	Log::init();
 }
 
 BOOST_PYTHON_MODULE(pycd3) {
-	class_<NodeWrapper, shared_ptr<NodeWrapper>, boost::noncopyable>("Node")
-			.def("f", pure_virtual(&Node::f))
-			.def("init", pure_virtual(&Node::init))
-			.def("addInPort", &NodeWrapper::addInPort)
-			.def("addOutPort", &NodeWrapper::addOutPort)
-			;
-	class_<Flow>("Flow")
-			;
+	wrap_node();
+	wrap_flow();
+	wrap_model();
+	def("init", ::init);
 }
 
 struct PythonEnvPriv {

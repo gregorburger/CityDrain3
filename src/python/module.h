@@ -11,8 +11,6 @@ extern "C" {
 
 class Node;
 
-void initcd3();
-
 #ifdef __cplusplus
 }
 
