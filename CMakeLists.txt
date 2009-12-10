@@ -3,7 +3,7 @@ project(cd3)
 
 set(CMAKE_CXX_FLAGS "-g -Wall")
 
-INCLUDE_DIRECTORIES(src/cd3core src/cd3core/qs)
+INCLUDE_DIRECTORIES(src/cd3core src/cd3core/qs src/python)
 find_package(Qt4 REQUIRED)
 
 find_package(Boost 1.38.0 COMPONENTS signals program_options thread python REQUIRED)
