@@ -11,7 +11,7 @@ if (NOT BOOST_ROOT AND WIN32)
 	message(STATUS "using default boost in " ${BOOST_ROOT})
 endif()
 
-find_package(Boost 1.38.0 COMPONENTS signals program_options thread regex REQUIRED)
+find_package(Boost 1.38.0 COMPONENTS signals program_options thread REQUIRED)
 
 if (Boost_FOUND) 
 	set(Boost_USE_STATIC_LIBS ON)
