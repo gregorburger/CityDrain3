@@ -1,6 +1,6 @@
 #include "controller.h"
 
-#include "model.h"
+#include "imodel.h"
 #include "simulation.h"
 #include "node.h"
 #include "flow.h"

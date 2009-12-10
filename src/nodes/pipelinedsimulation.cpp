@@ -1,5 +1,5 @@
 #include "pipelinedsimulation.h"
-#include <model.h>
+#include <imodel.h>
 #include <node.h>
 #include <nodeconnection.h>
 

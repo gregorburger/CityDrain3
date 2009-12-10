@@ -42,10 +42,6 @@ void NodeRegistry::addNativePlugin(const std::string &plugin_path) {
 	}
 }
 
-void NodeRegistry::addPythonPlugin(const std::string &module) {
-	PythonEnv::getInstance()->registerNodes(this, module);
-}
-
 typedef std::pair<std::string, INodeFactory *> snf;
 std::vector<std::string> NodeRegistry::getRegisteredNames() const {
 	std::vector<std::string> names;

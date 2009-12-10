@@ -21,7 +21,6 @@ public:
 
 	bool addNodeFactory(INodeFactory *factory);
 	void addNativePlugin(const std::string &plugin_path);
-	void addPythonPlugin(const std::string &module);
 
 	std::vector<std::string> getRegisteredNames() const;
 	shared_ptr<Node> createNode(const std::string &name) const;

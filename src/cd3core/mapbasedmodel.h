@@ -1,7 +1,7 @@
 #ifndef MAPBASEMODEL_H
 #define MAPBASEMODEL_H
 
-#include "model.h"
+#include <imodel.h>
 
 #include <set>
 #include <cd3globals.h>

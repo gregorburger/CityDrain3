@@ -14,12 +14,13 @@ using namespace std;
 #include <noderegistry.h>
 #include <simulationregistry.h>
 #include <typeregistry.h>
-#include <model.h>
+#include <imodel.h>
 #include <cd3assert.h>
 #include "node.h"
 #include <simulation.h>
 #include <flow.h>
 #include <controller.h>
+#include <module.h>
 
 struct SaxLoaderPriv {
 	NodeRegistry node_registry;
@@ -127,7 +128,7 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 	if (lname == "pythonmodule") {
 		std::string module = atts.value("module").toStdString();
 		cout << "Loading Python Module " << module << endl;
-		pd->node_registry.addPythonPlugin(module);
+		PythonEnv::getInstance()->registerNodes(&pd->node_registry, module);
 		consumed = true;
 	}
 	if (lname == "citydrain") {

@@ -2,7 +2,7 @@
 #define DEFAULTSIMULATION_H
 
 #include <simulation.h>
-#include <model.h>
+#include <imodel.h>
 
 struct SimPriv;
 

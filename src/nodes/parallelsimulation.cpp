@@ -1,5 +1,5 @@
 #include "parallelsimulation.h"
-#include <model.h>
+#include <imodel.h>
 #include <node.h>
 #include <nodeconnection.h>
 #include <boost/foreach.hpp>

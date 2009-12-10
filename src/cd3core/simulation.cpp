@@ -1,6 +1,6 @@
 #include "simulation.h"
 #include "modelserializer.h"
-#include "model.h"
+#include "imodel.h"
 #include "cd3assert.h"
 #include "nodeconnection.h"
 #include "controller.h"

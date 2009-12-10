@@ -1,6 +1,6 @@
 #include "vardtsimulation.h"
 #include <node.h>
-#include <model.h>
+#include <imodel.h>
 #include <flowbuffer.h>
 #include <flow.h>
 #include <cd3assert.h>

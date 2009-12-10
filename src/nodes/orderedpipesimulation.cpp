@@ -11,7 +11,7 @@
 #include <map>
 
 #include <node.h>
-#include <model.h>
+#include <imodel.h>
 #include <tqueue.h>
 #include <flow.h>
 #include "bufferednodeconnection.h"

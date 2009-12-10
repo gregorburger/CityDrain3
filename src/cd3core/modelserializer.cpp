@@ -2,7 +2,7 @@
 #include "stateserializer.h"
 #include "cd3typeinfo.h"
 #include "node.h"
-#include <model.h>
+#include <imodel.h>
 #include <fstream>
 #include <QDebug>
 #include <QFile>
