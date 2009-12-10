@@ -1,8 +1,7 @@
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
-HEADERS += calculationunit.h \
-    flow.h \
-    model.h \
+HEADERS += flow.h \
+	imodel.h \
     nodeconnection.h \
     nodefactory.h \
     node.h \
@@ -22,12 +21,10 @@ HEADERS += calculationunit.h \
     typeregistry.h \
     typefactory.h \
     cd3globals.h \
-    saxloader.h \
     tqueue.h \
     log.h \
 	logger.h
-SOURCES += calculationunit.cpp \
-    flow.cpp \
+SOURCES += flow.cpp \
     nodeconnection.cpp \
     node.cpp \
     noderegistry.cpp \
@@ -38,9 +35,7 @@ SOURCES += calculationunit.cpp \
     stateserializer.cpp \
     modelserializer.cpp \
     flowfuns.cpp \
-    saxloader.cpp \
     controller.cpp \
     log.cpp \
 	logger.cpp
 include(qs/qs.pri)
-include(python/python.pri)
