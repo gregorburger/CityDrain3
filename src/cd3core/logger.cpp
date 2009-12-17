@@ -118,6 +118,7 @@ string Logger::logLevel() const {
 		case Error:
 			return "ERROR";
 	}
+	return "UNKNOWN";
 }
 
 string Logger::date() const {
