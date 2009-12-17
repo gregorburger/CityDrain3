@@ -19,7 +19,6 @@ using namespace std;
 #include "node.h"
 #include <simulation.h>
 #include <flow.h>
-#include <controller.h>
 #include <module.h>
 
 struct SaxLoaderPriv {
@@ -87,19 +86,6 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		std::string klass = atts.value("class").toStdString();
 		Logger(Debug) << "loading simulation" << klass;
 		pd->simulation = pd->sim_registry.createSimulation(klass);
-		consumed = true;
-	}
-	if (lname == "controller") {
-		cd3assert(pd->simulation != 0, "no simulation set");
-		QString script = atts.value("script");
-		cd3assert(QFile::exists(script), "no such controller script file");
-
-		Logger(Debug) << "creating JavaScript Controller with script" << script;
-		shared_ptr<Controller> c(new Controller(script.toStdString()));
-		pd->simulation->timestep_before
-				.connect(bind<void>(&Controller::controllBefore, c, _1, _2));
-		pd->simulation->timestep_after
-				.connect(bind<void>(&Controller::controllAfter, c, _1, _2));
 		consumed = true;
 	}
 	if (lname == "time") {

@@ -3,7 +3,6 @@
 #include "imodel.h"
 #include "cd3assert.h"
 #include "nodeconnection.h"
-#include "controller.h"
 #include "log.h"
 #include "logger.h"
 

@@ -9,7 +9,6 @@ HEADERS += flow.h \
     simulation.h \
     mapbasedmodel.h \
     cd3typeinfo.h \
-    controller.h \
     cd3assert.h \
     simulationfactory.h \
     simulationregistry.h \
@@ -35,7 +34,5 @@ SOURCES += flow.cpp \
     stateserializer.cpp \
     modelserializer.cpp \
     flowfuns.cpp \
-    controller.cpp \
     log.cpp \
 	logger.cpp
-include(qs/qs.pri)

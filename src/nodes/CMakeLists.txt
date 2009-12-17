@@ -1,12 +1,6 @@
-set(qs_HDRS qs/qswnode.h)
-QT4_WRAP_CPP(moc_qs_SRCS ${qs_HDRS})
-
 file(GLOB_RECURSE CPP_FILES ./ *.cpp)
 
-add_library(nodes MODULE 
-${CPP_FILES}
-${moc_qs_SRCS}
-)
+add_library(nodes MODULE ${CPP_FILES})
 
 IF (MINGW)
 	SET_TARGET_PROPERTIES(nodes PROPERTIES PREFIX "")

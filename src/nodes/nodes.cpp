@@ -9,7 +9,6 @@
 #include "sewer.h"
 #include "rainread.h"
 #include "testnode.h"
-#include "qs/qswnode.h"
 #include "cso.h"
 #include "splitter.h"
 #include "catchmentcss.h"
@@ -35,7 +34,6 @@ extern "C" {
 		registry->addNodeFactory(new NodeFactory<Sewer>());
 		registry->addNodeFactory(new NodeFactory<RainRead>());
 		registry->addNodeFactory(new NodeFactory<TestNode>());
-		registry->addNodeFactory(new NodeFactory<QSWNode, true>());
 		registry->addNodeFactory(new NodeFactory<CSO>());
 		registry->addNodeFactory(new NodeFactory<Splitter>());
 		registry->addNodeFactory(new NodeFactory<CatchmentCSS>());
