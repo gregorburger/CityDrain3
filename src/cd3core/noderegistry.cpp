@@ -9,7 +9,6 @@ using namespace boost;
 
 #include "nodefactory.h"
 #include <cd3assert.h>
-#include "../python/module.h"
 
 NodeRegistry::NodeRegistry() {
 }
