@@ -1,14 +1,23 @@
 cmake_minimum_required (VERSION 2.6)
 project(cd3)
 
-set(CMAKE_CXX_FLAGS "-g -Wall")
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
+	message(STATUS "Using Visual C compilers")
+	set(CMAKE_CXX_FLAGS "/EHsc")
+endif()
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
+	message(STATUS "Using GNU compilers")
+	set(CMAKE_CXX_FLAGS "-g -Wall")
+endif()
+
 
 INCLUDE_DIRECTORIES(src/cd3core src/cd3core/qs src/python)
 find_package(Qt4 REQUIRED)
 
-find_package(Boost 1.38.0 COMPONENTS signals program_options thread python REQUIRED)
+find_package(Boost 1.38.0 COMPONENTS signals program_options thread python date_time REQUIRED)
 
-set(Boost_USE_STATIC_LIBS ON)
+#set(Boost_USE_STATIC_LIBS ON)
+add_definitions(${Boost_LIB_DIAGNOSTIC_DEFINITIONS})
 set(Boost_USE_MULTITHREADED ON)
 include_directories(${Boost_INCLUDE_DIRS})
 link_directories(${Boost_LIBRARY_DIRS})

@@ -23,13 +23,14 @@ class MichiPythonNode(pycd3.Node):
 		self.addInPort('in', self.flow)
 		self.addOutPort('out', self.flow)
 		self.x = 10
-		#self.addParameter(self.x)
+		self.addParameters()
 	
 	def init(self, start, stop, dt):
 		print "init"
 	
 	def f(self, time, dt):
 #		print "f: %s - %s" % (time, dt)
+		print self.x
 		return dt
 
 class DPythonNode(pycd3.Node):

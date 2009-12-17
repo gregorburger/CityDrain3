@@ -4,9 +4,9 @@
 #include <boost/python.hpp>
 #include <boost/foreach.hpp>
 
-using namespace boost::python;
+using namespace boost;
 
-struct NodeWrapper : Node, wrapper<Node> {
+struct NodeWrapper : Node, python::wrapper<Node> {
 	NodeWrapper(PyObject *_self) : self(_self) {
 		cout << "NodeWrapper()" << endl;
 	}
@@ -17,8 +17,8 @@ struct NodeWrapper : Node, wrapper<Node> {
 
 	int f(int time, int dt) {
 		try {
-			return call_method<int>(self, "f", time, dt);
-		} catch(error_already_set const &) {
+			return python::call_method<int>(self, "f", time, dt);
+		} catch(python::error_already_set const &) {
 			cerr << __FILE__ << ":" << __LINE__ << endl;
 			PyErr_Print();
 			abort();
@@ -36,14 +36,14 @@ struct NodeWrapper : Node, wrapper<Node> {
 	typedef pair<string, int> intp;
 	void init(int start, int stop, int dt) {
 		try {
-			object s = object(handle<>(borrowed(self)));
-			dict param = extract<dict>(s.attr("__dict__"));
+			python::object s = python::object(python::handle<>(python::borrowed(self)));
+			python::dict param = python::extract<python::dict>(s.attr("__dict__"));
 			BOOST_FOREACH(intp i, int_params) {
 				param[i.first] = i.second;
 			}
-			call_method<void>(self, "init", start, stop, dt);
+			python::call_method<void>(self, "init", start, stop, dt);
 
-		} catch(error_already_set const &) {
+		} catch(python::error_already_set const &) {
 			cerr << __FILE__ << ":" << __LINE__ << endl;
 			PyErr_Print();
 			abort();
@@ -51,8 +51,8 @@ struct NodeWrapper : Node, wrapper<Node> {
 	}
 
 	const char *getClassName() const {
-		object o(this);
-		const char *name = extract<const char*>(o.attr("__name__"));
+		python::object o(this);
+		const char *name = python::extract<const char*>(o.attr("__name__"));
 		return name;
 	}
 
@@ -65,37 +65,37 @@ struct NodeWrapper : Node, wrapper<Node> {
 	}
 
 	void pyAddParameters() {
-		object s = object(handle<>(borrowed(self)));
-		dict param = extract<dict>(s.attr("__dict__"));
+		python::object s = python::object(python::handle<>(python::borrowed(self)));
+		python::dict param = python::extract<python::dict>(s.attr("__dict__"));
 
 		python::list keys = param.keys();
 		for (int i = 0; i < len(keys); i++) {
-			string key = extract<string>(keys[i]);
+			string key = python::extract<string>(keys[i]);
 
 			if (key == "self") {
 				continue;
 			}
-			extract<int> ix(param[key]);
+			python::extract<int> ix(param[key]);
 			if (ix.check()) {
 				int value = ix;
 				int_params[key] = value;
-				addParameter(key, &int_params.at(key));
+				addParameter(key, &int_params[key]);
 				continue;
 			}
 
-			extract<string> sx(param[key]);
+			python::extract<string> sx(param[key]);
 			if (sx.check()) {
 				string value = sx;
 				string_params[key] = value;
-				addParameter(key, &string_params.at(key));
+				addParameter(key, &string_params[key]);
 				continue;
 			}
 
-			extract<double> dx(param[key]);
+			python::extract<double> dx(param[key]);
 			if (dx.check()) {
 				double value = dx;
 				double_params[key] = value;
-				addParameter(key, &double_params.at(key));
+				addParameter(key, &double_params[key]);
 				continue;
 			}
 			cout << "unsupported type of param " << key << endl;
@@ -116,13 +116,13 @@ static void test_node(shared_ptr<NodeWrapper> n) {
 }
 
 void wrap_node() {
-	class_<Node, shared_ptr<NodeWrapper>, boost::noncopyable>("Node")
+	python::class_<Node, shared_ptr<NodeWrapper>, boost::noncopyable>("Node")
 		.def("f", &NodeWrapper::f)
 		.def("init", &NodeWrapper::init)
 		.def("addInPort", &NodeWrapper::addInPort)
 		.def("addOutPort", &NodeWrapper::addOutPort)
 		.def("addParameters", &NodeWrapper::pyAddParameters)
 		;
-	implicitly_convertible<shared_ptr<NodeWrapper>, shared_ptr<Node> >();
-	def("test_node", test_node);
+	python::implicitly_convertible<shared_ptr<NodeWrapper>, shared_ptr<Node> >();
+	python::def("test_node", test_node);
 }
