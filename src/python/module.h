@@ -2,6 +2,7 @@
 #define MODULE_H
 
 #include <string>
+#include <cd3globals.h>
 
 using namespace std;
 class NodeRegistry;
@@ -16,7 +17,7 @@ class Node;
 
 struct PythonEnvPriv;
 
-class PythonEnv {
+class CD3_PUBLIC PythonEnv {
 public:
 	virtual ~PythonEnv();
 	static PythonEnv *getInstance();
