@@ -8,11 +8,11 @@ using namespace boost;
 
 struct NodeWrapper : Node, python::wrapper<Node> {
 	NodeWrapper(PyObject *_self) : self(_self) {
-		cout << "NodeWrapper()" << endl;
+		//cout << "NodeWrapper()" << endl;
 	}
 
 	~NodeWrapper() {
-		cout << "NodeWrapper() cya!" << endl;
+		//cout << "NodeWrapper() cya!" << endl;
 	}
 
 	int f(int time, int dt) {
