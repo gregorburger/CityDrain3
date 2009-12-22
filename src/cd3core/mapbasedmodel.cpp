@@ -30,6 +30,7 @@ const node_set_type *MapBasedModel::getNodes() const {
 }
 
 shared_ptr<Node> MapBasedModel::getNode(const string &name) const {
+	cd3assert(names_nodes.count(name), str(format("no node with such name (%1%) registered") % name));
 	return names_nodes.find(name)->second;
 }
 
@@ -48,6 +49,7 @@ void MapBasedModel::addNode(shared_ptr<Node> node) {
 }
 
 void MapBasedModel::addConnection(NodeConnection *con) {
+	cd3assert(con, "connection must no be null");
 	shared_ptr<Node> source = con->source;
 	shared_ptr<Node> sink = con->sink;
 
