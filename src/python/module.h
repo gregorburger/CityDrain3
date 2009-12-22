@@ -10,8 +10,6 @@ class NodeRegistry;
 extern "C" {
 #endif
 
-class Node;
-
 #ifdef __cplusplus
 }
 
@@ -30,6 +28,5 @@ private:
 	static PythonEnv *instance;
 };
 
-void test_node(Node *n);
 #endif
 #endif // MODULE_H
