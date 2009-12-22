@@ -53,16 +53,10 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 	if (lname == "node") {
 		std::string id = atts.value("id").toStdString();
 		std::string klass = atts.value("class").toStdString();
-		std::string script = atts.value("script").toStdString();
-		if (script.empty()) {
-			Logger(Debug) << "creating a" << klass << "node with id:" << id;
-			current = pd->node_registry.createNode(klass);
-		} else {
-			Logger(Debug) << "creating a scripted" << klass
-					<< "node with id:" << id
-					<< "and script:" << script;
-			current = pd->node_registry.createNode(klass, script);
-		}
+
+		Logger(Debug) << "creating a" << klass << "node with id:" << id;
+		current = pd->node_registry.createNode(klass);
+
 		current->setId(id);
 		pd->model->addNode(current);
 		consumed = true;

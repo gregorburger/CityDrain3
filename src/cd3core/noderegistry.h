@@ -24,7 +24,6 @@ public:
 
 	std::vector<std::string> getRegisteredNames() const;
 	shared_ptr<Node> createNode(const std::string &name) const;
-	shared_ptr<Node> createNode(const std::string &name, const std::string &script) const;
 	bool contains(const std::string &name) const;
 
 private:

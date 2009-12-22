@@ -58,11 +58,6 @@ shared_ptr<Node> NodeRegistry::createNode(const std::string &name) const {
 	return registered_nodes.find(name)->second->createNode();
 }
 
-shared_ptr<Node> NodeRegistry::createNode(const std::string &name, const std::string &script) const {
-	cd3assert(contains(name), "no such node registered");
-	return registered_nodes.find(name)->second->createNode(script);
-}
-
 bool NodeRegistry::contains(const std::string &name) const {
 	return registered_nodes.find(name) != registered_nodes.end();
 }
