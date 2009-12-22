@@ -171,6 +171,11 @@ void Flow::clear() {
 	}
 }
 
+int Flow::size() {
+	cd3assert(fd.defined, "flow not defined");
+	return fd.size;
+}
+
 string cu2string(Flow::CalculationUnit c) {
 	switch (c) {
 		case Flow::flow: return "Flow";
