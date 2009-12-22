@@ -66,19 +66,28 @@ void PythonEnv::freeInstance() {
 }
 
 void PythonEnv::registerNodes(NodeRegistry *registry, const string &module) {
+	format fmt("import sys\n"
+	"import pycd3\n"
+	"sys.path.append('./data/scripts/')\n"
+	"__import__('%1%', None, None, [], 1)\n"
+	"clss = pycd3.Node.__subclasses__()\n");
+
+	fmt % module;
+
 	try {
-		object result = exec(
-				"import sys\n"
-				"import pycd3\n"
-				"sys.path.append('./data/scripts/')\n"
-				"__import__('cdtest', None, None, [], 1)\n"
-				"clss = pycd3.Node.__subclasses__()\n"
-				, priv->main_namespace, priv->main_namespace);
+		object result = exec(fmt.str().c_str(),
+							 priv->main_namespace,
+							 priv->main_namespace);
 		object clss = priv->main_namespace["clss"];
-		cout << "found " << len(clss) << " Nodes in module " << module << endl;
+		int numn = 0;		
 		for (int i = 0; i < len(clss); i++) {
+			string name = extract<string>(clss[i].attr("__name__"));
+			if (registry->contains(name))
+				continue;
 			registry->addNodeFactory(new PythonNodeFactory(clss[i]));
+			numn++;
 		}
+		cout << "found " << numn << " Nodes in module " << module << endl;
 	} catch(error_already_set const &) {
 		cerr << __FILE__ << ":" << __LINE__ << endl;
 		PyErr_Print();
