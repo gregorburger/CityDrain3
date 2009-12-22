@@ -16,10 +16,14 @@ void init() {
 }
 
 BOOST_PYTHON_MODULE(pycd3) {
+	docstring_options doc_options;
+	doc_options.disable_cpp_signatures();
+	scope().attr("__doc__") = "call pycd3.init() first then Flow.define()."
+							  "not necessary if started from cd3";
 	wrap_node();
 	wrap_flow();
 	wrap_model();
-	def("init", ::init);
+	def("init", ::init, "must be called first\n initializes the logger");
 }
 
 struct PythonEnvPriv {
@@ -64,7 +68,9 @@ void PythonEnv::freeInstance() {
 void PythonEnv::registerNodes(NodeRegistry *registry, const string &module) {
 	try {
 		object result = exec(
+				"import sys\n"
 				"import pycd3\n"
+				"sys.path.append('./data/scripts/')\n"
 				"__import__('cdtest', None, None, [], 1)\n"
 				"clss = pycd3.Node.__subclasses__()\n"
 				, priv->main_namespace, priv->main_namespace);
