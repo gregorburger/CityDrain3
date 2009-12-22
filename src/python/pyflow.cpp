@@ -34,12 +34,10 @@ struct map_item
 
 
 double flow_getitem(Flow &f, int i) {
-	cout << "get item " << i << endl;
 	return f[i];
 }
 
 void flow_setitem(Flow &f, int i, double v) {
-	cout << "set item " << i << endl;
 	f[i] = v;
 }
 
@@ -68,6 +66,10 @@ void wrap_flow() {
 			.def("setValue", &Flow::setValue, "set value by name")
 			.def("getValue", &Flow::getValue, "get value by name")
 			.def("clear", &Flow::clear, "clear all values")
+			.def("getIth", &Flow::getIth, "get ith value by unit")
+			.def("setIth", &Flow::setIth, "set ith value by unit")
+			.def("countUnits", &Flow::countUnits, "gets number of defined values per unit")
+			.def("dump", &Flow::dump, "dump to stdout")
 			.def("getUnit", &Flow::getUnit, "get unit by name")
 			.staticmethod("define")
 			.staticmethod("__len__")
