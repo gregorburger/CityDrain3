@@ -18,10 +18,10 @@ PythonNodeFactory::~PythonNodeFactory() {
 	delete priv;
 }
 
-shared_ptr<Node> PythonNodeFactory::createNode(const std::string &) const {
+Node *PythonNodeFactory::createNode() const {
 	try {
 		object node = priv->klass();
-		return extract<shared_ptr<Node> >(node);
+                return extract<Node *>(node);
 	} catch(error_already_set const &) {
 		cerr << __FILE__ << ":" << __LINE__ << endl;
 		PyErr_Print();
