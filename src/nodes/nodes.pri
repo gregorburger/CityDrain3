@@ -43,4 +43,3 @@ SOURCES += nodes.cpp \
     cyclenodestart.cpp \
     arrayparamtest.cpp \
     pumpingstation.cpp
-include(qs/qs.pri)
