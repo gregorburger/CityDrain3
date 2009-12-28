@@ -52,7 +52,7 @@ std::vector<std::string> NodeRegistry::getRegisteredNames() const {
 	return names;
 }
 
-shared_ptr<Node> NodeRegistry::createNode(const std::string &name) const {
+Node *NodeRegistry::createNode(const std::string &name) const {
 	cd3assert(contains(name),
 			  str(format("no such node class registered: %1%") % name));
 	return registered_nodes.find(name)->second->createNode();

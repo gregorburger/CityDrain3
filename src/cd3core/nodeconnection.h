@@ -11,14 +11,14 @@ using namespace boost;
 
 class Node;
 
-typedef std::pair<std::string, shared_ptr<Node> > endpoint;
+typedef std::pair<std::string, Node *> endpoint;
 
 struct CD3_PUBLIC NodeConnection
 {
-	NodeConnection(shared_ptr<Node>  source, const std::string &soport,
-				   shared_ptr<Node> sink, const std::string &siport);
+        NodeConnection(Node * source, const std::string &soport,
+                                   Node *sink, const std::string &siport);
 
-	shared_ptr<Node> source, sink;
+        Node *source, *sink;
 	std::string source_port, sink_port;
 
 	virtual void pull(int dt);

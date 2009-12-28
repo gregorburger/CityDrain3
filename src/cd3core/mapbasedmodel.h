@@ -6,7 +6,7 @@
 #include <set>
 #include <cd3globals.h>
 
-typedef unordered_map<shared_ptr<Node> , vector<NodeConnection *> > connection_type;
+typedef unordered_map<Node *, vector<NodeConnection *> > connection_type;
 
 class CD3_PUBLIC MapBasedModel : public IModel
 {
@@ -22,7 +22,7 @@ public:
 		(void) serialid;
 	}
 
-	void addNode(shared_ptr<Node> node);
+        void addNode(Node *node);
 	void addConnection(NodeConnection *con);
 
 
@@ -33,15 +33,15 @@ public:
 	const node_set_type getSourceNodes() const;
 	node_set_type getSinkNodes();
 
-	vector<NodeConnection *> forwardConnection(shared_ptr<Node> n);
-	const vector<NodeConnection *> forwardConnection(shared_ptr<Node> n) const;
-	vector<NodeConnection *> backwardConnection(shared_ptr<Node> n);
+        vector<NodeConnection *> forwardConnection(Node *n);
+        const vector<NodeConnection *> forwardConnection(Node *n) const;
+        vector<NodeConnection *> backwardConnection(Node *n);
 
 	const node_set_type *getNodes() const;
 
 	name_node_map getNamesAndNodes() const;
 
-	shared_ptr<Node> getNode(const string &name) const;
+        Node *getNode(const string &name) const;
 	con_count_type getForwardCounts() const;
 	con_count_type getBackwardCounts() const;
 
@@ -51,7 +51,7 @@ public:
 	node_set_type cycleNodes() const;
 
 private:
-	bool cycleNodesHelper(shared_ptr<Node> n, node_set_type) const;
+        bool cycleNodesHelper(Node *n, node_set_type) const;
 
 	node_set_type all_nodes;
 	node_set_type sink_nodes;

@@ -1,8 +1,8 @@
 #include "bufferednodeconnection.h"
 #include <node.h>
 
-BufferedNodeConnection::BufferedNodeConnection(shared_ptr<Node>  source, const std::string &soport,
-				   shared_ptr<Node> sink, const std::string &siport)
+BufferedNodeConnection::BufferedNodeConnection(Node * source, const std::string &soport,
+                                   Node *sink, const std::string &siport)
  : NodeConnection(source, soport, sink, siport) {
 
 }

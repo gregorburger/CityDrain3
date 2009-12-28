@@ -53,9 +53,9 @@ public:
 
 	virtual int run(int time, int dt) = 0;
 
-	virtual NodeConnection *createConnection(shared_ptr<Node> source,
+        virtual NodeConnection *createConnection(Node *source,
 											const std::string &soport,
-											shared_ptr<Node> sink,
+                                                                                        Node *sink,
 											const std::string &siport) const;
 
 	boost::signal2<void, ISimulation *, int> timestep_after;

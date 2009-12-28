@@ -53,10 +53,8 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 	if (lname == "node") {
 		std::string id = atts.value("id").toStdString();
 		std::string klass = atts.value("class").toStdString();
-
 		Logger(Debug) << "creating a" << klass << "node with id:" << id;
 		current = pd->node_registry.createNode(klass);
-
 		current->setId(id);
 		pd->model->addNode(current);
 		consumed = true;
@@ -107,8 +105,8 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 	}
 	if (lname == "pythonmodule") {
 		std::string module = atts.value("module").toStdString();
-		cout << "Loading Python Module " << module << endl;
-		PythonEnv::getInstance()->registerNodes(&pd->node_registry, module);
+                cout << "Loading Python Module " << module << endl;
+                PythonEnv::getInstance()->registerNodes(&pd->node_registry, module);
 		consumed = true;
 	}
 	if (lname == "citydrain") {
@@ -202,8 +200,8 @@ bool SaxLoader::endElement(const QString &/*ns*/,
 			breakCycle();
 			cycle_break = false;
 		} else {
-			shared_ptr<Node> sink = pd->model->getNode(sink_id);
-			shared_ptr<Node> source = pd->model->getNode(source_id);
+                        Node *sink = pd->model->getNode(sink_id);
+                        Node *source = pd->model->getNode(source_id);
 			Logger(Debug) << "creating connection:"
 					<< source << "[" << source_port << "] => "
 					<< sink << "[" << sink_port << "]";
@@ -290,12 +288,12 @@ void SaxLoader::loadParameter(const QXmlAttributes& atts) {
 }
 
 void SaxLoader::breakCycle() {
-	shared_ptr<Node> sink = pd->model->getNode(sink_id);
-	shared_ptr<Node> source = pd->model->getNode(source_id);
+        Node *sink = pd->model->getNode(sink_id);
+        Node *source = pd->model->getNode(source_id);
 
-	shared_ptr<Node> start = pd->node_registry.createNode("CycleNodeStart");
+        Node *start = pd->node_registry.createNode("CycleNodeStart");
 	start->setId(sink_id+source_id+"-cycle_start");
-	shared_ptr<Node> end = pd->node_registry.createNode("CycleNodeEnd");
+        Node *end = pd->node_registry.createNode("CycleNodeEnd");
 	end->setId(sink_id+source_id+"-cycle_end");
 	pd->model->addNode(start);
 	pd->model->addNode(end);

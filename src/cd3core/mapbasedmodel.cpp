@@ -10,7 +10,7 @@
 
 using namespace boost;
 
-typedef pair<string, shared_ptr<Node> > nodes_pair_type;
+typedef pair<string, Node *> nodes_pair_type;
 
 MapBasedModel::MapBasedModel() {
 }
@@ -18,7 +18,7 @@ MapBasedModel::MapBasedModel() {
 MapBasedModel::~MapBasedModel() {
 	BOOST_FOREACH(nodes_pair_type p, names_nodes) {
 		p.second->deinit();
-//		delete p.second;
+                delete p.second;
 	}
 	BOOST_FOREACH(NodeConnection *con, all_connections) {
 		delete con;
@@ -29,12 +29,12 @@ const node_set_type *MapBasedModel::getNodes() const {
 	return &all_nodes;
 }
 
-shared_ptr<Node> MapBasedModel::getNode(const string &name) const {
+Node *MapBasedModel::getNode(const string &name) const {
 	cd3assert(names_nodes.count(name), str(format("no node with such name (%1%) registered") % name));
 	return names_nodes.find(name)->second;
 }
 
-void MapBasedModel::addNode(shared_ptr<Node> node) {
+void MapBasedModel::addNode(Node *node) {
 	cd3assert(node->getId() != "", "node has no id");
 	cd3assert(node, "cannot add null node");
 	cd3assert(names_nodes.find(node->getId()) == names_nodes.end(), "node name already defined");
@@ -50,8 +50,8 @@ void MapBasedModel::addNode(shared_ptr<Node> node) {
 
 void MapBasedModel::addConnection(NodeConnection *con) {
 	cd3assert(con, "connection must no be null");
-	shared_ptr<Node> source = con->source;
-	shared_ptr<Node> sink = con->sink;
+        Node *source = con->source;
+        Node *sink = con->sink;
 
 	sink_nodes.erase(source);
 	source_nodes.erase(sink);
@@ -66,7 +66,7 @@ void MapBasedModel::addConnection(NodeConnection *con) {
 void MapBasedModel::initNodes(const SimulationParameters &sp) {
 	node_set_type::iterator it = all_nodes.begin();
 	while (it != all_nodes.end()) {
-		shared_ptr<Node> n = *it;
+                Node *n = *it;
 		n->init(sp.start, sp.stop, sp.dt);
 		it++;
 	}
@@ -84,21 +84,21 @@ const node_set_type MapBasedModel::getSourceNodes() const {
 	return source_nodes;
 }
 
-vector<NodeConnection *> MapBasedModel::forwardConnection(shared_ptr<Node> n) {
+vector<NodeConnection *> MapBasedModel::forwardConnection(Node *n) {
 	cd3assert(n, "Node null");
 	cd3assert(all_nodes.count(n), "node not in model");
 	cd3assert(fwd_connections.count(n), "no forward connection for node");
 	return fwd_connections[n];
 }
 
-const vector<NodeConnection *> MapBasedModel::forwardConnection(shared_ptr<Node> n) const {
+const vector<NodeConnection *> MapBasedModel::forwardConnection(Node *n) const {
 	cd3assert(n, "Node null");
 	cd3assert(all_nodes.count(n), "node not in model");
 	cd3assert(fwd_connections.count(n), "no forward connection for node");
 	return fwd_connections.at(n);
 }
 
-vector<NodeConnection *> MapBasedModel::backwardConnection(shared_ptr<Node> n) {
+vector<NodeConnection *> MapBasedModel::backwardConnection(Node *n) {
 	cd3assert(n, "Node null");
 	cd3assert(all_nodes.count(n), "node not in model");
 	cd3assert(fwd_connections.count(n), "no backward connection for node");
@@ -110,7 +110,7 @@ name_node_map MapBasedModel::getNamesAndNodes() const {
 }
 
 bool MapBasedModel::connected() const {
-	BOOST_FOREACH(shared_ptr<Node>  n, uncon_nodes) {
+        BOOST_FOREACH(Node * n, uncon_nodes) {
 		std::cerr << "node " << n->getId() << "not connected" << std::endl;
 	}
 	return uncon_nodes.empty();
@@ -118,7 +118,7 @@ bool MapBasedModel::connected() const {
 
 typedef pair<string, Flow*> port_type;
 void MapBasedModel::checkModel() const {
-	BOOST_FOREACH(shared_ptr<Node> node, all_nodes) {
+        BOOST_FOREACH(Node *node, all_nodes) {
 		BOOST_FOREACH(port_type port, *node->const_in_ports) {
 			bool found = false;
 			BOOST_FOREACH(NodeConnection *con, bwd_connections.at(node)) {
@@ -150,7 +150,7 @@ void MapBasedModel::checkModel() const {
 
 con_count_type MapBasedModel::getBackwardCounts() const {
 	con_count_type counts;
-	BOOST_FOREACH(shared_ptr<Node> node, all_nodes) {
+        BOOST_FOREACH(Node *node, all_nodes) {
 		counts[node] = bwd_connections.at(node).size();
 	}
 
@@ -159,7 +159,7 @@ con_count_type MapBasedModel::getBackwardCounts() const {
 
 con_count_type MapBasedModel::getForwardCounts() const {
 	con_count_type counts;
-	BOOST_FOREACH(shared_ptr<Node> node, all_nodes) {
+        BOOST_FOREACH(Node *node, all_nodes) {
 		counts[node] = fwd_connections.at(node).size();
 	}
 
@@ -169,7 +169,7 @@ con_count_type MapBasedModel::getForwardCounts() const {
 node_set_type MapBasedModel::cycleNodes() const {
 	node_set_type cycle_nodes;
 
-	BOOST_FOREACH(shared_ptr<Node> n, all_nodes) {
+        BOOST_FOREACH(Node *n, all_nodes) {
 		node_set_type reachable;
 		if (cycleNodesHelper(n, reachable)) {
 			cycle_nodes.insert(n);
@@ -179,7 +179,7 @@ node_set_type MapBasedModel::cycleNodes() const {
 	return cycle_nodes;
 }
 
-bool MapBasedModel::cycleNodesHelper(shared_ptr<Node> n,
+bool MapBasedModel::cycleNodesHelper(Node *n,
 									 node_set_type reachable) const {
 	bool cycle = false;
 	reachable.insert(n);

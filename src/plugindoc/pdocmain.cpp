@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
 			continue;
 		}
 
-		shared_ptr<Node> node = r.createNode(klass);
+                Node *node = r.createNode(klass);
 		if (klass != "RainRead")
 			node->init(0, 7200, 300);
 		cout << endl << klass << ":" << endl;
