@@ -2,6 +2,7 @@
 #include <simulation.h>
 #include <simulationregistry.h>
 #include <nodeconnection.h>
+#include <node.h>
 
 #include <boost/foreach.hpp>
 #include <boost/python.hpp>
@@ -23,7 +24,7 @@ static python::list sr_getRegisteredNames(SimulationRegistry &nr) {
 }
 
 void wrap_simulation() {
-	class_<NodeConnection>("NodeConnection", init<shared_ptr<Node>, string, shared_ptr<Node>, string>());
+        class_<NodeConnection>("NodeConnection", init<Node *, string, Node *, string>());
 	class_<SimulationWrapper, boost::noncopyable>("Simulation")
 		.def("start", &ISimulation::start)
 		.def("run", pure_virtual(&ISimulation::run))
