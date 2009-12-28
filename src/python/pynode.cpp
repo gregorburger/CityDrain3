@@ -8,39 +8,13 @@
 
 using namespace boost;
 
-struct NodeWrapperNew : Node, python::wrapper<Node> {
-	int f(int time, int dt) {
-		try {
-			return this->get_override("f")(time, dt);
-		} catch(python::error_already_set const &) {
-			cerr << __FILE__ << ":" << __LINE__ << endl;
-			PyErr_Print();
-			abort();
-		}
-	}
-	void init(int start, int stop, int dt) {
-		try {
-			this->get_override("init")(start, stop, dt);
-		} catch(python::error_already_set const &) {
-			cerr << __FILE__ << ":" << __LINE__ << endl;
-			PyErr_Print();
-			abort();
-		}
-	}
-
-	const char *getClassName() const {
-		python::object o(this);
-		const char *name = python::extract<const char*>(o.attr("__name__"));
-		return name;
-	}
-};
-
 struct NodeWrapper : Node, python::wrapper<Node> {
 	NodeWrapper(PyObject *_self) : self(_self) {
 		//cout << "NodeWrapper()" << endl;
+		Py_INCREF(self);
 	}
 
-	~NodeWrapper() {
+	virtual ~NodeWrapper() {
 		//cout << "NodeWrapper() cya!" << endl;
 	}
 
@@ -153,11 +127,7 @@ static void test_node(shared_ptr<NodeWrapper> n) {
 }
 
 void wrap_node() {
-	python::class_<Node, shared_ptr<NodeWrapperNew>, boost::noncopyable>("Node")
-		.def("f", python::pure_virtual(&NodeWrapperNew::f))
-		.def("init", &NodeWrapper::init)
-		;
-	python::class_<Node, shared_ptr<NodeWrapper>, shared_ptr<Node>, boost::noncopyable>("OldNode")
+	python::class_<Node, auto_ptr<NodeWrapper>, boost::noncopyable>("Node")
 		.def("f", &NodeWrapper::f)
 		.def("init", &NodeWrapper::init)
 		.def("addInPort", &NodeWrapper::addInPort)
@@ -168,12 +138,9 @@ void wrap_node() {
 		.def("contains", &NodeRegistry::contains)
 		.def("addNativePlugin", &NodeRegistry::addNativePlugin)
 		.def("addNodeFactory", &NodeRegistry::addNodeFactory)
-		.def("createNode", &NodeRegistry::createNode)
+		.def("createNode", &NodeRegistry::createNode, python::return_internal_reference<>())
 		.def("getRegisteredNames", nr_getRegisteredNames)
 		;
-	python::implicitly_convertible<shared_ptr<NodeWrapper>, shared_ptr<Node> >();
-	python::implicitly_convertible<shared_ptr<NodeWrapperNew>, shared_ptr<Node> >();
-	//python::implicitly_convertible<NodeWrapper*, Node*>();
-	//python::implicitly_convertible<shared_ptr<Node>, shared_ptr<NodeWrapper> >();
+	python::implicitly_convertible<auto_ptr<NodeWrapper>, auto_ptr<Node> >();
 	python::def("test_node", test_node);
 }
