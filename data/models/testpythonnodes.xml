@@ -4,33 +4,24 @@
 <citydrain version="1.0">
 
 	<pluginpath path="nodes" />
+	<pythonmodule module="testnodes" />
 
 	<simulation class="DefaultSimulation">
-		<time start="0" stop="7200" dt="300" />
+		<time start="0" stop="72000" dt="300" />
 		<flowdefinition>
-		    <flow name="Q"/>
-		    <concentration name="C0"/>
-		    <concentration name="C1"/>
-		    <concentration name="C2"/>
+		    <flow name="Q" />
+            <concentration name="C0" />
+            <concentration name="C1" />
 		</flowdefinition>
 	</simulation>
 
 	<model>
 		<nodelist>
-			<node id="constsource" class="ConstSource">
-				<parameter name="const_flow" kind="complex" type="Flow">
-					<flow>
-						<unit name="Q" value="234.0" />
-						<unit name="C0" value="0.1"/>
-						<unit name="C1" value="0.2"/>
-						<unit name="C2" value="0.3" />
-					</flow>
-				</parameter>
-			</node>
+			<node id="source" class="RandomCatchment"/>
 			
 			<node id="fileout" class="FileOut">
 				<parameter name="out_file_name" type="string" 
-											value="tmp/sewerout.txt" />
+						value="tmp/randomnout.txt" />
 			</node>
 			
 			<node id="musk1" class="Sewer" />
@@ -40,11 +31,11 @@
 		<connectionlist>
 		
 			<connection id="con1">
-				<source node="constsource" port="out" />
+				<source node="source" port="out" />
 				<sink	node="musk1" port="in" />
 			</connection>
 			
-			<connection id="con2">
+			<connection id="con3">
 				<source node="musk1" port="out" />
 				<sink node="fileout" port="in" />
 			</connection>

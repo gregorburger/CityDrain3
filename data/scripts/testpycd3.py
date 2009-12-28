@@ -35,6 +35,7 @@ pycd3.test_node(n)
 f = pycd3.Flow()
 print "len of of f == %s" % (len(f))
 f[0] = 3.142
+print "getith %s" % f.getIth(pycd3.CalculationUnit.flow, 0)
 print f[0]
 print "the flows names are: %s" % pycd3.Flow.names()
 print "the value of Q is: %s" % f.getValue('Q')
@@ -44,3 +45,6 @@ f.clear()
 print "the value of Q is: %s" % f.getValue('Q')
 for n in pycd3.Flow.names():
     print "Unit of %s is: %s" % (n, f.getUnit(n))
+    
+f.dump()
+

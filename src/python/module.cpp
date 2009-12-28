@@ -5,6 +5,7 @@
 #include "pymodel.h"
 #include "pynode.h"
 #include "pyflow.h"
+#include "pysimulation.h"
 
 #include <boost/python.hpp>
 
@@ -23,6 +24,7 @@ BOOST_PYTHON_MODULE(pycd3) {
 	wrap_node();
 	wrap_flow();
 	wrap_model();
+	wrap_simulation();
 	def("init", ::init, "must be called first\n initializes the logger");
 }
 

@@ -18,19 +18,20 @@ class PythonNode(pycd3.Node):
 
 class MichiPythonNode(pycd3.Node):
 	def __init__(self):
-		pycd3.Node.__init__(self)
+		#pycd3.Node.__init__(self)
 		self.flow = pycd3.Flow()
-		self.addInPort('in', self.flow)
-		self.addOutPort('out', self.flow)
+		#self.addInPort('in', self.flow)
+		#self.addOutPort('out', self.flow)
 		self.x = 10
-		self.addParameters()
+		#self.addParameters()
 	
 	def init(self, start, stop, dt):
-		print "init"
+	    pass
+		#print "init"
 	
 	def f(self, time, dt):
 #		print "f: %s - %s" % (time, dt)
-		print self.x
+		#print self.x
 		return dt
 
 class DPythonNode(pycd3.Node):
