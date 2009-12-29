@@ -13,7 +13,7 @@
 class CD3_PUBLIC INodeFactory {
 public:
 	virtual ~INodeFactory(){}
-        virtual Node *createNode() const = 0;
+	virtual Node *createNode() const = 0;
 	virtual std::string getNodeName() = 0;
 };
 
@@ -22,7 +22,7 @@ class CD3_PUBLIC NodeFactory
 	: public INodeFactory {
 public:
 	NodeFactory();
-        virtual Node *createNode() const;
+	virtual Node *createNode() const;
 	virtual std::string getNodeName();
 };
 
@@ -32,12 +32,12 @@ NodeFactory<T>::NodeFactory() {
 
 template <typename T>
 Node *NodeFactory<T>::createNode() const {
-        return new T();
+	return new T();
 }
 
 template <typename T>
 std::string NodeFactory<T>::getNodeName() {
-        return T::name;
+	return T::name;
 }
 
 #endif // NODEFACTORY_H
