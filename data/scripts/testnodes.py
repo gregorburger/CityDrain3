@@ -24,6 +24,28 @@ class PyMixer(Node):
         self.out[0] = q
         return dt  
 
+class PyOut(Node):
+	def __init__(self):
+		Node.__init__(self)
+		self.out = "/tmp/cd3-out.log"
+		self.addParameters()
+		self.in_flow = Flow()
+		self.addInPort('in', self.in_flow)
+		
+	def init(self, start, stop, dt):
+		self.file = open(self.out, 'w')
+		
+		
+	def f(self, time, dt):
+		self.file.write("%s" % time)
+		for i in xrange(len(self.in_flow)):
+			self.file.write('\t%s' % self.in_flow[i])
+		self.file.write('\n')
+		return dt
+		
+	def __del__(self):
+		self.file.close()
+
 class RandomCatchment(Node):
     def __init__(self):
         Node.__init__(self)
