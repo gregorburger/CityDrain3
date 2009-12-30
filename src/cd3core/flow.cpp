@@ -53,8 +53,11 @@ void Flow::define(std::map<std::string, CalculationUnit> definition) {
 
 Flow::Flow() {
 	cd3assert(fd.defined, "flow not defined");
-	f = shared_ptr<FlowPriv>(new FlowPriv(fd.size));
-	fill(f->begin(), f->end(), 0.0);
+	f = shared_array<double>(new double[fd.size]);
+	for (size_t i = 0; i < fd.size; i++) {
+		f[i] = 0.0;
+	}
+	//fill(f->begin(), f->end(), 0.0);
 }
 
 Flow::Flow(const Flow &other) {
@@ -75,9 +78,12 @@ Flow &Flow::operator =(const Flow &other) {
 void Flow::copyData() {
 	cd3assert(fd.defined, "flow not defined");
 	if (!f.unique()) {
-		FlowPriv *old = f.get();
-		f = shared_ptr<FlowPriv>
-			(new FlowPriv(*old));
+		double *old = f.get();
+		double *narray = new double[fd.size];
+		for (size_t i = 0; i < fd.size; i++) {
+			narray[i] = old[i];
+		}
+		f = shared_array<double>(narray);
 	}
 }
 
@@ -99,13 +105,13 @@ void Flow::setValue(const std::string &name,
 	cd3assert(fd.defined, "flow not defined");
 	cd3assert(fd.positions.find(name) != fd.positions.end(), "no such name");
 	copyData();
-	(*f)[fd.positions[name]] = value;
+	f[fd.positions[name]] = value;
 }
 
 double Flow::getValue(const std::string &name) const {
 	cd3assert(fd.defined, "flow not defined");
 	cd3assert(fd.positions.find(name) != fd.positions.end(), "no such name");
-	return (*f)[fd.positions[name]];
+	return f[fd.positions[name]];
 }
 
 Flow::CalculationUnit Flow::getUnit(const std::string &name) {
@@ -153,21 +159,21 @@ void Flow::setIth(Flow::CalculationUnit unit, size_t i, double value) {
 	cd3assert(fd.unit_names.find(unit) != fd.unit_names.end(), "no such unit");
 	cd3assert(fd.unit_names[unit].size() > i, "ith is too much");
 	copyData();
-	(*f)[fd.positions[fd.unit_names[unit][i]]] = value;
+	f[fd.positions[fd.unit_names[unit][i]]] = value;
 }
 
 double Flow::getIth(Flow::CalculationUnit unit, size_t i) const {
 	cd3assert(fd.defined, "flow not defined");
 	cd3assert(fd.unit_names.find(unit) != fd.unit_names.end(), "no such unit");
 	cd3assert(fd.unit_names[unit].size() > i, "ith is too much");
-	return (*f)[fd.positions[fd.unit_names[unit][i]]];
+	return f[fd.positions[fd.unit_names[unit][i]]];
 }
 
 void Flow::clear() {
 	cd3assert(fd.defined, "flow not defined");
 	copyData();
 	for (size_t i = 0; i < fd.size; i++) {
-		(*f)[i] = 0.0;
+		f[i] = 0.0;
 	}
 }
 
