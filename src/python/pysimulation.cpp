@@ -44,10 +44,10 @@ void wrap_simulation() {
 	class_<NodeConnection>("NodeConnection", init<Node *, string, Node *, string>());
 	class_<ISimulation, auto_ptr<ISimulationWrapper>, boost::noncopyable>("Simulation")
 		.def("start", &ISimulationWrapper::start)
-		.def("run", &ISimulationWrapper::run)
+		.def("run", pure_virtual(&ISimulationWrapper::run))
 		.def("createConnection", sim_createConnection, return_value_policy<manage_new_object>())
 		.def("setModel", sim_setModel)
-		.def("setSimParams", &ISimulation::setSimulationParameters)
+		.def("setSimulationParameters", &ISimulation::setSimulationParameters)
 		;
 	implicitly_convertible<auto_ptr<ISimulationWrapper>, auto_ptr<ISimulation> >();
 	class_<SimulationRegistry>("SimulationRegistry")
@@ -55,5 +55,9 @@ void wrap_simulation() {
 		.def("createSimulation", &SimulationRegistry::createSimulation, return_value_policy<manage_new_object>())
 		.def("getRegisteredNames", sr_getRegisteredNames)
 		;
-	class_<SimulationParameters>("SimulationParameters", init<int, int, int>());
+	class_<SimulationParameters>("SimulationParameters", init<int, int, int>())
+		.def_readwrite("start", &SimulationParameters::start)
+		.def_readwrite("stop", &SimulationParameters::stop)
+		.def_readwrite("dt", &SimulationParameters::dt)
+		;
 }
