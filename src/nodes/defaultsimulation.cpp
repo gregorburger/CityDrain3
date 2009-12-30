@@ -24,7 +24,7 @@ int DefaultSimulation::run(int time, int dt) {
 	sp->done.clear();
 	con_count_type deps = model->getBackwardCounts();
 
-        BOOST_FOREACH(Node *n, sp->sources) {
+	BOOST_FOREACH(Node *n, sp->sources) {
 		run(n, time, deps);
 
 	}
