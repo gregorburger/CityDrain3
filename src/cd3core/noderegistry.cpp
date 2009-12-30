@@ -22,7 +22,7 @@ NodeRegistry::~NodeRegistry() {
 }
 
 bool NodeRegistry::addNodeFactory(INodeFactory *factory) {
-	cd3assert(!contains(factory->getNodeName()), "NodeFactory already registered for that name");
+	cd3assert(!contains(factory->getNodeName()), str(format("NodeFactory already registered for that name: %1%") %factory->getNodeName()));
 	registered_nodes[factory->getNodeName()] = factory;
 	return true;
 }
