@@ -72,6 +72,9 @@ struct NodeWrapper : Node, python::wrapper<Node> {
 		Node::addOutPort(name, outflow);
 	}
 
+	void pySetParameter(const std::string &name, object param) {
+	}
+
 	void pyAddParameters() {
 		python::object s = python::object(python::handle<>(python::borrowed(self)));
 		python::dict param = python::extract<python::dict>(s.attr("__dict__"));

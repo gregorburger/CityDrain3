@@ -21,6 +21,7 @@ static void m_addConnection(MapBasedModel &model, auto_ptr<NodeConnection> con) 
 void wrap_model() {
 	class_<MapBasedModel>("Model")
 		.def("addNode", m_addNode)
+		.def("getNode", &MapBasedModel::getNode, return_internal_reference<>())
 		.def("addConnection", m_addConnection)
 		;
 }
