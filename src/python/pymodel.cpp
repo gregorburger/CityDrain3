@@ -19,9 +19,12 @@ static void m_addConnection(MapBasedModel &model, auto_ptr<NodeConnection> con) 
 }
 
 void wrap_model() {
-	class_<MapBasedModel>("Model")
+	class_<IModel, boost::noncopyable>("IModel", no_init)
+		;
+	class_<MapBasedModel, bases<IModel> >("Model")
 		.def("addNode", m_addNode)
 		.def("getNode", &MapBasedModel::getNode, return_internal_reference<>())
 		.def("addConnection", m_addConnection)
 		;
+	implicitly_convertible<auto_ptr<MapBasedModel>, auto_ptr<IModel> >();
 }

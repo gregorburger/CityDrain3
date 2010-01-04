@@ -1,6 +1,7 @@
 #include "module.h"
 #include <noderegistry.h>
 #include "pythonnodefactory.h"
+#include "log.h"
 
 #include "pymodel.h"
 #include "pynode.h"
@@ -8,13 +9,29 @@
 #include "pysimulation.h"
 
 #include <boost/python.hpp>
+#include <string>
 
 using namespace boost::python;
 
 
 void init() {
-	Log::init();
+	Log::init(&cout, Debug);
 }
+
+/**
+  *log with default level to debug
+  */
+void logdebug(std::string msg) {
+	Logger(Debug) << msg;
+}
+
+/**
+  *log with level
+  */
+void logwithlevel(std::string msg, LogLevel logl) {
+	Logger(logl) << msg;
+}
+
 
 BOOST_PYTHON_MODULE(pycd3) {
 	docstring_options doc_options;
@@ -26,6 +43,14 @@ BOOST_PYTHON_MODULE(pycd3) {
 	wrap_model();
 	wrap_simulation();
 	def("init", ::init, "must be called first\n initializes the logger");
+	def("log", logdebug);
+	def("log", logwithlevel);
+	enum_<LogLevel>("LogLevel")
+		.value("debug", Debug)
+		.value("standard", Standard)
+		.value("error", Error)
+		.value("warning", Warning)
+		;
 }
 
 struct PythonEnvPriv {

@@ -10,19 +10,30 @@
 using namespace boost::python;
 using namespace std;
 
-struct ISimulationWrapper : ISimulation, wrapper<ISimulation> {
-	ISimulationWrapper(PyObject *_self) : self(_self) {
-		Py_INCREF(self);
+struct PythonCallback {
+	PythonCallback(object callable) {
+		this->callable = callable;
 	}
 
-	~ISimulationWrapper() {
-		Py_DECREF(self);
+	void operator()(ISimulation *s, int time) {
+		try {
+			callable(ptr(s), time);
+		} catch(python::error_already_set const &) {
+			cerr << __FILE__ << ":" << __LINE__ << endl;
+			PyErr_Print();
+			abort();
+		}
 	}
-	int run(int time, int dt) {
-		return this->get_override("run")(time, dt);
-	}
-	PyObject *self;
+	object callable;
 };
+
+static void s_addHandlerAfter(ISimulation &sim, object o) {
+	sim.timestep_after.connect(PythonCallback(o));
+}
+
+static void s_addHandlerBefore(ISimulation &sim, object o) {
+	sim.timestep_before.connect(PythonCallback(o));
+}
 
 static python::list sr_getRegisteredNames(SimulationRegistry &nr) {
 	python::list names;
@@ -32,24 +43,18 @@ static python::list sr_getRegisteredNames(SimulationRegistry &nr) {
 	return names;
 }
 
-static NodeConnection *sim_createConnection(ISimulation &sim, Node &src, string src_p, Node &snk, string snk_p) {
-	return sim.createConnection(&src, src_p, &snk, snk_p);
-}
-
-static void sim_setModel(ISimulation &sim, MapBasedModel &model) {
-	sim.setModel(&model);
-}
-
 void wrap_simulation() {
 	class_<NodeConnection>("NodeConnection", init<Node *, string, Node *, string>());
-	class_<ISimulation, auto_ptr<ISimulationWrapper>, boost::noncopyable>("Simulation")
-		.def("start", &ISimulationWrapper::start)
-		.def("run", pure_virtual(&ISimulationWrapper::run))
-		.def("createConnection", sim_createConnection, return_value_policy<manage_new_object>())
-		.def("setModel", sim_setModel)
+
+	class_<ISimulation, noncopyable>("Simulation", no_init)
+		.def("start", &ISimulation::start)
+		.def("createConnection", &ISimulation::createConnection, return_value_policy<manage_new_object>())
+		.def("setModel", &ISimulation::setModel)
 		.def("setSimulationParameters", &ISimulation::setSimulationParameters)
+		.def("getSimulationParameters", &ISimulation::getSimulationParameters)
+		.def("timestep_after", s_addHandlerAfter)
+		.def("timestep_before", s_addHandlerBefore)
 		;
-	implicitly_convertible<auto_ptr<ISimulationWrapper>, auto_ptr<ISimulation> >();
 	class_<SimulationRegistry>("SimulationRegistry")
 		.def("addNativePlugin", &SimulationRegistry::addNativePlugin)
 		.def("createSimulation", &SimulationRegistry::createSimulation, return_value_policy<manage_new_object>())

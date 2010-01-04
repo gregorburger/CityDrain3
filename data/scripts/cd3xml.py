@@ -51,7 +51,7 @@ class Handler(ContentHandler):
 			return
 			
 		if name == 'parameter':
-			print "parameter loading is unimplemented"
+			log("parameter loading is unimplemented", LogLevel.error)
 			return
 		
 		
@@ -64,7 +64,7 @@ class Handler(ContentHandler):
 			return 
 		ignored = ['connection', 'connectionlist', 'model', 'nodelist', 'citydrain']
 		if name not in ignored:
-			print "unknown tag: %s" % name
+			log(str("unknown tag: %s" % name), LogLevel.warning)
 	def endElement(self, name):
 		if name == 'flowdefinition':
 			Flow.define(self.fd)
@@ -81,6 +81,21 @@ class Handler(ContentHandler):
 			con = self.simulation.createConnection(src_node, str(self.source[1]), snk_node, str(self.sink[1]))
 			self.model.addConnection(con)
 
+class ProgressHandler():
+    def __init__(self):
+        self.first = True
+        self.perc = 0
+        
+    def __call__(self, sim, time):
+        if self.first:
+            self.params = sim.getSimulationParameters()
+            self.first = False
+            self.duration = float(self.params.stop - self.params.start)
+        newperc = int(time / self.duration * 100)
+        if self.perc != newperc:
+            self.perc = newperc
+            log("progress:\t%d" % self.perc)
+
 if __name__ == "__main__":
 	if len(sys.argv) <= 1:
 		print "provide model file"
@@ -92,4 +107,5 @@ if __name__ == "__main__":
 	parse(sys.argv[1], handler)
 	
 	handler.simulation.setModel(handler.model)
+   	handler.simulation.timestep_after(ProgressHandler())
 	handler.simulation.start(0)
