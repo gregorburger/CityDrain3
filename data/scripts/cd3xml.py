@@ -2,7 +2,9 @@ from xml.sax.handler import ContentHandler
 from xml.sax.xmlreader import XMLReader
 from xml.sax import parse
 import sys
-sys.path.append('./build/')
+import os
+sys.path.append(os.path.join(os.getcwd(),'build'))
+sys.path.append('.')
 from pycd3 import *
 from cd3 import register_python_nodes
 
