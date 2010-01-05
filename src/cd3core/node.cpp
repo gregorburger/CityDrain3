@@ -1,18 +1,15 @@
 #include "node.h"
 #include <flow.h>
 #include <simulation.h>
-#include <QMutex>
 
 Node::Node() : const_parameters(&parameters),
 		const_array_parameters(&array_parameters),
 		const_states(&states),
 		const_in_ports(&in_ports),
 		const_out_ports(&out_ports) {
-	lock = new QMutex();
 }
 
 Node::~Node() {
-	delete lock;
 }
 
 void Node::init(int start, int end, int dt) {
@@ -22,17 +19,6 @@ void Node::init(int start, int end, int dt) {
 }
 
 void Node::deinit() {
-}
-
-/**
-* thread safe wrapper around f()
-*/
-int Node::ts_f(int time, int dt) {
-	int ret;
-	lock->lock();
-	ret = this->f(time, dt);
-	lock->unlock();
-	return ret;
 }
 
 void Node::setId(const std::string &id) {

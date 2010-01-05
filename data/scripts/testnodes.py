@@ -27,12 +27,13 @@ class PyMixer(Node):
 class PyOut(Node):
 	def __init__(self):
 		Node.__init__(self)
-		self.out = "/tmp/cd3-out.log"
+		self.out = str("/tmp/pyout.log")
 		self.addParameters()
 		self.in_flow = Flow()
 		self.addInPort('in', self.in_flow)
 		
 	def init(self, start, stop, dt):
+		log("using out name %s" % str(self.out))
 		self.file = open(self.out, 'w')
 		
 		

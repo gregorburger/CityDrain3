@@ -27,7 +27,7 @@ def register_python_nodes(nr, module):
 	for n in cd.Node.__subclasses__():
 		if nr.contains(n.__name__):
 			continue
-		print "registering python node %s" % n.__name__
+		cd.log("registering python node %s" % n.__name__)
 		nr.addNodeFactory(PythonNodeFactory(n))
 
 def setup_test_model(model, nr, simulation):

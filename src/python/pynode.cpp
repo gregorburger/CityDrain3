@@ -11,15 +11,15 @@ using namespace boost;
 
 struct NodeWrapper : Node, python::wrapper<Node> {
 	NodeWrapper(PyObject *_self) : self(_self) {
-		//cout << "NodeWrapper()" << endl;
 		Py_INCREF(self);
 	}
 
 	virtual ~NodeWrapper() {
-		//cout << "NodeWrapper() cya!" << endl;
+		//Py_DECREF(self); FIXME something is double clean up LEAK HERE
 	}
 
 	int f(int time, int dt) {
+		updateParameters();
 		try {
 			return python::call_method<int>(self, "f", time, dt);
 		} catch(python::error_already_set const &) {
@@ -37,14 +37,9 @@ struct NodeWrapper : Node, python::wrapper<Node> {
 
 	}
 
-	typedef pair<string, int> intp;
 	void init(int start, int stop, int dt) {
 		try {
-			python::object s = python::object(python::handle<>(python::borrowed(self)));
-			python::dict param = python::extract<python::dict>(s.attr("__dict__"));
-			BOOST_FOREACH(intp i, int_params) {
-				param[i.first] = i.second;
-			}
+			updateParameters();
 			python::call_method<void>(self, "init", start, stop, dt);
 
 		} catch(python::error_already_set const &) {
@@ -72,8 +67,37 @@ struct NodeWrapper : Node, python::wrapper<Node> {
 		Node::addOutPort(name, outflow);
 	}
 
-	/*void pySetParameter(const std::string &name, object param) {
-	}*/
+	template<typename T>
+	T getRefParameter(string name) {
+		return *getParameter<T>(name);
+	}
+
+	typedef pair<string, int> intp;
+	typedef pair<string, string> stringp;
+	typedef pair<string, float> floatp;
+	typedef pair<string, double> doublep;
+	typedef pair<string, bool> boolp;
+	void updateParameters() {
+		python::object self_obj = python::object(python::handle<>(python::borrowed(self)));
+		python::dict self_dict = python::extract<python::dict>(self_obj.attr("__dict__"));
+
+
+		BOOST_FOREACH(intp i, int_params) {
+			self_dict[i.first] = i.second;
+		}
+
+		BOOST_FOREACH(stringp i, string_params) {
+			self_dict[i.first] = i.second;
+		}
+
+		BOOST_FOREACH(doublep i, double_params) {
+			self_dict[i.first] = i.second;
+		}
+
+		BOOST_FOREACH(boolp i, bool_params) {
+			self_dict[i.first] = i.second;
+		}
+	}
 
 	void pyAddParameters() {
 		python::object s = python::object(python::handle<>(python::borrowed(self)));
@@ -88,6 +112,7 @@ struct NodeWrapper : Node, python::wrapper<Node> {
 			}
 			python::extract<int> ix(param[key]);
 			if (ix.check()) {
+				Logger(Debug) << this << "adding int parameter " << key;
 				int value = ix;
 				int_params[key] = value;
 				addParameter(key, &int_params[key]);
@@ -96,6 +121,7 @@ struct NodeWrapper : Node, python::wrapper<Node> {
 
 			python::extract<string> sx(param[key]);
 			if (sx.check()) {
+				Logger(Debug) << this << "adding string parameter " << key;
 				string value = sx;
 				string_params[key] = value;
 				addParameter(key, &string_params[key]);
@@ -104,9 +130,28 @@ struct NodeWrapper : Node, python::wrapper<Node> {
 
 			python::extract<double> dx(param[key]);
 			if (dx.check()) {
+				Logger(Debug) << this << "adding double parameter " << key;
 				double value = dx;
 				double_params[key] = value;
 				addParameter(key, &double_params[key]);
+				continue;
+			}
+
+			python::extract<float> fx(param[key]);
+			if (fx.check()) {
+				Logger(Debug) << this << "adding float parameter " << key;
+				float value = fx;
+				float_params[key] = value;
+				addParameter(key, &float_params[key]);
+				continue;
+			}
+
+			python::extract<bool> bx(param[key]);
+			if (bx.check()) {
+				Logger(Debug) << this << "adding bool parameter " << key;
+				bool value = bx;
+				bool_params[key] = value;
+				addParameter(key, &bool_params[key]);
 				continue;
 			}
 			cout << "unsupported type of param " << key << endl;
@@ -116,8 +161,19 @@ struct NodeWrapper : Node, python::wrapper<Node> {
 	map<string, int> int_params;
 	map<string, string> string_params;
 	map<string, double> double_params;
+	map<string, bool> bool_params;
+	map<string, float> float_params;
 	PyObject *self;
 };
+
+typedef pair<string, ltvp> param_pair;
+static python::list n_getParameterNames(Node &n) {
+	python::list l;
+	BOOST_FOREACH(param_pair p, *n.const_parameters) {
+		l.append(p.first);
+	}
+	return l;
+}
 
 static python::list nr_getRegisteredNames(NodeRegistry &nr) {
 	python::list names;
@@ -125,13 +181,6 @@ static python::list nr_getRegisteredNames(NodeRegistry &nr) {
 		names.append(name);
 	}
 	return names;
-}
-
-static void test_node(auto_ptr<NodeWrapper> n) {
-	n->setParameter("x", 20);
-	n->init(0, 900, 300);
-	n->f(0, 300);
-	n->f(300, 300);
 }
 
 struct INodeFactoryWrapper : public INodeFactory, python::wrapper<INodeFactory> {
@@ -184,7 +233,13 @@ void wrap_node() {
 		.def("addInPort", &NodeWrapper::addInPort)
 		.def("addOutPort", &NodeWrapper::addOutPort)
 		.def("setId", &NodeWrapper::setId)
+		.def("getParameterNames", n_getParameterNames)
 		.def("addParameters", &NodeWrapper::pyAddParameters)
+		.def("setIntParameter", &Node::setParameter<int>)
+		.def("setDoubleParameter", &Node::setParameter<double>)
+		.def("setStringParameter", &Node::setParameter<string>)
+		.def("setBoolParameter", &Node::setParameter<bool>)
+		.def("setParameter", &Node::setParameter<Flow>)
 		;
 	python::implicitly_convertible<auto_ptr<NodeWrapper>, auto_ptr<Node> >();
 	python::class_<NodeRegistry>("NodeRegistry")
@@ -194,5 +249,4 @@ void wrap_node() {
 		.def("createNode", &NodeRegistry::createNode, python::return_value_policy<python::manage_new_object>())
 		.def("getRegisteredNames", nr_getRegisteredNames)
 		;
-	python::def("test_node", test_node);
 }

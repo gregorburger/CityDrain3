@@ -53,7 +53,25 @@ class Handler(ContentHandler):
 			return
 			
 		if name == 'parameter':
-			log("parameter loading is unimplemented", LogLevel.error)
+			name = str(attrs['name'])
+			ptype = str(attrs['type'])
+			if ptype == 'string':
+				self.current_node.setStringParameter(name, str(attrs['value']))
+				return
+				
+			if ptype == 'int':
+				log("setting parameter %s to int value %s" % (name, str(attrs['value']))) 
+				self.current_node.setIntParameter(name, int(attrs['value']))
+				return
+			if ptype == 'double' or ptype == 'float':
+				log("setting parameter %s to double value %s" % (name, str(attrs['value']))) 
+				self.current_node.setDoubleParameter(name, float(attrs['value']))
+				return
+			if ptype == 'bool':
+				log("setting parameter %s to bool value %s" % (name, str(attrs['value']))) 
+				self.current_node.setBoolParameter(name, bool(attrs['value']))
+				return
+			log("parameter loading of type %s is unimplemented" % ptype, LogLevel.error)
 			return
 		
 		
@@ -109,5 +127,5 @@ if __name__ == "__main__":
 	parse(sys.argv[1], handler)
 	
 	handler.simulation.setModel(handler.model)
-   	handler.simulation.timestep_after(ProgressHandler())
+	handler.simulation.timestep_after(ProgressHandler())
 	handler.simulation.start(0)
