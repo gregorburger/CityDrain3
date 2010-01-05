@@ -29,6 +29,9 @@ PumpingStation::PumpingStation() {
 }
 
 void PumpingStation::init(int start, int end, int dt) {
+	(void) start;
+	(void) end;
+	(void) dt;
 	NP = Qp.size();
 	cd3assert(Von.size() == NP, "vector Von must be of same size as Qp");
 	cd3assert(Voff.size() == NP, "vector Voff must be of same size as Qp");

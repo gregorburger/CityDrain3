@@ -3,6 +3,8 @@
 
 #include <QXmlDefaultHandler>
 #include <cd3globals.h>
+#include <boost/shared_ptr.hpp>
+using namespace boost;
 
 struct SaxLoaderPriv;
 class IModel;
@@ -29,7 +31,7 @@ private:
 	void loadParameter(const QXmlAttributes &atts);
 	void breakCycle();
 	SaxLoaderPriv *pd;
-	Node *current;
+        Node *current;
 	bool cycle_break;
 	std::string source_id, source_port, sink_port, sink_id;
 };

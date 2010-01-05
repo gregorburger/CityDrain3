@@ -1,5 +1,5 @@
 #include "logger.h"
-#include <node.h>
+#include "node.h"
 #include <QDateTime>
 #include <QString>
 
@@ -34,6 +34,15 @@ Logger &Logger::operator <<(const Node *n) {
 	return *this;
 }
 
+Logger &Logger::operator <<(const shared_ptr<Node> n) {
+	if (level < max) {
+		return *this;
+	}
+	out << " Node[" << n->getId() << "] ";
+	dirty = true;
+	return *this;
+}
+
 Logger &Logger::operator<< (const char* s) {
 	if (level < max) {
 		return *this;
@@ -52,14 +61,14 @@ Logger &Logger::operator<< (const int i) {
 	return *this;
 }
 
-Logger &Logger::operator<< (const long i) {
+/*Logger &Logger::operator<< (const long i) {
 	if (level < max) {
 		return *this;
 	}
 	out << " " << i;
 	dirty = true;
 	return *this;
-}
+}*/
 
 Logger &Logger::operator<< (const double f) {
 	if (level < max) {
@@ -109,6 +118,7 @@ string Logger::logLevel() const {
 		case Error:
 			return "ERROR";
 	}
+	return "UNKNOWN";
 }
 
 string Logger::date() const {

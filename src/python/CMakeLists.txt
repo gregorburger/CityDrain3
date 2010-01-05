@@ -1,0 +1,24 @@
+file(GLOB_RECURSE CPP_FILES ./ *.cpp)
+add_library(pycd3 SHARED ${CPP_FILES})
+include_directories(${PYTHON_INCLUDE_PATH})
+#message(STATUS  ${Python_LIBRARIES} ${Boost_LIBRARIES})
+TARGET_LINK_LIBRARIES(pycd3 ${PYTHON_LIBRARIES} cd3core ${Boost_PYTHON_LIBRARY})
+
+if(WIN32)
+	GET_TARGET_PROPERTY(LIB_NAME pycd3 LOCATION)
+	SET(NEW_LIB_NAME  ${CMAKE_BINARY_DIR}/pycd3.pyd)
+	ADD_CUSTOM_COMMAND(
+	   TARGET pycd3
+	   POST_BUILD
+	   COMMAND ${CMAKE_COMMAND} -E copy ${LIB_NAME} ${NEW_LIB_NAME})
+else()
+	set_target_properties(pycd3
+	PROPERTIES
+	OUTPUT_NAME "pycd3"
+	PREFIX ""
+)
+endif()
+
+#INSTALL(TARGETS pycd3
+#  LIBRARY DESTINATION lib
+#)

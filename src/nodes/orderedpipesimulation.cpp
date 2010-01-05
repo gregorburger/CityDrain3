@@ -11,7 +11,7 @@
 #include <map>
 
 #include <node.h>
-#include <model.h>
+#include <imodel.h>
 #include <tqueue.h>
 #include <flow.h>
 #include "bufferednodeconnection.h"
@@ -23,21 +23,21 @@ typedef shared_ptr<tqueue<Node *> > sh_node_queue;
 
 struct OPSPriv {
 	IModel *model;
-	vector<Node *> order;
+        vector<Node *> order;
 };
 
 struct OrderedWorker : public QRunnable {
-	OrderedWorker(OrderedPipeSimulation *sim, OPSPriv *pd, Node *last, int time, int dt);
+        OrderedWorker(OrderedPipeSimulation *sim, OPSPriv *pd, Node *last, int time, int dt);
 	void run();
-	void pullPorts(Node *sink);
-	void pushPorts(Node *sink);
+        void pullPorts(Node *sink);
+        void pushPorts(Node *sink);
 
 	sh_node_queue in;
 	sh_node_queue out;
 
 	OrderedPipeSimulation *sim;
 	OPSPriv *pd;
-	Node *last;
+        Node *last;
 	int time, dt;
 };
 
@@ -62,12 +62,12 @@ void OrderedPipeSimulation::start(int time) {
 	}
 	Logger(Standard) << "thread count: " << pool->maxThreadCount();
 
-	sh_node_queue upper_queue = shared_ptr<tqueue<Node*> >(new tqueue<Node*>());
-	BOOST_FOREACH(Node *n, pd->order) {
+        sh_node_queue upper_queue = shared_ptr<tqueue<Node *> >(new tqueue<Node *>());
+        BOOST_FOREACH(Node *n, pd->order) {
 		upper_queue->enqueue(n);
 	}
 
-	Node *last = pd->order.back();
+        Node *last = pd->order.back();
 
 	QTime start_time = QTime::currentTime();
 	while (current_time <= sim_param.stop && running) {
@@ -88,20 +88,20 @@ int OrderedPipeSimulation::run(int time, int dt) {
 }
 
 vector<Node *> OrderedPipeSimulation::getOrder() {
-	queue<Node *> sources;
+        queue<Node *> sources;
 
-	BOOST_FOREACH(Node *n, pd->model->getSourceNodes()) {
+        BOOST_FOREACH(Node *n, pd->model->getSourceNodes()) {
 		sources.push(n);
 	}
 	con_count_type deps = pd->model->getBackwardCounts();
-	vector<Node*> order;
+        vector<Node *> order;
 	while (!sources.empty()) {
-		Node *n = sources.front();
+                Node *n = sources.front();
 		sources.pop();
 		order.push_back(n);
 
 		BOOST_FOREACH(NodeConnection *con, pd->model->forwardConnection(n)) {
-			Node *m = con->sink;
+                        Node *m = con->sink;
 			deps[m] --;
 			if (deps[m] == 0) {
 				sources.push(m);
@@ -127,25 +127,25 @@ void OrderedPipeSimulation::setModel(IModel *model) {
 
 NodeConnection *OrderedPipeSimulation::createConnection(Node *source,
 														const std::string &srcp,
-														Node *sink,
+                                                                                                                Node *sink,
 														const std::string &snkp) const {
 	return new BufferedNodeConnection(source, srcp, sink, snkp);
 }
 
 OrderedWorker::OrderedWorker(OrderedPipeSimulation *sim,
-							 OPSPriv *pd, Node *last,
+                                                         OPSPriv *pd, Node *last,
 							 int _time, int _dt) {
 	this->sim = sim;
 	this->pd = pd;
 	this->last = last;
 	this->time = _time;
 	this->dt = _dt;
-	out = auto_ptr<tqueue<Node *> >(new tqueue<Node *>());
+        out = auto_ptr<tqueue<Node *> >(new tqueue<Node *>());
 }
 
 void OrderedWorker::run() {
 	sim->timestep_before(sim, time);
-	Node *current;
+        Node *current;
 	do {
 		current = in->dequeue();
 		pullPorts(current);

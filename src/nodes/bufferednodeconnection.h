@@ -7,8 +7,8 @@
 class BufferedNodeConnection : public NodeConnection
 {
 public:
-	BufferedNodeConnection(Node * source, const std::string &soport,
-				   Node *sink, const std::string &siport);
+        BufferedNodeConnection(Node * source, const std::string &soport,
+                                   Node *sink, const std::string &siport);
 	virtual ~BufferedNodeConnection(){}
 	void push(int dt);
 	void pull(int dt);

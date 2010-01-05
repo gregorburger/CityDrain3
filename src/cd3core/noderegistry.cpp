@@ -22,12 +22,12 @@ NodeRegistry::~NodeRegistry() {
 }
 
 bool NodeRegistry::addNodeFactory(INodeFactory *factory) {
-	cd3assert(!contains(factory->getNodeName()), "NodeFactory already registered for that name");
+	cd3assert(!contains(factory->getNodeName()), str(format("NodeFactory already registered for that name: %1%") %factory->getNodeName()));
 	registered_nodes[factory->getNodeName()] = factory;
 	return true;
 }
 
-void NodeRegistry::addPlugin(std::string plugin_path) {
+void NodeRegistry::addNativePlugin(const std::string &plugin_path) {
 	QLibrary l(QString::fromStdString(plugin_path));
 	bool loaded = l.load();
 	cd3assert(loaded, str(format("could not load plugin %1%: %2%")
@@ -56,11 +56,6 @@ Node *NodeRegistry::createNode(const std::string &name) const {
 	cd3assert(contains(name),
 			  str(format("no such node class registered: %1%") % name));
 	return registered_nodes.find(name)->second->createNode();
-}
-
-Node *NodeRegistry::createNode(const std::string &name, const std::string &script) const {
-	cd3assert(contains(name), "no such node registered");
-	return registered_nodes.find(name)->second->createNode(script);
 }
 
 bool NodeRegistry::contains(const std::string &name) const {

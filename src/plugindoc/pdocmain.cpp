@@ -18,8 +18,8 @@ int main(int argc, char **argv) {
 	NodeRegistry r;
 	SimulationRegistry sr;
 	for (int i = 1; i < argc; i++) {
-		r.addPlugin(argv[i]);
-		sr.addPlugin(argv[i]);
+		r.addNativePlugin(argv[i]);
+		sr.addNativePlugin(argv[i]);
 	}
 	cout << "Nodes: ";
 	BOOST_FOREACH(string klass, r.getRegisteredNames()) {
@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
 			continue;
 		}
 
-		Node *node = r.createNode(klass);
+                Node *node = r.createNode(klass);
 		if (klass != "RainRead")
 			node->init(0, 7200, 300);
 		cout << endl << klass << ":" << endl;
@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
 		BOOST_FOREACH(port_type port, *node->const_out_ports) {
 			cout << "\tout_port: " << port.first << endl;
 		}
-		delete node;
+//		delete node;
 	}
 	cout << endl << "Simulations: " << endl;
 	BOOST_FOREACH(string klass, sr.getRegisteredNames()) {

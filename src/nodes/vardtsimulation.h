@@ -15,7 +15,7 @@ public:
 	virtual ~VarDTSimulation();
 	int run(int time, int dt);
 private:
-	int run(Node *n, int time, int dt);
+        int run(Node *n, int time, int dt);
 
 private:
 	VarDTPriv *priv;

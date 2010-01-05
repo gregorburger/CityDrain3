@@ -2,7 +2,7 @@
 #include <node.h>
 
 BufferedNodeConnection::BufferedNodeConnection(Node * source, const std::string &soport,
-				   Node *sink, const std::string &siport)
+                                   Node *sink, const std::string &siport)
  : NodeConnection(source, soport, sink, siport) {
 
 }

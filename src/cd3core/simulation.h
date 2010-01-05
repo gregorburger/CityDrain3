@@ -3,6 +3,8 @@
 
 #include <boost/signals.hpp>
 #include <cd3globals.h>
+#include <boost/shared_ptr.hpp>
+using namespace boost;
 
 class IModel;
 class Controller;
@@ -51,10 +53,10 @@ public:
 
 	virtual int run(int time, int dt) = 0;
 
-	virtual NodeConnection *createConnection(Node * source,
-											const std::string &soport,
-											Node *sink,
-											const std::string &siport) const;
+	virtual NodeConnection *createConnection(Node *source,
+											 const std::string &soport,
+											 Node *sink,
+											 const std::string &siport) const;
 
 	boost::signal2<void, ISimulation *, int> timestep_after;
 	boost::signal2<void, ISimulation *, int> timestep_before;

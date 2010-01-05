@@ -16,8 +16,8 @@ public:
 	void setModel(IModel *model);
 private:
 	void setNodeDepends() const;
-	void run(Node *n, int time);
-	std::vector<Node*> sources;
+        void run(Node *n, int time);
+        std::vector<Node *> sources;
 };
 
 #endif // PARALLELSIMULATION_H

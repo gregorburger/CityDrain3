@@ -5,9 +5,8 @@ using namespace std;
 CD3_DECLARE_NODE_NAME(CycleNodeStart)
 
 CycleNodeStart::CycleNodeStart() {
-	state = &out;
 	addOutPort(ADD_PARAMETERS(out));
-	addState(ADD_PARAMETERS_P(state));
+	addState("state", &out);
 }
 
 CycleNodeStart::~CycleNodeStart() {

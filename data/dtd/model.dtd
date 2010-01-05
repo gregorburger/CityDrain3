@@ -2,7 +2,10 @@
 <!ELEMENT model (nodelist, connectionlist) >
 <!ELEMENT nodelist (node*) >
 <!ELEMENT connectionlist (connection*) >
-<!ELEMENT simulation (time) >
+<!ELEMENT simulation (time, flowdefinition) >
+<!ELEMENT flowdefinition (flow, concentration*) >
+<!ELEMENT flow EMPTY >
+<!ELEMENT concentration EMPTY >
 <!ELEMENT time EMPTY >
 <!ELEMENT pluginpath EMPTY >
 <!ELEMENT node (parameter*) >
@@ -29,6 +32,12 @@
 	start CDATA #REQUIRED
 	stop CDATA  #REQUIRED
 	dt CDATA #REQUIRED >
+	
+<!ATTLIST concentration
+	name CDATA #REQUIRED>
+	
+<!ATTLIST flow
+	name CDATA #REQUIRED>
 	
 <!ATTLIST pluginpath
 	path CDATA #REQUIRED >

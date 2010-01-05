@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!DOCTYPE citydrain SYSTEM "../dtd/model.dtd">
+
+<citydrain version="1.0">
+
+	<pluginpath path="nodes" />
+	<pythonmodule module="cdtest" />
+
+	<simulation class="DefaultSimulation">
+		<time start="0" stop="72000" dt="300" />
+		<flowdefinition>
+		    <flow name="Q" />
+            <concentration name="C0" />
+            <concentration name="C1" />
+		</flowdefinition>
+	</simulation>
+
+	<model>
+		<nodelist>
+			<node id="constsource" class="ConstSource">
+				<parameter name="const_flow" kind="complex" type="Flow">
+					<flow>
+						<unit name="Q" value="234.0" />
+						<unit name="C0" value="0.1"/>
+						<unit name="C1" value="0.2"/>
+					</flow>
+				</parameter>
+			</node>
+			
+			<node id="fileout" class="FileOut">
+				<parameter name="out_file_name" type="string" 
+						value="tmp/pythonout.txt" />
+			</node>
+			
+			<node id="musk1" class="Sewer" />
+			
+			<node id="pynode" class="MichiPythonNode">
+				<parameter name="x" type="int" value="42"/>
+			</node>
+			
+		</nodelist>
+		
+		<connectionlist>
+		
+			<connection id="con1">
+				<source node="constsource" port="out" />
+				<sink	node="musk1" port="in" />
+			</connection>
+			
+			<connection id="con3">
+				<source node="musk1" port="out" />
+				<sink node="pynode" port="in" />
+			</connection>
+			
+			<connection id="con2">
+				<source node="pynode" port="out" />
+				<sink node="fileout" port="in" />
+			</connection>
+			
+		</connectionlist>
+	</model>
+</citydrain>

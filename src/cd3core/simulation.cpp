@@ -1,9 +1,8 @@
 #include "simulation.h"
 #include "modelserializer.h"
-#include "model.h"
+#include "imodel.h"
 #include "cd3assert.h"
 #include "nodeconnection.h"
-#include "controller.h"
 #include "log.h"
 #include "logger.h"
 
@@ -48,10 +47,12 @@ void ISimulation::start(int time) {
 	(void) time;
 	QTime ts_before = QTime::currentTime();
 	current_time = sim_param.start;
+	int dt;
 	while (running && current_time <= sim_param.stop) {
 		timestep_before(this, current_time);
-		current_time += run(current_time, sim_param.dt);
+		dt = run(current_time, sim_param.dt);
 		timestep_after(this, current_time);
+		current_time += dt;
 	}
 
 	QTime ts_after = QTime::currentTime();

@@ -1,7 +1,9 @@
-add_executable(cd3 main.cpp)
-target_link_libraries(cd3 cd3core)
-if (Boost_FOUND)
-	target_link_libraries(cd3 ${QT_LIBRARIES} ${BOOST_LIBRARIES})
+add_executable(cd3 main.cpp saxloader.cpp)
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
+    target_link_libraries(cd3 cd3core pycd3)
 else()
-	target_link_libraries(cd3 ${QT_LIBRARIES} boost_signals boost_thread-mt boost_program_options)
+    target_link_libraries(cd3 cd3core pycd3 ${Boost_PROGRAM_OPTIONS_LIBRARY})
 endif()
+INSTALL(TARGETS cd3
+  RUNTIME DESTINATION bin
+)

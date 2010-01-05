@@ -3,14 +3,14 @@
 #include <boost/format.hpp>
 #include <vector>
 
-#include <node.h>
+#include "node.h"
 #include <simulation.h>
 #include <cd3assert.h>
 #include <nodeconnection.h>
 
 using namespace boost;
 
-typedef pair<string, Node*> nodes_pair_type;
+typedef pair<string, Node *> nodes_pair_type;
 
 MapBasedModel::MapBasedModel() {
 }
@@ -18,7 +18,7 @@ MapBasedModel::MapBasedModel() {
 MapBasedModel::~MapBasedModel() {
 	BOOST_FOREACH(nodes_pair_type p, names_nodes) {
 		p.second->deinit();
-		delete p.second;
+                delete p.second;
 	}
 	BOOST_FOREACH(NodeConnection *con, all_connections) {
 		delete con;
@@ -30,6 +30,7 @@ const node_set_type *MapBasedModel::getNodes() const {
 }
 
 Node *MapBasedModel::getNode(const string &name) const {
+	cd3assert(names_nodes.count(name), str(format("no node with such name (%1%) registered") % name));
 	return names_nodes.find(name)->second;
 }
 
@@ -48,8 +49,9 @@ void MapBasedModel::addNode(Node *node) {
 }
 
 void MapBasedModel::addConnection(NodeConnection *con) {
-	Node *source = con->source;
-	Node *sink = con->sink;
+	cd3assert(con, "connection must no be null");
+        Node *source = con->source;
+        Node *sink = con->sink;
 
 	sink_nodes.erase(source);
 	source_nodes.erase(sink);
@@ -64,7 +66,7 @@ void MapBasedModel::addConnection(NodeConnection *con) {
 void MapBasedModel::initNodes(const SimulationParameters &sp) {
 	node_set_type::iterator it = all_nodes.begin();
 	while (it != all_nodes.end()) {
-		Node *n = *it;
+                Node *n = *it;
 		n->init(sp.start, sp.stop, sp.dt);
 		it++;
 	}
@@ -108,7 +110,7 @@ name_node_map MapBasedModel::getNamesAndNodes() const {
 }
 
 bool MapBasedModel::connected() const {
-	BOOST_FOREACH(Node * n, uncon_nodes) {
+        BOOST_FOREACH(Node * n, uncon_nodes) {
 		std::cerr << "node " << n->getId() << "not connected" << std::endl;
 	}
 	return uncon_nodes.empty();
@@ -116,7 +118,7 @@ bool MapBasedModel::connected() const {
 
 typedef pair<string, Flow*> port_type;
 void MapBasedModel::checkModel() const {
-	BOOST_FOREACH(Node *node, all_nodes) {
+        BOOST_FOREACH(Node *node, all_nodes) {
 		BOOST_FOREACH(port_type port, *node->const_in_ports) {
 			bool found = false;
 			BOOST_FOREACH(NodeConnection *con, bwd_connections.at(node)) {
@@ -148,7 +150,7 @@ void MapBasedModel::checkModel() const {
 
 con_count_type MapBasedModel::getBackwardCounts() const {
 	con_count_type counts;
-	BOOST_FOREACH(Node *node, all_nodes) {
+        BOOST_FOREACH(Node *node, all_nodes) {
 		counts[node] = bwd_connections.at(node).size();
 	}
 
@@ -157,7 +159,7 @@ con_count_type MapBasedModel::getBackwardCounts() const {
 
 con_count_type MapBasedModel::getForwardCounts() const {
 	con_count_type counts;
-	BOOST_FOREACH(Node *node, all_nodes) {
+        BOOST_FOREACH(Node *node, all_nodes) {
 		counts[node] = fwd_connections.at(node).size();
 	}
 
@@ -167,7 +169,7 @@ con_count_type MapBasedModel::getForwardCounts() const {
 node_set_type MapBasedModel::cycleNodes() const {
 	node_set_type cycle_nodes;
 
-	BOOST_FOREACH(Node *n, all_nodes) {
+        BOOST_FOREACH(Node *n, all_nodes) {
 		node_set_type reachable;
 		if (cycleNodesHelper(n, reachable)) {
 			cycle_nodes.insert(n);

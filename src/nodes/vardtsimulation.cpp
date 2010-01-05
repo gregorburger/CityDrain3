@@ -1,6 +1,6 @@
 #include "vardtsimulation.h"
 #include <node.h>
-#include <model.h>
+#include <imodel.h>
 #include <flowbuffer.h>
 #include <flow.h>
 #include <cd3assert.h>
@@ -42,7 +42,7 @@ int VarDTSimulation::run(Node *n, int time, int dt) {
 	BOOST_FOREACH(NodeConnection *con, model->backwardConnection(n)) {
 		int calced_dt = 0;	//holds the calculated dts of the predecessors
 		std::string src_port, snk_port;
-		Node *next;
+                Node *next;
 
 		next = con->sink;
 		src_port = con->source_port;

@@ -1,5 +1,5 @@
 TEMPLATE = lib
-CONFIG += plugin
+CONFIG += plugin qt
 TARGET = nodes
 LIBS += -lcd3core \
     -lboost_thread-mt \

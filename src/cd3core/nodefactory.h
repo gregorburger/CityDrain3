@@ -8,51 +8,36 @@
 #include "cd3utils.h"
 #include <boost/utility.hpp>
 #include <cd3globals.h>
+#include <boost/shared_ptr.hpp>
 
 class CD3_PUBLIC INodeFactory {
 public:
 	virtual ~INodeFactory(){}
-	virtual Node *createNode(const std::string &s = "") const = 0;
+	virtual Node *createNode() const = 0;
 	virtual std::string getNodeName() = 0;
 };
 
-template <typename T, bool scripted = false>
+template <typename T>
 class CD3_PUBLIC NodeFactory
 	: public INodeFactory {
 public:
 	NodeFactory();
-	virtual Node *createNode(const std::string & = "") const;
+	virtual Node *createNode() const;
 	virtual std::string getNodeName();
-
-private:
-	Node *createNode(Int2Type<true>, const std::string &s = "") const;
-	Node *createNode(Int2Type<false>, const std::string &s = "") const;
 };
 
-template <typename T, bool scripted>
-NodeFactory<T, scripted>::NodeFactory() {
+template <typename T>
+NodeFactory<T>::NodeFactory() {
 }
 
-template <typename T, bool scripted>
-Node *NodeFactory<T, scripted>::createNode(const std::string &s) const {
-	return createNode(Int2Type<scripted>(), s);
-}
-
-template <typename T, bool scripted>
-std::string NodeFactory<T, scripted>::getNodeName() {
-	return T::name;
-}
-
-template <typename T, bool scripted>
-Node *NodeFactory<T, scripted>::createNode(Int2Type<true>, const std::string &s) const {
-	return new T(s);
-}
-
-template <typename T, bool scripted>
-Node *NodeFactory<T, scripted>::createNode(Int2Type<false>, const std::string &s) const {
-	(void) s;
+template <typename T>
+Node *NodeFactory<T>::createNode() const {
 	return new T();
 }
 
+template <typename T>
+std::string NodeFactory<T>::getNodeName() {
+	return T::name;
+}
 
 #endif // NODEFACTORY_H

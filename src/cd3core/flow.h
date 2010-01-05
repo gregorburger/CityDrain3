@@ -1,7 +1,7 @@
 #ifndef FLOW_H
 #define FLOW_H
 
-#include <boost/shared_ptr.hpp>
+#include <boost/shared_array.hpp>
 #include <vector>
 #include <cd3globals.h>
 #include <string>
@@ -44,26 +44,25 @@ public:
 	static const std::vector<std::string> &getNames();
 	static const std::vector<std::string> &getUnitNames(CalculationUnit unit);
 	static bool hasName(const std::string &name);
+	static int size();
 
 	void dump() const;
 
 	static void define(std::map<std::string, CalculationUnit> definition);
 
-	boost::shared_ptr<FlowPriv> f;
-
 	inline double &operator[](int i) {
 		copyData();
-		return f->operator [](i);
+		return f[i];
 	}
 
 	inline const double &operator[](int i) const {
-		return f->operator[](i);
+		return f[i];
 	}
 
 private:
 	static void addUnit(const std::string &name, CalculationUnit unit);
 	static FlowDefinition fd;
-
+	boost::shared_array<double> f;
 	void copyData();
 };
 

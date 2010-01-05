@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE citydrain SYSTEM "../dtd/model.dtd">
+
+<citydrain version="1.0">
+
+	<pluginpath path="nodes" />
+	<pythonmodule module="testnodes" />
+
+	<simulation class="DefaultSimulation">
+		<time start="0" stop="72000" dt="300" />
+		<flowdefinition>
+		    <flow name="Q" />
+            <concentration name="C0" />
+            <concentration name="C1" />
+		</flowdefinition>
+	</simulation>
+
+	<model>
+		<nodelist>
+			<node id="source" class="RandomCatchment"/>
+			
+			<node id="fileout" class="FileOut">
+				<parameter name="out_file_name" type="string" 
+						value="tmp/randomnout.txt" />
+			</node>
+			
+			<node id="musk1" class="Sewer" />
+			
+		</nodelist>
+		
+		<connectionlist>
+		
+			<connection id="con1">
+				<source node="source" port="out" />
+				<sink	node="musk1" port="in" />
+			</connection>
+			
+			<connection id="con3">
+				<source node="musk1" port="out" />
+				<sink node="fileout" port="in" />
+			</connection>
+			
+		</connectionlist>
+	</model>
+</citydrain>

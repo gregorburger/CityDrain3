@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 #include <cd3globals.h>
+#include <boost/shared_ptr.hpp>
+using namespace boost;
 
 class INodeFactory;
 class Node;
@@ -18,11 +20,10 @@ public:
 	~NodeRegistry();
 
 	bool addNodeFactory(INodeFactory *factory);
-	void addPlugin(const std::string plugin_path);
+	void addNativePlugin(const std::string &plugin_path);
 
 	std::vector<std::string> getRegisteredNames() const;
-	Node *createNode(const std::string &name) const;
-	Node *createNode(const std::string &name, const std::string &script) const;
+        Node *createNode(const std::string &name) const;
 	bool contains(const std::string &name) const;
 
 private:

@@ -2,7 +2,7 @@
 #include "stateserializer.h"
 #include "cd3typeinfo.h"
 #include "node.h"
-#include <model.h>
+#include <imodel.h>
 #include <fstream>
 #include <QDebug>
 #include <QFile>
@@ -14,7 +14,7 @@
 
 #include <cd3assert.h>
 
-typedef std::pair<std::string, Node*> snp;
+typedef std::pair<std::string, Node *> snp;
 typedef std::pair<std::string, ltvp> sltvpp;
 typedef std::pair<std::string, Flow *> ssfp;
 

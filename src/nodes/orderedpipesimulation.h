@@ -15,11 +15,11 @@ public:
 	void start(int time);
 	int run(int time, int dt);
 	void setModel(IModel *model);
-	NodeConnection *createConnection(Node *, const std::string &,
-									 Node *, const std::string &) const;
+        NodeConnection *createConnection(Node *, const std::string &,
+                                                                         Node *, const std::string &) const;
 private:
-	std::vector<Node*> getOrder();
-	void updatePorts(Node *sink);
+        std::vector<Node *> getOrder();
+        void updatePorts(Node *sink);
 	OPSPriv *pd;
 };
 

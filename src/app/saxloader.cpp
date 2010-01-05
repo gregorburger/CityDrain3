@@ -14,12 +14,12 @@ using namespace std;
 #include <noderegistry.h>
 #include <simulationregistry.h>
 #include <typeregistry.h>
-#include <model.h>
+#include <imodel.h>
 #include <cd3assert.h>
-#include <node.h>
+#include "node.h"
 #include <simulation.h>
 #include <flow.h>
-#include <controller.h>
+#include <module.h>
 
 struct SaxLoaderPriv {
 	NodeRegistry node_registry;
@@ -53,16 +53,8 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 	if (lname == "node") {
 		std::string id = atts.value("id").toStdString();
 		std::string klass = atts.value("class").toStdString();
-		std::string script = atts.value("script").toStdString();
-		if (script.empty()) {
-			Logger(Debug) << "creating a" << klass << "node with id:" << id;
-			current = pd->node_registry.createNode(klass);
-		} else {
-			Logger(Debug) << "creating a scripted" << klass
-					<< "node with id:" << id
-					<< "and script:" << script;
-			current = pd->node_registry.createNode(klass, script);
-		}
+		Logger(Debug) << "creating a" << klass << "node with id:" << id;
+		current = pd->node_registry.createNode(klass);
 		current->setId(id);
 		pd->model->addNode(current);
 		consumed = true;
@@ -88,19 +80,6 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		pd->simulation = pd->sim_registry.createSimulation(klass);
 		consumed = true;
 	}
-	if (lname == "controller") {
-		cd3assert(pd->simulation != 0, "no simulation set");
-		QString script = atts.value("script");
-		cd3assert(QFile::exists(script), "no such controller script file");
-
-		Logger(Debug) << "creating JavaScript Controller with script" << script;
-		shared_ptr<Controller> c(new Controller(script.toStdString()));
-		pd->simulation->timestep_before
-				.connect(bind<void>(&Controller::controllBefore, c, _1, _2));
-		pd->simulation->timestep_after
-				.connect(bind<void>(&Controller::controllAfter, c, _1, _2));
-		consumed = true;
-	}
 	if (lname == "time") {
 		SimulationParameters p;
 		p.dt = lexical_cast<int>(atts.value("dt").toStdString());
@@ -120,8 +99,14 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 	}
 	if (lname == "pluginpath") {
 		std::string path = atts.value("path").toStdString();
-		pd->node_registry.addPlugin(path);
-		pd->sim_registry.addPlugin(path);
+		pd->node_registry.addNativePlugin(path);
+		pd->sim_registry.addNativePlugin(path);
+		consumed = true;
+	}
+	if (lname == "pythonmodule") {
+		std::string module = atts.value("module").toStdString();
+                cout << "Loading Python Module " << module << endl;
+                PythonEnv::getInstance()->registerNodes(&pd->node_registry, module);
 		consumed = true;
 	}
 	if (lname == "citydrain") {
@@ -215,8 +200,8 @@ bool SaxLoader::endElement(const QString &/*ns*/,
 			breakCycle();
 			cycle_break = false;
 		} else {
-			Node *sink = pd->model->getNode(sink_id);
-			Node *source = pd->model->getNode(source_id);
+                        Node *sink = pd->model->getNode(sink_id);
+                        Node *source = pd->model->getNode(source_id);
 			Logger(Debug) << "creating connection:"
 					<< source << "[" << source_port << "] => "
 					<< sink << "[" << sink_port << "]";
@@ -303,12 +288,12 @@ void SaxLoader::loadParameter(const QXmlAttributes& atts) {
 }
 
 void SaxLoader::breakCycle() {
-	Node *sink = pd->model->getNode(sink_id);
-	Node *source = pd->model->getNode(source_id);
+        Node *sink = pd->model->getNode(sink_id);
+        Node *source = pd->model->getNode(source_id);
 
-	Node *start = pd->node_registry.createNode("CycleNodeStart");
+        Node *start = pd->node_registry.createNode("CycleNodeStart");
 	start->setId(sink_id+source_id+"-cycle_start");
-	Node *end = pd->node_registry.createNode("CycleNodeEnd");
+        Node *end = pd->node_registry.createNode("CycleNodeEnd");
 	end->setId(sink_id+source_id+"-cycle_end");
 	pd->model->addNode(start);
 	pd->model->addNode(end);

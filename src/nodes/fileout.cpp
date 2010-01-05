@@ -11,44 +11,39 @@ CD3_DECLARE_NODE_NAME(FileOut)
 FileOut::FileOut()
 	: Node(), stream(&file)
 {
-	in = new Flow();
-	out_file_name = new std::string();
-	addParameter(ADD_PARAMETERS_P(out_file_name));
-	addInPort(ADD_PARAMETERS_P(in));
-
-	first_run = true;
+	out_file_name = "/tmp/out.txt";
+	addParameter(ADD_PARAMETERS(out_file_name));
+	addInPort(ADD_PARAMETERS(in));
 }
 
 FileOut::~FileOut() {
-	delete out_file_name;
-	delete in;
 }
 
 void FileOut::init(int start, int stop, int dt) {
 	(void) start;
 	(void) stop;
 	(void) dt;
-	cd3assert(out_file_name, "out_file_name not defined");
-	file.setFileName(QString::fromStdString(*out_file_name));
+	cd3assert(out_file_name.size(), "out_file_name not defined");
+	file.setFileName(QString::fromStdString(out_file_name));
 	if (!file.isOpen()) {
 		file.open(QFile::WriteOnly);
 	}
-	Logger() << this << "using fileout:" << *out_file_name;
+	Logger() << this << "using fileout:" << out_file_name;
 	stream.setRealNumberPrecision(10);
 }
 
 void FileOut::deinit() {
-	//file->close();
 	if (file.isOpen())
 		file.close();
 }
 
 int FileOut::f(int time, int dt) {
-	stream << qSetFieldWidth(15);
-	stream << fixed;
+	static bool first_run = true;
 	if (first_run) {
+		stream << qSetFieldWidth(15);
+		stream << fixed;
 		stream << "time";
-		BOOST_FOREACH(std::string name, in->getNames()) {
+		BOOST_FOREACH(std::string name, Flow::getNames()) {
 			stream << "\t" << QString::fromStdString(name);
 		}
 		stream << "\n";
@@ -56,8 +51,8 @@ int FileOut::f(int time, int dt) {
 	}
 	stream << time;
 
-	BOOST_FOREACH(std::string name, in->getNames()) {
-			stream << "\t" << in->getValue(name);
+	BOOST_FOREACH(std::string name, Flow::getNames()) {
+			stream << "\t" << in.getValue(name);
 	}
 	stream << "\n";
 	return dt;

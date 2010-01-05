@@ -20,7 +20,6 @@ HEADERS += constsource.h \
     bufferednodeconnection.h \
     cyclenodeend.h \
     cyclenodestart.h \
-    pumpingstation.h \
     arrayparamtest.h \
     pumpingstation.h
 SOURCES += nodes.cpp \
@@ -42,7 +41,5 @@ SOURCES += nodes.cpp \
     bufferednodeconnection.cpp \
     cyclenodeend.cpp \
     cyclenodestart.cpp \
-    pumpingstation.cpp \
     arrayparamtest.cpp \
     pumpingstation.cpp
-include(qs/qs.pri)

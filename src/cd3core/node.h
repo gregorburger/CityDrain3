@@ -46,8 +46,6 @@ typedef unordered_map<std::string, ltvp>			ssltvp;
 
 struct SimulationParameters;
 
-class QMutex;
-
 class CD3_PUBLIC Node
 {
 	friend class ModelSerializer;
@@ -57,8 +55,6 @@ public:
 
 	virtual ~Node();
 	virtual int f(int time, int dt) = 0;
-
-	virtual int ts_f(int time, int dt);
 
 	void setId(const std::string &id);
 	std::string getId() const;
@@ -195,8 +191,6 @@ protected:
 	ssf		out_ports;
 	int		dt;
 	std::string		id;
-private:
-	QMutex *lock;
 };
 
 #endif // NODE_H

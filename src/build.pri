@@ -25,8 +25,12 @@ QT+=xml
 QT-=gui
 INCLUDEPATH+=$$PWD/cd3core
 INCLUDEPATH+=$$PWD/cd3core/qs
+INCLUDEPATH+=$$PWD/python/
 OBJECTS_DIR=$$PWD/../tmp/
 MOC_DIR=$$PWD/../tmp/
 UI_DIR=$$PWD/../tmp/
 CONFIG += no_keywords console debug
 QMAKE_LFLAGS += -Wl,--allow-shlib-undefined -Wl,--no-undefined
+
+#python stuff
+

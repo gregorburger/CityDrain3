@@ -1,6 +1,6 @@
 #include "log.h"
 #include <iostream>
-#include <node.h>
+#include "node.h"
 #include <logger.h>
 
 #include <ostream>
