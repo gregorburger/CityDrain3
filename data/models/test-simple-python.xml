@@ -20,8 +20,8 @@
 		<nodelist>
 			<node id="constsource1" class="RandomCatchment"/>
 			
-			<node id="fileout" class="FileOut">
-				<parameter name="out_file_name" type="string" 
+			<node id="fileout" class="PyOut">
+				<parameter name="out" type="string" 
 						value="tmp/test-random.txt" />
 			</node>
 		</nodelist>
