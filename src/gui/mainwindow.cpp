@@ -1,10 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "nodeitem.h"
 #include <mapbasedmodel.h>
 #include <noderegistry.h>
 #include <simulationregistry.h>
-#include <qfiledialog.h>
 
+#include <qfiledialog.h>
 #include <QDebug>
 #include <boost/foreach.hpp>
 
@@ -12,6 +13,7 @@ struct MainWindowPrivate {
 	MapBasedModel model;
 	NodeRegistry node_reg;
 	SimulationRegistry sim_reg;
+	QGraphicsScene scene;
 };
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -19,6 +21,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui(new Ui::MainWindow) {
 	ui->setupUi(this);
 	priv = new MainWindowPrivate();
+	ui->graphicsView->setScene(&priv->scene);
+	ui->graphicsView->setRenderHints(QPainter::Antialiasing);
 	QStringList default_node_paths;
 	default_node_paths << "./libnodes.so" << "../../libnodes.so" << "./build/libnodes.so";
 	Q_FOREACH(QString path, default_node_paths) {
@@ -61,6 +65,7 @@ void MainWindow::on_actionAdd_Plugin_activated() {
 
 void MainWindow::on_pluginsAdded() {
 	QTreeWidgetItem *nodes = new QTreeWidgetItem(QStringList("nodes"));
+	nodes->setExpanded(true);
 	QTreeWidgetItem *simulations = new QTreeWidgetItem(QStringList("simuluations"));
 
 	BOOST_FOREACH(string node_name, priv->node_reg.getRegisteredNames()) {
@@ -74,4 +79,11 @@ void MainWindow::on_pluginsAdded() {
 		item->setText(0, QString::fromStdString(sim_name));
 	}
 	ui->treeWidget->insertTopLevelItem(0, simulations);
+}
+
+void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column) {
+	Node *node = priv->node_reg.createNode(item->text(0).toStdString());
+	NodeItem *nitem = new NodeItem(node);
+	nitem->setFlag(QGraphicsItem::ItemIsMovable, true);
+	ui->graphicsView->scene()->addItem(nitem);
 }

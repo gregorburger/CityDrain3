@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QObject>
+class QTreeWidgetItem;
 
 namespace Ui {
 	class MainWindow;
@@ -26,6 +27,7 @@ private:
 public Q_SLOTS:
 	void on_actionAdd_Plugin_activated();
 	void on_pluginsAdded();
+	void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column);
 };
 
 #endif // MAINWINDOW_H
