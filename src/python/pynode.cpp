@@ -18,7 +18,7 @@ struct NodeWrapper : Node, python::wrapper<Node> {
 		//Py_DECREF(self); FIXME something is double clean up LEAK HERE
 	}
 
-	int f(int time, int dt) {
+	int f(ptime time, int dt) {
 		updateParameters();
 		try {
 			return python::call_method<int>(self, "f", time, dt);
@@ -37,7 +37,7 @@ struct NodeWrapper : Node, python::wrapper<Node> {
 
 	}
 
-	void init(int start, int stop, int dt) {
+	void init(ptime start, ptime stop, int dt) {
 		try {
 			updateParameters();
 			python::call_method<void>(self, "init", start, stop, dt);
