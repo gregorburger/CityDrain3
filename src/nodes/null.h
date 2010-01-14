@@ -7,7 +7,7 @@
 CD3_DECLARE_NODE(Null)
 public:
 	Null();
-	int f(int time, int dt);
+	int f(ptime time, int dt);
 private:
 	Flow out;
 };

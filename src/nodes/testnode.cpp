@@ -23,9 +23,9 @@ TestNode::~TestNode() {
 	delete in_out;
 }
 
-int TestNode::f(int time, int dt) {
+int TestNode::f(ptime time, int dt) {
 	int_value += dt;
-	double_value += time;
+	double_value += dt;
 	string_value += str(boost::format(" hallo %1% ") % time);
 
 	test->dump();

@@ -26,7 +26,7 @@ Sewer::~Sewer() {
 void Sewer::deinit() {
 }
 
-void Sewer::init(int start, int end, int dt) {
+void Sewer::init(ptime start, ptime end, int dt) {
 	(void) start;
 	(void) end;
 
@@ -39,7 +39,7 @@ void Sewer::init(int start, int end, int dt) {
 }
 
 
-int Sewer::f(int time, int dt) {
+int Sewer::f(ptime time, int dt) {
 	(void) time;
 	double C_x, C_y;
 	setMuskParam(&C_x, &C_y, dt);

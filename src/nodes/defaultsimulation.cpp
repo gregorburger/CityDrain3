@@ -20,7 +20,7 @@ DefaultSimulation::~DefaultSimulation() {
 	delete sp;
 }
 
-int DefaultSimulation::run(int time, int dt) {
+int DefaultSimulation::run(ptime time, int dt) {
 	sp->done.clear();
 	con_count_type deps = model->getBackwardCounts();
 
@@ -31,7 +31,7 @@ int DefaultSimulation::run(int time, int dt) {
 	return dt;
 }
 
-void DefaultSimulation::run(Node *n, int time, con_count_type &depends) {
+void DefaultSimulation::run(Node *n, ptime time, con_count_type &depends) {
 	if (sp->done.count(n) > 0) {
 		return;
 	}

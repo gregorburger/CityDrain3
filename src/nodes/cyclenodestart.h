@@ -8,7 +8,7 @@ CD3_DECLARE_NODE(CycleNodeStart)
 public:
 	CycleNodeStart();
 	virtual ~CycleNodeStart();
-	int f(int time, int dt);
+	int f(ptime time, int dt);
 	Flow out;
 };
 

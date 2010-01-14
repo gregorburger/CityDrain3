@@ -12,7 +12,7 @@ ArrayParamTest::ArrayParamTest() {
 ArrayParamTest::~ArrayParamTest() {
 }
 
-void ArrayParamTest::init(int start, int stop, int dt) {
+void ArrayParamTest::init(ptime start, ptime stop, int dt) {
 	(void) start;
 	(void) stop;
 	(void) dt;
@@ -23,7 +23,7 @@ void ArrayParamTest::init(int start, int stop, int dt) {
 }
 
 
-int ArrayParamTest::f(int time, int dt) {
+int ArrayParamTest::f(ptime time, int dt) {
 	(void) time;
 	return dt;
 }

@@ -19,7 +19,7 @@ Mixer::~Mixer() {
 void Mixer::deinit() {
 }
 
-void Mixer::init(int start, int end, int dt) {
+void Mixer::init(ptime start, ptime end, int dt) {
 	(void) start;
 	(void) end;
 	(void) dt;
@@ -32,7 +32,7 @@ void Mixer::init(int start, int end, int dt) {
 	}
 }
 
-int Mixer::f(int time, int dt) {
+int Mixer::f(ptime time, int dt) {
 	(void) time;
 	out = FlowFuns::mix(inputs);
 	return dt;

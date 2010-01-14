@@ -54,7 +54,7 @@ CatchmentCSS::~CatchmentCSS() {
 	delete loss_basin;
 }
 
-void CatchmentCSS::init(int start, int end, int dt) {
+void CatchmentCSS::init(ptime start, ptime end, int dt) {
 	(void) start;
 	(void) end;
 	(void) dt;
@@ -88,11 +88,11 @@ void CatchmentCSS::deinit() {
 	}
 }
 
-int CatchmentCSS::f(int time, int dt) {
+int CatchmentCSS::f(ptime time, int dt) {
 	(void) time;
 	double C_x, C_y;
 	setMuskParam(&C_x, &C_y, dt);
-	
+
 	std::vector<Flow> inputs;
 	Flow loss = FlowFuns::catchement_lossmodel(*rain_in, loss_basin, initial_loss, permanent_loss, run_off_coeff);
 	Flow flow = FlowFuns::catchment_flowmodel(loss, area, dt, rain_con_value, rain_con_name);

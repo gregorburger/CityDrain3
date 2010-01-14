@@ -23,7 +23,7 @@ Splitter::~Splitter() {
 	delete in;
 }
 
-int Splitter::f(int time, int dt) {
+int Splitter::f(ptime time, int dt) {
 	(void) time;
 
 	std::pair<Flow, Flow> splitted = FlowFuns::split(*in, ratio);

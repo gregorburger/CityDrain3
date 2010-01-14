@@ -13,9 +13,9 @@ CD3_DECLARE_SIMULATION(VarDTSimulation)
 public:
 	VarDTSimulation();
 	virtual ~VarDTSimulation();
-	int run(int time, int dt);
+	int run(ptime time, int dt);
 private:
-        int run(Node *n, int time, int dt);
+	int run(Node *n, ptime time, int dt);
 
 private:
 	VarDTPriv *priv;

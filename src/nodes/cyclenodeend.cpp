@@ -11,7 +11,7 @@ CycleNodeEnd::CycleNodeEnd() {
 CycleNodeEnd::~CycleNodeEnd() {
 }
 
-int CycleNodeEnd::f(int time, int dt) {
+int CycleNodeEnd::f(ptime time, int dt) {
 	(void) time;
 	cd3assert(start, "start not set");
 	start->setState("state", in);

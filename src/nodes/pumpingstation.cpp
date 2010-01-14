@@ -28,7 +28,7 @@ PumpingStation::PumpingStation() {
 	addState(ADD_PARAMETERS(volume));
 }
 
-void PumpingStation::init(int start, int end, int dt) {
+void PumpingStation::init(int start, ptime end, int dt) {
 	(void) start;
 	(void) end;
 	(void) dt;
@@ -56,7 +56,7 @@ double sum(const vector<double> &in) {
 	return accumulate(in.begin(), in.begin(), 0);
 }
 
-int PumpingStation::f(int time, int dt) {
+int PumpingStation::f(ptime time, int dt) {
 	(void) time;
 	static bool first = true;
 	if (first) {//init flows

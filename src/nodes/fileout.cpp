@@ -19,7 +19,7 @@ FileOut::FileOut()
 FileOut::~FileOut() {
 }
 
-void FileOut::init(int start, int stop, int dt) {
+void FileOut::init(ptime start, ptime stop, int dt) {
 	(void) start;
 	(void) stop;
 	(void) dt;
@@ -37,7 +37,7 @@ void FileOut::deinit() {
 		file.close();
 }
 
-int FileOut::f(int time, int dt) {
+int FileOut::f(ptime time, int dt) {
 	static bool first_run = true;
 	if (first_run) {
 		stream << qSetFieldWidth(15);
@@ -49,7 +49,7 @@ int FileOut::f(int time, int dt) {
 		stream << "\n";
 		first_run = false;
 	}
-	stream << time;
+	stream << to_simple_string(time).c_str();
 
 	BOOST_FOREACH(std::string name, Flow::getNames()) {
 			stream << "\t" << in.getValue(name);

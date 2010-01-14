@@ -13,7 +13,7 @@ CycleNodeStart::~CycleNodeStart() {
 
 }
 
-int CycleNodeStart::f(int time, int dt) {
+int CycleNodeStart::f(ptime time, int dt) {
 	(void) dt;
 	(void) time;
 	return dt;
