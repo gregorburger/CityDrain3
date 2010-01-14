@@ -43,7 +43,7 @@ IModel *ISimulation::getModel() const {
 	return model;
 }
 
-void ISimulation::start(int time) {
+void ISimulation::start(ptime time) {
 	(void) time;
 	QTime ts_before = QTime::currentTime();
 	current_time = sim_param.start;
@@ -52,7 +52,7 @@ void ISimulation::start(int time) {
 		timestep_before(this, current_time);
 		dt = run(current_time, sim_param.dt);
 		timestep_after(this, current_time);
-		current_time += dt;
+		current_time = current_time + seconds(dt);
 	}
 
 	QTime ts_after = QTime::currentTime();
@@ -70,8 +70,8 @@ void ISimulation::serialize(const std::string &dir) const {
 	ms.serialize(current_time);
 }
 
-void ISimulation::deserialize(const std::string &dir, int time) const {
-	Logger(Debug) << "serializing timestep" << time << "into" << dir;
+void ISimulation::deserialize(const std::string &dir, ptime time) const {
+	Logger(Debug) << "serializing timestep" << to_simple_string(time) << "into" << dir;
 	ModelSerializer ms(model, dir);
 	ms.deserialize(time);
 }

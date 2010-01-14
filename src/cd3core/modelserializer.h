@@ -3,7 +3,9 @@
 
 #include <QXmlDefaultHandler>
 #include <boost/shared_ptr.hpp>
+#include <boost/date_time.hpp>
 using namespace boost;
+using namespace boost::posix_time;
 #include <map>
 #include <cd3globals.h>
 
@@ -21,14 +23,14 @@ public:
 	ModelSerializer(IModel *model, const std::string &dir);
 	virtual ~ModelSerializer();
 
-	void serialize(int time) const;
-	void deserialize(int time);
+	void serialize(ptime time) const;
+	void deserialize(ptime time);
 
 private:
 	void serialize(std::ostream &) const;
-        void serializeNode(std::ostream &s, std::string &name, Node *n) const;
+	void serializeNode(std::ostream &s, std::string &name, Node *n) const;
 
-	std::string pathForTimeStep(int time) const;
+	std::string pathForTimeStep(ptime time) const;
 
 	IModel *model;
 	std::string dir;
@@ -55,7 +57,7 @@ public:
 
 private:
 	IModel *model;
-        Node *current;
+	Node *current;
 	std::string stateName;
 	std::string stateType;
 	std::string portName;

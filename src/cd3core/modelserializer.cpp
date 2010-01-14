@@ -26,11 +26,11 @@ ModelSerializer::ModelSerializer(IModel *m, const std::string &dir)
 ModelSerializer::~ModelSerializer() {
 }
 
-std::string ModelSerializer::pathForTimeStep(int time) const {
-	return boost::str(boost::format("%2%/%1%-cd3-state.xml") % time % dir);
+std::string ModelSerializer::pathForTimeStep(ptime time) const {
+	return boost::str(boost::format("%2%/%1%-cd3-state.xml") % to_simple_string(time) % dir);
 }
 
-void ModelSerializer::serialize(int time) const {
+void ModelSerializer::serialize(ptime time) const {
 	QString qs_dir = QString::fromStdString(dir);
 	QDir qdir = QDir::current();
 	if (!qdir.exists(qs_dir)) {
@@ -88,7 +88,7 @@ void ModelSerializer::serializeNode(std::ostream &os, std::string &node_name, No
 	os << "\t</node>\n";
 }
 
-void ModelSerializer::deserialize(int time) {
+void ModelSerializer::deserialize(ptime time) {
 	QString path = QString::fromStdString(pathForTimeStep(time));
 	cd3assert(QDir::current().exists(path), "no such state file");
 	Deserializer deser(model);

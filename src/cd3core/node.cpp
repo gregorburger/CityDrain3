@@ -12,7 +12,7 @@ Node::Node() : const_parameters(&parameters),
 Node::~Node() {
 }
 
-void Node::init(int start, int end, int dt) {
+void Node::init(ptime start, ptime end, int dt) {
 	(void) start;
 	(void) end;
 	(void) dt;

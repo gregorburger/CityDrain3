@@ -16,6 +16,9 @@ using namespace std;
 #include <cd3typeinfo.h>
 #include <cd3assert.h>
 #include <boost/format.hpp>
+#include <boost/date_time.hpp>
+using namespace boost::posix_time;
+
 #include <cd3globals.h>
 
 #ifdef DEBUG
@@ -54,13 +57,13 @@ public:
 	Node();
 
 	virtual ~Node();
-	virtual int f(int time, int dt) = 0;
+	virtual int f(ptime time, int dt) = 0;
 
 	void setId(const std::string &id);
 	std::string getId() const;
 
 	virtual const char *getClassName() const = 0;
-	virtual void init(int start, int end, int dt);
+	virtual void init(ptime start, ptime end, int dt);
 	/*
 	  called before delete, ressources acquired in init
 	  should be deallocated in deinit.
