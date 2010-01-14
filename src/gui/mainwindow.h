@@ -10,6 +10,7 @@ namespace Ui {
 }
 
 struct MainWindowPrivate;
+class NodeItem;
 
 class MainWindow : public QMainWindow {
 	Q_OBJECT
@@ -28,6 +29,7 @@ public Q_SLOTS:
 	void on_actionAdd_Plugin_activated();
 	void on_pluginsAdded();
 	void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column);
+	void nodeItemClicked(NodeItem *source);
 };
 
 #endif // MAINWINDOW_H

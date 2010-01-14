@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>400</height>
+    <width>861</width>
+    <height>510</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,6 +18,27 @@
     <item>
      <widget class="QGraphicsView" name="graphicsView"/>
     </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QProgressBar" name="simProgressBar">
+        <property name="value">
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="runButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>&amp;run Simulation</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -25,8 +46,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>600</width>
-     <height>25</height>
+     <width>861</width>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -60,9 +81,6 @@
        <property name="columnCount">
         <number>1</number>
        </property>
-       <attribute name="headerVisible">
-        <bool>false</bool>
-       </attribute>
        <attribute name="headerVisible">
         <bool>false</bool>
        </attribute>
