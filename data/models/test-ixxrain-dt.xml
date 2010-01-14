@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE citydrain SYSTEM "../dtd/model.dtd">
+
+<citydrain version="1.0">
+
+	<pluginpath path="nodes" />
+
+	<simulation class="DefaultSimulation">
+		<time start="1996-Jan-01 00:05:00.00" stop="1996-Jan-02 00:00:00.00" dt="300" />
+		<flowdefinition>
+		    <flow name="Q"/>
+		    <concentration name="C0"/>
+		    <concentration name="C1"/>
+		    <concentration name="C2"/>
+		</flowdefinition>
+	</simulation>
+
+	<model>
+		<nodelist>
+			<node id="rain" class="IxxRainRead">
+				<parameter name="rain_file" type="string" value="data/models/Station_6620.ixx" />
+			</node>
+			
+			<node id="fileout" class="FileOut">
+				<parameter name="out_file_name" type="string" value="tmp/ixxrainout.txt" />
+			</node>
+			
+		</nodelist>
+		
+		<connectionlist>
+			<connection id="con1">
+				<source node="rain" port="out" />
+				<sink	node="fileout" port="in" />
+			</connection>
+		</connectionlist>
+	</model>
+</citydrain>
