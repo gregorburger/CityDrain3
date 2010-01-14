@@ -26,13 +26,13 @@ CSO::CSO() {
 CSO::~CSO() {
 }
 
-void CSO::init(int start, int end, int dt) {
+void CSO::init(ptime start, ptime end, int dt) {
 	(void) start;
 	(void) end;
 	(void) dt;
 }
 
-int CSO::f(int time, int dt) {
+int CSO::f(ptime time, int dt) {
 	(void) time;
 
 	double Q_In = in[0];

@@ -82,13 +82,15 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 	}
 	if (lname == "time") {
 		SimulationParameters p;
-		p.dt = lexical_cast<int>(atts.value("dt").toStdString());
-		p.start = lexical_cast<int>(atts.value("start").toStdString());
-		p.stop = lexical_cast<int>(atts.value("stop").toStdString());
 		Logger(Debug) << "setting simulation time parameters" <<
 				"start:" << atts.value("start") <<
 				"stop:" << atts.value("stop") <<
 				"dt:" << atts.value("dt");
+		p.dt = lexical_cast<int>(atts.value("dt").toStdString());
+		Logger(Debug) << "parsing posix time " << atts.value("start").toStdString();
+		p.start = time_from_string(atts.value("start").toStdString());
+		Logger(Debug) << "parsing posix time " << atts.value("stat").toStdString();
+		p.stop = time_from_string(atts.value("stop").toStdString());
 		pd->simulation->setSimulationParameters(p);
 		consumed = true;
 	}
@@ -103,12 +105,12 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		pd->sim_registry.addNativePlugin(path);
 		consumed = true;
 	}
-	if (lname == "pythonmodule") {
+	/*if (lname == "pythonmodule") {
 		std::string module = atts.value("module").toStdString();
-                cout << "Loading Python Module " << module << endl;
-                PythonEnv::getInstance()->registerNodes(&pd->node_registry, module);
+		cout << "Loading Python Module " << module << endl;
+		PythonEnv::getInstance()->registerNodes(&pd->node_registry, module);
 		consumed = true;
-	}
+	}*/
 	if (lname == "citydrain") {
 		consumed = true;
 	}
@@ -200,8 +202,8 @@ bool SaxLoader::endElement(const QString &/*ns*/,
 			breakCycle();
 			cycle_break = false;
 		} else {
-                        Node *sink = pd->model->getNode(sink_id);
-                        Node *source = pd->model->getNode(source_id);
+			Node *sink = pd->model->getNode(sink_id);
+			Node *source = pd->model->getNode(source_id);
 			Logger(Debug) << "creating connection:"
 					<< source << "[" << source_port << "] => "
 					<< sink << "[" << sink_port << "]";
@@ -278,7 +280,7 @@ void SaxLoader::loadParameter(const QXmlAttributes& atts) {
 		cd3assert(false, str(format("unnknown simple type %1%") % type.c_str()));
 		return;
 	}
-	
+
 	if (kind == "complex" || kind == "array") {
 		pd->param_name = atts.value("name").toStdString();
 		return;
@@ -288,12 +290,12 @@ void SaxLoader::loadParameter(const QXmlAttributes& atts) {
 }
 
 void SaxLoader::breakCycle() {
-        Node *sink = pd->model->getNode(sink_id);
-        Node *source = pd->model->getNode(source_id);
+	Node *sink = pd->model->getNode(sink_id);
+	Node *source = pd->model->getNode(source_id);
 
-        Node *start = pd->node_registry.createNode("CycleNodeStart");
+	Node *start = pd->node_registry.createNode("CycleNodeStart");
 	start->setId(sink_id+source_id+"-cycle_start");
-        Node *end = pd->node_registry.createNode("CycleNodeEnd");
+		Node *end = pd->node_registry.createNode("CycleNodeEnd");
 	end->setId(sink_id+source_id+"-cycle_end");
 	pd->model->addNode(start);
 	pd->model->addNode(end);

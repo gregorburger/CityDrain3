@@ -10,8 +10,8 @@ CD3_DECLARE_SIMULATION(PipelinedSimulation)
 public:
 	PipelinedSimulation();
 	virtual ~PipelinedSimulation();
-	int run(int time, int dt);
-	void start(int time);
+	int run(ptime time, int dt);
+	void start(ptime time);
 	void setModel(IModel *model);
 private:
 	PipeSimPrivate *pd;

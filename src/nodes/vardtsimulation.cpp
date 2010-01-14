@@ -29,7 +29,7 @@ VarDTSimulation::~VarDTSimulation() {
 	delete priv;
 }
 
-int VarDTSimulation::run(int time, int dt) {
+int VarDTSimulation::run(ptime time, int dt) {
 	cd3assert(model->getSinkNodes().size() == 1,
 		   "can not handle more than one sink node aka there is only one see");
 	run(*model->getSinkNodes().begin(), time, sim_param.dt);
@@ -38,11 +38,11 @@ int VarDTSimulation::run(int time, int dt) {
 
 
 
-int VarDTSimulation::run(Node *n, int time, int dt) {
+int VarDTSimulation::run(Node *n, ptime time, int dt) {
 	BOOST_FOREACH(NodeConnection *con, model->backwardConnection(n)) {
 		int calced_dt = 0;	//holds the calculated dts of the predecessors
 		std::string src_port, snk_port;
-                Node *next;
+		Node *next;
 
 		next = con->sink;
 		src_port = con->source_port;

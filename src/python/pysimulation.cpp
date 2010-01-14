@@ -15,7 +15,7 @@ struct PythonCallback {
 		this->callable = callable;
 	}
 
-	void operator()(ISimulation *s, int time) {
+	void operator()(ISimulation *s, ptime time) {
 		try {
 			callable(ptr(s), time);
 		} catch(python::error_already_set const &) {
@@ -60,7 +60,7 @@ void wrap_simulation() {
 		.def("createSimulation", &SimulationRegistry::createSimulation, return_value_policy<manage_new_object>())
 		.def("getRegisteredNames", sr_getRegisteredNames)
 		;
-	class_<SimulationParameters>("SimulationParameters", init<int, int, int>())
+	class_<SimulationParameters>("SimulationParameters", init<string, string, string>())
 		.def_readwrite("start", &SimulationParameters::start)
 		.def_readwrite("stop", &SimulationParameters::stop)
 		.def_readwrite("dt", &SimulationParameters::dt)

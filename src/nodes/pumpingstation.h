@@ -10,8 +10,8 @@ CD3_DECLARE_NODE(PumpingStation)
 public:
 	PumpingStation();
 	virtual ~PumpingStation();
-	void init(int start, int end, int dt);
-	int f(int time, int dt);
+	void init(int start, ptime end, int dt);
+	int f(ptime time, int dt);
 
 private:
 	Flow in, out_w, out_p, volume;

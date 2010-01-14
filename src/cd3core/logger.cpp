@@ -61,14 +61,14 @@ Logger &Logger::operator<< (const int i) {
 	return *this;
 }
 
-/*Logger &Logger::operator<< (const long i) {
+Logger &Logger::operator<< (const long i) {
 	if (level < max) {
 		return *this;
 	}
 	out << " " << i;
 	dirty = true;
 	return *this;
-}*/
+}
 
 Logger &Logger::operator<< (const double f) {
 	if (level < max) {

@@ -31,7 +31,8 @@ class Handler(ContentHandler):
 			return
 		
 		if name == 'time':
-			self.sp = SimulationParameters(int(attrs['start']), int(attrs['stop']), int(attrs['dt']))
+			self.sp = SimulationParameters(str(attrs['start']), str(attrs['stop']), str(attrs['dt']))
+			print self.sp.start.to_datetime()
 			self.simulation.setSimulationParameters(self.sp)
 			return
 			
@@ -127,5 +128,6 @@ if __name__ == "__main__":
 	parse(sys.argv[1], handler)
 	
 	handler.simulation.setModel(handler.model)
-	handler.simulation.timestep_after(ProgressHandler())
-	handler.simulation.start(0)
+	p = handler.simulation.getSimulationParameters()
+	#handler.simulation.timestep_after(ProgressHandler())
+	handler.simulation.start(p.start)

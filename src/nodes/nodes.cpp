@@ -7,7 +7,6 @@
 #include "pipelinedsimulation.h"
 #include "orderedpipesimulation.h"
 #include "sewer.h"
-#include "rainread.h"
 #include "testnode.h"
 #include "cso.h"
 #include "splitter.h"
@@ -16,6 +15,7 @@
 #include "cyclenodestart.h"
 #include "cyclenodeend.h"
 #include "arrayparamtest.h"
+#include "ixxrainread.h"
 
 #include <noderegistry.h>
 #include <nodefactory.h>
@@ -32,7 +32,6 @@ extern "C" {
 		registry->addNodeFactory(new NodeFactory<FileOut>());
 		registry->addNodeFactory(new NodeFactory<Mixer>());
 		registry->addNodeFactory(new NodeFactory<Sewer>());
-		registry->addNodeFactory(new NodeFactory<RainRead>());
 		registry->addNodeFactory(new NodeFactory<TestNode>());
 		registry->addNodeFactory(new NodeFactory<CSO>());
 		registry->addNodeFactory(new NodeFactory<Splitter>());
@@ -41,6 +40,7 @@ extern "C" {
 		registry->addNodeFactory(new NodeFactory<CycleNodeEnd>());
 		registry->addNodeFactory(new NodeFactory<CycleNodeStart>());
 		registry->addNodeFactory(new NodeFactory<ArrayParamTest>());
+		registry->addNodeFactory(new NodeFactory<IxxRainRead>());
 	}
 
 	void CD3_PUBLIC registerTypes(TypeRegistry *registry) {

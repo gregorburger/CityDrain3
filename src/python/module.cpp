@@ -7,6 +7,7 @@
 #include "pynode.h"
 #include "pyflow.h"
 #include "pysimulation.h"
+#include "pyptime.h"
 
 #include <boost/python.hpp>
 #include <string>
@@ -42,6 +43,7 @@ BOOST_PYTHON_MODULE(pycd3) {
 	wrap_flow();
 	wrap_model();
 	wrap_simulation();
+	wrap_ptime();
 	def("init", ::init, "must be called first\n initializes the logger");
 	def("log", logdebug);
 	def("log", logwithlevel);
@@ -106,7 +108,7 @@ void PythonEnv::registerNodes(NodeRegistry *registry, const string &module) {
 							 priv->main_namespace,
 							 priv->main_namespace);
 		object clss = priv->main_namespace["clss"];
-		int numn = 0;		
+		int numn = 0;
 		for (int i = 0; i < len(clss); i++) {
 			string name = extract<string>(clss[i].attr("__name__"));
 			if (registry->contains(name))

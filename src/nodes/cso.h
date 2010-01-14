@@ -9,8 +9,8 @@ CD3_DECLARE_NODE(CSO)
 public:
 	CSO();
 	virtual ~CSO();
-	int f(int time, int dt);
-	void init(int start, int end, int dt);
+	int f(ptime time, int dt);
+	void init(ptime start, ptime end, int dt);
 
 private:
 	Flow in;

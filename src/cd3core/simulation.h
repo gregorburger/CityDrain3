@@ -2,9 +2,12 @@
 #define SIMULATION_H
 
 #include <boost/signals.hpp>
-#include <cd3globals.h>
 #include <boost/shared_ptr.hpp>
+#include <boost/date_time.hpp>
 using namespace boost;
+using namespace boost::posix_time;
+
+#include <cd3globals.h>
 
 class IModel;
 class Controller;
@@ -12,19 +15,17 @@ class Node;
 struct NodeConnection;
 
 struct CD3_PUBLIC SimulationParameters {
-	SimulationParameters()
-		:start(0), stop(7200), dt(300) {
-
-	}
-	SimulationParameters(int start,
-						 int stop,
-						 int dt)
-	: start(start), stop(stop), dt(dt) {
-
+	SimulationParameters(){}
+	SimulationParameters(std::string start,
+						 std::string stop,
+						 std::string dt) {
+		this->start = time_from_string(start);
+		this->stop = time_from_string(stop);
+		this->dt = lexical_cast<int>(dt);
 	}
 
-	int start;
-	int stop;
+	ptime start;
+	ptime stop;
 	int dt;
 };
 
@@ -45,26 +46,26 @@ public:
 	virtual SimulationParameters getSimulationParameters() const;
 	virtual void setModel(IModel *model);
 	virtual IModel *getModel() const;
-	virtual void start(int time);
+	virtual void start(ptime time);
 	virtual void stop();
 
 	virtual void serialize(const std::string &dir) const;
-	virtual void deserialize(const std::string &dir, int time) const;
+	virtual void deserialize(const std::string &dir, ptime time) const;
 
-	virtual int run(int time, int dt) = 0;
+	virtual int run(ptime time, int dt) = 0;
 
 	virtual NodeConnection *createConnection(Node *source,
 											 const std::string &soport,
 											 Node *sink,
 											 const std::string &siport) const;
 
-	boost::signal2<void, ISimulation *, int> timestep_after;
-	boost::signal2<void, ISimulation *, int> timestep_before;
+	boost::signal2<void, ISimulation *, ptime> timestep_after;
+	boost::signal2<void, ISimulation *, ptime> timestep_before;
 
 protected:
 	SimulationParameters sim_param;
 	IModel *model;
-	int current_time;
+	ptime current_time;
 	bool running;
 };
 
