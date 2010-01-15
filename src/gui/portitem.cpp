@@ -1,23 +1,30 @@
 #include "portitem.h"
-#include <nodeitem.h>
+#include "nodeitem.h"
+#include "simulationscene.h"
 
 #include <QFontMetrics>
 #include <QPainter>
 
 PortItem::PortItem(QString portName,
 				   NodeItem *parent)
-	: QGraphicsItem(parent), portName(portName), hovering(false) {
+	: QGraphicsItem(parent), portName(portName), connected(false), hovering(false) {
+	setAcceptHoverEvents(true);
 }
 
 PortItem::~PortItem() {
 
 }
 
-QRectF PortItem::boundingRect() {
+void PortItem::connectConnectionSignals(SimulationScene *scene) {
+	QObject::connect(this, SIGNAL(mouseDown(PortItem*)), scene, SLOT(connectionStart(PortItem*)));
+	QObject::connect(this, SIGNAL(mouseUp(PortItem*)), scene, SLOT(connectionEnd(PortItem*)));
+}
+
+QRectF PortItem::boundingRect() const {
 	QFont f;
 	QFontMetricsF fm(f);
 
-	return fm.boundingRect(portName).adjusted(-3, -3, 3, 3);
+	return fm.boundingRect(portName).adjusted(-2, -2, 2, 2);
 }
 
 void PortItem::paint(QPainter *painter,
@@ -32,4 +39,14 @@ void PortItem::paint(QPainter *painter,
 	QFontMetricsF fm(f);
 	painter->drawText(fm.boundingRect(portName), portName);
 	painter->drawRect(boundingRect());
+}
+
+void PortItem::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+	qDebug() << "PortItem::mousePressEvent();";
+	Q_EMIT(mouseDown(this));
+}
+
+void PortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
+	qDebug() << "PortItem::mouseReleaseEvent();";
+	Q_EMIT(mouseUp(this));
 }

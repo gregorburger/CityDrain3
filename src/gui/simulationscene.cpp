@@ -8,6 +8,7 @@
 #include <noderegistry.h>
 #include <node.h>
 #include <nodeitem.h>
+#include <portitem.h>
 #include <mapbasedmodel.h>
 
 #include <boost/lexical_cast.hpp>
@@ -38,11 +39,10 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 	string id_count = lexical_cast<string>(ids[node->getClassName()]++);
 	node->setId(node->getClassName() + string("_") + id_count);
 	model->addNode(node);
-	qDebug() << "node with id " << QString::fromStdString(node->getId());
 	NodeItem *nitem = new NodeItem(node);
-	//nitem->setScenePos(event->scenePos());
 	this->addItem(nitem);
-	//QObject::connect(nitem, SIGNAL(clicked(NodeItem*)), this, SLOT(nodeItemClicked(NodeItem*)));
+	nitem->setPos(event->scenePos());
+	nitem->connectItems(this);
 }
 
 void SimulationScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event) {
@@ -51,4 +51,16 @@ void SimulationScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event) {
 
 void SimulationScene::on_selectionChanged() {
 	qDebug() << "selected";
+}
+
+void SimulationScene::connectionStart(PortItem *source) {
+	qDebug() << "SimulationScene::connectionStart();";
+	conStart = source;
+}
+
+void SimulationScene::connectionEnd(PortItem *source) {
+	qDebug() << "SimulationScene::connectionEnd();";
+	if (conStart && source != conStart) {
+		qDebug() << "adding connection";
+	}
 }

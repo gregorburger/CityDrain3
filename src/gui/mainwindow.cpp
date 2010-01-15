@@ -103,7 +103,7 @@ void MainWindow::nodeItemClicked(NodeItem *source) {
 	Ui::ConnectionDialog cd;
 	cd.setupUi(&d);
 
-	cd.srcPortCombo->addItems(priv->source_selection->getOutPorts());
+	/*cd.srcPortCombo->addItems(priv->source_selection->getOutPorts());
 	cd.snkPortCombo->addItems(source->getInPorts());
 	if (d.exec()) {
 		Node *src = priv->source_selection->getNode();
@@ -116,7 +116,7 @@ void MainWindow::nodeItemClicked(NodeItem *source) {
 												 snk,
 												 snk_port);
 		//priv->scene.model.addConnection(con);
-	}
+	}*/
 
 	priv->source_selection = 0;
 }

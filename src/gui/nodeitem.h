@@ -3,6 +3,8 @@
 
 #include <QGraphicsItem>
 class Node;
+class PortItem;
+class SimulationScene;
 
 class NodeItem : public QObject, public QGraphicsItem
 {
@@ -21,21 +23,18 @@ public:
 
 	QString getId() const;
 	QString getClassName() const;
-	QStringList getInPorts() const { return in_ports; }
-	QStringList getOutPorts() const { return out_ports; }
 
 	Node *getNode() const { return node; }
+	void connectItems(SimulationScene *scene);
 
 private:
-	void paintOutPorts(QPainter *painter, QFontMetrics &fm);
-	void paintInPorts(QPainter *painter, QFontMetrics &fm);
+	void moveItems();
 
 	QRectF bounding;
 	Node *node;
-	int margin;
+	qreal margin;
 
-	QStringList in_ports, out_ports;
-	QPointF first_down;
+	QList<PortItem *> in_ports, out_ports;
 
 Q_SIGNALS:
 	void clicked(NodeItem *source);

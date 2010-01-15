@@ -8,6 +8,7 @@
 class NodeRegistry;
 class MapBasedModel;
 class QTreeWidget;
+class PortItem;
 
 class SimulationScene : public QGraphicsScene
 {
@@ -21,11 +22,14 @@ public:
 
 private Q_SLOTS:
 	void on_selectionChanged();
+	void connectionStart(PortItem *source);
+	void connectionEnd(PortItem *source);
 
 private:
 	NodeRegistry *reg;
 	QMap<std::string, int> ids;
 	MapBasedModel *model;
+	PortItem *conStart;
 };
 
 #endif // SIMULATIONSCENE_H

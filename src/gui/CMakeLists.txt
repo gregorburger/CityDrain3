@@ -3,7 +3,7 @@ file(GLOB GUI_UI *.ui)
 
 QT4_WRAP_UI(GUI_CPP ${GUI_UI})
 message(STATUS ${GUI_CPP})
-QT4_WRAP_CPP(GUI_CPP mainwindow.h nodeitem.h simulationscene.h)
+QT4_WRAP_CPP(GUI_CPP mainwindow.h nodeitem.h simulationscene.h portitem.h)
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
