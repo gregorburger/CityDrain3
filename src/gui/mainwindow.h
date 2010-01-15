@@ -28,8 +28,8 @@ private:
 public Q_SLOTS:
 	void on_actionAdd_Plugin_activated();
 	void on_pluginsAdded();
-	void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column);
 	void nodeItemClicked(NodeItem *source);
+	bool newSimulation();
 };
 
 #endif // MAINWINDOW_H

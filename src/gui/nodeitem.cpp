@@ -10,6 +10,10 @@ typedef pair<std::string, Flow *> port_pair;
 
 NodeItem::NodeItem(Node* node)
 	: QGraphicsItem(), node(node), margin(30) {
+	setFlag(ItemIsMovable, true);
+	setFlag(ItemIsSelectable, true);
+	setCacheMode(DeviceCoordinateCache);
+	setZValue(1);
 	BOOST_FOREACH(port_pair item, *node->const_in_ports)
 		in_ports << QString::fromStdString(item.first);
 
@@ -59,6 +63,12 @@ void NodeItem::paintInPorts(QPainter *painter, QFontMetrics &fm) {
 }
 
 void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
+
+	if (isSelected()) {
+		QBrush b(Qt::gray);
+		qDebug() << "paint";
+		painter->fillRect(boundingRect(), b);
+	}
 	painter->drawRoundedRect(boundingRect(), 5, 5);
 	painter->drawText(0, 0, node->getClassName());
 
@@ -101,4 +111,20 @@ void NodeItem::updateBoundingRect() {
 
 	bounding = r.adjusted(-max(margin, max_inp_width), -max(margin,height),
 						  max(margin, max_outp_width), max(margin,height));
+}
+
+QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant &value) {
+	if (change == ItemPositionChange) {
+		//qDebug() << "ItemPositionChange";
+		if (collidingItems().length() > 0) {
+			return pos();
+		}
+	}
+	if (change == ItemPositionHasChanged) {
+		//qDebug() << "ItemPositionHasChanged";
+	}
+	if (change == ItemSelectedHasChanged) {
+		update();
+	}
+	return QGraphicsItem::itemChange(change, value);
 }

@@ -15,6 +15,8 @@ public:
 	void mousePressEvent(QGraphicsSceneMouseEvent *event);
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
+	QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+
 	void updateBoundingRect();
 
 	QString getId() const;
