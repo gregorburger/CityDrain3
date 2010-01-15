@@ -23,6 +23,11 @@ struct CD3_PUBLIC SimulationParameters {
 		this->stop = time_from_string(stop);
 		this->dt = lexical_cast<int>(dt);
 	}
+	SimulationParameters(ptime start,
+						 ptime stop,
+						 int dt) : start(start), stop(stop), dt(dt) {
+
+	}
 
 	ptime start;
 	ptime stop;
