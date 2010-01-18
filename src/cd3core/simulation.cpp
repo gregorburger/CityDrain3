@@ -26,7 +26,17 @@ SimulationParameters ISimulation::getSimulationParameters() const {
 }
 
 void ISimulation::setModel(IModel *m) {
+	cd3assert(m, "cannot set null model")
 	model = m;
+}
+
+IModel *ISimulation::getModel() const {
+	return model;
+}
+
+void ISimulation::start(ptime time) {
+	(void) time;
+	cd3assert(model, "model not set");
 	cd3assert(model->connected(), "model not fully connected");
 	if (!model->cycleFree()) {
 		Logger(Warning) << "model not cyclefree ";
@@ -36,15 +46,7 @@ void ISimulation::setModel(IModel *m) {
 	}
 	cd3assert(model->cycleFree(), "use \"cycle_break\" attribute in connection (xml) to split up cycles");
 	model->checkModel();
-	m->checkModel();
-}
 
-IModel *ISimulation::getModel() const {
-	return model;
-}
-
-void ISimulation::start(ptime time) {
-	(void) time;
 	QTime ts_before = QTime::currentTime();
 	current_time = sim_param.start;
 	int dt;
