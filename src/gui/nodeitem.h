@@ -25,7 +25,7 @@ public:
 	QString getClassName() const;
 
 	Node *getNode() const { return node; }
-	void connectItems(SimulationScene *scene);
+	QList<PortItem *> in_ports, out_ports;
 
 private:
 	void moveItems();
@@ -33,11 +33,6 @@ private:
 	QRectF bounding;
 	Node *node;
 	qreal margin;
-
-	QList<PortItem *> in_ports, out_ports;
-
-Q_SIGNALS:
-	void clicked(NodeItem *source);
 };
 
 #endif // NODEITEM_H

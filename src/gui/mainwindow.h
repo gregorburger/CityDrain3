@@ -11,6 +11,9 @@ namespace Ui {
 
 struct MainWindowPrivate;
 class NodeItem;
+class NodeRegistry;
+class SimulationRegistry;
+class SimulationScene;
 
 class MainWindow : public QMainWindow {
 	Q_OBJECT
@@ -23,13 +26,13 @@ protected:
 
 private:
 	Ui::MainWindow *ui;
-	MainWindowPrivate *priv;
+	SimulationScene *scene;
 
 public Q_SLOTS:
 	void on_actionAdd_Plugin_activated();
 	void on_pluginsAdded();
-	void nodeItemClicked(NodeItem *source);
-	bool newSimulation();
+	void on_runButton_clicked();
+	void simulationCreated();
 };
 
 #endif // MAINWINDOW_H

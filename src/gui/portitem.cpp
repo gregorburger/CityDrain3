@@ -7,8 +7,9 @@
 
 PortItem::PortItem(QString portName,
 				   NodeItem *parent)
-	: QGraphicsItem(parent), portName(portName), connected(false), hovering(false) {
+	: QGraphicsItem(parent), node_item(parent), portName(portName), connected(false), hovering(false) {
 	setAcceptHoverEvents(true);
+	setZValue(2);
 }
 
 PortItem::~PortItem() {
@@ -39,14 +40,4 @@ void PortItem::paint(QPainter *painter,
 	QFontMetricsF fm(f);
 	painter->drawText(fm.boundingRect(portName), portName);
 	painter->drawRect(boundingRect());
-}
-
-void PortItem::mousePressEvent(QGraphicsSceneMouseEvent *event) {
-	qDebug() << "PortItem::mousePressEvent();";
-	Q_EMIT(mouseDown(this));
-}
-
-void PortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
-	qDebug() << "PortItem::mouseReleaseEvent();";
-	Q_EMIT(mouseUp(this));
 }

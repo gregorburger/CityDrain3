@@ -63,15 +63,6 @@ void NodeItem::moveItems() {
 	}
 }
 
-void NodeItem::connectItems(SimulationScene *scene) {
-	Q_FOREACH(PortItem *item, in_ports) {
-		item->connectConnectionSignals(scene);
-	}
-	Q_FOREACH(PortItem *item, out_ports) {
-		item->connectConnectionSignals(scene);
-	}
-}
-
 void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
 	QPainterPath path;
 	path.addRoundedRect(boundingRect(), 5, 5);

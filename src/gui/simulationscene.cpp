@@ -5,7 +5,11 @@
 #include <QWidget>
 #include <QTreeWidget>
 
+#include "newsimulationdialog.h"
+
 #include <noderegistry.h>
+#include <simulationregistry.h>
+#include <simulation.h>
 #include <node.h>
 #include <nodeitem.h>
 #include <portitem.h>
@@ -16,10 +20,13 @@
 
 using namespace std;
 
-SimulationScene::SimulationScene(NodeRegistry *reg, QObject *parent)
-	: QGraphicsScene(parent), reg(reg), model(new MapBasedModel()) {
+SimulationScene::SimulationScene(QObject *parent)
+	: QGraphicsScene(parent) {
 	qDebug() << "I'm here";
-	connect(this, SIGNAL(selectionChanged()), SLOT(on_selectionChanged()));
+	model = new MapBasedModel();
+	node_reg = new NodeRegistry();
+	sim_reg = new SimulationRegistry();
+	simulation = 0;
 }
 
 SimulationScene::~SimulationScene() {
@@ -32,7 +39,7 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 	string klassName = treeWidget->selectedItems()[0]->text(0).toStdString();
 	QGraphicsScene::dragMoveEvent(event);
 
-	Node *node = reg->createNode(klassName);
+	Node *node = node_reg->createNode(klassName);
 	//default id is klassname_+counter
 	if (!ids.contains(klassName))
 		ids[klassName] = 0;
@@ -42,25 +49,92 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 	NodeItem *nitem = new NodeItem(node);
 	this->addItem(nitem);
 	nitem->setPos(event->scenePos());
-	nitem->connectItems(this);
+	node_items << nitem;
 }
 
 void SimulationScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event) {
 	event->accept();
 }
 
-void SimulationScene::on_selectionChanged() {
-	qDebug() << "selected";
-}
-
-void SimulationScene::connectionStart(PortItem *source) {
-	qDebug() << "SimulationScene::connectionStart();";
-	conStart = source;
-}
-
-void SimulationScene::connectionEnd(PortItem *source) {
-	qDebug() << "SimulationScene::connectionEnd();";
-	if (conStart && source != conStart) {
-		qDebug() << "adding connection";
+void SimulationScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+	QGraphicsItem *clickedItem = itemAt(event->scenePos());
+	if (!clickedItem) {
+		QGraphicsScene::mousePressEvent(event);
+		return;
 	}
+
+	connection_start = 0;
+
+	Q_FOREACH(NodeItem *item, node_items) {
+		if (item->out_ports.contains((PortItem*) clickedItem)) {
+			qDebug() << "out port clicked";
+			connection_start = (PortItem*) clickedItem;
+			break;
+		}
+	}
+
+	if (!connection_start) {
+		QGraphicsScene::mousePressEvent(event);
+		return;
+	}
+}
+
+void SimulationScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
+	QGraphicsScene::mouseMoveEvent(event);
+}
+
+void SimulationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
+	QGraphicsItem *releasedItem = itemAt(event->scenePos());
+
+	if (!releasedItem) {
+		QGraphicsScene::mousePressEvent(event);
+		return;
+	}
+
+	PortItem *connection_end = 0;
+
+	Q_FOREACH(NodeItem *item, node_items) {
+		if (item->in_ports.contains((PortItem*) releasedItem)) {
+			qDebug() << "in port released";
+			connection_end = (PortItem*) releasedItem;
+			break;
+		}
+	}
+
+	if (!connection_end) {
+		QGraphicsScene::mouseReleaseEvent(event);
+		return;
+	}
+
+	qDebug() << "yipee new connection between " << connection_start->getPortName()
+			<< " and " << connection_end->getPortName();
+
+	if (!newSimulation()) {
+		connection_start = connection_end = 0;
+		return;
+	}
+
+	Node *start = connection_start->getNodeItem()->getNode();
+	Node *end = connection_end->getNodeItem()->getNode();
+	string out_port = connection_start->getPortName().toStdString();
+	string in_port = connection_end->getPortName().toStdString();
+
+	NodeConnection *con = simulation->createConnection(start, out_port, end, in_port);
+	model->addConnection(con);
+
+	connection_start = connection_end = 0;
+}
+
+bool SimulationScene::newSimulation() {
+	if (simulation)
+		return true;
+	NewSimulationDialog ns(sim_reg);
+	if (ns.exec()) {
+		simulation = ns.createSimulation();
+		simulation->setModel(model);
+		Q_EMIT(simulationCreated());
+		return true;
+	}
+
+	return false;
 }

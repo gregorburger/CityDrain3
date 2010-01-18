@@ -14,7 +14,6 @@ public:
 	PortItem(QString portName,
 			 NodeItem *parent);
 
-
 	void connectConnectionSignals(SimulationScene *scene);
 	virtual ~PortItem();
 
@@ -28,17 +27,13 @@ public:
 	void setConnected(bool connected) { this->connected = connected; }
 
 	QString getPortName() { return portName; }
-
-Q_SIGNALS:
-	void mouseDown(PortItem *source);
-	void mouseUp(PortItem *source);
+	NodeItem *getNodeItem() const { return node_item; }
 
 private:
 	void hoverEnterEvent(QGraphicsSceneHoverEvent *event) { hovering = true; update(); }
 	void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) { hovering = false; update(); }
-	void mousePressEvent(QGraphicsSceneMouseEvent *event);
-	void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
+	NodeItem *node_item;
 	QString portName;
 	bool connected;
 	bool hovering;
