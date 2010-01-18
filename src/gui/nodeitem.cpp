@@ -73,13 +73,14 @@ void NodeItem::connectItems(SimulationScene *scene) {
 }
 
 void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
-
+	QPainterPath path;
+	path.addRoundedRect(boundingRect(), 5, 5);
 	if (isSelected()) {
-		QBrush b(Qt::gray);
-		qDebug() << "paint";
-		painter->fillRect(boundingRect(), b);
+		painter->fillPath(path, Qt::gray);
+	} else {
+		painter->fillPath(path, Qt::white);
 	}
-	painter->drawRoundedRect(boundingRect(), 5, 5);
+	painter->strokePath(path, painter->pen());
 	painter->drawText(0, 0, node->getClassName());
 
 	QFont f;
