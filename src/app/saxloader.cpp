@@ -1,7 +1,6 @@
 #include "saxloader.h"
 
 #include <QLibrary>
-#include <QDebug>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/bind.hpp>
