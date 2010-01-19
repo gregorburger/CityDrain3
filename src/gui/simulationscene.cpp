@@ -25,6 +25,7 @@ SimulationScene::SimulationScene(QObject *parent)
 	sim_reg = new SimulationRegistry();
 	simulation = 0;
 	current_connection = 0;
+	connection_start = 0;
 }
 
 SimulationScene::~SimulationScene() {
