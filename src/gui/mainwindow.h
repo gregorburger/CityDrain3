@@ -14,6 +14,7 @@ class NodeItem;
 class NodeRegistry;
 class SimulationRegistry;
 class SimulationScene;
+class SimulationThread;
 
 class MainWindow : public QMainWindow {
 	Q_OBJECT
@@ -28,6 +29,7 @@ private:
 	Ui::MainWindow *ui;
 	SimulationScene *scene;
 	QStringList plugins;
+	SimulationThread *current_thread;
 
 public Q_SLOTS:
 	void on_actionAdd_Plugin_activated();
@@ -35,6 +37,7 @@ public Q_SLOTS:
 	void on_actionSave_Simulation_activated();
 	void on_pluginsAdded();
 	void on_runButton_clicked();
+	void simulationFinished();
 };
 
 #endif // MAINWINDOW_H

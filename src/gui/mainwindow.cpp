@@ -7,6 +7,7 @@
 #include <noderegistry.h>
 
 #include "newsimulationdialog.h"
+#include "simulationthread.h"
 
 #include <qfiledialog.h>
 #include <QDebug>
@@ -77,8 +78,18 @@ void MainWindow::on_pluginsAdded() {
 }
 
 void MainWindow::on_runButton_clicked() {
-	SimulationParameters sp = scene->getSimulation()->getSimulationParameters();
-	scene->getSimulation()->start(sp.start);
+	current_thread = new SimulationThread(scene->getSimulation());
+	QObject::connect(current_thread->handler, SIGNAL(progress(int)),
+					 ui->simProgressBar, SLOT(setValue(int)), Qt::QueuedConnection);
+	QObject::connect(current_thread->handler, SIGNAL(finished()),
+					 this, SLOT(simulationFinished()), Qt::QueuedConnection);
+	this->setEnabled(false);
+	current_thread->start();
+}
+
+void MainWindow::simulationFinished() {
+	this->setEnabled(true);
+	delete current_thread;
 }
 
 void MainWindow::on_actionNewSimulation_activated() {
