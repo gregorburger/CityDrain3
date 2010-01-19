@@ -2,7 +2,6 @@
 #define PORTITEM_H
 
 #include <QGraphicsItem>
-#include <QDebug>
 #include <QObject>
 
 class NodeItem;
@@ -23,19 +22,25 @@ public:
 
 	QRectF boundingRect() const;
 
-	bool isConnected() { return connected; }
-	void setConnected(bool connected) { this->connected = connected; }
+	bool isConnected() {
+		return sink_of || source_of;
+	}
+
+	void updateConnection();
 
 	QString getPortName() { return portName; }
 	NodeItem *getNodeItem() const { return node_item; }
+
+	void setSinkOf(QGraphicsLineItem *connection) {sink_of = connection; }
+	void setSourceOf(QGraphicsLineItem *connection) {source_of = connection; }
 
 private:
 	void hoverEnterEvent(QGraphicsSceneHoverEvent *event) { hovering = true; update(); }
 	void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) { hovering = false; update(); }
 
+	QGraphicsLineItem *sink_of, *source_of;
 	NodeItem *node_item;
 	QString portName;
-	bool connected;
 	bool hovering;
 };
 

@@ -37,6 +37,8 @@ private Q_SLOTS:
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 private:
+	bool isInPort(QGraphicsItem *item) const;
+	bool isOutPort(QGraphicsItem *item) const;
 	NodeRegistry *node_reg;
 	SimulationRegistry *sim_reg;
 	ISimulation *simulation;
@@ -44,8 +46,8 @@ private:
 	QMap<std::string, int> ids;
 	MapBasedModel *model;
 	PortItem *connection_start;
+	QGraphicsLineItem *current_connection;
 	QList<NodeItem*> node_items;
-	bool connectionInProgress;
 };
 
 #endif // SIMULATIONSCENE_H

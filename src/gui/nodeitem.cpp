@@ -118,6 +118,12 @@ QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant &value) 
 	}
 	if (change == ItemPositionHasChanged) {
 		//qDebug() << "ItemPositionHasChanged";
+		Q_FOREACH(PortItem *item, out_ports) {
+			item->updateConnection();
+		}
+		Q_FOREACH(PortItem *item, in_ports) {
+			item->updateConnection();
+		}
 	}
 	if (change == ItemSelectedHasChanged) {
 		update();

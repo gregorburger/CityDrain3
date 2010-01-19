@@ -1,9 +1,9 @@
 #include "simulationscene.h"
-#include <QDebug>
 #include <QGraphicsSceneDragDropEvent>
 #include <QMimeData>
 #include <QWidget>
 #include <QTreeWidget>
+#include <QDebug>
 
 #include "newsimulationdialog.h"
 
@@ -22,11 +22,11 @@ using namespace std;
 
 SimulationScene::SimulationScene(QObject *parent)
 	: QGraphicsScene(parent) {
-	qDebug() << "I'm here";
 	model = new MapBasedModel();
 	node_reg = new NodeRegistry();
 	sim_reg = new SimulationRegistry();
 	simulation = 0;
+	current_connection = 0;
 }
 
 SimulationScene::~SimulationScene() {
@@ -57,72 +57,69 @@ void SimulationScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event) {
 }
 
 void SimulationScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
-	QGraphicsItem *clickedItem = itemAt(event->scenePos());
-	if (!clickedItem) {
-		QGraphicsScene::mousePressEvent(event);
+	connection_start = (PortItem *) itemAt(event->scenePos());
+
+	if (connection_start && isOutPort(connection_start) && !connection_start->isConnected()) {
+		QLineF l(connection_start->scenePos() + connection_start->boundingRect().center(),
+				 event->scenePos());
+		current_connection = addLine(l);
+		current_connection->setZValue(0);
 		return;
 	}
 
 	connection_start = 0;
-
-	Q_FOREACH(NodeItem *item, node_items) {
-		if (item->out_ports.contains((PortItem*) clickedItem)) {
-			qDebug() << "out port clicked";
-			connection_start = (PortItem*) clickedItem;
-			break;
-		}
-	}
-
-	if (!connection_start) {
-		QGraphicsScene::mousePressEvent(event);
-		return;
-	}
+	QGraphicsScene::mousePressEvent(event);
 }
 
 void SimulationScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
+	if (connection_start) {
+		QLineF f = current_connection->line();
+		f.setP2(event->scenePos());
+		current_connection->setLine(f);
+		update();
+		return;
+	}
 	QGraphicsScene::mouseMoveEvent(event);
+	return;
 }
 
 void SimulationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
-	QGraphicsItem *releasedItem = itemAt(event->scenePos());
+	PortItem *connection_end = (PortItem *) itemAt(event->scenePos());
 
-	if (!releasedItem) {
-		QGraphicsScene::mousePressEvent(event);
-		return;
-	}
-
-	PortItem *connection_end = 0;
-
-	Q_FOREACH(NodeItem *item, node_items) {
-		if (item->in_ports.contains((PortItem*) releasedItem)) {
-			qDebug() << "in port released";
-			connection_end = (PortItem*) releasedItem;
-			break;
+	if (connection_end && isInPort(connection_end) && !connection_end->isConnected()) {
+		if (!newSimulation()) {
+			connection_start = 0;
+			delete current_connection;
+			return;
 		}
-	}
 
-	if (!connection_end) {
-		QGraphicsScene::mouseReleaseEvent(event);
+		QLineF f = current_connection->line();
+		f.setP2(connection_end->scenePos()+connection_end->boundingRect().center());
+		current_connection->setLine(f);
+		update();
+
+		connection_start->setSourceOf(current_connection);
+		connection_end->setSinkOf(current_connection);
+
+		Node *start = connection_start->getNodeItem()->getNode();
+		Node *end = connection_end->getNodeItem()->getNode();
+		string out_port = connection_start->getPortName().toStdString();
+		string in_port = connection_end->getPortName().toStdString();
+
+		NodeConnection *con = simulation->createConnection(start, out_port, end, in_port);
+		model->addConnection(con);
+//TODO	current_connection->setData();
+		connection_start = 0;
+		current_connection = 0;
 		return;
 	}
 
-	qDebug() << "yipee new connection between " << connection_start->getPortName()
-			<< " and " << connection_end->getPortName();
 
-	if (!newSimulation()) {
-		connection_start = connection_end = 0;
-		return;
-	}
-
-	Node *start = connection_start->getNodeItem()->getNode();
-	Node *end = connection_end->getNodeItem()->getNode();
-	string out_port = connection_start->getPortName().toStdString();
-	string in_port = connection_end->getPortName().toStdString();
-
-	NodeConnection *con = simulation->createConnection(start, out_port, end, in_port);
-	model->addConnection(con);
-
-	connection_start = connection_end = 0;
+	if (current_connection)
+		delete current_connection;
+	current_connection = 0;
+	connection_start = 0;
+	QGraphicsScene::mouseReleaseEvent(event);
 }
 
 bool SimulationScene::newSimulation() {
@@ -136,5 +133,23 @@ bool SimulationScene::newSimulation() {
 		return true;
 	}
 
+	return false;
+}
+
+bool SimulationScene::isInPort(QGraphicsItem *item) const {
+	Q_FOREACH(NodeItem *node, node_items) {
+		if (node->in_ports.contains((PortItem*) item)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool SimulationScene::isOutPort(QGraphicsItem *item) const {
+	Q_FOREACH(NodeItem *node, node_items) {
+		if (node->out_ports.contains((PortItem*) item)) {
+			return true;
+		}
+	}
 	return false;
 }

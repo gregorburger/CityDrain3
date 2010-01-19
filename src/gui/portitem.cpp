@@ -7,8 +7,9 @@
 
 PortItem::PortItem(QString portName,
 				   NodeItem *parent)
-	: QGraphicsItem(parent), node_item(parent), portName(portName), connected(false), hovering(false) {
+	: QGraphicsItem(parent), sink_of(0), source_of(0), node_item(parent), portName(portName), hovering(false) {
 	setAcceptHoverEvents(true);
+	//setFlag(Ac);
 	setZValue(2);
 }
 
@@ -34,10 +35,26 @@ void PortItem::paint(QPainter *painter,
 	(void) widget;
 	(void) option;
 	if (hovering) {
-		painter->fillRect(boundingRect(), (connected ? Qt::red : Qt::green));
+		painter->fillRect(boundingRect(), (isConnected() ? Qt::red : Qt::green));
 	}
 	QFont f;
 	QFontMetricsF fm(f);
 	painter->drawText(fm.boundingRect(portName), portName);
 	painter->drawRect(boundingRect());
+}
+
+void PortItem::updateConnection() {
+	if (sink_of) {
+		QLineF l = sink_of->line();
+		l.setP2(scenePos()+boundingRect().center());
+		sink_of->setLine(l);
+		scene()->update();
+	}
+
+	if (source_of) {
+		QLineF l = source_of->line();
+		l.setP1(scenePos()+boundingRect().center());
+		source_of->setLine(l);
+		scene()->update();
+	}
 }

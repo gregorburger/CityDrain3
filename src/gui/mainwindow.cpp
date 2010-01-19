@@ -52,9 +52,7 @@ void MainWindow::changeEvent(QEvent *e)
 }
 
 void MainWindow::on_actionAdd_Plugin_activated() {
-	qDebug() << "hallo";
 	QString plugin = QFileDialog::getOpenFileName(this, "select plugin", ".", "*.so");
-	qDebug() << plugin;
 	if (plugin == "")
 		return;
 	scene->getNodeRegistry()->addNativePlugin(plugin.toStdString());
