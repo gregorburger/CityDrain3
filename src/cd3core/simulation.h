@@ -35,18 +35,21 @@ struct CD3_PUBLIC SimulationParameters {
 };
 
 #define CD3_DECLARE_SIMULATION_NAME(simulation) \
-const char *simulation::name = #simulation;
+const char *simulation::name = #simulation; \
+const char *simulation::getClassName() const { return simulation::name; }
 
 #define CD3_DECLARE_SIMULATION(simulation) \
 class CD3_PUBLIC simulation : public ISimulation { \
 public: \
 	static const char *name; \
+	const char *getClassName() const; \
 private:
 
 class CD3_PUBLIC ISimulation {
 public:
 	ISimulation();
 	virtual ~ISimulation();
+	virtual const char *getClassName() const = 0;
 	virtual void setSimulationParameters(const SimulationParameters &params);
 	virtual SimulationParameters getSimulationParameters() const;
 	virtual void setModel(IModel *model);
