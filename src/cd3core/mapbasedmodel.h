@@ -22,7 +22,7 @@ public:
 		(void) serialid;
 	}
 
-        void addNode(Node *node);
+	void addNode(Node *node);
 	void addConnection(NodeConnection *con);
 
 
@@ -33,15 +33,16 @@ public:
 	const node_set_type getSourceNodes() const;
 	node_set_type getSinkNodes();
 
-        vector<NodeConnection *> forwardConnection(Node *n);
-        const vector<NodeConnection *> forwardConnection(Node *n) const;
-        vector<NodeConnection *> backwardConnection(Node *n);
+	vector<NodeConnection *> forwardConnection(Node *n);
+	const vector<NodeConnection *> forwardConnection(Node *n) const;
+	vector<NodeConnection *> backwardConnection(Node *n);
 
 	const node_set_type *getNodes() const;
+	const con_set_type *getConnections() const;
 
 	name_node_map getNamesAndNodes() const;
 
-        Node *getNode(const string &name) const;
+	Node *getNode(const string &name) const;
 	con_count_type getForwardCounts() const;
 	con_count_type getBackwardCounts() const;
 
@@ -51,7 +52,7 @@ public:
 	node_set_type cycleNodes() const;
 
 private:
-        bool cycleNodesHelper(Node *n, node_set_type) const;
+		bool cycleNodesHelper(Node *n, node_set_type) const;
 
 	node_set_type all_nodes;
 	node_set_type sink_nodes;

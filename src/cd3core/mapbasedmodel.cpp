@@ -29,6 +29,10 @@ const node_set_type *MapBasedModel::getNodes() const {
 	return &all_nodes;
 }
 
+const con_set_type *MapBasedModel::getConnections() const {
+	return &all_connections;
+}
+
 Node *MapBasedModel::getNode(const string &name) const {
 	cd3assert(names_nodes.count(name), str(format("no node with such name (%1%) registered") % name));
 	return names_nodes.find(name)->second;
