@@ -12,11 +12,8 @@
 #include <qfiledialog.h>
 #include <QDebug>
 #include <QMessageBox>
+#include <QKeyEvent>
 #include <boost/foreach.hpp>
-
-struct MainWindowPrivate {
-	SimulationScene scene;
-};
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -63,6 +60,38 @@ void MainWindow::on_actionAdd_Plugin_activated() {
 	scene->getNodeRegistry()->addNativePlugin(plugin.toStdString());
 	scene->getSimulationRegistry()->addNativePlugin(plugin.toStdString());
 	on_pluginsAdded();
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *e) {
+	if (e->key() == Qt::Key_Plus) {
+		zoomIn();
+		return;
+	}
+	if (e->key() == Qt::Key_Minus) {
+		zoomOut();
+		return;
+	}
+	QMainWindow::keyPressEvent(e);
+}
+
+void MainWindow::wheelEvent(QWheelEvent *event) {
+	if (event->modifiers() & Qt::ControlModifier) {
+		int times = event->delta() / 120;
+		if (times < 0)
+			zoomOut(qAbs(times));
+		else
+			zoomIn(times);
+		return;
+	}
+	QMainWindow::wheelEvent(event);
+}
+
+void MainWindow::zoomIn(int times) {
+	ui->graphicsView->scale(times * 1.2, times * 1.2);
+}
+
+void MainWindow::zoomOut(int times) {
+	ui->graphicsView->scale(1/(times * 1.2), 1/(times * 1.2));
 }
 
 void MainWindow::on_pluginsAdded() {

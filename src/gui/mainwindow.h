@@ -9,7 +9,6 @@ namespace Ui {
 	class MainWindow;
 }
 
-struct MainWindowPrivate;
 class NodeItem;
 class NodeRegistry;
 class SimulationRegistry;
@@ -24,6 +23,8 @@ public:
 
 protected:
 	void changeEvent(QEvent *e);
+	void keyPressEvent(QKeyEvent *e);
+	void wheelEvent(QWheelEvent *);
 
 private:
 	Ui::MainWindow *ui;
@@ -38,6 +39,8 @@ public Q_SLOTS:
 	void on_pluginsAdded();
 	void on_runButton_clicked();
 	void simulationFinished();
+	void zoomIn(int times = 1);
+	void zoomOut(int times = 1);
 };
 
 #endif // MAINWINDOW_H
