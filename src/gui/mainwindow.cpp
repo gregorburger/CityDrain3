@@ -1,9 +1,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "simulationscene.h"
+#include "simulationsaver.h"
 #include <simulationregistry.h>
 #include <simulation.h>
 #include <noderegistry.h>
+
+#include "newsimulationdialog.h"
 
 #include <qfiledialog.h>
 #include <QDebug>
@@ -18,7 +21,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::MainWindow) {
 	scene = new SimulationScene();
-	connect(scene, SIGNAL(simulationCreated()), SLOT(simulationCreated()));
 	ui->setupUi(this);
 	ui->graphicsView->setScene(scene);
 	ui->graphicsView->setRenderHints(QPainter::Antialiasing);
@@ -29,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
 			scene->getNodeRegistry()->addNativePlugin(path.toStdString());
 			scene->getSimulationRegistry()->addNativePlugin(path.toStdString());
 			on_pluginsAdded();
+			plugins << path;
 			break;
 		}
 	}
@@ -55,6 +58,7 @@ void MainWindow::on_actionAdd_Plugin_activated() {
 	QString plugin = QFileDialog::getOpenFileName(this, "select plugin", ".", "*.so");
 	if (plugin == "")
 		return;
+	plugins << plugin;
 	scene->getNodeRegistry()->addNativePlugin(plugin.toStdString());
 	scene->getSimulationRegistry()->addNativePlugin(plugin.toStdString());
 	on_pluginsAdded();
@@ -72,11 +76,25 @@ void MainWindow::on_pluginsAdded() {
 	nodes->setExpanded(true);
 }
 
-void MainWindow::simulationCreated() {
-	ui->runButton->setEnabled(true);
-}
-
 void MainWindow::on_runButton_clicked() {
 	SimulationParameters sp = scene->getSimulation()->getSimulationParameters();
 	scene->getSimulation()->start(sp.start);
+}
+
+void MainWindow::on_actionNewSimulation_activated() {
+	NewSimulationDialog ns(scene->getSimulationRegistry());
+	if (ns.exec()) {
+		ISimulation *sim = ns.createSimulation();
+		scene->setSimulation(sim);
+		ui->actionSave_Simulation->setEnabled(true);
+		ui->runButton->setEnabled(true);
+	}
+}
+
+void MainWindow::on_actionSave_Simulation_activated() {
+	QString fileName = QFileDialog::getSaveFileName(this, "Enter new Simulation file Name");
+	if (fileName == "")
+		return;
+	SimulationSaver ss(scene->getSimulation(), fileName, plugins);
+	ss.save();
 }

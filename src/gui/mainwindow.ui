@@ -54,6 +54,10 @@
     <property name="title">
      <string>&amp;Simulation</string>
     </property>
+    <addaction name="actionNewSimulation"/>
+    <addaction name="actionSave_Simulation"/>
+    <addaction name="actionLoad_Simulation"/>
+    <addaction name="separator"/>
     <addaction name="actionAdd_Plugin"/>
    </widget>
    <addaction name="menuFile"/>
@@ -97,6 +101,24 @@
   <action name="actionAdd_Plugin">
    <property name="text">
     <string>add Plugin</string>
+   </property>
+  </action>
+  <action name="actionNewSimulation">
+   <property name="text">
+    <string>new</string>
+   </property>
+  </action>
+  <action name="actionSave_Simulation">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>save</string>
+   </property>
+  </action>
+  <action name="actionLoad_Simulation">
+   <property name="text">
+    <string>load</string>
    </property>
   </action>
  </widget>

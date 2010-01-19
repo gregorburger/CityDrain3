@@ -7,19 +7,16 @@
 
 PortItem::PortItem(QString portName,
 				   NodeItem *parent)
-	: QGraphicsItem(parent), sink_of(0), source_of(0), node_item(parent), portName(portName), hovering(false) {
+	: QGraphicsItem(parent), sink_of(0), source_of(0),
+	node_item(parent), portName(portName), hovering(false),
+	at_top(false), at_bottom(false)
+{
 	setAcceptHoverEvents(true);
-	//setFlag(Ac);
 	setZValue(2);
 }
 
 PortItem::~PortItem() {
 
-}
-
-void PortItem::connectConnectionSignals(SimulationScene *scene) {
-	QObject::connect(this, SIGNAL(mouseDown(PortItem*)), scene, SLOT(connectionStart(PortItem*)));
-	QObject::connect(this, SIGNAL(mouseUp(PortItem*)), scene, SLOT(connectionEnd(PortItem*)));
 }
 
 QRectF PortItem::boundingRect() const {

@@ -27,12 +27,14 @@ protected:
 private:
 	Ui::MainWindow *ui;
 	SimulationScene *scene;
+	QStringList plugins;
 
 public Q_SLOTS:
 	void on_actionAdd_Plugin_activated();
+	void on_actionNewSimulation_activated();
+	void on_actionSave_Simulation_activated();
 	void on_pluginsAdded();
 	void on_runButton_clicked();
-	void simulationCreated();
 };
 
 #endif // MAINWINDOW_H

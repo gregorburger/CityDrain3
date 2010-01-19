@@ -22,14 +22,10 @@ public:
 	void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
 	void dropEvent(QGraphicsSceneDragDropEvent *event);
 
-	bool newSimulation();
-
 	NodeRegistry *getNodeRegistry() const { return node_reg; }
 	SimulationRegistry *getSimulationRegistry() const { return sim_reg; }
 	ISimulation *getSimulation() const { return simulation; }
-
-Q_SIGNALS:
-	void simulationCreated();
+	void setSimulation(ISimulation *simulation);
 
 private Q_SLOTS:
 	void mousePressEvent(QGraphicsSceneMouseEvent *event);

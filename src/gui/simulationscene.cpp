@@ -5,8 +5,6 @@
 #include <QTreeWidget>
 #include <QDebug>
 
-#include "newsimulationdialog.h"
-
 #include <noderegistry.h>
 #include <simulationregistry.h>
 #include <simulation.h>
@@ -33,7 +31,15 @@ SimulationScene::~SimulationScene() {
 	delete(model);
 }
 
+void SimulationScene::setSimulation(ISimulation *simulation) {
+	simulation->setModel(model);
+	this->simulation = simulation;
+}
+
 void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
+	if (!simulation) {
+		return QGraphicsScene::dropEvent(event);
+	}
 	event->accept();
 	QTreeWidget *treeWidget = (QTreeWidget*) event->source();
 	string klassName = treeWidget->selectedItems()[0]->text(0).toStdString();
@@ -45,6 +51,8 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 		ids[klassName] = 0;
 	string id_count = lexical_cast<string>(ids[node->getClassName()]++);
 	node->setId(node->getClassName() + string("_") + id_count);
+	SimulationParameters sp = simulation->getSimulationParameters();
+	node->init(sp.start, sp.stop, sp.dt);
 	model->addNode(node);
 	NodeItem *nitem = new NodeItem(node);
 	this->addItem(nitem);
@@ -53,6 +61,9 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 }
 
 void SimulationScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event) {
+	if (!simulation) {
+		return QGraphicsScene::dragMoveEvent(event);
+	}
 	event->accept();
 }
 
@@ -77,7 +88,6 @@ void SimulationScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
 		f.setP2(event->scenePos());
 		current_connection->setLine(f);
 		update();
-		return;
 	}
 	QGraphicsScene::mouseMoveEvent(event);
 	return;
@@ -87,12 +97,6 @@ void SimulationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 	PortItem *connection_end = (PortItem *) itemAt(event->scenePos());
 
 	if (connection_end && isInPort(connection_end) && !connection_end->isConnected()) {
-		if (!newSimulation()) {
-			connection_start = 0;
-			delete current_connection;
-			return;
-		}
-
 		QLineF f = current_connection->line();
 		f.setP2(connection_end->scenePos()+connection_end->boundingRect().center());
 		current_connection->setLine(f);
@@ -120,20 +124,6 @@ void SimulationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 	current_connection = 0;
 	connection_start = 0;
 	QGraphicsScene::mouseReleaseEvent(event);
-}
-
-bool SimulationScene::newSimulation() {
-	if (simulation)
-		return true;
-	NewSimulationDialog ns(sim_reg);
-	if (ns.exec()) {
-		simulation = ns.createSimulation();
-		simulation->setModel(model);
-		Q_EMIT(simulationCreated());
-		return true;
-	}
-
-	return false;
 }
 
 bool SimulationScene::isInPort(QGraphicsItem *item) const {

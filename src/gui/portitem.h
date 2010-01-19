@@ -13,7 +13,6 @@ public:
 	PortItem(QString portName,
 			 NodeItem *parent);
 
-	void connectConnectionSignals(SimulationScene *scene);
 	virtual ~PortItem();
 
 	void paint(QPainter *painter,
@@ -34,6 +33,9 @@ public:
 	void setSinkOf(QGraphicsLineItem *connection) {sink_of = connection; }
 	void setSourceOf(QGraphicsLineItem *connection) {source_of = connection; }
 
+	void setIsAtTop() { at_top = true; }
+	void setIsAtBottom() { at_bottom = true; }
+
 private:
 	void hoverEnterEvent(QGraphicsSceneHoverEvent *event) { hovering = true; update(); }
 	void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) { hovering = false; update(); }
@@ -41,7 +43,7 @@ private:
 	QGraphicsLineItem *sink_of, *source_of;
 	NodeItem *node_item;
 	QString portName;
-	bool hovering;
+	bool hovering, at_top, at_bottom;
 };
 
 #endif // PORTITEM_H
