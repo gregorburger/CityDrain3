@@ -33,7 +33,7 @@ void IxxRainRead::init(ptime start, ptime end, int dt) {
 	(void) end;
 	(void) dt;
 	data->in.open(rain_file.c_str());
-	cd3assert(data->in.good(), "its not possible to read from the given rainfile");
+//	cd3assert(data->in.good(), "its not possible to read from the given rainfile");
 	int raindt = data->getDt();
 	ptime first_time;
 	data->in >> first_time;
