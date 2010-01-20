@@ -46,8 +46,13 @@ QRectF NodeItem::boundingRect() const {
 	return bounding;
 }
 
+QPainterPath NodeItem::shape() const {
+	QPainterPath path;
+	path.addRoundedRect(boundingRect(), 5, 5);
+	return path;
+}
+
 void NodeItem::moveItems() {
-	qDebug() << boundingRect();
 	double y = boundingRect().top();
 	Q_FOREACH(PortItem *item, in_ports) {
 		QRectF ir = item->boundingRect();
@@ -73,9 +78,6 @@ void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 	}
 	painter->strokePath(path, painter->pen());
 	painter->drawText(0, 0, node->getClassName());
-
-	QFont f;
-	QFontMetrics fm(f);
 }
 
 void NodeItem::mousePressEvent(QGraphicsSceneMouseEvent *event) {

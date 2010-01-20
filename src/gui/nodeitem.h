@@ -27,6 +27,8 @@ public:
 	Node *getNode() const { return node; }
 	QList<PortItem *> in_ports, out_ports;
 
+	QPainterPath shape() const;
+
 private:
 	void moveItems();
 
