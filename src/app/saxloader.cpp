@@ -104,12 +104,12 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		pd->sim_registry.addNativePlugin(path);
 		consumed = true;
 	}
-	/*if (lname == "pythonmodule") {
+	if (lname == "pythonmodule") {
 		std::string module = atts.value("module").toStdString();
 		cout << "Loading Python Module " << module << endl;
 		PythonEnv::getInstance()->registerNodes(&pd->node_registry, module);
 		consumed = true;
-	}*/
+	}
 	if (lname == "citydrain") {
 		consumed = true;
 	}
@@ -240,9 +240,9 @@ void SaxLoader::loadParameter(const QXmlAttributes& atts) {
 	if (atts.index("type") >= 0)
 		type = atts.value("type").toStdString();
 
-	cd3assert(current->const_parameters->count(name) ||
+	/*cd3assert(current->const_parameters->count(name) ||
 			  current->const_array_parameters->count(name),
-			  str(format("no such parameter in node %1%") % name.c_str()));
+			  str(format("no such parameter in node %1%") % name.c_str()));*/
 
 	if (kind == "simple") {
 		QString value = atts.value("value");
