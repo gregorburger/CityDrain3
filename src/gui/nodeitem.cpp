@@ -42,14 +42,14 @@ void NodeItem::nodeChanged() {
 
 	BOOST_FOREACH(port_pair item, *node->const_in_ports) {
 		QString pname = QString::fromStdString(item.first);
-		PortItem *item = new PortItem(pname, this);
-		in_ports << item;
+		PortItem *pitem = new PortItem(pname, this);
+		in_ports << pitem;
 	}
 
 	BOOST_FOREACH(port_pair item, *node->const_out_ports) {
 		QString pname = QString::fromStdString(item.first);
-		PortItem *item = new PortItem(pname, this);
-		out_ports << item;
+		PortItem *pitem = new PortItem(pname, this);
+		out_ports << pitem;
 	}
 
 	updateBoundingRect();

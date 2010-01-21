@@ -25,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->graphicsView->setRenderHints(QPainter::Antialiasing);
 	QStringList default_node_paths;
 	default_node_paths << "./libnodes.so" << "../../libnodes.so" << "./build/libnodes.so";
+	default_node_paths << "./nodes.dll"  << "../../nodes.dll" << "./build/nodes.dll";
 	Q_FOREACH(QString path, default_node_paths) {
 		if (QFile::exists(path)) {
 			scene->getNodeRegistry()->addNativePlugin(path.toStdString());
@@ -112,15 +113,15 @@ void MainWindow::on_runButton_clicked() {
 	current_thread = new SimulationThread(scene->getSimulation());
 	QObject::connect(current_thread->handler, SIGNAL(progress(int)),
 					 ui->simProgressBar, SLOT(setValue(int)), Qt::QueuedConnection);
-	QObject::connect(current_thread->handler, SIGNAL(finished()),
+	QObject::connect(current_thread, SIGNAL(finished()),
 					 this, SLOT(simulationFinished()), Qt::QueuedConnection);
 	this->setEnabled(false);
 	current_thread->start();
 }
 
 void MainWindow::simulationFinished() {
-	this->setEnabled(true);
 	delete current_thread;
+	this->setEnabled(true);
 }
 
 void MainWindow::on_actionNewSimulation_activated() {
