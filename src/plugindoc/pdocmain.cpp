@@ -11,6 +11,7 @@ using namespace std;
 
 typedef pair<string, ltvp> par_type;
 typedef pair<string, Flow*> port_type;
+typedef pair<string, NodeParameter*> param_pair;
 
 int main(int argc, char **argv) {
 	ostringstream out;
@@ -30,8 +31,9 @@ int main(int argc, char **argv) {
 		Node *node = r.createNode(klass);
 		cout << endl << klass << ":" << endl;
 
-		BOOST_FOREACH(par_type par, *node->const_parameters) {
-			cout << "\tparameter: " << par.first << endl;
+		BOOST_FOREACH(param_pair par, node->getParameters()) {
+			NodeParameter *p = par.second;
+			cout << "\tparameter: " << p->name << endl;
 		}
 
 		BOOST_FOREACH(par_type state, *node->const_states) {

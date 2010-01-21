@@ -12,6 +12,9 @@ using namespace boost;
 struct NodeWrapper : Node, python::wrapper<Node> {
 	NodeWrapper(PyObject *_self) : self(_self) {
 		Py_INCREF(self);
+		PyObject *klass = PyObject_GetAttrString(self, "__class__");
+		PyObject *name = PyObject_GetAttrString(klass, "__name__");
+		class_name = PyString_AsString(name);
 	}
 
 	virtual ~NodeWrapper() {
@@ -54,9 +57,7 @@ struct NodeWrapper : Node, python::wrapper<Node> {
 	}
 
 	const char *getClassName() const {
-		python::object o(this);
-		const char *name = python::extract<const char*>(o.attr("__name__"));
-		return name;
+		return class_name;
 	}
 
 	void addInPort(const std::string &name, Flow *inflow) {
@@ -164,12 +165,13 @@ struct NodeWrapper : Node, python::wrapper<Node> {
 	map<string, bool> bool_params;
 	map<string, float> float_params;
 	PyObject *self;
+	char *class_name;
 };
 
-typedef pair<string, ltvp> param_pair;
+typedef pair<string, NodeParameter*> param_pair;
 static python::list n_getParameterNames(Node &n) {
 	python::list l;
-	BOOST_FOREACH(param_pair p, *n.const_parameters) {
+	BOOST_FOREACH(param_pair p, n.getParameters()) {
 		l.append(p.first);
 	}
 	return l;
