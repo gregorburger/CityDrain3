@@ -15,7 +15,6 @@
 
 #include <nodeparametersdialog.h>
 #include <boost/lexical_cast.hpp>
-#include <boost/python.hpp>
 
 using namespace std;
 
