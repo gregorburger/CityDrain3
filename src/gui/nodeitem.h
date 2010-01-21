@@ -28,6 +28,7 @@ public:
 	QList<PortItem *> in_ports, out_ports;
 
 	QPainterPath shape() const;
+	void nodeChanged();
 
 private:
 	void moveItems();

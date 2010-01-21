@@ -17,6 +17,28 @@ NodeItem::NodeItem(Node* node)
 	setFlag(ItemIsSelectable, true);
 	setCacheMode(DeviceCoordinateCache);
 	setZValue(1);
+	nodeChanged();
+}
+
+void NodeItem::nodeChanged() {
+	Q_FOREACH(PortItem *p, in_ports) {
+		in_ports.removeAll(p);
+		if (p->isConnected()) {
+			qWarning() << "removing connected portitem";
+		}
+		delete p;
+	}
+
+	Q_FOREACH(PortItem *p, out_ports) {
+		out_ports.removeAll(p);
+		if (p->isConnected()) {
+			qWarning() << "removing connected portitem";
+		}
+		delete p;
+	}
+
+	Q_ASSERT(in_ports.empty());
+	Q_ASSERT(out_ports.empty());
 
 	BOOST_FOREACH(port_pair item, *node->const_in_ports) {
 		QString pname = QString::fromStdString(item.first);
