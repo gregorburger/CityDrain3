@@ -18,7 +18,8 @@ Q_OBJECT
 public:
 	SimulationSaver(ISimulation *simulation,
 					QString path,
-					QStringList plugins);
+					QStringList plugins,
+					QStringList python_modules);
 	void setPath(QString path) { this->path = path; }
 	QString getPath() const { return this->path; }
 	virtual ~SimulationSaver();
@@ -38,6 +39,7 @@ private:
 	ISimulation *simulation;
 	QString path;
 	QStringList plugins;
+	QStringList python_modules;
 	QXmlStreamWriter *writer;
 	QFile *out;
 };

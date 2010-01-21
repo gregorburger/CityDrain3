@@ -14,9 +14,10 @@ using namespace std;
 
 SimulationSaver::SimulationSaver(ISimulation *simulation,
 								 QString path,
-								 QStringList plugins)
-	: simulation(simulation), path(path), plugins(plugins) {
-	out = new QFile(path);//leak
+								 QStringList plugins,
+								 QStringList python_modules)
+	: simulation(simulation), path(path), plugins(plugins), python_modules(python_modules) {
+	out = new QFile(path);
 	out->open(QIODevice::WriteOnly);
 	writer = new QXmlStreamWriter(out);
 	writer->setAutoFormatting(true);
@@ -35,6 +36,11 @@ void SimulationSaver::save() {
 	Q_FOREACH(QString plugin, plugins) {
 		writer->writeEmptyElement("pluginpath");
 		writer->writeAttribute("path", plugin);
+	}
+
+	Q_FOREACH(QString module, python_modules) {
+		writer->writeEmptyElement("pythonmodule");
+		writer->writeAttribute("module", module);
 	}
 
 	saveSimulation(simulation);
@@ -66,7 +72,7 @@ void SimulationSaver::saveSimulation(ISimulation *sim) {
 
 	writer->writeStartElement("time");
 	writer->writeAttribute("start", tos(sim->getSimulationParameters().start));
-	writer->writeAttribute("start", tos(sim->getSimulationParameters().stop));
+	writer->writeAttribute("stop", tos(sim->getSimulationParameters().stop));
 	writer->writeAttribute("dt", tos(sim->getSimulationParameters().dt));
 
 	saveFlowDefinition();
