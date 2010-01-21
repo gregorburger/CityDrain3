@@ -15,8 +15,13 @@ Mixer::Mixer() {
 
 Mixer::~Mixer() {
 }
-
+typedef pair<string, Flow*> pairtype;
 void Mixer::deinit() {
+	inputs.clear();
+
+	BOOST_FOREACH(pairtype p, in_ports) {
+		removeInPort(p.first);
+	}
 }
 
 void Mixer::init(ptime start, ptime end, int dt) {
