@@ -59,6 +59,9 @@
     <addaction name="actionLoad_Simulation"/>
     <addaction name="separator"/>
     <addaction name="actionAdd_Plugin"/>
+    <addaction name="actionAdd_Python_Module"/>
+    <addaction name="separator"/>
+    <addaction name="action_exit"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -119,6 +122,16 @@
   <action name="actionLoad_Simulation">
    <property name="text">
     <string>load</string>
+   </property>
+  </action>
+  <action name="actionAdd_Python_Module">
+   <property name="text">
+    <string>add Python Module</string>
+   </property>
+  </action>
+  <action name="action_exit">
+   <property name="text">
+    <string>&amp;exit</string>
    </property>
   </action>
  </widget>

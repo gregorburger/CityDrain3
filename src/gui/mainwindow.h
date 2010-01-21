@@ -30,14 +30,16 @@ private:
 	Ui::MainWindow *ui;
 	SimulationScene *scene;
 	QStringList plugins;
+	QStringList python_modules;
 	SimulationThread *current_thread;
 
 public Q_SLOTS:
 	void on_actionAdd_Plugin_activated();
 	void on_actionNewSimulation_activated();
 	void on_actionSave_Simulation_activated();
-	void on_pluginsAdded();
+	void pluginsAdded();
 	void on_runButton_clicked();
+	void on_actionAdd_Python_Module_activated();
 	void simulationFinished();
 	void zoomIn(int times = 1);
 	void zoomOut(int times = 1);
