@@ -21,6 +21,7 @@ public:
 	virtual ~SimulationScene();
 	void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
 	void dropEvent(QGraphicsSceneDragDropEvent *event);
+	void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
 
 	NodeRegistry *getNodeRegistry() const { return node_reg; }
 	SimulationRegistry *getSimulationRegistry() const { return sim_reg; }

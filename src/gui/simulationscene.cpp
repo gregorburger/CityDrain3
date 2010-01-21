@@ -13,8 +13,9 @@
 #include <portitem.h>
 #include <mapbasedmodel.h>
 
+#include <nodeparametersdialog.h>
 #include <boost/lexical_cast.hpp>
-
+#include <boost/python.hpp>
 
 using namespace std;
 
@@ -37,6 +38,25 @@ void SimulationScene::setSimulation(ISimulation *simulation) {
 	this->simulation = simulation;
 }
 
+void SimulationScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
+	NodeItem *item = (NodeItem *) itemAt(event->scenePos());
+	if (item && node_items.contains(item)) {
+
+		NodeParametersDialog np(item->getNode());
+		if (np.exec()) {
+			item->getNode()->deinit();
+			np.updateNodeParameters();
+			SimulationParameters sp = simulation->getSimulationParameters();
+			item->getNode()->init(sp.start, sp.stop, sp.dt);
+			item->nodeChanged();
+			item->update();
+		}
+		return;
+	}
+
+	QGraphicsScene::mouseDoubleClickEvent(event);
+}
+
 void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 	if (!simulation) {
 		return QGraphicsScene::dropEvent(event);
@@ -47,12 +67,22 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 	QGraphicsScene::dragMoveEvent(event);
 
 	Node *node = node_reg->createNode(klassName);
+
 	//default id is klassname_+counter
 	if (!ids.contains(klassName))
 		ids[klassName] = 0;
 	string id_count = lexical_cast<string>(ids[node->getClassName()]++);
 	node->setId(node->getClassName() + string("_") + id_count);
+
 	SimulationParameters sp = simulation->getSimulationParameters();
+
+	if (node->getParameters().size() > 0) {
+		NodeParametersDialog np(node);
+		if (np.exec()) {
+			np.updateNodeParameters();
+		}
+	}
+
 	node->init(sp.start, sp.stop, sp.dt);
 	model->addNode(node);
 	NodeItem *nitem = new NodeItem(node);

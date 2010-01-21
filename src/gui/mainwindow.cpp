@@ -5,6 +5,7 @@
 #include <simulationregistry.h>
 #include <simulation.h>
 #include <noderegistry.h>
+#include <module.h>
 
 #include "newsimulationdialog.h"
 #include "simulationthread.h"
@@ -28,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
 		if (QFile::exists(path)) {
 			scene->getNodeRegistry()->addNativePlugin(path.toStdString());
 			scene->getSimulationRegistry()->addNativePlugin(path.toStdString());
-			on_pluginsAdded();
+			pluginsAdded();
 			plugins << path;
 			break;
 		}
@@ -59,7 +60,7 @@ void MainWindow::on_actionAdd_Plugin_activated() {
 	plugins << plugin;
 	scene->getNodeRegistry()->addNativePlugin(plugin.toStdString());
 	scene->getSimulationRegistry()->addNativePlugin(plugin.toStdString());
-	on_pluginsAdded();
+	pluginsAdded();
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *e) {
@@ -94,7 +95,8 @@ void MainWindow::zoomOut(int times) {
 	ui->graphicsView->scale(1/(times * 1.2), 1/(times * 1.2));
 }
 
-void MainWindow::on_pluginsAdded() {
+void MainWindow::pluginsAdded() {
+	ui->treeWidget->clear();
 	QTreeWidgetItem *nodes = new QTreeWidgetItem(QStringList("nodes"));
 
 	BOOST_FOREACH(std::string node_name, scene->getNodeRegistry()->getRegisteredNames()) {
@@ -122,7 +124,7 @@ void MainWindow::simulationFinished() {
 }
 
 void MainWindow::on_actionNewSimulation_activated() {
-	NewSimulationDialog ns(scene->getSimulationRegistry());
+	NewSimulationDialog ns(scene->getSimulationRegistry(), this);
 	if (ns.exec()) {
 		ISimulation *sim = ns.createSimulation();
 		scene->setSimulation(sim);
@@ -135,6 +137,19 @@ void MainWindow::on_actionSave_Simulation_activated() {
 	QString fileName = QFileDialog::getSaveFileName(this, "Enter new Simulation file Name");
 	if (fileName == "")
 		return;
-	SimulationSaver ss(scene->getSimulation(), fileName, plugins);
+	SimulationSaver ss(scene->getSimulation(), fileName, plugins, python_modules);
 	ss.save();
+}
+
+void MainWindow::on_actionAdd_Python_Module_activated() {
+	QString plugin = QFileDialog::getOpenFileName(this,
+												  "select python module",
+												  "./data/scripts", "*.py");
+	if (plugin == "")
+		return;
+	QFileInfo module_file(plugin);
+	PythonEnv::getInstance()->registerNodes(scene->getNodeRegistry(),
+											module_file.baseName().toStdString());
+	python_modules << module_file.baseName();
+	pluginsAdded();
 }
