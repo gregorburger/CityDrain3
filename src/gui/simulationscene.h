@@ -12,6 +12,7 @@ class MapBasedModel;
 class ISimulation;
 class QTreeWidget;
 class PortItem;
+class ConnectionItem;
 
 class SimulationScene : public QGraphicsScene
 {
@@ -43,8 +44,9 @@ private:
 	QMap<std::string, int> ids;
 	MapBasedModel *model;
 	PortItem *connection_start;
-	QGraphicsLineItem *current_connection;
+	ConnectionItem *current_connection;
 	QList<NodeItem*> node_items;
+	QList<ConnectionItem *> connection_items;
 };
 
 #endif // SIMULATIONSCENE_H

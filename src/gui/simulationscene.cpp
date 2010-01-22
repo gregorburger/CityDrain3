@@ -3,6 +3,7 @@
 #include <QMimeData>
 #include <QWidget>
 #include <QTreeWidget>
+#include <QMenu>
 #include <QDebug>
 
 #include <noderegistry.h>
@@ -11,6 +12,7 @@
 #include <node.h>
 #include <nodeitem.h>
 #include <portitem.h>
+#include <connectionitem.h>
 #include <mapbasedmodel.h>
 
 #include <nodeparametersdialog.h>
@@ -101,11 +103,29 @@ void SimulationScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 	connection_start = (PortItem *) itemAt(event->scenePos());
 
 	if (connection_start && isOutPort(connection_start) && !connection_start->isConnected()) {
-		QLineF l(connection_start->scenePos() + connection_start->boundingRect().center(),
-				 event->scenePos());
-		current_connection = addLine(l);
+		current_connection = new ConnectionItem(connection_start, event->scenePos(), 0, this);
 		current_connection->setZValue(0);
 		return;
+	}
+
+	QGraphicsItem *iAt = itemAt(event->scenePos());
+
+	if (iAt && event->button() == Qt::RightButton &&
+		connection_items.contains((ConnectionItem*)iAt)) {
+		qDebug() << "connection right selected";
+	}
+
+	if (iAt && event->button() == Qt::RightButton &&
+		node_items.contains((NodeItem*)iAt)) {
+		QMenu m;
+		QAction *del = m.addAction("&delete");
+		QAction *selected = m.exec(event->screenPos());
+		NodeItem *nitem = (NodeItem *) iAt;
+		if (selected == del) {
+			removeItem(iAt);
+			model->removeNode(nitem->getNode());
+			delete nitem;
+		}
 	}
 
 	connection_start = 0;
@@ -114,10 +134,7 @@ void SimulationScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 
 void SimulationScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
 	if (connection_start) {
-		QLineF f = current_connection->line();
-		f.setP2(event->scenePos());
-		current_connection->setLine(f);
-		update();
+		current_connection->setSecond(event->scenePos());
 	}
 	QGraphicsScene::mouseMoveEvent(event);
 	return;
@@ -127,10 +144,6 @@ void SimulationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 	PortItem *connection_end = (PortItem *) itemAt(event->scenePos());
 
 	if (connection_end && isInPort(connection_end) && !connection_end->isConnected()) {
-		QLineF f = current_connection->line();
-		f.setP2(connection_end->scenePos()+connection_end->boundingRect().center());
-		current_connection->setLine(f);
-		update();
 
 		connection_start->setSourceOf(current_connection);
 		connection_end->setSinkOf(current_connection);
@@ -142,9 +155,12 @@ void SimulationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 
 		NodeConnection *con = simulation->createConnection(start, out_port, end, in_port);
 		model->addConnection(con);
-//TODO	current_connection->setData();
+		current_connection->setConnection(con);
+		current_connection->setSink(connection_end);
+		connection_items << current_connection;
 		connection_start = 0;
 		current_connection = 0;
+		update();
 		return;
 	}
 

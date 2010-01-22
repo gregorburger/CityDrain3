@@ -6,6 +6,7 @@
 
 class NodeItem;
 class SimulationScene;
+class ConnectionItem;
 
 class PortItem : public QObject, public QGraphicsItem {
 Q_OBJECT
@@ -30,8 +31,8 @@ public:
 	QString getPortName() { return portName; }
 	NodeItem *getNodeItem() const { return node_item; }
 
-	void setSinkOf(QGraphicsLineItem *connection) {sink_of = connection; }
-	void setSourceOf(QGraphicsLineItem *connection) {source_of = connection; }
+	void setSinkOf(ConnectionItem *connection) {sink_of = connection; }
+	void setSourceOf(ConnectionItem *connection) {source_of = connection; }
 
 	void setIsAtTop() { at_top = true; }
 	void setIsAtBottom() { at_bottom = true; }
@@ -40,7 +41,7 @@ private:
 	void hoverEnterEvent(QGraphicsSceneHoverEvent *event) { hovering = true; update(); }
 	void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) { hovering = false; update(); }
 
-	QGraphicsLineItem *sink_of, *source_of;
+	ConnectionItem *sink_of, *source_of;
 	NodeItem *node_item;
 	QString portName;
 	bool hovering, at_top, at_bottom;

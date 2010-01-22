@@ -1,6 +1,7 @@
 #include "portitem.h"
 #include "nodeitem.h"
 #include "simulationscene.h"
+#include "connectionitem.h"
 
 #include <QFontMetrics>
 #include <QPainter>
@@ -42,16 +43,12 @@ void PortItem::paint(QPainter *painter,
 
 void PortItem::updateConnection() {
 	if (sink_of) {
-		QLineF l = sink_of->line();
-		l.setP2(scenePos()+boundingRect().center());
-		sink_of->setLine(l);
+		sink_of->updatePositions();
 		scene()->update();
 	}
 
 	if (source_of) {
-		QLineF l = source_of->line();
-		l.setP1(scenePos()+boundingRect().center());
-		source_of->setLine(l);
+		source_of->updatePositions();
 		scene()->update();
 	}
 }
