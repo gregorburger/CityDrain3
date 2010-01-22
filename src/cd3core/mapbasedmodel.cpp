@@ -56,16 +56,24 @@ void MapBasedModel::removeNode(Node *node) {
 	cd3assert(node->getId() != "", "node has no id");
 	cd3assert(node, "cannot remove null node");
 	cd3assert(all_nodes.count(node), "no such node in model");
+	Logger(Debug) << "removing node " << node->getClassName()<< "[" << node->getId() << "]";
 	names_nodes.erase(node->getId());
 	all_nodes.erase(node);
-	if (sink_nodes.count(node))
+	if (sink_nodes.count(node)) {
+		Logger(Debug) << "removing node " << node->getId() << "from sink nodes";
 		sink_nodes.erase(node);
-	if (source_nodes.count(node))
+	}
+	if (source_nodes.count(node)) {
+		Logger(Debug) << "removing node " << node->getId() << "from source nodes";
 		source_nodes.erase(node);
-	if (uncon_nodes.count(node))
+	}
+	if (uncon_nodes.count(node)) {
 		uncon_nodes.erase(node);
+		Logger(Debug) << "removing node " << node->getId() << "from unconnected nodes";
+	}
 	fwd_connections.erase(node);
 	bwd_connections.erase(node);
+	Logger(Debug) << "deleting node " << node->getId();
 	delete node;
 }
 
