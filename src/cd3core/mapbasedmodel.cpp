@@ -18,7 +18,7 @@ MapBasedModel::MapBasedModel() {
 MapBasedModel::~MapBasedModel() {
 	BOOST_FOREACH(nodes_pair_type p, names_nodes) {
 		p.second->deinit();
-				delete p.second;
+		delete p.second;
 	}
 	BOOST_FOREACH(NodeConnection *con, all_connections) {
 		delete con;
@@ -52,10 +52,27 @@ void MapBasedModel::addNode(Node *node) {
 	bwd_connections[node] = vector<NodeConnection *>();
 }
 
+void MapBasedModel::removeNode(Node *node) {
+	cd3assert(node->getId() != "", "node has no id");
+	cd3assert(node, "cannot remove null node");
+	cd3assert(all_nodes.count(node), "no such node in model");
+	names_nodes.erase(node->getId());
+	all_nodes.erase(node);
+	if (sink_nodes.count(node))
+		sink_nodes.erase(node);
+	if (source_nodes.count(node))
+		source_nodes.erase(node);
+	if (uncon_nodes.count(node))
+		uncon_nodes.erase(node);
+	fwd_connections.erase(node);
+	bwd_connections.erase(node);
+	delete node;
+}
+
 void MapBasedModel::addConnection(NodeConnection *con) {
 	cd3assert(con, "connection must no be null");
-		Node *source = con->source;
-		Node *sink = con->sink;
+	Node *source = con->source;
+	Node *sink = con->sink;
 
 	sink_nodes.erase(source);
 	source_nodes.erase(sink);
@@ -65,6 +82,55 @@ void MapBasedModel::addConnection(NodeConnection *con) {
 	bwd_connections[sink].push_back(con);
 	fwd_connections[source].push_back(con);
 	all_connections.insert(con);
+}
+
+void MapBasedModel::removeConnection(NodeConnection *con) {
+	cd3assert(con, "connection must no be null");
+	cd3assert(all_connections.count(con), "no such connection");
+
+	Node *source = con->source;
+	Node *sink = con->sink;
+
+	all_connections.erase(con);
+
+	vector<NodeConnection*>::iterator it = find(bwd_connections[sink].begin(),
+												bwd_connections[sink].end(),
+												con);
+	if (it != bwd_connections[sink].end()) {
+		bwd_connections[sink].erase(it);
+	}
+
+	it = find(fwd_connections[source].begin(),
+			  fwd_connections[source].end(),
+			  con);
+	if (it != fwd_connections[source].end()) {
+		fwd_connections[source].erase(it);
+	}
+
+
+	bool no_fwd = false;
+	if (fwd_connections[source].size() == 0) {
+		sink_nodes.insert(source);
+		no_fwd = true;
+	}
+
+	if (bwd_connections[source].size() == 0) {
+		source_nodes.insert(source);
+		if (no_fwd)
+			uncon_nodes.insert(source);
+	}
+
+	no_fwd = false;
+	if (fwd_connections[sink].size() == 0) {
+		sink_nodes.insert(sink);
+		no_fwd = true;
+	}
+
+	if (bwd_connections[sink].size() == 0) {
+		source_nodes.insert(sink);
+		if (no_fwd)
+			uncon_nodes.insert(sink);
+	}
 }
 
 void MapBasedModel::initNodes(const SimulationParameters &sp) {

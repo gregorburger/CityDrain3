@@ -23,7 +23,9 @@ public:
 	}
 
 	void addNode(Node *node);
+	void removeNode(Node *node);
 	void addConnection(NodeConnection *con);
+	void removeConnection(NodeConnection *con);
 
 
 	//call before adding Connections

@@ -42,7 +42,9 @@ public:
 	virtual void deserialize(const string &serialid) = 0;
 
 	virtual void addNode(Node *node) = 0;
+	virtual void removeNode(Node *node) = 0;
 	virtual void addConnection(NodeConnection *con) = 0;
+	virtual void removeConnection(NodeConnection *con) = 0;
 
 	virtual void initNodes(const SimulationParameters &) = 0;
 	virtual node_set_type getSourceNodes() = 0;
