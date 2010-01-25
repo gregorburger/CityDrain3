@@ -34,7 +34,7 @@ bool FileOut::init(ptime start, ptime stop, int dt) {
 		Logger(Warning) << "overwriting file " << out_file_name;
 	}
 	QFileInfo info(q_out_file_name);
-	if (info.absoluteDir().exists()) {
+	if (!info.absoluteDir().exists()) {
 		Logger(Warning) << "parent dir of" << out_file_name << "does not exist";
 		return false;
 	}
