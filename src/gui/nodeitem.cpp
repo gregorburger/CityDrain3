@@ -15,7 +15,9 @@ NodeItem::NodeItem(Node* node)
 	: QGraphicsItem(), node(node), margin(30) {
 	setFlag(ItemIsMovable, true);
 	setFlag(ItemIsSelectable, true);
-	setCacheMode(DeviceCoordinateCache);
+#if QT_VERSION >= QT_VERSION_CHECK(4,6,0)
+	setFlag(ItemSendsGeometryChanges, true);
+#endif
 	setZValue(1);
 	nodeChanged();
 }
