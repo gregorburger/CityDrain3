@@ -40,7 +40,7 @@ class PyOut(Node):
 		
 		
 	def f(self, time, dt):
-		self.file.write("%s" % time)
+		self.file.write("%s" % time.to_datetime())
 		for i in xrange(len(self.in_flow)):
 			self.file.write('\t%s' % self.in_flow[i])
 		self.file.write('\n')
