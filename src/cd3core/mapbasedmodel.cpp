@@ -145,7 +145,7 @@ void MapBasedModel::initNodes(const SimulationParameters &sp) {
 	node_set_type::iterator it = all_nodes.begin();
 	while (it != all_nodes.end()) {
 		Node *n = *it;
-		n->init(sp.start, sp.stop, sp.dt);
+		cd3assert(n->init(sp.start, sp.stop, sp.dt), "node initialization failed");
 		it++;
 	}
 }

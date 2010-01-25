@@ -12,7 +12,7 @@ ArrayParamTest::ArrayParamTest() {
 ArrayParamTest::~ArrayParamTest() {
 }
 
-void ArrayParamTest::init(ptime start, ptime stop, int dt) {
+bool ArrayParamTest::init(ptime start, ptime stop, int dt) {
 	(void) start;
 	(void) stop;
 	(void) dt;
@@ -20,6 +20,7 @@ void ArrayParamTest::init(ptime start, ptime stop, int dt) {
 	for (size_t i = 0; i < C.size(); i++) {
 		out[i+1] = C[i];
 	}
+	return true;
 }
 
 

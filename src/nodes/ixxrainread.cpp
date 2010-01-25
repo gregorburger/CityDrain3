@@ -29,11 +29,14 @@ IxxRainRead::~IxxRainRead() {
 	delete data->in_facet;
 }
 
-void IxxRainRead::init(ptime start, ptime end, int dt) {
+bool IxxRainRead::init(ptime start, ptime end, int dt) {
 	(void) end;
 	(void) dt;
 	data->in.open(rain_file.c_str());
-//	cd3assert(data->in.good(), "its not possible to read from the given rainfile");
+	if (!data->in.good()) {
+		Logger(Warning) << "it is not possible to read from the given rainfile";
+		return false;
+	}
 	int raindt = data->getDt();
 	ptime first_time;
 	data->in >> first_time;
@@ -50,7 +53,7 @@ void IxxRainRead::init(ptime start, ptime end, int dt) {
 		int cut_off = time_period(first_time, start).length().total_seconds();
 		Logger(Debug) << (Node*) this << "cutting of" << cut_off << "after ff rainbuffer";
 		data->rain_buf.take(cut_off);
-		return;
+		return true;
 	}
 
 	if (first_time > start) { //fill up with zeroes
@@ -60,8 +63,9 @@ void IxxRainRead::init(ptime start, ptime end, int dt) {
 			data->rain_buf.put(dt, 0.0);
 			zerosecs -= dt;
 		}
-		return;
+		return true;
 	}
+	return true;
 }
 
 int IxxRainRead::f(ptime time, int dt) {

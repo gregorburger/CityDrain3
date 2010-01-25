@@ -11,7 +11,7 @@ public:
 	Mixer();
 	~Mixer();
 	int f(ptime time, int dt);
-	void init(ptime start, ptime end, int dt);
+	bool init(ptime start, ptime end, int dt);
 	void deinit();
 private:
 	int num_inputs;

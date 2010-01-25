@@ -25,8 +25,8 @@ void ConnectionItem::updatePositions() {
 		second = sink->scenePos() + sink->boundingRect().center();
 	}
 	qreal x = (first - second).x();
-	QPointF c1(first.x() - x / 1.0, first.y());
-	QPointF c2(second.x() + x / 1.0, second.y());
+	QPointF c1(first.x() - x / 2.0, first.y());
+	QPointF c2(second.x() + x / 2.0, second.y());
 	QPainterPath p;
 	p.moveTo(first);
 	p.cubicTo(c1, c2, second);
@@ -34,11 +34,11 @@ void ConnectionItem::updatePositions() {
 }
 
 QPainterPath ConnectionItem::shape() const {
-		QPainterPath qpath = path();
-		qpath.lineTo(qpath.currentPosition() + QPointF(2, 0));
-		qpath.lineTo(qpath.currentPosition() + QPointF(-2, 2));
-		qpath.closeSubpath();
-		qpath.lineTo(qpath.currentPosition() + QPointF(2, 0));
-		qpath.lineTo(qpath.currentPosition() + QPointF(-2, 2));
-		return qpath;
+	QPainterPath qpath = path();
+	qpath.lineTo(qpath.currentPosition() + QPointF(2, 0));
+	qpath.lineTo(qpath.currentPosition() + QPointF(-2, 2));
+	qpath.closeSubpath();
+	qpath.lineTo(qpath.currentPosition() + QPointF(2, 0));
+	qpath.lineTo(qpath.currentPosition() + QPointF(-2, 2));
+	return qpath;
 }

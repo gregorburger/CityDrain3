@@ -40,13 +40,13 @@ struct NodeWrapper : Node, python::wrapper<Node> {
 
 	}
 
-	void init(ptime start, ptime stop, int dt) {
+	bool init(ptime start, ptime stop, int dt) {
 		try {
 			updateParameters();
-			python::call_method<void>(self, "init", start, stop, dt);
-
+			return python::call_method<bool>(self, "init", start, stop, dt);
 		} catch(python::error_already_set const &) {
 		}
+		return true;
 	}
 
 	void deinit() {

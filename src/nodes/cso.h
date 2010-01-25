@@ -10,7 +10,6 @@ public:
 	CSO();
 	virtual ~CSO();
 	int f(ptime time, int dt);
-	void init(ptime start, ptime end, int dt);
 
 private:
 	Flow in;

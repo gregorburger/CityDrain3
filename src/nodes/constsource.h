@@ -8,7 +8,7 @@ CD3_DECLARE_NODE(ConstSource)
 public:
 	ConstSource();
 	~ConstSource();
-	void init(ptime start, ptime end, int dt);
+	bool init(ptime start, ptime end, int dt);
 	int f(ptime time, int dt);
 private:
 	Flow const_flow;

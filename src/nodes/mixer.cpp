@@ -24,7 +24,7 @@ void Mixer::deinit() {
 	}
 }
 
-void Mixer::init(ptime start, ptime end, int dt) {
+bool Mixer::init(ptime start, ptime end, int dt) {
 	(void) start;
 	(void) end;
 	(void) dt;
@@ -35,6 +35,7 @@ void Mixer::init(ptime start, ptime end, int dt) {
 		addInPort(name.str(), tmp);
 		inputs.push_back(tmp);
 	}
+	return true;
 }
 
 int Mixer::f(ptime time, int dt) {

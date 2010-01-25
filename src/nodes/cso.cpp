@@ -26,12 +26,6 @@ CSO::CSO() {
 CSO::~CSO() {
 }
 
-void CSO::init(ptime start, ptime end, int dt) {
-	(void) start;
-	(void) end;
-	(void) dt;
-}
-
 int CSO::f(ptime time, int dt) {
 	(void) time;
 

@@ -10,7 +10,7 @@ CD3_DECLARE_NODE(FileOut)
 public:
 	FileOut();
 	virtual ~FileOut();
-	void init(ptime start, ptime end, int dt);
+	bool init(ptime start, ptime end, int dt);
 	int f(ptime time, int dt);
 	void deinit();
 private:

@@ -12,10 +12,11 @@ Node::Node() : /*const_parameters(&parameters),*/
 Node::~Node() {
 }
 
-void Node::init(ptime start, ptime end, int dt) {
+bool Node::init(ptime start, ptime end, int dt) {
 	(void) start;
 	(void) end;
 	(void) dt;
+	return true;
 }
 
 void Node::deinit() {

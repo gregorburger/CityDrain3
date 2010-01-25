@@ -63,7 +63,7 @@ public:
 	std::string getId() const;
 
 	virtual const char *getClassName() const = 0;
-	virtual void init(ptime start, ptime end, int dt);
+	virtual bool init(ptime start, ptime end, int dt);
 	/*
 	  called before delete, ressources acquired in init
 	  should be deallocated in deinit.

@@ -12,7 +12,7 @@ CD3_DECLARE_NODE(IxxRainRead)
 public:
 	IxxRainRead();
 	virtual ~IxxRainRead();
-	void init(ptime start, ptime end, int dt);
+	bool init(ptime start, ptime end, int dt);
 	int f(ptime time, int dt);
 private:
 	IxxRainReadPrivate *data;

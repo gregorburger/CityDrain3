@@ -54,7 +54,7 @@ CatchmentCSS::~CatchmentCSS() {
 	delete loss_basin;
 }
 
-void CatchmentCSS::init(ptime start, ptime end, int dt) {
+bool CatchmentCSS::init(ptime start, ptime end, int dt) {
 	(void) start;
 	(void) end;
 	(void) dt;
@@ -74,6 +74,7 @@ void CatchmentCSS::init(ptime start, ptime end, int dt) {
 		V.push_back(f);
 	}
 	permanent_loss = permanent_loss / 86400 * dt;
+	return true;
 }
 
 void CatchmentCSS::deinit() {

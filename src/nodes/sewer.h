@@ -11,7 +11,7 @@ public:
 	Sewer();
 	virtual ~Sewer();
 
-	void init(ptime start, ptime end, int dt);
+	bool init(ptime start, ptime end, int dt);
 	int f(ptime time, int dt);
 	void deinit();
 

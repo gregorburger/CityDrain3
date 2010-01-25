@@ -4,6 +4,8 @@
 #include <logger.h>
 #include <QFile>
 #include <QTextStream>
+#include <QFileInfo>
+#include <QDir>
 #include <boost/foreach.hpp>
 
 CD3_DECLARE_NODE_NAME(FileOut)
@@ -19,17 +21,30 @@ FileOut::FileOut()
 FileOut::~FileOut() {
 }
 
-void FileOut::init(ptime start, ptime stop, int dt) {
+bool FileOut::init(ptime start, ptime stop, int dt) {
 	(void) start;
 	(void) stop;
 	(void) dt;
-	cd3assert(out_file_name.size(), "out_file_name not defined");
-	file.setFileName(QString::fromStdString(out_file_name));
+	if (out_file_name == "") {
+		Logger(Warning) << "out_file_name not defined";
+		return false;
+	}
+	QString q_out_file_name = QString::fromStdString(out_file_name);
+	if (QFile::exists(q_out_file_name)) {
+		Logger(Warning) << "overwriting file " << out_file_name;
+	}
+	QFileInfo info(q_out_file_name);
+	if (info.absoluteDir().exists()) {
+		Logger(Warning) << "parent dir of" << out_file_name << "does not exist";
+		return false;
+	}
+	file.setFileName(q_out_file_name);
 	if (!file.isOpen()) {
 		file.open(QFile::WriteOnly);
 	}
 	Logger() << this << "using fileout:" << out_file_name;
 	stream.setRealNumberPrecision(10);
+	return true;
 }
 
 void FileOut::deinit() {

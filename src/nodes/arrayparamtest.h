@@ -11,7 +11,7 @@ CD3_DECLARE_NODE(ArrayParamTest)
 public:
 	ArrayParamTest();
 	virtual ~ArrayParamTest();
-	void init(ptime start, ptime end, int dt);
+	bool init(ptime start, ptime end, int dt);
 	int f(ptime time, int dt);
 
 private:

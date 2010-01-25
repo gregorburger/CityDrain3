@@ -26,7 +26,7 @@ Sewer::~Sewer() {
 void Sewer::deinit() {
 }
 
-void Sewer::init(ptime start, ptime end, int dt) {
+bool Sewer::init(ptime start, ptime end, int dt) {
 	(void) start;
 	(void) end;
 
@@ -36,6 +36,7 @@ void Sewer::init(ptime start, ptime end, int dt) {
 	}
 
 	addMuskParam(dt);
+	return true;
 }
 
 

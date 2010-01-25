@@ -77,14 +77,17 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 
 	SimulationParameters sp = simulation->getSimulationParameters();
 
-	if (node->getParameters().size() > 0) {
-		NodeParametersDialog np(node);
-		if (np.exec()) {
-			np.updateNodeParameters();
+	do {
+		if (node->getParameters().size() > 0) {
+			NodeParametersDialog np(node);
+			if (np.exec()) {
+				np.updateNodeParameters();
+			} else {
+				delete node;
+				return;
+			}
 		}
-	}
-
-	node->init(sp.start, sp.stop, sp.dt);
+	} while (!node->init(sp.start, sp.stop, sp.dt));
 	model->addNode(node);
 	NodeItem *nitem = new NodeItem(node);
 	this->addItem(nitem);

@@ -17,9 +17,10 @@ int ConstSource::f(ptime time, int dt) {
 	return dt;
 }
 
-void ConstSource::init(ptime start, ptime end, int dt) {
+bool ConstSource::init(ptime start, ptime end, int dt) {
 	(void) start;
 	(void) end;
 	(void) dt;
 	out = const_flow;
+	return true;
 }
