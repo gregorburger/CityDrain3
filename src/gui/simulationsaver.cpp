@@ -21,7 +21,6 @@ SimulationSaver::SimulationSaver(ISimulation *simulation,
 	out->open(QIODevice::WriteOnly);
 	writer = new QXmlStreamWriter(out);
 	writer->setAutoFormatting(true);
-	//writer->setAutoFormattingIndent();
 }
 
 SimulationSaver::~SimulationSaver() {
@@ -131,6 +130,16 @@ void SimulationSaver::saveModel(IModel *model) {
 	writer->writeEndElement();//model
 }
 
+typedef pair<string, NodeParameter*> ppair;
 void SimulationSaver::saveNodeParameters(const Node *n) {
-	//TODO
+	BOOST_FOREACH(ppair item, n->getParameters()) {
+		NodeParameter *p = item.second;
+		writer->writeEmptyElement("parameter");
+		writer->writeAttribute("name", tos(p->name));
+		if (p->type == cd3::TypeInfo(typeid(double))) {
+			writer->writeAttribute("type", "double");
+			double *value = (double *) p->value;
+			writer->writeAttribute("value", QString("$1").arg(*value));
+		}
+	}
 }

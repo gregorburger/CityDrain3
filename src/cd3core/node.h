@@ -105,7 +105,7 @@ public:
 	}
 
 	template<class T>
-	T *getParameter(const std::string &name) {
+	T *getParameter(const std::string &name) const {
 		cd3assert(parameters.find(name) != parameters.end(),
 				  str(format("no parameter with name %1%") % name));
 		ltvp p = parameters[name];
@@ -148,7 +148,7 @@ public:
 
 
 	//const ssltvp	* const const_parameters;
-	parameters_type getParameters() {
+	parameters_type getParameters() const {
 		return parameters;
 	}
 
