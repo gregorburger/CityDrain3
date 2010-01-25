@@ -10,9 +10,6 @@ class PythonNode(pycd3.Node):
 		self.addOutPort('out', self.flow)
 		pass
 	
-	def init(self, start, stop, dt):
-		pass
-	
 	def f(self, time, dt):
 		return dt
 
@@ -49,7 +46,7 @@ class DPythonNode(pycd3.Node):
 		
 	def init(self, start, stop, dt):
 		print 'init'
-		
+		return True
 		
 		
 		
