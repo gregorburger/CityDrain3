@@ -53,6 +53,7 @@ OrderedPipeSimulation::~OrderedPipeSimulation() {
 }
 
 void OrderedPipeSimulation::start(ptime time) {
+	pd->order = getOrder();
 	cd3assert(pd->order.size() > 0, "order empty");
 	current_time = time;
 	QThreadPool *pool = QThreadPool::globalInstance();
@@ -124,7 +125,6 @@ void OrderedPipeSimulation::setModel(IModel *model) {
 			  "The OrderedPipeSimulation does not support cyclic models");
 	ISimulation::setModel(model);
 	pd->model = model;
-	pd->order = getOrder();
 }
 
 NodeConnection *OrderedPipeSimulation::createConnection(Node *source,

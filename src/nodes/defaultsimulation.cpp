@@ -21,6 +21,9 @@ DefaultSimulation::~DefaultSimulation() {
 }
 
 int DefaultSimulation::run(ptime time, int dt) {
+	if (time == sim_param.start) {
+		sp->sources = model->getSourceNodes();
+	}
 	sp->done.clear();
 	con_count_type deps = model->getBackwardCounts();
 
@@ -52,5 +55,4 @@ void DefaultSimulation::run(Node *n, ptime time, con_count_type &depends) {
 
 void DefaultSimulation::setModel(IModel *model) {
 	ISimulation::setModel(model);
-	sp->sources = model->getSourceNodes();
 }
