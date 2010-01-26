@@ -11,10 +11,14 @@ class ConnectionItem : public QGraphicsPathItem
 public:
 	ConnectionItem(PortItem *source, QPointF second,
 				   QGraphicsItem *parent = 0, QGraphicsScene *scene = 0);
+	ConnectionItem(PortItem *source, PortItem *sink,
+				   QGraphicsItem *parent = 0, QGraphicsScene *scene = 0);
 
 	void setSink(PortItem *sink);
 	void setSecond(QPointF second);
 	void updatePositions();
+	void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
+	void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
 	void setConnection(NodeConnection *con) { this->connection = con; }
 	NodeConnection *getConnection() const { return connection; }
 	QPainterPath shape() const;
