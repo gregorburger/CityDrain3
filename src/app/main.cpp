@@ -33,7 +33,6 @@ struct ProgressHandler {
 	 : sp(sim->getSimulationParameters()) {
 		time_period tp(sp.start, sp.stop);
 		long seconds = tp.length().total_seconds();
-		cout << seconds << endl;
 		pfrac = 100.0/seconds;
 		last_perc = -1;
 	}
