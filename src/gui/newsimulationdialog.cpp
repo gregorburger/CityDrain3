@@ -44,6 +44,16 @@ ptime qttopt(QDateTime dt) {
 	return t;
 }
 
+void NewSimulationDialog::defineFlow() {
+	using namespace std;
+	map<string, Flow::CalculationUnit> definition;
+	definition[ui->flowName->text().toStdString()] = Flow::flow;
+	Q_FOREACH(QString c, ui->concentrationNames->text().split(' ')) {
+		definition[c.toStdString()] = Flow::concentration;
+	}
+	Flow::define(definition);
+}
+
 SimulationScene *NewSimulationDialog::createSimulationScene() {
 	SimulationParameters p(qttopt(ui->start->dateTime()),
 						   qttopt(ui->stop->dateTime()),
@@ -60,9 +70,6 @@ SimulationScene *NewSimulationDialog::createSimulationScene() {
 			}
 		}
 	}
-	//workaround until a gui for flowdefinition is settled
-	std::map<std::string, Flow::CalculationUnit> fd;
-	fd["Q"] = Flow::flow;
-	Flow::define(fd);
+	defineFlow();
 	return scene;
 }

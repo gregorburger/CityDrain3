@@ -18,6 +18,7 @@ public:
 
 	SimulationScene *createSimulationScene();
 private:
+	void defineFlow();
 	Ui::NewSimulationDialog *ui;
 	SimulationRegistry *registry;
 	SimulationScene *scene;
