@@ -8,18 +8,20 @@ namespace Ui {
 }
 class SimulationRegistry;
 class ISimulation;
+class SimulationScene;
 
 class NewSimulationDialog : public QDialog
 {
 public:
-	NewSimulationDialog(SimulationRegistry *registry,
-				  QWidget *parent = 0,
-				  Qt::WindowFlags f = 0);
+	NewSimulationDialog(QWidget *parent = 0,
+						Qt::WindowFlags f = 0);
 
-	ISimulation *createSimulation();
+	SimulationScene *createSimulationScene();
 private:
 	Ui::NewSimulationDialog *ui;
 	SimulationRegistry *registry;
+	SimulationScene *scene;
+	QStringList default_node_paths;
 };
 
 #endif // NEWSIMULATION_H

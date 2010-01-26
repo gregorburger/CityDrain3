@@ -1,16 +1,16 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
-#include "simulationscene.h"
-#include "simulationsaver.h"
 #include <simulationregistry.h>
 #include <simulation.h>
 #include <noderegistry.h>
 #include <module.h>
+#include <mapbasedmodel.h>
 
+#include "ui_mainwindow.h"
+#include "simulationscene.h"
 #include "newsimulationdialog.h"
 #include "simulationthread.h"
 
-#include <qfiledialog.h>
+#include <QFileDialog>
 #include <QDebug>
 #include <QMessageBox>
 #include <QKeyEvent>
@@ -18,23 +18,9 @@
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
-	ui(new Ui::MainWindow) {
-	scene = new SimulationScene();
+	ui(new Ui::MainWindow), scene(0) {
 	ui->setupUi(this);
-	ui->graphicsView->setScene(scene);
 	ui->graphicsView->setRenderHints(QPainter::Antialiasing);
-	QStringList default_node_paths;
-	default_node_paths << "./libnodes.so" << "../../libnodes.so" << "./build/libnodes.so";
-	default_node_paths << "./nodes.dll"  << "../../nodes.dll" << "./build/nodes.dll";
-	Q_FOREACH(QString path, default_node_paths) {
-		if (QFile::exists(path)) {
-			scene->getNodeRegistry()->addNativePlugin(path.toStdString());
-			scene->getSimulationRegistry()->addNativePlugin(path.toStdString());
-			pluginsAdded();
-			plugins << path;
-			break;
-		}
-	}
 }
 
 MainWindow::~MainWindow() {
@@ -42,8 +28,7 @@ MainWindow::~MainWindow() {
 	delete ui;
 }
 
-void MainWindow::changeEvent(QEvent *e)
-{
+void MainWindow::changeEvent(QEvent *e) {
 	QMainWindow::changeEvent(e);
 	switch (e->type()) {
 	case QEvent::LanguageChange:
@@ -125,12 +110,13 @@ void MainWindow::simulationFinished() {
 }
 
 void MainWindow::on_actionNewSimulation_activated() {
-	NewSimulationDialog ns(scene->getSimulationRegistry(), this);
+	NewSimulationDialog ns(this);
 	if (ns.exec()) {
-		ISimulation *sim = ns.createSimulation();
-		scene->setSimulation(sim);
+		scene = ns.createSimulationScene();
+		ui->graphicsView->setScene(scene);
 		ui->actionSave_Simulation->setEnabled(true);
 		ui->runButton->setEnabled(true);
+		pluginsAdded();
 	}
 }
 
@@ -138,8 +124,7 @@ void MainWindow::on_actionSave_Simulation_activated() {
 	QString fileName = QFileDialog::getSaveFileName(this, "Enter new Simulation file Name");
 	if (fileName == "")
 		return;
-	SimulationSaver ss(scene->getSimulation(), fileName, plugins, python_modules);
-	ss.save();
+	scene->save(fileName, plugins, python_modules);
 }
 
 void MainWindow::on_actionAdd_Python_Module_activated() {
@@ -152,5 +137,27 @@ void MainWindow::on_actionAdd_Python_Module_activated() {
 	PythonEnv::getInstance()->registerNodes(scene->getNodeRegistry(),
 											module_file.baseName().toStdString());
 	python_modules << module_file.baseName();
+	pluginsAdded();
+}
+
+void MainWindow::on_action_exit_activated() {
+	//TODO ask nicely
+	QApplication::quit();
+}
+
+void MainWindow::on_action_open_activated() {
+	if (scene) {
+		//TODO show dialog
+		return;
+	}
+
+	QString path = QFileDialog::getOpenFileName(this, "Provide name for model file", ".", "*.xml");
+	if (path == "")
+		return;
+	scene = new SimulationScene();
+	scene->load(path);
+	ui->graphicsView->setScene(scene);
+	ui->actionSave_Simulation->setEnabled(true);
+	ui->runButton->setEnabled(true);
 	pluginsAdded();
 }

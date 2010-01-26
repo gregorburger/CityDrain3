@@ -9,9 +9,6 @@ namespace Ui {
 	class MainWindow;
 }
 
-class NodeItem;
-class NodeRegistry;
-class SimulationRegistry;
 class SimulationScene;
 class SimulationThread;
 
@@ -40,6 +37,8 @@ public Q_SLOTS:
 	void pluginsAdded();
 	void on_runButton_clicked();
 	void on_actionAdd_Python_Module_activated();
+	void on_action_exit_activated();
+	void on_action_open_activated();
 	void simulationFinished();
 	void zoomIn(int times = 1);
 	void zoomOut(int times = 1);

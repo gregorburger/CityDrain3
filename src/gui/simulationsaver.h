@@ -6,6 +6,8 @@
 #include <QMap>
 #include <QStringList>
 
+class SimulationScene;
+class NodeItem;
 class ISimulation;
 class IModel;
 class Node;
@@ -16,7 +18,7 @@ class SimulationSaver : public QObject
 {
 Q_OBJECT
 public:
-	SimulationSaver(ISimulation *simulation,
+	SimulationSaver(SimulationScene *scene,
 					QString path,
 					QStringList plugins,
 					QStringList python_modules);
@@ -32,14 +34,11 @@ private:
 	void saveModel(IModel *model);
 	void saveFlowDefinition();
 	void saveNodeParameters(const Node *n);
-
-	void openTag(QString tagName, QMap<QString, QString> attributes);
-	void closeTag(QString tagName);
+	void saveNodePositions(QList<NodeItem*> items);
 private:
-	ISimulation *simulation;
+	SimulationScene *scene;
 	QString path;
-	QStringList plugins;
-	QStringList python_modules;
+	QStringList plugins, python_modules;
 	QXmlStreamWriter *writer;
 	QFile *out;
 };

@@ -56,7 +56,7 @@
     </property>
     <addaction name="actionNewSimulation"/>
     <addaction name="actionSave_Simulation"/>
-    <addaction name="actionLoad_Simulation"/>
+    <addaction name="action_open"/>
     <addaction name="separator"/>
     <addaction name="actionAdd_Plugin"/>
     <addaction name="actionAdd_Python_Module"/>
@@ -119,9 +119,9 @@
     <string>save</string>
    </property>
   </action>
-  <action name="actionLoad_Simulation">
+  <action name="action_open">
    <property name="text">
-    <string>load</string>
+    <string>open</string>
    </property>
   </action>
   <action name="actionAdd_Python_Module">

@@ -24,10 +24,15 @@ public:
 	void dropEvent(QGraphicsSceneDragDropEvent *event);
 	void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
 
+	void load(QString path);
+	void save(QString path, QStringList plugins, QStringList python_modules);
+
 	NodeRegistry *getNodeRegistry() const { return node_reg; }
 	SimulationRegistry *getSimulationRegistry() const { return sim_reg; }
 	ISimulation *getSimulation() const { return simulation; }
 	void setSimulation(ISimulation *simulation);
+	MapBasedModel *getModel() const { return model; }
+	QList<NodeItem*> getNodeItems() const { return node_items; }
 
 private Q_SLOTS:
 	void mousePressEvent(QGraphicsSceneMouseEvent *event);

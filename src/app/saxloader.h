@@ -10,11 +10,14 @@ struct SaxLoaderPriv;
 class IModel;
 class Node;
 class ISimulation;
+class NodeRegistry;
+class SimulationRegistry;
 
 class CD3_PUBLIC SaxLoader : public QXmlDefaultHandler
 {
 public:
 	SaxLoader(IModel *m);
+	SaxLoader(IModel *m, NodeRegistry *nr, SimulationRegistry *sr);
 	~SaxLoader();
 	bool startElement(const QString &ns,
 					  const QString &lname,
@@ -31,9 +34,11 @@ private:
 	void loadParameter(const QXmlAttributes &atts);
 	void breakCycle();
 	SaxLoaderPriv *pd;
-        Node *current;
+		Node *current;
 	bool cycle_break;
 	std::string source_id, source_port, sink_port, sink_id;
+	bool delete_node_reg;
+	bool delete_sim_reg;
 };
 
 #endif // SAXLOADER_H

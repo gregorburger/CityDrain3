@@ -20,6 +20,20 @@ NodeItem::NodeItem(Node* node)
 	nodeChanged();
 }
 
+PortItem *NodeItem::getInPort(QString id) {
+	Q_FOREACH(PortItem *p, in_ports) {
+		if (p->getPortName() == id)
+			return p;
+	}
+}
+
+PortItem *NodeItem::getOutPort(QString id) {
+	Q_FOREACH(PortItem *p, out_ports) {
+		if (p->getPortName() == id)
+			return p;
+	}
+}
+
 void NodeItem::nodeChanged() {
 	Q_FOREACH(PortItem *p, in_ports) {
 		in_ports.removeAll(p);

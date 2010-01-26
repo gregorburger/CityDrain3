@@ -30,6 +30,8 @@ public:
 	QPainterPath shape() const;
 	void nodeChanged();
 
+	PortItem *getInPort(QString id);
+	PortItem *getOutPort(QString id);
 private:
 	void moveItems();
 

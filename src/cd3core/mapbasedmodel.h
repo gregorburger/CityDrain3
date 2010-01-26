@@ -22,6 +22,8 @@ public:
 		(void) serialid;
 	}
 
+	bool empty() const { return all_nodes.size() == 0; }
+
 	void addNode(Node *node);
 	void removeNode(Node *node);
 	void addConnection(NodeConnection *con);

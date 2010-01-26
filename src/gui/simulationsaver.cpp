@@ -5,18 +5,21 @@
 #include <nodeconnection.h>
 #include <flow.h>
 
+#include <simulationscene.h>
+
 #include <QXmlStreamWriter>
 #include <QFile>
+#include <QDebug>
 #include <boost/foreach.hpp>
 #include <boost/unordered_set.hpp>
 #include <string>
 using namespace std;
 
-SimulationSaver::SimulationSaver(ISimulation *simulation,
+SimulationSaver::SimulationSaver(SimulationScene *scene,
 								 QString path,
 								 QStringList plugins,
 								 QStringList python_modules)
-	: simulation(simulation), path(path), plugins(plugins), python_modules(python_modules) {
+	: scene(scene), path(path), plugins(plugins), python_modules(python_modules) {
 	out = new QFile(path);
 	out->open(QIODevice::WriteOnly);
 	writer = new QXmlStreamWriter(out);
@@ -42,8 +45,9 @@ void SimulationSaver::save() {
 		writer->writeAttribute("module", module);
 	}
 
-	saveSimulation(simulation);
-	saveModel(simulation->getModel());
+	saveSimulation(scene->getSimulation());
+	saveModel(scene->getSimulation()->getModel());
+	saveNodePositions(scene->getNodeItems());
 
 	writer->writeEndElement();
 	writer->writeEndDocument();
@@ -139,7 +143,41 @@ void SimulationSaver::saveNodeParameters(const Node *n) {
 		if (p->type == cd3::TypeInfo(typeid(double))) {
 			writer->writeAttribute("type", "double");
 			double *value = (double *) p->value;
-			writer->writeAttribute("value", QString("$1").arg(*value));
+			writer->writeAttribute("value", QString("%1").arg(*value));
+			continue;
 		}
+		if (p->type == cd3::TypeInfo(typeid(int))) {
+			writer->writeAttribute("type", "int");
+			int *value = (int *) p->value;
+			writer->writeAttribute("value", QString("%1").arg(*value));
+			continue;
+		}
+		if (p->type == cd3::TypeInfo(typeid(bool))) {
+			writer->writeAttribute("type", "bool");
+			bool *value = (bool *) p->value;
+			writer->writeAttribute("value", QString("%1").arg(*value));
+			continue;
+		}
+		if (p->type == cd3::TypeInfo(typeid(string))) {
+			writer->writeAttribute("type", "string");
+			string *value = (string *) p->value;
+			writer->writeAttribute("value", QString::fromStdString(*value));
+			continue;
+		}
+		qWarning() << "can not save value of parameter " << QString::fromStdString(p->name);
 	}
+}
+
+void SimulationSaver::saveNodePositions(QList<NodeItem *>items) {
+	writer->writeStartElement("gui");
+
+	Q_FOREACH(NodeItem *item, items) {
+		writer->writeEmptyElement("nodeposition");
+		writer->writeAttribute("id", item->getId());
+		QPointF scenePos = item->scenePos();
+		writer->writeAttribute("x", QString("%1").arg(scenePos.x()));
+		writer->writeAttribute("y", QString("%1").arg(scenePos.y()));
+	}
+
+	writer->writeEndElement();
 }

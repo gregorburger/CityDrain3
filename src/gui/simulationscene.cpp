@@ -10,13 +10,17 @@
 #include <simulationregistry.h>
 #include <simulation.h>
 #include <node.h>
+#include <nodeconnection.h>
 #include <nodeitem.h>
 #include <portitem.h>
 #include <connectionitem.h>
 #include <mapbasedmodel.h>
+#include <simulationsaver.h>
+#include <guimodelloader.h>
 
 #include <nodeparametersdialog.h>
 #include <boost/lexical_cast.hpp>
+#include <boost/foreach.hpp>
 
 using namespace std;
 
@@ -32,6 +36,40 @@ SimulationScene::SimulationScene(QObject *parent)
 
 SimulationScene::~SimulationScene() {
 	delete(model);
+}
+
+void SimulationScene::save(QString path, QStringList plugins, QStringList python_modules) {
+	SimulationSaver ss(this, path, plugins, python_modules);
+	ss.save();
+}
+
+void SimulationScene::load(QString path) {
+	Q_ASSERT(model->empty());
+	QFile xmlModelFile(path);
+	GuiModelLoader gml(model, node_reg, sim_reg);
+	simulation = gml.load(xmlModelFile);
+	QMap<string, NodeItem*> item_map;
+	BOOST_FOREACH(Node *node, *model->getNodes()) {
+		NodeItem *item = new NodeItem(node);
+		node_items << item;
+		addItem(item);
+		item->setPos(gml.getNodePosition(item->getId()));
+		item_map[node->getId()] = item;
+	}
+
+	BOOST_FOREACH(NodeConnection *con, *model->getConnections()) {
+		NodeItem *source = item_map[con->source->getId()];
+		PortItem *source_port = source->getOutPort(QString::fromStdString(con->source_port));
+		NodeItem *sink = item_map[con->sink->getId()];
+		PortItem *sink_port = sink->getInPort(QString::fromStdString(con->sink_port));
+		ConnectionItem *citem = new ConnectionItem(source_port, sink_port, 0, 0);
+		source_port->setSourceOf(citem);
+		sink_port->setSinkOf(citem);
+		citem->updatePositions();
+		connection_items << citem;
+		addItem(citem);
+	}
+	update();
 }
 
 void SimulationScene::setSimulation(ISimulation *simulation) {
