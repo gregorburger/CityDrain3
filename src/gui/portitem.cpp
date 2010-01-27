@@ -32,6 +32,8 @@ void PortItem::paint(QPainter *painter,
 					 QWidget *widget) {
 	(void) widget;
 	(void) option;
+	NodeItem *parent = (NodeItem*) this->parentItem();
+	painter->setClipPath(mapFromParent(parent->shape().toReversed()));
 	if (hovering) {
 		painter->fillRect(boundingRect(), (isConnected() ? Qt::red : Qt::green));
 	}
