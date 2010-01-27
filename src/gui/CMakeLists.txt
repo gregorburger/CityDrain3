@@ -2,7 +2,6 @@ file(GLOB GUI_CPP *.cpp)
 file(GLOB GUI_UI *.ui)
 
 QT4_WRAP_UI(GUI_CPP ${GUI_UI})
-message(STATUS ${GUI_CPP})
 set(MOC_HEADERS mainwindow.h nodeitem.h simulationscene.h portitem.h simulationsaver.h timestephandler.h)
 QT4_WRAP_CPP(GUI_CPP ${MOC_HEADERS})
 
