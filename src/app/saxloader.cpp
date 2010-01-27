@@ -1,6 +1,8 @@
 #include "saxloader.h"
 
 #include <QLibrary>
+#include <QFileInfo>
+#include <QDir>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/bind.hpp>
@@ -122,9 +124,10 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		consumed = true;
 	}
 	if (lname == "pythonmodule") {
-		std::string module = atts.value("module").toStdString();
-		cout << "Loading Python Module " << module << endl;
-		PythonEnv::getInstance()->registerNodes(pd->node_registry, module);
+		QFileInfo module_file(atts.value("module"));
+		PythonEnv::getInstance()->addPythonPath(module_file.dir().absolutePath().toStdString());
+		string module_name = module_file.baseName().toStdString();
+		PythonEnv::getInstance()->registerNodes(pd->node_registry, module_name);
 		consumed = true;
 	}
 	if (lname == "citydrain") {

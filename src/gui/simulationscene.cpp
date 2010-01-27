@@ -5,6 +5,8 @@
 #include <QTreeWidget>
 #include <QMenu>
 #include <QDebug>
+#include <QFileInfo>
+#include <QDir>
 
 #include <noderegistry.h>
 #include <simulationregistry.h>
@@ -261,7 +263,9 @@ void SimulationScene::addPlugin(QString pname) {
 }
 
 void SimulationScene::addPythonModule(QString pname) {
-	string module_name = pname.toStdString();
+	QFileInfo module_file(pname);
+	PythonEnv::getInstance()->addPythonPath(module_file.dir().absolutePath().toStdString());
+	string module_name = module_file.baseName().toStdString();
 	PythonEnv::getInstance()->registerNodes(node_reg, module_name);
 	python_modules << pname;
 }
