@@ -13,6 +13,7 @@ public:
 				   QGraphicsItem *parent = 0, QGraphicsScene *scene = 0);
 	ConnectionItem(PortItem *source, PortItem *sink,
 				   QGraphicsItem *parent = 0, QGraphicsScene *scene = 0);
+	virtual ~ConnectionItem();
 
 	void setSink(PortItem *sink);
 	void setSecond(QPointF second);

@@ -21,6 +21,13 @@ ConnectionItem::ConnectionItem(PortItem *source,
 	updatePositions();
 }
 
+ConnectionItem::~ConnectionItem() {
+	if (source)
+		source->setSourceOf(0);
+	if (sink)
+		sink->setSinkOf(0);
+}
+
 void ConnectionItem::setSink(PortItem *sink) {
 	this->sink = sink;
 }

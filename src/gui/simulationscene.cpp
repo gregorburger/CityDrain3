@@ -153,7 +153,16 @@ void SimulationScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 
 	if (iAt && event->button() == Qt::RightButton &&
 		connection_items.contains((ConnectionItem*)iAt)) {
-		qDebug() << "connection right selected";
+		QMenu m;
+		QAction *del = m.addAction("&delete");
+		QAction *selected = m.exec(event->screenPos());
+		ConnectionItem *citem = (ConnectionItem *) iAt;
+		if (selected == del) {
+			removeItem(iAt);
+			model->removeConnection(citem->getConnection());
+
+			delete citem;
+		}
 	}
 
 	if (iAt && event->button() == Qt::RightButton &&
