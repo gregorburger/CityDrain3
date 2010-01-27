@@ -2,7 +2,6 @@
 #include <simulationregistry.h>
 #include <simulation.h>
 #include <noderegistry.h>
-#include <module.h>
 #include <mapbasedmodel.h>
 
 #include "ui_mainwindow.h"
@@ -43,9 +42,7 @@ void MainWindow::on_actionAdd_Plugin_activated() {
 	QString plugin = QFileDialog::getOpenFileName(this, "select plugin", ".", "*.so");
 	if (plugin == "")
 		return;
-	plugins << plugin;
-	scene->getNodeRegistry()->addNativePlugin(plugin.toStdString());
-	scene->getSimulationRegistry()->addNativePlugin(plugin.toStdString());
+	scene->addPlugin(plugin);
 	pluginsAdded();
 }
 
@@ -121,10 +118,13 @@ void MainWindow::on_actionNewSimulation_activated() {
 }
 
 void MainWindow::on_actionSave_Simulation_activated() {
-	QString fileName = QFileDialog::getSaveFileName(this, "Enter new Simulation file Name");
-	if (fileName == "")
-		return;
-	scene->save(fileName, plugins, python_modules);
+	if (scene->getModelFileName() == "") {
+		QString fileName = QFileDialog::getSaveFileName(this, "Enter new Simulation file Name");
+		if (fileName == "")
+			return;
+		scene->setModelFileName(fileName);
+	}
+	scene->save();
 }
 
 void MainWindow::on_actionAdd_Python_Module_activated() {
@@ -134,9 +134,7 @@ void MainWindow::on_actionAdd_Python_Module_activated() {
 	if (plugin == "")
 		return;
 	QFileInfo module_file(plugin);
-	PythonEnv::getInstance()->registerNodes(scene->getNodeRegistry(),
-											module_file.baseName().toStdString());
-	python_modules << module_file.baseName();
+	scene->addPythonModule(module_file.baseName());
 	pluginsAdded();
 }
 
@@ -154,8 +152,7 @@ void MainWindow::on_action_open_activated() {
 	QString path = QFileDialog::getOpenFileName(this, "Provide name for model file", ".", "*.xml");
 	if (path == "")
 		return;
-	scene = new SimulationScene();
-	scene->load(path);
+	scene = new SimulationScene(path);
 	ui->graphicsView->setScene(scene);
 	ui->actionSave_Simulation->setEnabled(true);
 	ui->runButton->setEnabled(true);

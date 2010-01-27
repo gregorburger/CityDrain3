@@ -16,8 +16,11 @@ public:
 					  const QString &qname,
 					  const QXmlAttributes &atts);
 	QPointF getNodePosition(QString id) const;
+	QStringList getPlugins() const { return plugins; }
+	QStringList getPythonModules() const { return python_modules; }
 private:
 	QMap<QString, QPointF> node_positions;
+	QStringList plugins, python_modules;
 };
 
 #endif // GUIMODELLOADER_H

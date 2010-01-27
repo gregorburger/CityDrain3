@@ -18,21 +18,25 @@ class SimulationScene : public QGraphicsScene
 {
 Q_OBJECT
 public:
-	SimulationScene(QObject *parent = 0);
+	SimulationScene(QString model_file_name = "", QObject *parent = 0);
 	virtual ~SimulationScene();
 	void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
 	void dropEvent(QGraphicsSceneDragDropEvent *event);
 	void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
 
-	void load(QString path);
-	void save(QString path, QStringList plugins, QStringList python_modules);
+	void save();
 
-	NodeRegistry *getNodeRegistry() const { return node_reg; }
+	const NodeRegistry *getNodeRegistry() const { return node_reg; }
 	SimulationRegistry *getSimulationRegistry() const { return sim_reg; }
 	ISimulation *getSimulation() const { return simulation; }
 	void setSimulation(ISimulation *simulation);
 	MapBasedModel *getModel() const { return model; }
 	QList<NodeItem*> getNodeItems() const { return node_items; }
+
+	QString getModelFileName() const { return model_file_name; }
+	void setModelFileName(QString name) { model_file_name = name; }
+	void addPlugin(QString pname);
+	void addPythonModule(QString pname);
 
 private Q_SLOTS:
 	void mousePressEvent(QGraphicsSceneMouseEvent *event);
@@ -40,6 +44,7 @@ private Q_SLOTS:
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 private:
+	void load();
 	bool isInPort(QGraphicsItem *item) const;
 	bool isOutPort(QGraphicsItem *item) const;
 	NodeRegistry *node_reg;
@@ -52,6 +57,8 @@ private:
 	ConnectionItem *current_connection;
 	QList<NodeItem*> node_items;
 	QList<ConnectionItem *> connection_items;
+	QString model_file_name;
+	QStringList plugins, python_modules;
 };
 
 #endif // SIMULATIONSCENE_H

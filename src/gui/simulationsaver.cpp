@@ -97,6 +97,7 @@ void SimulationSaver::saveFlowDefinition() {
 }
 
 void SimulationSaver::saveModel(IModel *model) {
+	Q_ASSERT(model);
 	writer->writeStartElement("model");
 	writer->writeStartElement("nodelist");
 

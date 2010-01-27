@@ -65,7 +65,7 @@ SimulationScene *NewSimulationDialog::createSimulationScene() {
 	if (ui->defaultNodesCheckBox->isChecked()) {
 		Q_FOREACH(QString path, default_node_paths) {
 			if (QFile::exists(path)) {
-				scene->getNodeRegistry()->addNativePlugin(path.toStdString());
+				scene->addPlugin(path);
 				break;
 			}
 		}

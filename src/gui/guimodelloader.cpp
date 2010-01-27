@@ -14,18 +14,24 @@ bool GuiModelLoader::startElement(const QString &ns,
 								  const QString &lname,
 								  const QString &qname,
 								  const QXmlAttributes &atts) {
-	if (lname != "nodeposition") {
-		return SaxLoader::startElement(ns, lname, qname, atts);;
+	if (lname == "nodeposition") {
+		QString sid = atts.value("id");
+		QString sx = atts.value("x");
+		QString sy = atts.value("y");
+
+		Q_ASSERT(sid != "");
+		Q_ASSERT(sx != "");
+		Q_ASSERT(sy != "");
+
+		node_positions[sid] = QPointF(sx.toDouble(), sy.toDouble());
 	}
 
-	QString sid = atts.value("id");
-	QString sx = atts.value("x");
-	QString sy = atts.value("y");
+	if (lname == "pluginpath") {
+		plugins << atts.value("path");
+	}
+	if (lname == "pythonmodule") {
+		python_modules << atts.value("module");
+	}
 
-	Q_ASSERT(sid != "");
-	Q_ASSERT(sx != "");
-	Q_ASSERT(sy != "");
-
-	node_positions[sid] = QPointF(sx.toDouble(), sy.toDouble());
 	return SaxLoader::startElement(ns, lname, qname, atts);
 }

@@ -26,8 +26,6 @@ protected:
 private:
 	Ui::MainWindow *ui;
 	SimulationScene *scene;
-	QStringList plugins;
-	QStringList python_modules;
 	SimulationThread *current_thread;
 
 public Q_SLOTS:

@@ -11,6 +11,7 @@
 #include <simulation.h>
 #include <node.h>
 #include <nodeconnection.h>
+#include <module.h>
 #include <nodeitem.h>
 #include <portitem.h>
 #include <connectionitem.h>
@@ -24,30 +25,36 @@
 
 using namespace std;
 
-SimulationScene::SimulationScene(QObject *parent)
-	: QGraphicsScene(parent) {
+SimulationScene::SimulationScene(QString model_file_name, QObject *parent)
+	: QGraphicsScene(parent), model_file_name(model_file_name) {
 	model = new MapBasedModel();
 	node_reg = new NodeRegistry();
 	sim_reg = new SimulationRegistry();
 	simulation = 0;
 	current_connection = 0;
 	connection_start = 0;
+	if (model_file_name != "") {
+		load();
+	}
 }
 
 SimulationScene::~SimulationScene() {
 	delete(model);
 }
 
-void SimulationScene::save(QString path, QStringList plugins, QStringList python_modules) {
-	SimulationSaver ss(this, path, plugins, python_modules);
+void SimulationScene::save() {
+	Q_ASSERT(model_file_name != "");
+	SimulationSaver ss(this, model_file_name, plugins, python_modules);
 	ss.save();
 }
 
-void SimulationScene::load(QString path) {
+void SimulationScene::load() {
 	Q_ASSERT(model->empty());
-	QFile xmlModelFile(path);
+	Q_ASSERT(model_file_name != "");
+	QFile xmlModelFile(model_file_name);
 	GuiModelLoader gml(model, node_reg, sim_reg);
 	simulation = gml.load(xmlModelFile);
+	simulation->setModel(model);
 	QMap<string, NodeItem*> item_map;
 	BOOST_FOREACH(Node *node, *model->getNodes()) {
 		NodeItem *item = new NodeItem(node);
@@ -69,6 +76,8 @@ void SimulationScene::load(QString path) {
 		connection_items << citem;
 		addItem(citem);
 	}
+	plugins << gml.getPlugins();
+	python_modules << gml.getPythonModules();
 	update();
 }
 
@@ -243,3 +252,17 @@ bool SimulationScene::isOutPort(QGraphicsItem *item) const {
 	}
 	return false;
 }
+
+void SimulationScene::addPlugin(QString pname) {
+	string plugin_name = pname.toStdString();
+	node_reg->addNativePlugin(plugin_name);
+	sim_reg->addNativePlugin(plugin_name); //TODO do we need this?
+	plugins << pname;
+}
+
+void SimulationScene::addPythonModule(QString pname) {
+	string module_name = pname.toStdString();
+	PythonEnv::getInstance()->registerNodes(node_reg, module_name);
+	python_modules << pname;
+}
+
