@@ -27,6 +27,7 @@ PortItem *NodeItem::getInPort(QString id) {
 		if (p->getPortName() == id)
 			return p;
 	}
+	return 0;
 }
 
 PortItem *NodeItem::getOutPort(QString id) {
@@ -34,6 +35,7 @@ PortItem *NodeItem::getOutPort(QString id) {
 		if (p->getPortName() == id)
 			return p;
 	}
+	return 0;
 }
 
 void NodeItem::nodeChanged() {

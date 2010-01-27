@@ -94,6 +94,15 @@ void PythonEnv::freeInstance() {
 	Py_Finalize();
 }
 
+void PythonEnv::addPythonPath(std::string path) {
+	format fmt("import sys\n"
+			   "sys.path.append('%1%')\n");
+	fmt % path;
+	object result = exec(fmt.str().c_str(),
+						 priv->main_namespace,
+						 priv->main_namespace);
+}
+
 void PythonEnv::registerNodes(NodeRegistry *registry, const string &module) {
 	format fmt("import sys\n"
 	"import pycd3\n"
@@ -116,7 +125,7 @@ void PythonEnv::registerNodes(NodeRegistry *registry, const string &module) {
 			registry->addNodeFactory(new PythonNodeFactory(clss[i]));
 			numn++;
 		}
-		cout << "found " << numn << " Nodes in module " << module << endl;
+		Logger(Debug) << "found" << numn << "Nodes in module" << module;
 	} catch(error_already_set const &) {
 		cerr << __FILE__ << ":" << __LINE__ << endl;
 		PyErr_Print();

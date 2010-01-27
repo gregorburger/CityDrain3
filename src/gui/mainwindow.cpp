@@ -17,7 +17,7 @@
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
-	ui(new Ui::MainWindow), scene(0) {
+	ui(new Ui::MainWindow), scene(0), model_unsaved(false) {
 	ui->setupUi(this);
 	ui->graphicsView->setRenderHints(QPainter::Antialiasing);
 }
@@ -114,6 +114,8 @@ void MainWindow::on_actionNewSimulation_activated() {
 		ui->actionSave_Simulation->setEnabled(true);
 		ui->runButton->setEnabled(true);
 		pluginsAdded();
+		ui->actionAdd_Plugin->setEnabled(true);
+		ui->actionAdd_Python_Module->setEnabled(true);
 	}
 }
 
@@ -125,6 +127,7 @@ void MainWindow::on_actionSave_Simulation_activated() {
 		scene->setModelFileName(fileName);
 	}
 	scene->save();
+	model_unsaved = false;
 }
 
 void MainWindow::on_actionAdd_Python_Module_activated() {
@@ -133,8 +136,7 @@ void MainWindow::on_actionAdd_Python_Module_activated() {
 												  "./data/scripts", "*.py");
 	if (plugin == "")
 		return;
-	QFileInfo module_file(plugin);
-	scene->addPythonModule(module_file.baseName());
+	scene->addPythonModule(plugin);
 	pluginsAdded();
 }
 
@@ -156,5 +158,7 @@ void MainWindow::on_action_open_activated() {
 	ui->graphicsView->setScene(scene);
 	ui->actionSave_Simulation->setEnabled(true);
 	ui->runButton->setEnabled(true);
+	ui->actionAdd_Plugin->setEnabled(true);
+	ui->actionAdd_Python_Module->setEnabled(true);
 	pluginsAdded();
 }

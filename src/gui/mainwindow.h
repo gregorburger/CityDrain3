@@ -27,6 +27,7 @@ private:
 	Ui::MainWindow *ui;
 	SimulationScene *scene;
 	SimulationThread *current_thread;
+	bool model_unsaved;
 
 public Q_SLOTS:
 	void on_actionAdd_Plugin_activated();

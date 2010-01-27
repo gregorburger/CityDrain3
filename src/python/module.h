@@ -20,6 +20,7 @@ public:
 	virtual ~PythonEnv();
 	static PythonEnv *getInstance();
 	static void freeInstance();
+	void addPythonPath(std::string path);
 	void registerNodes(NodeRegistry *registry,
 					   const string &module);
 private:
