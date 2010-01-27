@@ -193,7 +193,11 @@ void SimulationScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
 void SimulationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 	PortItem *connection_end = (PortItem *) itemAt(event->scenePos());
 
-	if (connection_end && isInPort(connection_end) && !connection_end->isConnected()) {
+	if (connection_end &&
+		connection_start &&
+		isInPort(connection_end) &&
+		!connection_end->isConnected() &&
+		connection_end != connection_start) {
 
 		connection_start->setSourceOf(current_connection);
 		connection_end->setSinkOf(current_connection);
