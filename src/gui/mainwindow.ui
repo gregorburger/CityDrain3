@@ -72,6 +72,11 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionNewSimulation"/>
+   <addaction name="actionSave_Simulation"/>
+   <addaction name="action_open"/>
+   <addaction name="action_exit"/>
+   <addaction name="separator"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="dockWidget">
@@ -108,43 +113,93 @@
    <property name="enabled">
     <bool>false</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../../data/resources/cd3-gui.qrc">
+     <normaloff>:/icons/list-add.png</normaloff>:/icons/list-add.png</iconset>
+   </property>
    <property name="text">
     <string>add Plugin</string>
    </property>
+   <property name="toolTip">
+    <string>add a native plugin to the project</string>
+   </property>
   </action>
   <action name="actionNewSimulation">
+   <property name="icon">
+    <iconset resource="../../data/resources/cd3-gui.qrc">
+     <normaloff>:/icons/document-new.png</normaloff>:/icons/document-new.png</iconset>
+   </property>
    <property name="text">
     <string>new</string>
+   </property>
+   <property name="toolTip">
+    <string>Create a new Project</string>
    </property>
   </action>
   <action name="actionSave_Simulation">
    <property name="enabled">
     <bool>false</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../../data/resources/cd3-gui.qrc">
+     <normaloff>:/icons/document-save.png</normaloff>:/icons/document-save.png</iconset>
+   </property>
    <property name="text">
     <string>save</string>
    </property>
+   <property name="toolTip">
+    <string>Save the current Project</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
   </action>
   <action name="action_open">
+   <property name="icon">
+    <iconset resource="../../data/resources/cd3-gui.qrc">
+     <normaloff>:/icons/document-open.png</normaloff>:/icons/document-open.png</iconset>
+   </property>
    <property name="text">
     <string>open</string>
+   </property>
+   <property name="toolTip">
+    <string>Open a Project</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
    </property>
   </action>
   <action name="actionAdd_Python_Module">
    <property name="enabled">
     <bool>false</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../../data/resources/cd3-gui.qrc">
+     <normaloff>:/icons/list-add.png</normaloff>:/icons/list-add.png</iconset>
+   </property>
    <property name="text">
     <string>add Python Module</string>
    </property>
+   <property name="toolTip">
+    <string>add a Python Module to the Project</string>
+   </property>
   </action>
   <action name="action_exit">
+   <property name="icon">
+    <iconset resource="../../data/resources/cd3-gui.qrc">
+     <normaloff>:/icons/application-exit.png</normaloff>:/icons/application-exit.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;exit</string>
+   </property>
+   <property name="toolTip">
+    <string>exit the application</string>
    </property>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="../../data/resources/cd3-gui.qrc"/>
+ </resources>
  <connections/>
 </ui>

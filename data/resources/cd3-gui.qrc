@@ -1,0 +1,11 @@
+<RCC>
+  <qresource prefix="/icons">
+    <file>list-remove.png</file>
+    <file>list-add.png</file>
+    <file>application-exit.png</file>
+    <file>document-save-as.png</file>
+    <file>document-open.png</file>
+    <file>document-new.png</file>
+    <file>document-save.png</file>
+  </qresource>
+</RCC>
