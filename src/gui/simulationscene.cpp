@@ -41,7 +41,11 @@ SimulationScene::SimulationScene(QString model_file_name, QObject *parent)
 }
 
 SimulationScene::~SimulationScene() {
-	delete(model);
+	delete sim_reg;
+	delete node_reg;
+	delete model;
+	if (simulation)
+		delete simulation;
 }
 
 void SimulationScene::save() {

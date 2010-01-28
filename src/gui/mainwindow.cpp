@@ -23,7 +23,8 @@ MainWindow::MainWindow(QWidget *parent) :
 }
 
 MainWindow::~MainWindow() {
-	delete scene;
+	if (scene)
+		delete scene;
 	delete ui;
 }
 
