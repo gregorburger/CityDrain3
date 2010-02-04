@@ -13,9 +13,10 @@ CD3_DECLARE_NODE_NAME(FileOut)
 FileOut::FileOut()
 	: Node(), stream(&file)
 {
-	out_file_name = "/tmp/out.txt";
+	out_file_name = "out.txt";
 	addParameter(ADD_PARAMETERS(out_file_name));
 	addInPort(ADD_PARAMETERS(in));
+	addOutPort("out", &in);
 }
 
 FileOut::~FileOut() {
