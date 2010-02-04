@@ -5,6 +5,7 @@
 #include <mapbasedmodel.h>
 
 #include "ui_mainwindow.h"
+#include "ui_newsimulationdialog.h"
 #include "simulationscene.h"
 #include "newsimulationdialog.h"
 #include "simulationthread.h"
@@ -13,6 +14,9 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QKeyEvent>
+#include <QDateTimeEdit>
+#include <QLabel>
+#include <QSpinBox>
 #include <boost/foreach.hpp>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -20,6 +24,36 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui(new Ui::MainWindow), scene(0), model_unsaved(false) {
 	ui->setupUi(this);
 	ui->graphicsView->setRenderHints(QPainter::Antialiasing);
+
+	QLabel *startLabel = new QLabel("start:", ui->mainToolBar);
+	ui->mainToolBar->addWidget(startLabel);
+
+	start = new QDateTimeEdit(ui->mainToolBar);
+	start->setDisplayFormat("d.M.yy h:mm:ss");
+	start->setCalendarPopup(true);
+	ui->mainToolBar->addWidget(start);
+	this->connect(start, SIGNAL(dateTimeChanged(QDateTime)), SLOT(on_start_stop_dateTimeChanged(QDateTime)));
+
+	QLabel *stopLabel = new QLabel("stop:", ui->mainToolBar);
+	ui->mainToolBar->addWidget(stopLabel);
+
+
+	stop = new QDateTimeEdit(ui->mainToolBar);
+	stop->setDisplayFormat("d.M.yy h:mm:ss");
+	stop->setCalendarPopup(true);
+	ui->mainToolBar->addWidget(stop);
+	this->connect(stop, SIGNAL(dateTimeChanged(QDateTime)), SLOT(on_start_stop_dateTimeChanged(QDateTime)));
+
+	QLabel *dtLabel = new QLabel("dt:", ui->mainToolBar);
+	ui->mainToolBar->addWidget(dtLabel);
+
+	dt = new QSpinBox(ui->mainToolBar);
+	dt->setRange(0, INT_MAX-1);
+	dt->setSingleStep(60);
+	ui->mainToolBar->addWidget(dt);
+	this->connect(dt, SIGNAL(valueChanged(int)), SLOT(on_dt_valueChanged(int)));
+	//QMetaObject::connectSlotsByName(this);
+	sceneChanged();
 }
 
 MainWindow::~MainWindow() {
@@ -40,7 +74,7 @@ void MainWindow::changeEvent(QEvent *e) {
 }
 
 void MainWindow::on_actionAdd_Plugin_activated() {
-	QString plugin = QFileDialog::getOpenFileName(this, "select plugin", ".", "*.so");
+	QString plugin = QFileDialog::getOpenFileName(this, "select plugin", ".", "*.so, *.dll");
 	if (plugin == "")
 		return;
 	scene->addPlugin(plugin);
@@ -84,8 +118,11 @@ void MainWindow::pluginsAdded() {
 	QTreeWidgetItem *nodes = new QTreeWidgetItem(QStringList("nodes"));
 
 	BOOST_FOREACH(std::string node_name, scene->getNodeRegistry()->getRegisteredNames()) {
+		QString qnode_name = QString::fromStdString(node_name);
+		if (qnode_name.startsWith("CycleNode"))
+			continue;
 		QTreeWidgetItem *item = new QTreeWidgetItem(nodes);
-		item->setText(0, QString::fromStdString(node_name));
+		item->setText(0, qnode_name);
 	}
 	ui->treeWidget->insertTopLevelItem(0, nodes);
 
@@ -111,6 +148,10 @@ void MainWindow::on_actionNewSimulation_activated() {
 	NewSimulationDialog ns(this);
 	if (ns.exec()) {
 		scene = ns.createSimulationScene();
+		sceneChanged();
+		start->setDateTime(ns.ui->start->dateTime());
+		stop->setDateTime(ns.ui->stop->dateTime());
+		dt->setValue(ns.ui->dt->value());
 		ui->graphicsView->setScene(scene);
 		ui->actionSave_Simulation->setEnabled(true);
 		ui->runButton->setEnabled(true);
@@ -120,9 +161,22 @@ void MainWindow::on_actionNewSimulation_activated() {
 	}
 }
 
+void MainWindow::sceneChanged() {
+	if (!scene) {
+		start->setEnabled(false);
+		stop->setEnabled(false);
+		dt->setEnabled(false);
+		return;
+	}
+
+	start->setEnabled(true);
+	stop->setEnabled(true);
+	dt->setEnabled(true);
+}
+
 void MainWindow::on_actionSave_Simulation_activated() {
 	if (scene->getModelFileName() == "") {
-		QString fileName = QFileDialog::getSaveFileName(this, "Enter new Simulation file Name");
+		QString fileName = QFileDialog::getSaveFileName(this, "Save Model File", ".", "XML Files (*.xml)");
 		if (fileName == "")
 			return;
 		scene->setModelFileName(fileName);
@@ -152,9 +206,13 @@ void MainWindow::on_action_open_activated() {
 		return;
 	}
 
-	QString path = QFileDialog::getOpenFileName(this, "Provide name for model file", ".", "*.xml");
+	QString path = QFileDialog::getOpenFileName(this, "Open Model File", ".", "XML Files (*.xml");
 	if (path == "")
 		return;
+	if (!path.endsWith(".xml", Qt::CaseInsensitive)) {
+		qDebug() << "adding xml";
+		path = path + ".xml";
+	}
 	scene = new SimulationScene(path);
 	ui->graphicsView->setScene(scene);
 	ui->actionSave_Simulation->setEnabled(true);
@@ -162,4 +220,22 @@ void MainWindow::on_action_open_activated() {
 	ui->actionAdd_Plugin->setEnabled(true);
 	ui->actionAdd_Python_Module->setEnabled(true);
 	pluginsAdded();
+}
+
+void MainWindow::on_start_stop_dateTimeChanged(const QDateTime &date) {
+	start->setMaximumDateTime(stop->dateTime().addSecs(dt->value()));
+	stop->setMinimumDateTime(start->dateTime().addSecs(-dt->value()));
+	setNewSimulationParameters();
+}
+
+void MainWindow::on_dt_valueChanged(int value) {
+	setNewSimulationParameters();
+}
+
+void MainWindow::setNewSimulationParameters() {
+	SimulationParameters p = scene->getSimulation()->getSimulationParameters();
+	p.start = qttopt(start->dateTime());
+	p.stop = qttopt(stop->dateTime());
+	p.dt = dt->value();
+	scene->getSimulation()->setSimulationParameters(p);
 }

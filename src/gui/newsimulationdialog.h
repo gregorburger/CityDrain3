@@ -2,6 +2,7 @@
 #define NEWSIMULATION_H
 
 #include <QDialog>
+#include <boost/date_time/posix_time/ptime.hpp>
 
 namespace Ui {
 	class NewSimulationDialog;
@@ -28,5 +29,7 @@ private:
 	SimulationScene *scene;
 	QStringList default_node_paths;
 };
+
+boost::posix_time::ptime qttopt(const QDateTime &dt);
 
 #endif // NEWSIMULATION_H

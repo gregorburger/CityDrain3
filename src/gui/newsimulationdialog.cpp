@@ -37,7 +37,7 @@ NewSimulationDialog::NewSimulationDialog(QWidget *parent,
 	ui->simulationComboBox->addItems(list);
 }
 
-ptime qttopt(QDateTime dt) {
+ptime qttopt(const QDateTime &dt) {
 	date d(dt.date().year(), dt.date().month(), dt.date().day());
 	ptime t(d, time_duration(dt.time().hour(), dt.time().minute(), dt.time().second()));
 	return t;
