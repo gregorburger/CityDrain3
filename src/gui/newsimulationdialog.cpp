@@ -22,7 +22,6 @@ NewSimulationDialog::NewSimulationDialog(QWidget *parent,
 	ui->setupUi(this);
 	QStringList list;
 
-
 	default_node_paths << "./libnodes.so" << "../../libnodes.so" << "./build/libnodes.so";
 	default_node_paths << "./nodes.dll"  << "../../nodes.dll" << "./build/nodes.dll";
 	Q_FOREACH(QString path, default_node_paths) {
@@ -72,4 +71,8 @@ SimulationScene *NewSimulationDialog::createSimulationScene() {
 	}
 	defineFlow();
 	return scene;
+}
+
+void NewSimulationDialog::on_start_dateTimeChanged(const QDateTime &date) {
+	ui->stop->setMinimumDateTime(date.addSecs(ui->dt->value()));
 }

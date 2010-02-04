@@ -32,7 +32,17 @@
     </widget>
    </item>
    <item row="1" column="1" colspan="3">
-    <widget class="QDateTimeEdit" name="start"/>
+    <widget class="QDateTimeEdit" name="start">
+     <property name="currentSection">
+      <enum>QDateTimeEdit::DaySection</enum>
+     </property>
+     <property name="displayFormat">
+      <string>d.M.yy h:mm:ss</string>
+     </property>
+     <property name="calendarPopup">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
    <item row="2" column="0">
     <widget class="QLabel" name="label_3">
@@ -53,6 +63,15 @@
        <day>1</day>
       </datetime>
      </property>
+     <property name="currentSection">
+      <enum>QDateTimeEdit::DaySection</enum>
+     </property>
+     <property name="displayFormat">
+      <string>d.M.yy h:mm:ss</string>
+     </property>
+     <property name="calendarPopup">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item row="3" column="0" colspan="3">
@@ -69,6 +88,9 @@
      </property>
      <property name="maximum">
       <number>1000000000</number>
+     </property>
+     <property name="singleStep">
+      <number>60</number>
      </property>
      <property name="value">
       <number>300</number>
