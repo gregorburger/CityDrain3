@@ -38,9 +38,11 @@ void ConnectionItem::setSecond(QPointF second) {
 }
 
 void ConnectionItem::updatePositions() {
-	first = source->scenePos() + source->boundingRect().center();
+	first = source->scenePos();
+	first.setX(first.x() + source->boundingRect().right());
 	if (sink) {
-		second = sink->scenePos() + sink->boundingRect().center();
+		second = sink->scenePos();
+		second.setX(second.x() + sink->boundingRect().left());
 	}
 	qreal x = (first - second).x();
 	QPointF c1(first.x() - x / 2.0, first.y());
