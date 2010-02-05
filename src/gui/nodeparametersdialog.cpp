@@ -48,6 +48,7 @@ NodeParametersDialog::NodeParametersDialog(Node *node, QWidget *parent)
 QWidget *NodeParametersDialog::widgetForParameter(NodeParameter *p) {
 	if (p->type == cd3::TypeInfo(typeid(int))) {
 		QSpinBox *widget = new QSpinBox();
+		widget->setRange(INT_MIN, INT_MAX);
 		int *value = (int *) p->value;
 		widget->setValue(*value);
 		return widget;
@@ -55,6 +56,7 @@ QWidget *NodeParametersDialog::widgetForParameter(NodeParameter *p) {
 
 	if (p->type == cd3::TypeInfo(typeid(double))) {
 		QDoubleSpinBox *widget = new QDoubleSpinBox(this);
+		widget->setRange(-INFINITY, INFINITY);
 		double *value = (double *) p->value;
 		widget->setValue(*value);
 		return widget;
