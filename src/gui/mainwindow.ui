@@ -14,7 +14,7 @@
    <string>CityDrain3</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../data/resources/cd3-gui.qrc">
+   <iconset>
     <normaloff>:/icons/logo2.svg</normaloff>:/icons/logo2.svg</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -38,6 +38,10 @@
         </property>
         <property name="text">
          <string>&amp;run Simulation</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>:/icons/media-playback-start.png</normaloff>:/icons/media-playback-start.png</iconset>
         </property>
        </widget>
       </item>
@@ -118,7 +122,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="../../data/resources/cd3-gui.qrc">
+    <iconset>
      <normaloff>:/icons/list-add.png</normaloff>:/icons/list-add.png</iconset>
    </property>
    <property name="text">
@@ -130,7 +134,7 @@
   </action>
   <action name="actionNewSimulation">
    <property name="icon">
-    <iconset resource="../../data/resources/cd3-gui.qrc">
+    <iconset>
      <normaloff>:/icons/document-new.png</normaloff>:/icons/document-new.png</iconset>
    </property>
    <property name="text">
@@ -145,7 +149,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="../../data/resources/cd3-gui.qrc">
+    <iconset>
      <normaloff>:/icons/document-save.png</normaloff>:/icons/document-save.png</iconset>
    </property>
    <property name="text">
@@ -160,7 +164,7 @@
   </action>
   <action name="action_open">
    <property name="icon">
-    <iconset resource="../../data/resources/cd3-gui.qrc">
+    <iconset>
      <normaloff>:/icons/document-open.png</normaloff>:/icons/document-open.png</iconset>
    </property>
    <property name="text">
@@ -178,7 +182,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="../../data/resources/cd3-gui.qrc">
+    <iconset>
      <normaloff>:/icons/list-add.png</normaloff>:/icons/list-add.png</iconset>
    </property>
    <property name="text">
@@ -190,7 +194,7 @@
   </action>
   <action name="action_exit">
    <property name="icon">
-    <iconset resource="../../data/resources/cd3-gui.qrc">
+    <iconset>
      <normaloff>:/icons/application-exit.png</normaloff>:/icons/application-exit.png</iconset>
    </property>
    <property name="text">
@@ -202,8 +206,6 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="../../data/resources/cd3-gui.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
