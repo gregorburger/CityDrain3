@@ -1,5 +1,6 @@
 #include "nodeparametersdialog.h"
 #include <ui_nodeparametersdialog.h>
+#include <stringparameteredit.h>
 #include <node.h>
 
 #include <boost/foreach.hpp>
@@ -64,12 +65,9 @@ QWidget *NodeParametersDialog::widgetForParameter(NodeParameter *p) {
 	}
 
 	if (p->type == cd3::TypeInfo(typeid(string))) {
-		QLineEdit *widget = new QLineEdit(this);
+		StringParameterEdit *widget = new StringParameterEdit(this);
 		string *value = (string *) p->value;
-		QDirModel *model = new QDirModel(this);
-		QCompleter *completer = new QCompleter(model, this);
-		widget->setText(QString::fromStdString(*value));
-		widget->setCompleter(completer);
+		widget->setValue(QString::fromStdString(*value));
 		return widget;
 	}
 	qDebug() << "UNKNOWN  type of parameter";
@@ -91,8 +89,8 @@ void NodeParametersDialog::updateNodeParameters() {
 			continue;
 		}
 		if (param->type == cd3::TypeInfo(typeid(string))) {
-			QLineEdit *widget = (QLineEdit *) widgets[p];
-			node->setParameter(p, widget->text().toStdString());
+			StringParameterEdit *widget = (StringParameterEdit *) widgets[p];
+			node->setParameter(p, widget->value().toStdString());
 			continue;
 		}
 		qWarning() << "cannot update node parameter " << QString::fromStdString(p);
