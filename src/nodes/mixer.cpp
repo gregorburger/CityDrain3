@@ -34,7 +34,7 @@ bool Mixer::init(ptime start, ptime end, int dt) {
 	for (int i = 0; i < num_inputs; i++) {
 		Flow *tmp = new Flow();
 		std::ostringstream name;
-		name << "in [" << i << "]";
+		name << "in_" << i;
 		addInPort(name.str(), tmp);
 		inputs.push_back(tmp);
 		input_names.push_back(name.str());
