@@ -17,6 +17,7 @@ private:
 	int num_inputs;
 	Flow out;
 	std::vector<Flow *> inputs;
+	std::vector<std::string> input_names;
 };
 
 #endif // MIXER_H

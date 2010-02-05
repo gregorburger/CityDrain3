@@ -15,13 +15,16 @@ Mixer::Mixer() {
 
 Mixer::~Mixer() {
 }
-typedef pair<string, Flow*> pairtype;
-void Mixer::deinit() {
-	inputs.clear();
 
-	BOOST_FOREACH(pairtype p, in_ports) {
-		removeInPort(p.first);
+void Mixer::deinit() {
+	BOOST_FOREACH(std::string name, input_names) {
+		removeInPort(name);
 	}
+	BOOST_FOREACH(Flow *f, inputs) {
+		delete f;
+	}
+	inputs.clear();
+	input_names.clear();
 }
 
 bool Mixer::init(ptime start, ptime end, int dt) {
@@ -31,9 +34,10 @@ bool Mixer::init(ptime start, ptime end, int dt) {
 	for (int i = 0; i < num_inputs; i++) {
 		Flow *tmp = new Flow();
 		std::ostringstream name;
-		name << "inputs[" << i << "]";
+		name << "in [" << i << "]";
 		addInPort(name.str(), tmp);
 		inputs.push_back(tmp);
+		input_names.push_back(name.str());
 	}
 	return true;
 }
