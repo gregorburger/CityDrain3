@@ -211,7 +211,7 @@ void MainWindow::on_action_open_activated() {
 		return;
 	}
 
-	QString path = QFileDialog::getOpenFileName(this, "Open Model File", ".", "XML Files (*.xml");
+	QString path = QFileDialog::getOpenFileName(this, "Open Model File", ".", "XML Files (*.xml)");
 	if (path == "")
 		return;
 	if (!path.endsWith(".xml", Qt::CaseInsensitive)) {
