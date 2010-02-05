@@ -13,5 +13,6 @@
         <file>media-playback-start.png</file>
         <file>zoom-out.png</file>
         <file>logo.png</file>
+        <file>logo2.svg</file>
     </qresource>
 </RCC>

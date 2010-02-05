@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../../data/resources/cd3-gui.qrc">
-    <normaloff>:/icons/logo.png</normaloff>:/icons/logo.png</iconset>
+    <normaloff>:/icons/logo2.svg</normaloff>:/icons/logo2.svg</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
