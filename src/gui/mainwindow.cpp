@@ -32,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	start->setDisplayFormat("d.M.yy h:mm:ss");
 	start->setCalendarPopup(true);
 	ui->mainToolBar->addWidget(start);
-	this->connect(start, SIGNAL(dateTimeChanged(QDateTime)), SLOT(on_start_stop_dateTimeChanged(QDateTime)));
+	this->connect(start, SIGNAL(dateTimeChanged(QDateTime)), SLOT(start_stop_dateTimeChanged(QDateTime)));
 
 	QLabel *stopLabel = new QLabel("stop:", ui->mainToolBar);
 	ui->mainToolBar->addWidget(stopLabel);
@@ -42,7 +42,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	stop->setDisplayFormat("d.M.yy h:mm:ss");
 	stop->setCalendarPopup(true);
 	ui->mainToolBar->addWidget(stop);
-	this->connect(stop, SIGNAL(dateTimeChanged(QDateTime)), SLOT(on_start_stop_dateTimeChanged(QDateTime)));
+	this->connect(stop, SIGNAL(dateTimeChanged(QDateTime)), SLOT(start_stop_dateTimeChanged(QDateTime)));
 
 	QLabel *dtLabel = new QLabel("dt:", ui->mainToolBar);
 	ui->mainToolBar->addWidget(dtLabel);
@@ -51,8 +51,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	dt->setRange(0, INT_MAX-1);
 	dt->setSingleStep(60);
 	ui->mainToolBar->addWidget(dt);
-	this->connect(dt, SIGNAL(valueChanged(int)), SLOT(on_dt_valueChanged(int)));
-	//QMetaObject::connectSlotsByName(this);
+	this->connect(dt, SIGNAL(valueChanged(int)), SLOT(dt_valueChanged(int)));
 	sceneChanged();
 }
 
@@ -145,12 +144,19 @@ void MainWindow::simulationFinished() {
 }
 
 void MainWindow::on_actionNewSimulation_activated() {
+	if (scene) {
+		QMessageBox::warning(this, "New Simulation", "A simulation is already defined");
+		return;
+	}
 	NewSimulationDialog ns(this);
 	if (ns.exec()) {
 		scene = ns.createSimulationScene();
-		sceneChanged();
+
 		start->setDateTime(ns.ui->start->dateTime());
 		stop->setDateTime(ns.ui->stop->dateTime());
+
+		sceneChanged();
+
 		dt->setValue(ns.ui->dt->value());
 		ui->graphicsView->setScene(scene);
 		ui->actionSave_Simulation->setEnabled(true);
@@ -196,8 +202,7 @@ void MainWindow::on_actionAdd_Python_Module_activated() {
 }
 
 void MainWindow::on_action_exit_activated() {
-	//TODO ask nicely
-	QApplication::quit();
+	this->close();
 }
 
 void MainWindow::on_action_open_activated() {
@@ -222,13 +227,17 @@ void MainWindow::on_action_open_activated() {
 	pluginsAdded();
 }
 
-void MainWindow::on_start_stop_dateTimeChanged(const QDateTime &date) {
-	start->setMaximumDateTime(stop->dateTime().addSecs(dt->value()));
-	stop->setMinimumDateTime(start->dateTime().addSecs(-dt->value()));
+void MainWindow::start_stop_dateTimeChanged(const QDateTime &date) {
+	if (start->dateTime() == date) {
+		stop->setMinimumDateTime(start->dateTime().addSecs(+dt->value()));
+	}
+	if (stop->dateTime() == date) {
+		start->setMaximumDateTime(stop->dateTime().addSecs(-dt->value()));
+	}
 	setNewSimulationParameters();
 }
 
-void MainWindow::on_dt_valueChanged(int value) {
+void MainWindow::dt_valueChanged(int value) {
 	setNewSimulationParameters();
 }
 
@@ -238,4 +247,14 @@ void MainWindow::setNewSimulationParameters() {
 	p.stop = qttopt(stop->dateTime());
 	p.dt = dt->value();
 	scene->getSimulation()->setSimulationParameters(p);
+}
+
+void MainWindow::closeEvent(QCloseEvent *event) {
+	if (QMessageBox::question(this, "Quit",
+							  "Do you really wan't to Quit?",
+							  QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes) {
+		event->accept();
+	} else {
+		event->ignore();
+	}
 }

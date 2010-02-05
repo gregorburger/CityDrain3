@@ -25,6 +25,7 @@ protected:
 	void changeEvent(QEvent *e);
 	void keyPressEvent(QKeyEvent *e);
 	void wheelEvent(QWheelEvent *);
+	void closeEvent(QCloseEvent *);
 
 private:
 	Ui::MainWindow *ui;
@@ -43,8 +44,8 @@ public Q_SLOTS:
 	void on_action_exit_activated();
 	void on_action_open_activated();
 
-	void on_start_stop_dateTimeChanged(const QDateTime &date);
-	void on_dt_valueChanged(int value);
+	void start_stop_dateTimeChanged(const QDateTime &date);
+	void dt_valueChanged(int value);
 
 	void simulationFinished();
 	void zoomIn(int times = 1);
