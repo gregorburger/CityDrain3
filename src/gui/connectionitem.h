@@ -23,8 +23,9 @@ public:
 	void setConnection(NodeConnection *con) { this->connection = con; }
 	NodeConnection *getConnection() const { return connection; }
 	QPainterPath shape() const;
-private:
 	PortItem *source, *sink;
+
+private:
 	QPointF first, second;
 	NodeConnection *connection;
 };

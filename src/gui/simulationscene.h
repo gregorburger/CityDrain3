@@ -38,6 +38,9 @@ public:
 	void addPlugin(QString pname);
 	void addPythonModule(QString pname);
 
+	void remove(NodeItem *item);
+	void remove(ConnectionItem *item);
+
 private Q_SLOTS:
 	void mousePressEvent(QGraphicsSceneMouseEvent *event);
 	void mouseMoveEvent(QGraphicsSceneMouseEvent *event);

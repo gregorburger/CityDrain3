@@ -171,12 +171,8 @@ void SimulationScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 		QMenu m;
 		QAction *del = m.addAction("&delete");
 		QAction *selected = m.exec(event->screenPos());
-		ConnectionItem *citem = (ConnectionItem *) iAt;
 		if (selected == del) {
-			removeItem(iAt);
-			model->removeConnection(citem->getConnection());
-
-			delete citem;
+			remove((ConnectionItem *) iAt);
 		}
 	}
 
@@ -185,11 +181,8 @@ void SimulationScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 		QMenu m;
 		QAction *del = m.addAction("&delete");
 		QAction *selected = m.exec(event->screenPos());
-		NodeItem *nitem = (NodeItem *) iAt;
 		if (selected == del) {
-			removeItem(iAt);
-			model->removeNode(nitem->getNode());
-			delete nitem;
+			remove((NodeItem *) iAt);
 		}
 	}
 
@@ -272,5 +265,30 @@ void SimulationScene::addPythonModule(QString pname) {
 	string module_name = module_file.baseName().toStdString();
 	PythonEnv::getInstance()->registerNodes(node_reg, module_name);
 	python_modules << pname;
+}
+
+void SimulationScene::remove(ConnectionItem *item) {
+	connection_items.removeAll(item);
+	removeItem(item);
+	model->removeConnection(item->getConnection());
+	delete item;
+}
+
+void SimulationScene::remove(NodeItem *item) {
+	node_items.removeAll(item);
+	removeItem(item);
+	model->removeNode(item->getNode());
+	Q_FOREACH(ConnectionItem *citem, connection_items) {
+		if (citem->source && citem->source->getNodeItem() == item) {
+			qDebug() << "removed a connection";
+			remove(citem);
+		}
+		if (citem->sink && citem->sink->getNodeItem() == item) {
+			qDebug() << "removed a connection";
+			remove(citem);
+		}
+	}
+
+	delete item;
 }
 
