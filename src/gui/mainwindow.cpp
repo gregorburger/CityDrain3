@@ -17,7 +17,10 @@
 #include <QDateTimeEdit>
 #include <QLabel>
 #include <QSpinBox>
+#include <QDate>
+#include <QDateTime>
 #include <boost/foreach.hpp>
+#include <boost/date_time.hpp>
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -151,13 +154,7 @@ void MainWindow::on_actionNewSimulation_activated() {
 	NewSimulationDialog ns(this);
 	if (ns.exec()) {
 		scene = ns.createSimulationScene();
-
-		start->setDateTime(ns.ui->start->dateTime());
-		stop->setDateTime(ns.ui->stop->dateTime());
-
 		sceneChanged();
-
-		dt->setValue(ns.ui->dt->value());
 		ui->graphicsView->setScene(scene);
 		ui->actionSave_Simulation->setEnabled(true);
 		ui->runButton->setEnabled(true);
@@ -165,6 +162,14 @@ void MainWindow::on_actionNewSimulation_activated() {
 		ui->actionAdd_Plugin->setEnabled(true);
 		ui->actionAdd_Python_Module->setEnabled(true);
 	}
+}
+
+QDateTime pttoqt(const ptime &dt) {
+	time_duration td = dt.time_of_day();
+	QTime t(td.hours(), td.minutes(), td.seconds());
+	gregorian::date dtd = dt.date();
+	QDate d(dtd.year(), dtd.month(), dtd.day());
+	return QDateTime(d, t);
 }
 
 void MainWindow::sceneChanged() {
@@ -178,6 +183,10 @@ void MainWindow::sceneChanged() {
 	start->setEnabled(true);
 	stop->setEnabled(true);
 	dt->setEnabled(true);
+	SimulationParameters sp = scene->getSimulation()->getSimulationParameters();
+	start->setDateTime(pttoqt(sp.start));
+	stop->setDateTime(pttoqt(sp.stop));
+	dt->setValue(sp.dt);
 }
 
 void MainWindow::on_actionSave_Simulation_activated() {
@@ -219,6 +228,7 @@ void MainWindow::on_action_open_activated() {
 		path = path + ".xml";
 	}
 	scene = new SimulationScene(path);
+	sceneChanged();
 	ui->graphicsView->setScene(scene);
 	ui->actionSave_Simulation->setEnabled(true);
 	ui->runButton->setEnabled(true);
