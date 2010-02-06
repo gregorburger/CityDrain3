@@ -12,14 +12,15 @@ ConstSource::ConstSource() {
 ConstSource::~ConstSource() {
 }
 
-int ConstSource::f(int time, int dt) {
+int ConstSource::f(ptime time, int dt) {
 	(void) time;
 	return dt;
 }
 
-void ConstSource::init(int start, int end, int dt) {
+bool ConstSource::init(ptime start, ptime end, int dt) {
 	(void) start;
 	(void) end;
 	(void) dt;
 	out = const_flow;
+	return true;
 }

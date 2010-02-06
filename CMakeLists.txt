@@ -28,7 +28,7 @@ if (UNIX)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif()
 
-if (CMAKE_BUILD_TYPE STREQUAL Debug) 
+if (CMAKE_BUILD_TYPE STREQUAL Debug)
 	message(STATUS Debug)
 	add_definitions(-DDEBUG)
 else ()

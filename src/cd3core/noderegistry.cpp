@@ -3,7 +3,6 @@
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
 #include <QLibrary>
-#include <QDebug>
 
 using namespace boost;
 
@@ -37,7 +36,7 @@ void NodeRegistry::addNativePlugin(const std::string &plugin_path) {
 	if (regNodeFun) {
 		regNodeFun(this);
 	} else {
-		qWarning() << QString::fromStdString(plugin_path) << " has no node register hook";
+		Logger(Warning) << plugin_path << " has no node register hook";
 	}
 }
 

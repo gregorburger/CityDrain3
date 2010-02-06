@@ -2,7 +2,7 @@
 #include <flow.h>
 #include <simulation.h>
 
-Node::Node() : const_parameters(&parameters),
+Node::Node() : /*const_parameters(&parameters),*/
 		const_array_parameters(&array_parameters),
 		const_states(&states),
 		const_in_ports(&in_ports),
@@ -12,10 +12,11 @@ Node::Node() : const_parameters(&parameters),
 Node::~Node() {
 }
 
-void Node::init(int start, int end, int dt) {
+bool Node::init(ptime start, ptime end, int dt) {
 	(void) start;
 	(void) end;
 	(void) dt;
+	return true;
 }
 
 void Node::deinit() {
@@ -61,6 +62,16 @@ void Node::addInPort(const std::string &name, Flow *inflow) {
 	cd3assert(in_ports.find(name) == in_ports.end(),
 			  str(format("in port already added (%1%)") % name));
 	in_ports[name] = inflow;
+}
+
+void Node::removeInPort(const std::string &name) {
+	cd3assert(in_ports.count(name), "no such inport");
+	in_ports.erase(name);
+}
+
+void Node::removeOutPort(const std::string &name) {
+	cd3assert(out_ports.count(name), "no such outport");
+	out_ports.erase(name);
 }
 
 void Node::addOutPort(const std::string &name, Flow *outflow) {

@@ -16,6 +16,7 @@ class PyMixer(Node):
         for i in xrange(self.count):
             self.ins.append(Flow())
             self.addInPort('in%s' % i, self.ins[i])
+        return True
     
     def f(self, time, dt):
         q = 0
@@ -35,10 +36,11 @@ class PyOut(Node):
 	def init(self, start, stop, dt):
 		log("using out name %s" % str(self.out))
 		self.file = open(self.out, 'w')
+		return True
 		
 		
 	def f(self, time, dt):
-		self.file.write("%s" % time)
+		self.file.write("%s" % time.to_datetime())
 		for i in xrange(len(self.in_flow)):
 			self.file.write('\t%s' % self.in_flow[i])
 		self.file.write('\n')
@@ -55,7 +57,7 @@ class RandomCatchment(Node):
         
     def init(self, start, stop, dt):
         r.seed()
-        pass
+        return True
     
     def f(self, time, dt):
         for n in self.out.names():

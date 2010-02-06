@@ -9,7 +9,11 @@ namespace Ui {
 	class MainWindow;
 }
 
-struct MainWindowPrivate;
+class SimulationScene;
+class SimulationThread;
+class QDateTimeEdit;
+class QSpinBox;
+class QDateTime;
 
 class MainWindow : public QMainWindow {
 	Q_OBJECT
@@ -19,15 +23,36 @@ public:
 
 protected:
 	void changeEvent(QEvent *e);
+	void keyPressEvent(QKeyEvent *e);
+	void wheelEvent(QWheelEvent *);
+	void closeEvent(QCloseEvent *);
 
 private:
 	Ui::MainWindow *ui;
-	MainWindowPrivate *priv;
+	SimulationScene *scene;
+	SimulationThread *current_thread;
+	bool model_unsaved;
+	QDateTimeEdit *stop, *start;
+	QSpinBox *dt;
 
 public Q_SLOTS:
 	void on_actionAdd_Plugin_activated();
-	void on_pluginsAdded();
-	void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column);
+	void on_actionNewSimulation_activated();
+	void on_actionSave_Simulation_activated();
+	void on_runButton_clicked();
+	void on_actionAdd_Python_Module_activated();
+	void on_action_exit_activated();
+	void on_action_open_activated();
+
+	void start_stop_dateTimeChanged(const QDateTime &date);
+	void dt_valueChanged(int value);
+
+	void simulationFinished();
+	void zoomIn(int times = 1);
+	void zoomOut(int times = 1);
+	void pluginsAdded();
+	void sceneChanged();
+	void setNewSimulationParameters();
 };
 
 #endif // MAINWINDOW_H

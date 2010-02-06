@@ -14,11 +14,13 @@
 
 namespace po = boost::program_options;
 
+using namespace boost::gregorian;
+
 struct PerStateHandler {
 	PerStateHandler(const std::string dir) {
 		state_dir = dir;
 	}
-	void operator()(ISimulation *s, int time) {
+	void operator()(ISimulation *s, ptime time) {
 		(void) time;
 		s->serialize(state_dir);
 	}
@@ -27,31 +29,26 @@ private:
 };
 
 struct ProgressHandler {
-	ProgressHandler(ISimulation *sim) {
-		sp = sim->getSimulationParameters();
-		lastp = 0;
-		length = sp.stop - sp.start;
-		count = 0;
-		t = QTime::currentTime();
+	ProgressHandler(ISimulation *sim)
+	 : sp(sim->getSimulationParameters()) {
+		time_period tp(sp.start, sp.stop);
+		long seconds = tp.length().total_seconds();
+		pfrac = 100.0/seconds;
+		last_perc = -1;
 	}
-	void operator()(ISimulation *s, int time) {
-		(void) s;
-		int newp = (time / length) * 100;
-		count ++;
-		if (newp <= lastp)
-			return;
-		QTime tmp_t(QTime::currentTime());
-		Logger(Standard) << "Progress:" << newp << "%" << count << "dt:" << t.msecsTo(tmp_t);
-		lastp = newp;
-		count = 0;
-		t = tmp_t;
+	void operator()(ISimulation *s, ptime time) {
+		time_period tp(sp.start, time);
+		long time_seconds = tp.length().total_seconds();
+		int time_perc = time_seconds*pfrac;
+		if (time_perc != last_perc) {
+			Logger(Standard) << "Progress:" << time_perc << "%";
+			last_perc = time_perc;
+		}
 	}
-	double pfactor;
-	int lastp;
-	int count;
-	float length;
-	QTime t;
 	SimulationParameters sp;
+	long seconds;
+	double pfrac;
+	int last_perc;
 };
 
 int main(int argc, char **argv) {
@@ -60,7 +57,7 @@ int main(int argc, char **argv) {
 	desc.add_options()
 		("help,h", "produce help message")
 		("state-dir,d", po::value<std::string>(), "used to store and locate restart data")
-		("restart,r", po::value<int>(), "specifiy the time where to restart")
+		("restart,r", po::value<string>(), "specifiy the time where to restart (e.g. 2004-Jan-01 00:00:00.00)")
 		("log,l", po::value<std::string>(), "write log to specified file")
 		("maxlog,v", po::value<int>(), "secifiy the max loglevel\n0 all debug\n1 all standard\n2 all warnings\n3 only errors")
 		("model,m", po::value<std::string>(), "the model to run the simulation");
@@ -125,7 +122,7 @@ int main(int argc, char **argv) {
 
 	s->setModel(&m);
 
-	int starttime = s->getSimulationParameters().start;
+	ptime starttime = s->getSimulationParameters().start;
 
 	if (vm.count("restart")) {
 		if (!vm.count("state-dir")) {
@@ -133,13 +130,14 @@ int main(int argc, char **argv) {
 			std::cerr << desc << std::endl;
 			return -1;
 		}
-		starttime = vm["restart"].as<int>();
-		Logger(Standard) << "restarting from" << starttime
+		starttime = time_from_string(vm["restart"].as<string>());
+		Logger(Standard) << "restarting from" << to_simple_string(starttime)
 				<< "using state dir:" << vm["state-dir"].as<std::string>();
 		s->deserialize(vm["state-dir"].as<std::string>(), starttime);
 	}
 
-	s->timestep_before.connect(ProgressHandler(s));
+	if (max <= Standard) //don't even call the progress handler
+		s->timestep_before.connect(ProgressHandler(s));
 	s->start(starttime);
 	Logger(Debug) << "shutting down";
 	Log::shutDown();

@@ -1,7 +1,8 @@
 #include "saxloader.h"
 
 #include <QLibrary>
-#include <QDebug>
+#include <QFileInfo>
+#include <QDir>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/bind.hpp>
@@ -22,8 +23,8 @@ using namespace std;
 #include <module.h>
 
 struct SaxLoaderPriv {
-	NodeRegistry node_registry;
-	SimulationRegistry sim_registry;
+	NodeRegistry *node_registry;
+	SimulationRegistry *sim_registry;
 	TypeRegistry type_registry;
 	IModel *model;
 	ISimulation *simulation;
@@ -33,14 +34,31 @@ struct SaxLoaderPriv {
 	stack<string> parent_nodes;
 };
 
-SaxLoader::SaxLoader(IModel *model) {
+SaxLoader::SaxLoader(IModel *model) : delete_node_reg(true), delete_sim_reg(true) {
 	cd3assert(model, "model must not be null");
 	pd = new SaxLoaderPriv();
+	pd->node_registry = new NodeRegistry();
+	pd->sim_registry = new SimulationRegistry();
+	pd->model = model;
+	pd->simulation = 0;
+}
+
+SaxLoader::SaxLoader(IModel *model,
+					 NodeRegistry *nr,
+					 SimulationRegistry *sr) : delete_node_reg(false), delete_sim_reg(false) {
+	cd3assert(model, "model must not be null");
+	pd = new SaxLoaderPriv();
+	pd->node_registry = nr;
+	pd->sim_registry = sr;
 	pd->model = model;
 	pd->simulation = 0;
 }
 
 SaxLoader::~SaxLoader() {
+	if (delete_sim_reg)
+		delete pd->sim_registry;
+	if (delete_node_reg)
+		delete pd->node_registry;
 	delete pd;
 }
 
@@ -54,7 +72,7 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		std::string id = atts.value("id").toStdString();
 		std::string klass = atts.value("class").toStdString();
 		Logger(Debug) << "creating a" << klass << "node with id:" << id;
-		current = pd->node_registry.createNode(klass);
+		current = pd->node_registry->createNode(klass);
 		current->setId(id);
 		pd->model->addNode(current);
 		consumed = true;
@@ -77,18 +95,20 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		cd3assert(pd->simulation == 0, "Simulation already set");
 		std::string klass = atts.value("class").toStdString();
 		Logger(Debug) << "loading simulation" << klass;
-		pd->simulation = pd->sim_registry.createSimulation(klass);
+		pd->simulation = pd->sim_registry->createSimulation(klass);
 		consumed = true;
 	}
 	if (lname == "time") {
 		SimulationParameters p;
-		p.dt = lexical_cast<int>(atts.value("dt").toStdString());
-		p.start = lexical_cast<int>(atts.value("start").toStdString());
-		p.stop = lexical_cast<int>(atts.value("stop").toStdString());
 		Logger(Debug) << "setting simulation time parameters" <<
 				"start:" << atts.value("start") <<
 				"stop:" << atts.value("stop") <<
 				"dt:" << atts.value("dt");
+		p.dt = lexical_cast<int>(atts.value("dt").toStdString());
+		Logger(Debug) << "parsing posix time " << atts.value("start").toStdString();
+		p.start = time_from_string(atts.value("start").toStdString());
+		Logger(Debug) << "parsing posix time " << atts.value("stat").toStdString();
+		p.stop = time_from_string(atts.value("stop").toStdString());
 		pd->simulation->setSimulationParameters(p);
 		consumed = true;
 	}
@@ -99,14 +119,15 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 	}
 	if (lname == "pluginpath") {
 		std::string path = atts.value("path").toStdString();
-		pd->node_registry.addNativePlugin(path);
-		pd->sim_registry.addNativePlugin(path);
+		pd->node_registry->addNativePlugin(path);
+		pd->sim_registry->addNativePlugin(path);
 		consumed = true;
 	}
 	if (lname == "pythonmodule") {
-		std::string module = atts.value("module").toStdString();
-                cout << "Loading Python Module " << module << endl;
-                PythonEnv::getInstance()->registerNodes(&pd->node_registry, module);
+		QFileInfo module_file(atts.value("module"));
+		PythonEnv::getInstance()->addPythonPath(module_file.dir().absolutePath().toStdString());
+		string module_name = module_file.baseName().toStdString();
+		PythonEnv::getInstance()->registerNodes(pd->node_registry, module_name);
 		consumed = true;
 	}
 	if (lname == "citydrain") {
@@ -150,6 +171,9 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 	}
 	if (lname == "flowdefinition") {
 		pd->flow_definition["Q"] = Flow::flow;
+		consumed = true;
+	}
+	if (lname == "gui" || lname == "nodeposition") { //used for gui
 		consumed = true;
 	}
 	pd->parent_nodes.push(lname.toStdString());
@@ -200,8 +224,8 @@ bool SaxLoader::endElement(const QString &/*ns*/,
 			breakCycle();
 			cycle_break = false;
 		} else {
-                        Node *sink = pd->model->getNode(sink_id);
-                        Node *source = pd->model->getNode(source_id);
+			Node *sink = pd->model->getNode(sink_id);
+			Node *source = pd->model->getNode(source_id);
 			Logger(Debug) << "creating connection:"
 					<< source << "[" << source_port << "] => "
 					<< sink << "[" << sink_port << "]";
@@ -239,9 +263,9 @@ void SaxLoader::loadParameter(const QXmlAttributes& atts) {
 	if (atts.index("type") >= 0)
 		type = atts.value("type").toStdString();
 
-	cd3assert(current->const_parameters->count(name) ||
+	/*cd3assert(current->const_parameters->count(name) ||
 			  current->const_array_parameters->count(name),
-			  str(format("no such parameter in node %1%") % name.c_str()));
+			  str(format("no such parameter in node %1%") % name.c_str()));*/
 
 	if (kind == "simple") {
 		QString value = atts.value("value");
@@ -278,7 +302,7 @@ void SaxLoader::loadParameter(const QXmlAttributes& atts) {
 		cd3assert(false, str(format("unnknown simple type %1%") % type.c_str()));
 		return;
 	}
-	
+
 	if (kind == "complex" || kind == "array") {
 		pd->param_name = atts.value("name").toStdString();
 		return;
@@ -288,12 +312,12 @@ void SaxLoader::loadParameter(const QXmlAttributes& atts) {
 }
 
 void SaxLoader::breakCycle() {
-        Node *sink = pd->model->getNode(sink_id);
-        Node *source = pd->model->getNode(source_id);
+	Node *sink = pd->model->getNode(sink_id);
+	Node *source = pd->model->getNode(source_id);
 
-        Node *start = pd->node_registry.createNode("CycleNodeStart");
+	Node *start = pd->node_registry->createNode("CycleNodeStart");
 	start->setId(sink_id+source_id+"-cycle_start");
-        Node *end = pd->node_registry.createNode("CycleNodeEnd");
+		Node *end = pd->node_registry->createNode("CycleNodeEnd");
 	end->setId(sink_id+source_id+"-cycle_end");
 	pd->model->addNode(start);
 	pd->model->addNode(end);

@@ -4,6 +4,8 @@
 #include <logger.h>
 #include <QFile>
 #include <QTextStream>
+#include <QFileInfo>
+#include <QDir>
 #include <boost/foreach.hpp>
 
 CD3_DECLARE_NODE_NAME(FileOut)
@@ -11,25 +13,39 @@ CD3_DECLARE_NODE_NAME(FileOut)
 FileOut::FileOut()
 	: Node(), stream(&file)
 {
-	out_file_name = "/tmp/out.txt";
+	out_file_name = "out.txt";
 	addParameter(ADD_PARAMETERS(out_file_name));
 	addInPort(ADD_PARAMETERS(in));
+	addOutPort("out", &in);
 }
 
 FileOut::~FileOut() {
 }
 
-void FileOut::init(int start, int stop, int dt) {
+bool FileOut::init(ptime start, ptime stop, int dt) {
 	(void) start;
 	(void) stop;
 	(void) dt;
-	cd3assert(out_file_name.size(), "out_file_name not defined");
-	file.setFileName(QString::fromStdString(out_file_name));
+	if (out_file_name == "") {
+		Logger(Warning) << "out_file_name not defined";
+		return false;
+	}
+	QString q_out_file_name = QString::fromStdString(out_file_name);
+	if (QFile::exists(q_out_file_name)) {
+		Logger(Warning) << "overwriting file " << out_file_name;
+	}
+	QFileInfo info(q_out_file_name);
+	if (!info.absoluteDir().exists()) {
+		Logger(Warning) << "parent dir of" << out_file_name << "does not exist";
+		return false;
+	}
+	file.setFileName(q_out_file_name);
 	if (!file.isOpen()) {
 		file.open(QFile::WriteOnly);
 	}
 	Logger() << this << "using fileout:" << out_file_name;
 	stream.setRealNumberPrecision(10);
+	return true;
 }
 
 void FileOut::deinit() {
@@ -37,7 +53,7 @@ void FileOut::deinit() {
 		file.close();
 }
 
-int FileOut::f(int time, int dt) {
+int FileOut::f(ptime time, int dt) {
 	static bool first_run = true;
 	if (first_run) {
 		stream << qSetFieldWidth(15);
@@ -49,7 +65,7 @@ int FileOut::f(int time, int dt) {
 		stream << "\n";
 		first_run = false;
 	}
-	stream << time;
+	stream << to_simple_string(time).c_str();
 
 	BOOST_FOREACH(std::string name, Flow::getNames()) {
 			stream << "\t" << in.getValue(name);

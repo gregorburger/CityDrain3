@@ -1,47 +1,70 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
-#include "nodeitem.h"
-#include <mapbasedmodel.h>
-#include <noderegistry.h>
 #include <simulationregistry.h>
+#include <simulation.h>
+#include <noderegistry.h>
+#include <mapbasedmodel.h>
 
-#include <qfiledialog.h>
+#include "ui_mainwindow.h"
+#include "ui_newsimulationdialog.h"
+#include "simulationscene.h"
+#include "newsimulationdialog.h"
+#include "simulationthread.h"
+
+#include <QFileDialog>
 #include <QDebug>
+#include <QMessageBox>
+#include <QKeyEvent>
+#include <QDateTimeEdit>
+#include <QLabel>
+#include <QSpinBox>
+#include <QDate>
+#include <QDateTime>
 #include <boost/foreach.hpp>
-
-struct MainWindowPrivate {
-	MapBasedModel model;
-	NodeRegistry node_reg;
-	SimulationRegistry sim_reg;
-	QGraphicsScene scene;
-};
+#include <boost/date_time.hpp>
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
-	ui(new Ui::MainWindow) {
+	ui(new Ui::MainWindow), scene(0), model_unsaved(false) {
 	ui->setupUi(this);
-	priv = new MainWindowPrivate();
-	ui->graphicsView->setScene(&priv->scene);
 	ui->graphicsView->setRenderHints(QPainter::Antialiasing);
-	QStringList default_node_paths;
-	default_node_paths << "./libnodes.so" << "../../libnodes.so" << "./build/libnodes.so";
-	Q_FOREACH(QString path, default_node_paths) {
-		if (QFile::exists(path)) {
-			priv->node_reg.addNativePlugin(path.toStdString());
-			priv->sim_reg.addNativePlugin(path.toStdString());
-			on_pluginsAdded();
-			return;
-		}
-	}
+
+	QLabel *startLabel = new QLabel("start:", ui->mainToolBar);
+	ui->mainToolBar->addWidget(startLabel);
+
+	start = new QDateTimeEdit(ui->mainToolBar);
+	start->setDisplayFormat("d.M.yy h:mm:ss");
+	start->setCalendarPopup(true);
+	ui->mainToolBar->addWidget(start);
+	this->connect(start, SIGNAL(dateTimeChanged(QDateTime)), SLOT(start_stop_dateTimeChanged(QDateTime)));
+
+	QLabel *stopLabel = new QLabel("stop:", ui->mainToolBar);
+	ui->mainToolBar->addWidget(stopLabel);
+
+
+	stop = new QDateTimeEdit(ui->mainToolBar);
+	stop->setDisplayFormat("d.M.yy h:mm:ss");
+	stop->setCalendarPopup(true);
+	ui->mainToolBar->addWidget(stop);
+	this->connect(stop, SIGNAL(dateTimeChanged(QDateTime)), SLOT(start_stop_dateTimeChanged(QDateTime)));
+
+	QLabel *dtLabel = new QLabel("dt:", ui->mainToolBar);
+	ui->mainToolBar->addWidget(dtLabel);
+
+	dt = new QSpinBox(ui->mainToolBar);
+	dt->setRange(0, INT_MAX-1);
+	dt->setSingleStep(60);
+	ui->mainToolBar->addWidget(dt);
+	this->connect(dt, SIGNAL(valueChanged(int)), SLOT(dt_valueChanged(int)));
+	sceneChanged();
 }
 
 MainWindow::~MainWindow() {
-	delete priv;
+	if (scene)
+		delete scene;
 	delete ui;
 }
 
-void MainWindow::changeEvent(QEvent *e)
-{
+void MainWindow::changeEvent(QEvent *e) {
 	QMainWindow::changeEvent(e);
 	switch (e->type()) {
 	case QEvent::LanguageChange:
@@ -53,37 +76,195 @@ void MainWindow::changeEvent(QEvent *e)
 }
 
 void MainWindow::on_actionAdd_Plugin_activated() {
-	qDebug() << "hallo";
-	QString plugin = QFileDialog::getOpenFileName(this, "select plugin", ".", "*.so");
-	qDebug() << plugin;
+	QString plugin = QFileDialog::getOpenFileName(this, "select plugin", ".", "*.so, *.dll");
 	if (plugin == "")
 		return;
-	priv->node_reg.addNativePlugin(plugin.toStdString());
-	priv->sim_reg.addNativePlugin(plugin.toStdString());
-	on_pluginsAdded();
+	scene->addPlugin(plugin);
+	pluginsAdded();
 }
 
-void MainWindow::on_pluginsAdded() {
-	QTreeWidgetItem *nodes = new QTreeWidgetItem(QStringList("nodes"));
-	nodes->setExpanded(true);
-	QTreeWidgetItem *simulations = new QTreeWidgetItem(QStringList("simuluations"));
+void MainWindow::keyPressEvent(QKeyEvent *e) {
+	if (e->key() == Qt::Key_Plus) {
+		zoomIn();
+		return;
+	}
+	if (e->key() == Qt::Key_Minus) {
+		zoomOut();
+		return;
+	}
+	QMainWindow::keyPressEvent(e);
+}
 
-	BOOST_FOREACH(string node_name, priv->node_reg.getRegisteredNames()) {
+void MainWindow::wheelEvent(QWheelEvent *event) {
+	if (event->modifiers() & Qt::ControlModifier) {
+		int times = event->delta() / 120;
+		if (times < 0)
+			zoomOut(qAbs(times));
+		else
+			zoomIn(times);
+		return;
+	}
+	QMainWindow::wheelEvent(event);
+}
+
+void MainWindow::zoomIn(int times) {
+	ui->graphicsView->scale(times * 1.2, times * 1.2);
+}
+
+void MainWindow::zoomOut(int times) {
+	ui->graphicsView->scale(1/(times * 1.2), 1/(times * 1.2));
+}
+
+void MainWindow::pluginsAdded() {
+	ui->treeWidget->clear();
+	QTreeWidgetItem *nodes = new QTreeWidgetItem(QStringList("nodes"));
+
+	BOOST_FOREACH(std::string node_name, scene->getNodeRegistry()->getRegisteredNames()) {
+		QString qnode_name = QString::fromStdString(node_name);
+		if (qnode_name.startsWith("CycleNode"))
+			continue;
 		QTreeWidgetItem *item = new QTreeWidgetItem(nodes);
-		item->setText(0, QString::fromStdString(node_name));
+		item->setText(0, qnode_name);
 	}
 	ui->treeWidget->insertTopLevelItem(0, nodes);
 
-	BOOST_FOREACH(string sim_name, priv->sim_reg.getRegisteredNames()) {
-		QTreeWidgetItem *item = new QTreeWidgetItem(simulations);
-		item->setText(0, QString::fromStdString(sim_name));
-	}
-	ui->treeWidget->insertTopLevelItem(0, simulations);
+	nodes->setExpanded(true);
 }
 
-void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column) {
-	Node *node = priv->node_reg.createNode(item->text(0).toStdString());
-	NodeItem *nitem = new NodeItem(node);
-	nitem->setFlag(QGraphicsItem::ItemIsMovable, true);
-	ui->graphicsView->scene()->addItem(nitem);
+void MainWindow::on_runButton_clicked() {
+	current_thread = new SimulationThread(scene->getSimulation());
+	QObject::connect(current_thread->handler, SIGNAL(progress(int)),
+					 ui->simProgressBar, SLOT(setValue(int)), Qt::QueuedConnection);
+	QObject::connect(current_thread, SIGNAL(finished()),
+					 this, SLOT(simulationFinished()), Qt::QueuedConnection);
+	this->setEnabled(false);
+	current_thread->start();
+}
+
+void MainWindow::simulationFinished() {
+	delete current_thread;
+	this->setEnabled(true);
+}
+
+void MainWindow::on_actionNewSimulation_activated() {
+	if (scene) {
+		QMessageBox::warning(this, "New Simulation", "A simulation is already defined");
+		return;
+	}
+	NewSimulationDialog ns(this);
+	if (ns.exec()) {
+		scene = ns.createSimulationScene();
+		sceneChanged();
+		ui->graphicsView->setScene(scene);
+		ui->actionSave_Simulation->setEnabled(true);
+		ui->runButton->setEnabled(true);
+		pluginsAdded();
+		ui->actionAdd_Plugin->setEnabled(true);
+		ui->actionAdd_Python_Module->setEnabled(true);
+	}
+}
+
+QDateTime pttoqt(const ptime &dt) {
+	time_duration td = dt.time_of_day();
+	QTime t(td.hours(), td.minutes(), td.seconds());
+	gregorian::date dtd = dt.date();
+	QDate d(dtd.year(), dtd.month(), dtd.day());
+	return QDateTime(d, t);
+}
+
+void MainWindow::sceneChanged() {
+	if (!scene) {
+		start->setEnabled(false);
+		stop->setEnabled(false);
+		dt->setEnabled(false);
+		return;
+	}
+
+	start->setEnabled(true);
+	stop->setEnabled(true);
+	dt->setEnabled(true);
+	SimulationParameters sp = scene->getSimulation()->getSimulationParameters();
+	start->setDateTime(pttoqt(sp.start));
+	stop->setDateTime(pttoqt(sp.stop));
+	dt->setValue(sp.dt);
+}
+
+void MainWindow::on_actionSave_Simulation_activated() {
+	if (scene->getModelFileName() == "") {
+		QString fileName = QFileDialog::getSaveFileName(this, "Save Model File", ".", "XML Files (*.xml)");
+		if (fileName == "")
+			return;
+		scene->setModelFileName(fileName);
+	}
+	scene->save();
+	model_unsaved = false;
+}
+
+void MainWindow::on_actionAdd_Python_Module_activated() {
+	QString plugin = QFileDialog::getOpenFileName(this,
+												  "select python module",
+												  "./data/scripts", "*.py");
+	if (plugin == "")
+		return;
+	scene->addPythonModule(plugin);
+	pluginsAdded();
+}
+
+void MainWindow::on_action_exit_activated() {
+	this->close();
+}
+
+void MainWindow::on_action_open_activated() {
+	if (scene) {
+		//TODO show dialog
+		return;
+	}
+
+	QString path = QFileDialog::getOpenFileName(this, "Open Model File", ".", "XML Files (*.xml)");
+	if (path == "")
+		return;
+	if (!path.endsWith(".xml", Qt::CaseInsensitive)) {
+		qDebug() << "adding xml";
+		path = path + ".xml";
+	}
+	scene = new SimulationScene(path);
+	sceneChanged();
+	ui->graphicsView->setScene(scene);
+	ui->actionSave_Simulation->setEnabled(true);
+	ui->runButton->setEnabled(true);
+	ui->actionAdd_Plugin->setEnabled(true);
+	ui->actionAdd_Python_Module->setEnabled(true);
+	pluginsAdded();
+}
+
+void MainWindow::start_stop_dateTimeChanged(const QDateTime &date) {
+	if (start->dateTime() == date) {
+		stop->setMinimumDateTime(start->dateTime().addSecs(+dt->value()));
+	}
+	if (stop->dateTime() == date) {
+		start->setMaximumDateTime(stop->dateTime().addSecs(-dt->value()));
+	}
+	setNewSimulationParameters();
+}
+
+void MainWindow::dt_valueChanged(int value) {
+	setNewSimulationParameters();
+}
+
+void MainWindow::setNewSimulationParameters() {
+	SimulationParameters p = scene->getSimulation()->getSimulationParameters();
+	p.start = qttopt(start->dateTime());
+	p.stop = qttopt(stop->dateTime());
+	p.dt = dt->value();
+	scene->getSimulation()->setSimulationParameters(p);
+}
+
+void MainWindow::closeEvent(QCloseEvent *event) {
+	if (QMessageBox::question(this, "Quit",
+							  "Do you really wan't to Quit?",
+							  QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes) {
+		event->accept();
+	} else {
+		event->ignore();
+	}
 }

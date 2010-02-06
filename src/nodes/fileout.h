@@ -10,9 +10,9 @@ CD3_DECLARE_NODE(FileOut)
 public:
 	FileOut();
 	virtual ~FileOut();
-	virtual int f(int time, int dt);
-	virtual void init(int start, int stop, int dt);
-	virtual void deinit();
+	bool init(ptime start, ptime end, int dt);
+	int f(ptime time, int dt);
+	void deinit();
 private:
 	Flow in;
 	string out_file_name;

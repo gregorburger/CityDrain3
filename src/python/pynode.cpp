@@ -12,13 +12,16 @@ using namespace boost;
 struct NodeWrapper : Node, python::wrapper<Node> {
 	NodeWrapper(PyObject *_self) : self(_self) {
 		Py_INCREF(self);
+		PyObject *klass = PyObject_GetAttrString(self, "__class__");
+		PyObject *name = PyObject_GetAttrString(klass, "__name__");
+		class_name = PyString_AsString(name);
 	}
 
 	virtual ~NodeWrapper() {
 		//Py_DECREF(self); FIXME something is double clean up LEAK HERE
 	}
 
-	int f(int time, int dt) {
+	int f(ptime time, int dt) {
 		updateParameters();
 		try {
 			return python::call_method<int>(self, "f", time, dt);
@@ -37,13 +40,13 @@ struct NodeWrapper : Node, python::wrapper<Node> {
 
 	}
 
-	void init(int start, int stop, int dt) {
+	bool init(ptime start, ptime stop, int dt) {
 		try {
 			updateParameters();
-			python::call_method<void>(self, "init", start, stop, dt);
-
+			return python::call_method<bool>(self, "init", start, stop, dt);
 		} catch(python::error_already_set const &) {
 		}
+		return true;
 	}
 
 	void deinit() {
@@ -54,9 +57,7 @@ struct NodeWrapper : Node, python::wrapper<Node> {
 	}
 
 	const char *getClassName() const {
-		python::object o(this);
-		const char *name = python::extract<const char*>(o.attr("__name__"));
-		return name;
+		return class_name;
 	}
 
 	void addInPort(const std::string &name, Flow *inflow) {
@@ -164,12 +165,13 @@ struct NodeWrapper : Node, python::wrapper<Node> {
 	map<string, bool> bool_params;
 	map<string, float> float_params;
 	PyObject *self;
+	char *class_name;
 };
 
-typedef pair<string, ltvp> param_pair;
+typedef pair<string, NodeParameter*> param_pair;
 static python::list n_getParameterNames(Node &n) {
 	python::list l;
-	BOOST_FOREACH(param_pair p, *n.const_parameters) {
+	BOOST_FOREACH(param_pair p, n.getParameters()) {
 		l.append(p.first);
 	}
 	return l;

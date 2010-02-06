@@ -4,7 +4,6 @@
 #include <logger.h>
 
 #include <ostream>
-#include <QDebug>
 
 using namespace std;
 

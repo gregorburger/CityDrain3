@@ -3,8 +3,7 @@
 #include <log.h>
 #include <iostream>
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
 	Log::init(&cerr, Debug);
 	QApplication a(argc, argv);
 	MainWindow w;

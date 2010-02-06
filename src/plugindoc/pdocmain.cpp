@@ -11,10 +11,15 @@ using namespace std;
 
 typedef pair<string, ltvp> par_type;
 typedef pair<string, Flow*> port_type;
+typedef pair<string, NodeParameter*> param_pair;
 
 int main(int argc, char **argv) {
 	ostringstream out;
 	Log::init(&out);
+	map<string, Flow::CalculationUnit> fd;
+	fd["Q"] = Flow::flow;
+	fd["C"] = Flow::concentration;
+	Flow::define(fd);
 	NodeRegistry r;
 	SimulationRegistry sr;
 	for (int i = 1; i < argc; i++) {
@@ -23,18 +28,12 @@ int main(int argc, char **argv) {
 	}
 	cout << "Nodes: ";
 	BOOST_FOREACH(string klass, r.getRegisteredNames()) {
-		if (klass == "QSWNode") {
-			//cout << "ignoring " << klass << endl;
-			continue;
-		}
-
-                Node *node = r.createNode(klass);
-		if (klass != "RainRead")
-			node->init(0, 7200, 300);
+		Node *node = r.createNode(klass);
 		cout << endl << klass << ":" << endl;
 
-		BOOST_FOREACH(par_type par, *node->const_parameters) {
-			cout << "\tparameter: " << par.first << endl;
+		BOOST_FOREACH(param_pair par, node->getParameters()) {
+			NodeParameter *p = par.second;
+			cout << "\tparameter: " << p->name << endl;
 		}
 
 		BOOST_FOREACH(par_type state, *node->const_states) {

@@ -10,13 +10,14 @@ CD3_DECLARE_NODE(Mixer)
 public:
 	Mixer();
 	~Mixer();
-	int f(int time, int dt);
-	void init(int start, int end, int dt);
+	int f(ptime time, int dt);
+	bool init(ptime start, ptime end, int dt);
 	void deinit();
 private:
 	int num_inputs;
 	Flow out;
 	std::vector<Flow *> inputs;
+	std::vector<std::string> input_names;
 };
 
 #endif // MIXER_H

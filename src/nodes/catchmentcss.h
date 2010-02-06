@@ -10,8 +10,8 @@ CD3_DECLARE_NODE(CatchmentCSS)
 public:
 	CatchmentCSS();
 	virtual ~CatchmentCSS();
-	int f(int time, int dt);
-	void init(int start, int end, int dt);
+	int f(ptime time, int dt);
+	bool init(ptime start, ptime end, int dt);
 	void deinit();
 private:
 	void addMuskParam(int dt);

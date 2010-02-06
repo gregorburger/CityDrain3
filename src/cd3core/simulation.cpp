@@ -26,7 +26,17 @@ SimulationParameters ISimulation::getSimulationParameters() const {
 }
 
 void ISimulation::setModel(IModel *m) {
+	cd3assert(m, "cannot set null model")
 	model = m;
+}
+
+IModel *ISimulation::getModel() const {
+	return model;
+}
+
+void ISimulation::start(ptime time) {
+	(void) time;
+	cd3assert(model, "model not set");
 	cd3assert(model->connected(), "model not fully connected");
 	if (!model->cycleFree()) {
 		Logger(Warning) << "model not cyclefree ";
@@ -36,15 +46,7 @@ void ISimulation::setModel(IModel *m) {
 	}
 	cd3assert(model->cycleFree(), "use \"cycle_break\" attribute in connection (xml) to split up cycles");
 	model->checkModel();
-	m->checkModel();
-}
 
-IModel *ISimulation::getModel() const {
-	return model;
-}
-
-void ISimulation::start(int time) {
-	(void) time;
 	QTime ts_before = QTime::currentTime();
 	current_time = sim_param.start;
 	int dt;
@@ -52,7 +54,7 @@ void ISimulation::start(int time) {
 		timestep_before(this, current_time);
 		dt = run(current_time, sim_param.dt);
 		timestep_after(this, current_time);
-		current_time += dt;
+		current_time = current_time + seconds(dt);
 	}
 
 	QTime ts_after = QTime::currentTime();
@@ -70,8 +72,8 @@ void ISimulation::serialize(const std::string &dir) const {
 	ms.serialize(current_time);
 }
 
-void ISimulation::deserialize(const std::string &dir, int time) const {
-	Logger(Debug) << "serializing timestep" << time << "into" << dir;
+void ISimulation::deserialize(const std::string &dir, ptime time) const {
+	Logger(Debug) << "serializing timestep" << to_simple_string(time) << "into" << dir;
 	ModelSerializer ms(model, dir);
 	ms.deserialize(time);
 }

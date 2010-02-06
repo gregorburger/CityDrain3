@@ -28,12 +28,12 @@ PumpingStation::PumpingStation() {
 	addState(ADD_PARAMETERS(volume));
 }
 
-void PumpingStation::init(int start, int end, int dt) {
+bool PumpingStation::init(int start, ptime end, int dt) {
 	(void) start;
 	(void) end;
 	(void) dt;
 	NP = Qp.size();
-	cd3assert(Von.size() == NP, "vector Von must be of same size as Qp");
+	cd3assert(Von.size() == NP, "vector Von must be of same size as Qp"); //TODO convert all asserts to warnings with return false
 	cd3assert(Voff.size() == NP, "vector Voff must be of same size as Qp");
 	for (size_t i = 0; i < NP; ++i) {
 		cd3assert(Von[i] >= 0 && Von[i] <= basin_volume, "Von[i] ");
@@ -47,6 +47,7 @@ void PumpingStation::init(int start, int end, int dt) {
 		cd3assert(Von[i] <= Von[i+1], "Von[i] must be smaller than Von[i+1]");
 		cd3assert(Voff[i] <= Voff[i+1], "Voff[i] must be smaller than Voff[i+1]");
 	}
+	return true;
 }
 
 PumpingStation::~PumpingStation() {
@@ -56,7 +57,7 @@ double sum(const vector<double> &in) {
 	return accumulate(in.begin(), in.begin(), 0);
 }
 
-int PumpingStation::f(int time, int dt) {
+int PumpingStation::f(ptime time, int dt) {
 	(void) time;
 	static bool first = true;
 	if (first) {//init flows

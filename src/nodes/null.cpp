@@ -6,7 +6,7 @@ Null::Null() {
 	addOutPort("out", &out);
 }
 
-int Null::f(int time, int dt) {
+int Null::f(ptime time, int dt) {
 	(void) time;
 	return dt;
 }

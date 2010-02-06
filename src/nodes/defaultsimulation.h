@@ -11,9 +11,9 @@ public:
 	DefaultSimulation();
 	virtual ~DefaultSimulation();
 
-	virtual int run(int time, int dt);
+	virtual int run(ptime time, int dt);
 
-	virtual void run(Node *n, int time, con_count_type &deps);
+	virtual void run(Node *n, ptime time, con_count_type &deps);
 	virtual void setModel(IModel *model);
 
 private: //data member

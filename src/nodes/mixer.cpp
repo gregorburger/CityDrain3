@@ -17,22 +17,32 @@ Mixer::~Mixer() {
 }
 
 void Mixer::deinit() {
+	BOOST_FOREACH(std::string name, input_names) {
+		removeInPort(name);
+	}
+	BOOST_FOREACH(Flow *f, inputs) {
+		delete f;
+	}
+	inputs.clear();
+	input_names.clear();
 }
 
-void Mixer::init(int start, int end, int dt) {
+bool Mixer::init(ptime start, ptime end, int dt) {
 	(void) start;
 	(void) end;
 	(void) dt;
 	for (int i = 0; i < num_inputs; i++) {
 		Flow *tmp = new Flow();
 		std::ostringstream name;
-		name << "inputs[" << i << "]";
+		name << "in_" << i;
 		addInPort(name.str(), tmp);
 		inputs.push_back(tmp);
+		input_names.push_back(name.str());
 	}
+	return true;
 }
 
-int Mixer::f(int time, int dt) {
+int Mixer::f(ptime time, int dt) {
 	(void) time;
 	out = FlowFuns::mix(inputs);
 	return dt;
