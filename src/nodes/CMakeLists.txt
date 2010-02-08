@@ -12,6 +12,4 @@ else()
 endif()
 
 
-#INSTALL(TARGETS nodes
-#  LIBRARY DESTINATION lib
-#)
+INSTALL(TARGETS nodes LIBRARY DESTINATION lib)

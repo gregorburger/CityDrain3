@@ -4,6 +4,5 @@ if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
 else()
     target_link_libraries(cd3 cd3core pycd3 ${Boost_PROGRAM_OPTIONS_LIBRARY} ${Boost_DATE_TIME_LIBRARY})
 endif()
-INSTALL(TARGETS cd3
-  RUNTIME DESTINATION bin
-)
+
+INSTALL(TARGETS cd3 RUNTIME DESTINATION bin)
