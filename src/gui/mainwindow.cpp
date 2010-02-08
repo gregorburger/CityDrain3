@@ -135,15 +135,33 @@ void MainWindow::on_runButton_clicked() {
 	current_thread = new SimulationThread(scene->getSimulation());
 	QObject::connect(current_thread->handler, SIGNAL(progress(int)),
 					 ui->simProgressBar, SLOT(setValue(int)), Qt::QueuedConnection);
-	QObject::connect(current_thread, SIGNAL(finished()),
-					 this, SLOT(simulationFinished()), Qt::QueuedConnection);
-	this->setEnabled(false);
+	connect(current_thread, SIGNAL(finished()),
+			SLOT(simulationThreadFinished()), Qt::QueuedConnection);
+	connect(current_thread, SIGNAL(started()),
+			SLOT(simulationThreadStarted()), Qt::QueuedConnection);
 	current_thread->start();
 }
 
-void MainWindow::simulationFinished() {
+void MainWindow::on_stopButton_clicked() {
+	current_thread->getSimulation()->stop();
+}
+
+void MainWindow::simulationThreadFinished() {
 	delete current_thread;
-	this->setEnabled(true);
+	ui->dockWidget->setEnabled(true);
+	ui->menuBar->setEnabled(true);
+	ui->mainToolBar->setEnabled(true);
+	ui->runButton->setEnabled(true);
+	ui->stopButton->setEnabled(false);
+}
+
+void MainWindow::simulationThreadStarted() {
+	//this->setEnabled(false);
+	ui->dockWidget->setEnabled(false);
+	ui->menuBar->setEnabled(false);
+	ui->mainToolBar->setEnabled(false);
+	ui->runButton->setEnabled(false);
+	ui->stopButton->setEnabled(true);
 }
 
 void MainWindow::on_actionNewSimulation_activated() {

@@ -14,5 +14,6 @@
         <file>zoom-out.png</file>
         <file>logo.png</file>
         <file>logo2.svg</file>
+        <file>process-stop.png</file>
     </qresource>
 </RCC>
