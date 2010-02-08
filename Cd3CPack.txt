@@ -36,8 +36,14 @@ IF(WIN32 AND NOT UNIX)
   #SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.my-project-home-page.org")
   #SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.my-personal-home-page.com")
   SET(CPACK_NSIS_CONTACT "gregor.burger@uibk.ac.at")
-  
+  set(STAT_LIBS ${Boost_PROGRAM_OPTIONS_LIBRARY} 
+                ${Boost_THREADS_LIBRARY} 
+                ${Boost_SIGNALS_LIBRARY} 
+                ${Boost_PYTHON_LIBRARY})
+  string(REPLACE ".lib" ".dll" LIBS ${STAT_LIBS})
+  install(FILES ${LIBS} DESTINATION bin)
   #SET(CPACK_NSIS_MODIFY_PATH ON)
+
 ENDIF()
 INCLUDE(CPack)
 
