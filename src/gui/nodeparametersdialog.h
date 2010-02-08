@@ -18,7 +18,7 @@ public:
 	NodeParametersDialog(Node *node, QWidget *parent = 0);
 	virtual ~NodeParametersDialog();
 
-	void updateNodeParameters();
+	bool updateNodeParameters();
 
 private:
 	QWidget *widgetForParameter(NodeParameter *);

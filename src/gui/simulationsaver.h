@@ -11,6 +11,7 @@ class NodeItem;
 class ISimulation;
 class IModel;
 class Node;
+class NodeParameter;
 class QXmlStreamWriter;
 class QFile;
 
@@ -34,6 +35,7 @@ private:
 	void saveModel(IModel *model);
 	void saveFlowDefinition();
 	void saveNodeParameters(const Node *n);
+	void saveFlowParameter(NodeParameter *p);
 	void saveNodePositions(QList<NodeItem*> items);
 private:
 	SimulationScene *scene;

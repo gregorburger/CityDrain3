@@ -139,6 +139,15 @@ typedef pair<string, NodeParameter*> ppair;
 void SimulationSaver::saveNodeParameters(const Node *n) {
 	BOOST_FOREACH(ppair item, n->getParameters()) {
 		NodeParameter *p = item.second;
+		if (p->type == cd3::TypeInfo(typeid(Flow))) {
+			writer->writeStartElement("parameter");
+			writer->writeAttribute("name", tos(p->name));
+			writer->writeAttribute("kind", "complex");
+			writer->writeAttribute("type", "Flow");
+			saveFlowParameter(p);
+			writer->writeEndElement();
+			continue;
+		}
 		writer->writeEmptyElement("parameter");
 		writer->writeAttribute("name", tos(p->name));
 		if (p->type == cd3::TypeInfo(typeid(double))) {
@@ -167,6 +176,20 @@ void SimulationSaver::saveNodeParameters(const Node *n) {
 		}
 		qWarning() << "can not save value of parameter " << QString::fromStdString(p->name);
 	}
+}
+
+void SimulationSaver::saveFlowParameter(NodeParameter *p) {
+	Flow *f = (Flow*) p->value;
+	writer->writeStartElement("flow");
+
+
+	BOOST_FOREACH(string name, Flow::getNames()) {
+		writer->writeEmptyElement("unit");
+		writer->writeAttribute("name", QString::fromStdString(name));
+		writer->writeAttribute("value", QString("%1").arg(f->getValue(name)));
+	}
+
+	writer->writeEndElement();
 }
 
 void SimulationSaver::saveNodePositions(QList<NodeItem *>items) {

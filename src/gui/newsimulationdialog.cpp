@@ -47,8 +47,8 @@ void NewSimulationDialog::defineFlow() {
 	using namespace std;
 	map<string, Flow::CalculationUnit> definition;
 	definition[ui->flowName->text().toStdString()] = Flow::flow;
-	Q_FOREACH(QString c, ui->concentrationNames->text().split(' ')) {
-		definition[c.toStdString()] = Flow::concentration;
+	Q_FOREACH(QString c, ui->concentrationNames->text().split(' ', QString::SkipEmptyParts)) {
+		definition[c.trimmed().toStdString()] = Flow::concentration;
 	}
 	Flow::define(definition);
 }
