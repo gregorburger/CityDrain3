@@ -99,6 +99,10 @@
    <addaction name="action_open"/>
    <addaction name="action_exit"/>
    <addaction name="separator"/>
+   <addaction name="actionZoom_in"/>
+   <addaction name="actionZoom_out"/>
+   <addaction name="actionZoom_reset"/>
+   <addaction name="separator"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="dockWidget">
@@ -240,6 +244,15 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+-</string>
+   </property>
+  </action>
+  <action name="actionZoom_reset">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/icons/zoom-original.png</normaloff>:/icons/zoom-original.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom_reset</string>
    </property>
   </action>
  </widget>

@@ -24,7 +24,6 @@ public:
 protected:
 	void changeEvent(QEvent *e);
 	void keyPressEvent(QKeyEvent *e);
-	void wheelEvent(QWheelEvent *);
 	void closeEvent(QCloseEvent *);
 
 private:
@@ -44,6 +43,9 @@ public Q_SLOTS:
 	void on_actionAdd_Python_Module_activated();
 	void on_action_exit_activated();
 	void on_action_open_activated();
+	void on_actionZoom_in_activated();
+	void on_actionZoom_out_activated();
+	void on_actionZoom_reset_activated();
 
 	void start_stop_dateTimeChanged(const QDateTime &date);
 	void dt_valueChanged(int value);
