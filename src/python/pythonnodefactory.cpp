@@ -27,6 +27,7 @@ Node *PythonNodeFactory::createNode() const {
 		PyErr_Print();
 		abort();
 	}
+        return 0;
 }
 
 std::string PythonNodeFactory::getNodeName() {

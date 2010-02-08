@@ -36,14 +36,11 @@ IF(WIN32 AND NOT UNIX)
   #SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.my-project-home-page.org")
   #SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.my-personal-home-page.com")
   SET(CPACK_NSIS_CONTACT "gregor.burger@uibk.ac.at")
-  set(STAT_LIBS ${Boost_PROGRAM_OPTIONS_LIBRARY} 
-                ${Boost_THREADS_LIBRARY} 
-                ${Boost_SIGNALS_LIBRARY} 
-                ${Boost_PYTHON_LIBRARY})
-  string(REPLACE ".lib" ".dll" LIBS ${STAT_LIBS})
-  install(FILES ${LIBS} DESTINATION bin)
-  #SET(CPACK_NSIS_MODIFY_PATH ON)
-
+  file(GLOB DLLS C:/Users/gregor/Projekte/dlls/*.dll)
+  install(FILES ${DLLS} DESTINATION bin)
+  #set(CPACK_NSIS_MENU_LINKS "bin/cd3-gui.exe" "Run CityDrain3 GUI")
+  #SET(CPACK_NSIS_MODIFY_PATH ON) 
+  set(CPACK_PACKAGE_EXECUTABLES "cd3-gui;CityDrain3")
 ENDIF()
 INCLUDE(CPack)
 

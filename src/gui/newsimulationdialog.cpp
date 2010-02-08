@@ -23,7 +23,7 @@ NewSimulationDialog::NewSimulationDialog(QWidget *parent,
 	QStringList list;
 
 	default_node_paths << "./libnodes.so" << "../../libnodes.so" << "./build/libnodes.so";
-	default_node_paths << "./nodes.dll"  << "../../nodes.dll" << "./build/nodes.dll";
+	default_node_paths << "./nodes.dll"  << "bin/nodes.dll" << "../../nodes.dll" << "./build/nodes.dll";
 	Q_FOREACH(QString path, default_node_paths) {
 		if (QFile::exists(path)) {
 			registry->addNativePlugin(path.toStdString());

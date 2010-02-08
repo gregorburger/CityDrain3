@@ -44,9 +44,6 @@ INCLUDE(${QT_USE_FILE})
 set(LIBRARY_OUTPUT_PATH ${cd3_BINARY_DIR})
 set(EXECUTABLE_OUTPUT_PATH ${cd3_BINARY_DIR})
 
-INCLUDE(Cd3CPack.txt)
-
-
 add_subdirectory(src/cd3core)
 add_subdirectory(src/nodes)
 add_subdirectory(src/gui)
@@ -54,3 +51,4 @@ add_subdirectory(src/python)
 add_subdirectory(src/app)
 add_subdirectory(src/plugindoc)
 
+INCLUDE(Cd3CPack.txt)
