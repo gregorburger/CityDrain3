@@ -14,6 +14,7 @@ public:
 	virtual ~SimulationThread();
 	void run();
 	TimeStepHandler *handler;
+	ISimulation *getSimulation() const { return simulation; }
 private:
 	ISimulation *simulation;
 	boost::signals::connection c;

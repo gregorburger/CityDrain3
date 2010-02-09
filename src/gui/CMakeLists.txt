@@ -13,3 +13,5 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_executable(cd3-gui ${GUI_CPP} ../app/saxloader.cpp)
 target_link_libraries(cd3-gui cd3core pycd3 ${QT_QTGUI_LIBRARY})
+
+INSTALL(TARGETS cd3-gui RUNTIME DESTINATION bin)

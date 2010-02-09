@@ -2,6 +2,7 @@
 #include <ui_nodeparametersdialog.h>
 #include <stringparameteredit.h>
 #include <node.h>
+#include <flow.h>
 
 #include <boost/foreach.hpp>
 #include <limits>
@@ -70,11 +71,21 @@ QWidget *NodeParametersDialog::widgetForParameter(NodeParameter *p) {
 		widget->setValue(QString::fromStdString(*value));
 		return widget;
 	}
-	qDebug() << "UNKNOWN  type of parameter";
+	if (p->type == cd3::TypeInfo(typeid(Flow))) {
+		QLineEdit *widget = new QLineEdit(this);
+		vector<string> names = Flow::getNames();
+		QString text = QString::fromStdString(names[0]);
+		for (size_t i = 1; i < names.size(); i++)  {
+			text += ", " + QString::fromStdString(names[i]);
+		}
+		widget->setText(text);
+		return widget;
+	}
+	qDebug() << "UNKNOWN  type of parameter " << QString::fromStdString(p->name);
 	return new QLineEdit(this);
 }
 
-void NodeParametersDialog::updateNodeParameters() {
+bool NodeParametersDialog::updateNodeParameters() {
 	map<string, NodeParameter *> params = node->getParameters();
 	Q_FOREACH(string p, widgets.keys()) {
 		NodeParameter *param = params[p];
@@ -93,6 +104,30 @@ void NodeParametersDialog::updateNodeParameters() {
 			node->setParameter(p, widget->value().toStdString());
 			continue;
 		}
+		if (param->type == cd3::TypeInfo(typeid(Flow))) {
+			vector<string> names = Flow::getNames();
+			QLineEdit *widget = (QLineEdit *) widgets[p];
+			QStringList values = widget->text().split(",");
+			if (values.length() != names.size()) {
+				qDebug() << "input format wrong";
+				return false;
+			}
+			int valuei = 0;
+			Flow f;
+			Q_FOREACH(QString qsvalue, values) {
+				bool ok;
+				double value = qsvalue.trimmed().toDouble(&ok);
+				if (!ok) {
+					qDebug() << "value for " << QString::fromStdString(names[valuei]) << " not a double";
+					return false;
+				}
+				f.setValue(names[valuei], value);
+				++valuei;
+			}
+			node->setParameter(p, f);
+			continue;
+		}
 		qWarning() << "cannot update node parameter " << QString::fromStdString(p);
 	}
+	return true;
 }

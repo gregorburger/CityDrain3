@@ -23,51 +23,30 @@ NodeItem::NodeItem(Node* node)
 }
 
 PortItem *NodeItem::getInPort(QString id) {
-	Q_FOREACH(PortItem *p, in_ports) {
-		if (p->getPortName() == id)
-			return p;
-	}
-	return 0;
+	return in_ports[id.toStdString()];
 }
 
 PortItem *NodeItem::getOutPort(QString id) {
-	Q_FOREACH(PortItem *p, out_ports) {
-		if (p->getPortName() == id)
-			return p;
-	}
-	return 0;
+	return out_ports[id.toStdString()];
 }
 
 void NodeItem::nodeChanged() {
-	Q_FOREACH(PortItem *p, in_ports) {
-		in_ports.removeAll(p);
-		if (p->isConnected()) {
-			qWarning() << "removing connected portitem";
-		}
-		delete p;
-	}
-
-	Q_FOREACH(PortItem *p, out_ports) {
-		out_ports.removeAll(p);
-		if (p->isConnected()) {
-			qWarning() << "removing connected portitem";
-		}
-		delete p;
-	}
-
-	Q_ASSERT(in_ports.empty());
-	Q_ASSERT(out_ports.empty());
-
 	BOOST_FOREACH(port_pair item, *node->const_in_ports) {
+		if (in_ports.contains(item.first)) {
+			continue;
+		}
 		QString pname = QString::fromStdString(item.first);
 		PortItem *pitem = new PortItem(pname, this);
-		in_ports << pitem;
+		in_ports[item.first] = pitem;
 	}
 
 	BOOST_FOREACH(port_pair item, *node->const_out_ports) {
+		if (out_ports.contains(item.first)) {
+			continue;
+		}
 		QString pname = QString::fromStdString(item.first);
 		PortItem *pitem = new PortItem(pname, this);
-		out_ports << pitem;
+		out_ports[item.first] = pitem;
 	}
 
 	updateBoundingRect();

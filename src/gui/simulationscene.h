@@ -1,9 +1,11 @@
 #ifndef SIMULATIONSCENE_H
 #define SIMULATIONSCENE_H
 
+#include <string>
+unsigned int qHash(std::string s);
+
 #include <QGraphicsScene>
 #include <QMap>
-#include <string>
 #include <nodeitem.h> //for PortType
 
 class NodeRegistry;

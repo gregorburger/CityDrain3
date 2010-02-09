@@ -23,7 +23,7 @@ NewSimulationDialog::NewSimulationDialog(QWidget *parent,
 	QStringList list;
 
 	default_node_paths << "./libnodes.so" << "../../libnodes.so" << "./build/libnodes.so";
-	default_node_paths << "./nodes.dll"  << "../../nodes.dll" << "./build/nodes.dll";
+	default_node_paths << "./nodes.dll"  << "bin/nodes.dll" << "../../nodes.dll" << "./build/nodes.dll";
 	Q_FOREACH(QString path, default_node_paths) {
 		if (QFile::exists(path)) {
 			registry->addNativePlugin(path.toStdString());
@@ -47,8 +47,8 @@ void NewSimulationDialog::defineFlow() {
 	using namespace std;
 	map<string, Flow::CalculationUnit> definition;
 	definition[ui->flowName->text().toStdString()] = Flow::flow;
-	Q_FOREACH(QString c, ui->concentrationNames->text().split(' ')) {
-		definition[c.toStdString()] = Flow::concentration;
+	Q_FOREACH(QString c, ui->concentrationNames->text().split(' ', QString::SkipEmptyParts)) {
+		definition[c.trimmed().toStdString()] = Flow::concentration;
 	}
 	Flow::define(definition);
 }

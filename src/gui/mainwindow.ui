@@ -37,11 +37,25 @@
          <bool>false</bool>
         </property>
         <property name="text">
-         <string>&amp;run Simulation</string>
+         <string>&amp;run</string>
         </property>
         <property name="icon">
          <iconset>
           <normaloff>:/icons/media-playback-start.png</normaloff>:/icons/media-playback-start.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="stopButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>&amp;stop</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>:/icons/process-stop.png</normaloff>:/icons/process-stop.png</iconset>
         </property>
        </widget>
       </item>
@@ -84,6 +98,10 @@
    <addaction name="actionSave_Simulation"/>
    <addaction name="action_open"/>
    <addaction name="action_exit"/>
+   <addaction name="separator"/>
+   <addaction name="actionZoom_in"/>
+   <addaction name="actionZoom_out"/>
+   <addaction name="actionZoom_reset"/>
    <addaction name="separator"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -202,6 +220,39 @@
    </property>
    <property name="toolTip">
     <string>exit the application</string>
+   </property>
+  </action>
+  <action name="actionZoom_in">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/icons/zoom-in.png</normaloff>:/icons/zoom-in.png</iconset>
+   </property>
+   <property name="text">
+    <string>zoom in</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl++</string>
+   </property>
+  </action>
+  <action name="actionZoom_out">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/icons/zoom-out.png</normaloff>:/icons/zoom-out.png</iconset>
+   </property>
+   <property name="text">
+    <string>zoom out</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+-</string>
+   </property>
+  </action>
+  <action name="actionZoom_reset">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/icons/zoom-original.png</normaloff>:/icons/zoom-original.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom_reset</string>
    </property>
   </action>
  </widget>
