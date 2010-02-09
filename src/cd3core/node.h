@@ -2,7 +2,7 @@
 #define NODE_H
 
 #include <string>
-#include <boost/unordered/unordered_map.hpp>
+#include <map>
 #include <cd3typeinfo.h>
 #include <cd3assert.h>
 #include <boost/format.hpp>
@@ -30,9 +30,9 @@ const char *nodename::getClassName() const { return nodename::name; }
 
 using namespace boost;
 
-typedef unordered_map<std::string, Flow *>		ssf;
+typedef std::map<std::string, Flow *>		ssf;
 typedef std::pair<cd3::TypeInfo, void *>	ltvp;
-typedef unordered_map<std::string, ltvp>			ssltvp;
+typedef std::map<std::string, ltvp>			ssltvp;
 
 
 #define ADD_PARAMETERS(var) #var, &var
