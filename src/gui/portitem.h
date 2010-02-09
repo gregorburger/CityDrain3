@@ -31,7 +31,9 @@ public:
 	QString getPortName() { return portName; }
 	NodeItem *getNodeItem() const { return node_item; }
 
+	ConnectionItem *getSinkOf() const { return sink_of; }
 	void setSinkOf(ConnectionItem *connection) {sink_of = connection; }
+	ConnectionItem *getSourceOf() const { return source_of; }
 	void setSourceOf(ConnectionItem *connection) {source_of = connection; }
 
 	void setIsAtTop() { at_top = true; }

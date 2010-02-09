@@ -25,7 +25,7 @@ public:
 	QString getClassName() const;
 
 	Node *getNode() const { return node; }
-	QList<PortItem *> in_ports, out_ports;
+	QMap<std::string, PortItem *> in_ports, out_ports;
 
 	QPainterPath shape() const;
 	void nodeChanged();

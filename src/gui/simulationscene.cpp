@@ -27,6 +27,10 @@
 
 using namespace std;
 
+uint qHash(std::string s) {
+	return qHash(QString::fromStdString(s));
+}
+
 SimulationScene::SimulationScene(QString model_file_name, QObject *parent)
 	: QGraphicsScene(parent), model_file_name(model_file_name) {
 	model = new MapBasedModel();
@@ -92,9 +96,13 @@ void SimulationScene::setSimulation(ISimulation *simulation) {
 	this->simulation = simulation;
 }
 
+
+
 void SimulationScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
 	NodeItem *item = (NodeItem *) itemAt(event->scenePos());
 	if (item && node_items.contains(item)) {
+		QMap<string, PortItem*> in_before = item->in_ports;
+		QMap<string, PortItem*> out_before = item->out_ports;
 
 		NodeParametersDialog np(item->getNode());
 		if (np.exec()) {
@@ -102,6 +110,32 @@ void SimulationScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
 			np.updateNodeParameters();
 			SimulationParameters sp = simulation->getSimulationParameters();
 			item->getNode()->init(sp.start, sp.stop, sp.dt);
+
+			QMap<string, Flow*> in_after(*item->getNode()->const_in_ports);
+			QMap<string, Flow*> out_after(*item->getNode()->const_out_ports);
+
+			QSet<string> in_removed = in_before.keys().toSet() - in_after.keys().toSet();
+
+			Q_FOREACH(string s, in_removed) {
+				PortItem *pitem = in_before[s];
+				if (pitem->getSinkOf()) {
+					remove(pitem->getSinkOf());
+				}
+				item->in_ports.remove(s);
+				delete pitem;
+			}
+
+			QSet<string> out_removed = out_before.keys().toSet() - out_after.keys().toSet();
+
+			Q_FOREACH(string s, out_removed) {
+				PortItem *pitem = out_before[s];
+				if (pitem->getSourceOf()) {
+					remove(pitem->getSourceOf());
+				}
+				item->out_ports.remove(s);
+				delete pitem;
+			}
+
 			item->nodeChanged();
 			item->update();
 		}
@@ -236,7 +270,7 @@ void SimulationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 
 bool SimulationScene::isInPort(QGraphicsItem *item) const {
 	Q_FOREACH(NodeItem *node, node_items) {
-		if (node->in_ports.contains((PortItem*) item)) {
+		if (node->in_ports.values().contains((PortItem*) item)) {
 			return true;
 		}
 	}
@@ -245,7 +279,7 @@ bool SimulationScene::isInPort(QGraphicsItem *item) const {
 
 bool SimulationScene::isOutPort(QGraphicsItem *item) const {
 	Q_FOREACH(NodeItem *node, node_items) {
-		if (node->out_ports.contains((PortItem*) item)) {
+		if (node->out_ports.values().contains((PortItem*) item)) {
 			return true;
 		}
 	}
