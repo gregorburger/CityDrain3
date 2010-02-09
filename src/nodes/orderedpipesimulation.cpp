@@ -155,7 +155,7 @@ void OrderedWorker::run() {
 		pushPorts(current);
 		out->enqueue(current);
 	} while (current != last);
-	sim->timestep_before(sim, time);
+	sim->timestep_after(sim, time);
 }
 
 void OrderedWorker::pullPorts(Node *sink) {
