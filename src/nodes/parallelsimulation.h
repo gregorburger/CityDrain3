@@ -2,7 +2,6 @@
 #define PARALLELSIMULATION_H
 
 #include <simulation.h>
-#include <boost/unordered/unordered_map.hpp>
 
 using namespace boost;
 
