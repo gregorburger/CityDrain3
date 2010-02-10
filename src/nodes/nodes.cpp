@@ -16,6 +16,7 @@
 #include "cyclenodeend.h"
 #include "arrayparamtest.h"
 #include "ixxrainread.h"
+#include "pumpingstation.h"
 
 #include <noderegistry.h>
 #include <nodefactory.h>
@@ -41,6 +42,7 @@ extern "C" {
 		registry->addNodeFactory(new NodeFactory<CycleNodeStart>());
 		registry->addNodeFactory(new NodeFactory<ArrayParamTest>());
 		registry->addNodeFactory(new NodeFactory<IxxRainRead>());
+		registry->addNodeFactory(new NodeFactory<PumpingStation>());
 	}
 
 	void CD3_PUBLIC registerTypes(TypeRegistry *registry) {
