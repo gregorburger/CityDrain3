@@ -2,25 +2,26 @@
 #include "node.h"
 #include <QDateTime>
 #include <QString>
+#include <logsink.h>
 
 Logger::Logger(LogLevel level)
- : out(*Log::getInstance()->out), level(level) {
+ : sink(*Log::getInstance()->sink), level(level) {
 	dirty = false;
 	this->max = Log::getInstance()->max;
 	if (level >= max) {
-		out << logLevel() << " " << date() << "|";
+		sink << logLevel() << " " << date() << "|";
 		dirty = true;
 	}
 }
 
 Logger::~Logger() {
 	if (dirty)
-		out << endl;
+		sink << LSEndl();
 }
 
 Logger &Logger::operator <<(LogLevel new_level) {
 	level = new_level;
-	out << "\n" << logLevel() << " " << date() << "|";
+	sink << "\n" << logLevel() << " " << date() << "|";
 	dirty = true;
 	return *this;
 }
@@ -29,7 +30,7 @@ Logger &Logger::operator <<(const Node *n) {
 	if (level < max) {
 		return *this;
 	}
-	out << " Node[" << n->getId() << "] ";
+	sink << " Node[" << n->getId() << "] ";
 	dirty = true;
 	return *this;
 }
@@ -38,7 +39,7 @@ Logger &Logger::operator <<(const shared_ptr<Node> n) {
 	if (level < max) {
 		return *this;
 	}
-	out << " Node[" << n->getId() << "] ";
+	sink << " Node[" << n->getId() << "] ";
 	dirty = true;
 	return *this;
 }
@@ -47,7 +48,7 @@ Logger &Logger::operator<< (const char* s) {
 	if (level < max) {
 		return *this;
 	}
-	out << " " << s;
+	sink << " " << s;
 	dirty = true;
 	return *this;
 }
@@ -56,7 +57,7 @@ Logger &Logger::operator<< (const int i) {
 	if (level < max) {
 		return *this;
 	}
-	out << " " << i;
+	sink << " " << i;
 	dirty = true;
 	return *this;
 }
@@ -65,7 +66,7 @@ Logger &Logger::operator<< (const long i) {
 	if (level < max) {
 		return *this;
 	}
-	out << " " << i;
+	sink << " " << i;
 	dirty = true;
 	return *this;
 }
@@ -74,7 +75,7 @@ Logger &Logger::operator<< (const double f) {
 	if (level < max) {
 		return *this;
 	}
-	out << " " << f;
+	sink << " " << f;
 	dirty = true;
 	return *this;
 }
@@ -83,7 +84,7 @@ Logger &Logger::operator<< (const float f) {
 	if (level < max) {
 		return *this;
 	}
-	out << " " << f;
+	sink << " " << f;
 	dirty = true;
 	return *this;
 }
@@ -92,7 +93,7 @@ Logger &Logger::operator<< (const string &s) {
 	if (level < max) {
 		return *this;
 	}
-	out << " " << s;
+	sink << " " << s;
 	dirty = true;
 	return *this;
 }
@@ -101,7 +102,7 @@ Logger &Logger::operator<< (const QString &s) {
 	if (level < max) {
 		return *this;
 	}
-	out << " " << s.toStdString();
+	sink << " " << s.toStdString();
 	dirty = true;
 	return *this;
 }

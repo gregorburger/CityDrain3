@@ -4,13 +4,13 @@
 #include <cd3globals.h>
 #include "log.h"
 
-#include <iostream>
 #include <boost/shared_ptr.hpp>
 using namespace boost;
 
 using namespace std;
 
 class QString;
+class LogSink;
 
 class CD3_PUBLIC Logger {
 public:
@@ -29,7 +29,7 @@ public:
 private:
 	string logLevel() const;
 	string date() const;
-	ostream &out;
+	LogSink &sink;
 	LogLevel level, max;
 	bool dirty;
 };

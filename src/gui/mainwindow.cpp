@@ -3,13 +3,14 @@
 #include <simulation.h>
 #include <noderegistry.h>
 #include <mapbasedmodel.h>
+#include <log.h>
 
 #include "ui_mainwindow.h"
 #include "ui_newsimulationdialog.h"
 #include "simulationscene.h"
 #include "newsimulationdialog.h"
 #include "simulationthread.h"
-#include "logupdaterthread.h"
+#include "guilogsink.h"
 
 #include <QFileDialog>
 #include <QDebug>
@@ -57,13 +58,13 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->connect(dt, SIGNAL(valueChanged(int)), SLOT(dt_valueChanged(int)));
 	sceneChanged();
 
-	log_updater = new LogUpdaterThread();
-	log_updater->start();
+	log_updater = new GuiLogSink();
+	Log::init(log_updater);
 	ui->logWidget->connect(log_updater, SIGNAL(newLogLine(QString)), SLOT(appendPlainText(QString)), Qt::QueuedConnection);
 }
 
 MainWindow::~MainWindow() {
-	delete log_updater;
+	Log::shutDown();
 	if (scene)
 		delete scene;
 	delete ui;

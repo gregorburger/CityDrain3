@@ -3,6 +3,7 @@
 #include <mapbasedmodel.h>
 #include <log.h>
 #include <logger.h>
+#include <logsink.h>
 #include "saxloader.h"
 
 #include <iostream>
@@ -102,7 +103,7 @@ int main(int argc, char **argv) {
 		max = LogLevel(l);
 	}
 
-	Log::init(out, max);
+	Log::init(new OStreamLogSink(*out), max);
 	Logger(Debug) << "starting";
 
 	Logger(Debug) << "loading file model:" << vm["model"].as<std::string>();

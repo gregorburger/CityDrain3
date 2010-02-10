@@ -2,7 +2,7 @@
 #include <iostream>
 #include "node.h"
 #include <logger.h>
-
+#include <logsink.h>
 #include <ostream>
 
 using namespace std;
@@ -17,20 +17,18 @@ Log *Log::getInstance() {
 	return instance;
 }
 
-void Log::init(ostream *out, LogLevel max) {
+void Log::init(LogSink *sink, LogLevel max) {
 	if (!instance) {
 		instance = new Log();
 	}
-	instance->out = out;
+	instance->sink = sink;
 	instance->max = max;
 }
 
 void Log::shutDown() {
-	instance->out->flush();
-	if (instance->out != &cout && instance->out != &cerr) {
-		delete instance->out;
-	}
-	instance->out = 0;
+	instance->sink->close();
+	delete instance->sink;
+	instance->sink = 0;
 	delete instance;
 }
 

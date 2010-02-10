@@ -12,6 +12,7 @@ using namespace std;
 class Node;
 class Simulation;
 class Logger;
+class LogSink;
 
 enum LogLevel {
 	Debug = 0,
@@ -27,7 +28,7 @@ enum LogLevel {
 class CD3_PUBLIC Log
 {
 public:
-	static void init(ostream *out = &cout, LogLevel max = Debug);
+	static void init(LogSink *sink, LogLevel max = Debug);
 	static void shutDown();
 	static Log *getInstance();
 	friend class Logger;
@@ -37,7 +38,7 @@ private:
 
 	static Log *instance;
 
-	ostream *out;
+	LogSink *sink;
 	LogLevel max;
 };
 

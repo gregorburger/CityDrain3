@@ -2,6 +2,7 @@
 #include <noderegistry.h>
 #include "pythonnodefactory.h"
 #include "log.h"
+#include "logsink.h"
 
 #include "pymodel.h"
 #include "pynode.h"
@@ -16,7 +17,8 @@ using namespace boost::python;
 
 
 void init() {
-	Log::init(&cout, Debug);
+	OStreamLogSink *sink = new OStreamLogSink(cout); //TODO leak
+	Log::init(sink, Debug);
 }
 
 /**

@@ -48,6 +48,7 @@ void PipelinedSimulation::setModel(IModel *model) {
 }
 
 void PipelinedSimulation::start(ptime time) {
+	running = true;
 	QThreadPool *pool = QThreadPool::globalInstance();
 	Q_FOREACH(QString envItem, QProcess::systemEnvironment()) {
 		if (envItem.split("=")[0] == "OMP_NUM_THREADS") {

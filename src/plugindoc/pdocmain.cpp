@@ -7,6 +7,7 @@ using namespace std;
 #include <node.h>
 #include <flow.h>
 #include <log.h>
+#include <logsink.h>
 #include <sstream>
 
 typedef pair<string, ltvp> par_type;
@@ -15,7 +16,7 @@ typedef pair<string, NodeParameter*> param_pair;
 
 int main(int argc, char **argv) {
 	ostringstream out;
-	Log::init(&out);
+	Log::init(new OStreamLogSink(out));
 	map<string, Flow::CalculationUnit> fd;
 	fd["Q"] = Flow::flow;
 	fd["C"] = Flow::concentration;
@@ -53,5 +54,6 @@ int main(int argc, char **argv) {
 	BOOST_FOREACH(string klass, sr.getRegisteredNames()) {
 		cout << "\t" << klass << endl;
 	}
+	Log::shutDown();
 	return 0;
 }
