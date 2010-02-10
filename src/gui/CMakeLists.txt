@@ -4,7 +4,7 @@ file(GLOB GUI_UI *.ui)
 QT4_WRAP_UI(GUI_CPP ${GUI_UI})
 set(MOC_HEADERS mainwindow.h nodeitem.h simulationscene.h portitem.h 
                 simulationsaver.h timestephandler.h newsimulationdialog.h 
-                stringparameteredit.h)
+                stringparameteredit.h logupdaterthread.h)
 QT4_WRAP_CPP(GUI_CPP ${MOC_HEADERS})
 QT4_ADD_RESOURCES(GUI_CPP ../../data/resources/cd3-gui.qrc)
 

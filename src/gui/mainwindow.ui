@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>861</width>
-    <height>510</height>
+    <width>924</width>
+    <height>650</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>CityDrain3</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="../../data/resources/cd3-gui.qrc">
     <normaloff>:/icons/logo2.svg</normaloff>:/icons/logo2.svg</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -40,7 +40,7 @@
          <string>&amp;run</string>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../../data/resources/cd3-gui.qrc">
           <normaloff>:/icons/media-playback-start.png</normaloff>:/icons/media-playback-start.png</iconset>
         </property>
        </widget>
@@ -54,7 +54,7 @@
          <string>&amp;stop</string>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../../data/resources/cd3-gui.qrc">
           <normaloff>:/icons/process-stop.png</normaloff>:/icons/process-stop.png</iconset>
         </property>
        </widget>
@@ -68,7 +68,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>861</width>
+     <width>924</width>
      <height>23</height>
     </rect>
    </property>
@@ -135,12 +135,28 @@
     </layout>
    </widget>
   </widget>
+  <widget class="QDockWidget" name="dockWidget_2">
+   <attribute name="dockWidgetArea">
+    <number>8</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_2">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QPlainTextEdit" name="logWidget">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
   <action name="actionAdd_Plugin">
    <property name="enabled">
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="../../data/resources/cd3-gui.qrc">
      <normaloff>:/icons/list-add.png</normaloff>:/icons/list-add.png</iconset>
    </property>
    <property name="text">
@@ -152,7 +168,7 @@
   </action>
   <action name="actionNewSimulation">
    <property name="icon">
-    <iconset>
+    <iconset resource="../../data/resources/cd3-gui.qrc">
      <normaloff>:/icons/document-new.png</normaloff>:/icons/document-new.png</iconset>
    </property>
    <property name="text">
@@ -167,7 +183,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="../../data/resources/cd3-gui.qrc">
      <normaloff>:/icons/document-save.png</normaloff>:/icons/document-save.png</iconset>
    </property>
    <property name="text">
@@ -182,7 +198,7 @@
   </action>
   <action name="action_open">
    <property name="icon">
-    <iconset>
+    <iconset resource="../../data/resources/cd3-gui.qrc">
      <normaloff>:/icons/document-open.png</normaloff>:/icons/document-open.png</iconset>
    </property>
    <property name="text">
@@ -200,7 +216,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="../../data/resources/cd3-gui.qrc">
      <normaloff>:/icons/list-add.png</normaloff>:/icons/list-add.png</iconset>
    </property>
    <property name="text">
@@ -212,7 +228,7 @@
   </action>
   <action name="action_exit">
    <property name="icon">
-    <iconset>
+    <iconset resource="../../data/resources/cd3-gui.qrc">
      <normaloff>:/icons/application-exit.png</normaloff>:/icons/application-exit.png</iconset>
    </property>
    <property name="text">
@@ -224,7 +240,7 @@
   </action>
   <action name="actionZoom_in">
    <property name="icon">
-    <iconset>
+    <iconset resource="../../data/resources/cd3-gui.qrc">
      <normaloff>:/icons/zoom-in.png</normaloff>:/icons/zoom-in.png</iconset>
    </property>
    <property name="text">
@@ -236,7 +252,7 @@
   </action>
   <action name="actionZoom_out">
    <property name="icon">
-    <iconset>
+    <iconset resource="../../data/resources/cd3-gui.qrc">
      <normaloff>:/icons/zoom-out.png</normaloff>:/icons/zoom-out.png</iconset>
    </property>
    <property name="text">
@@ -248,7 +264,7 @@
   </action>
   <action name="actionZoom_reset">
    <property name="icon">
-    <iconset>
+    <iconset resource="../../data/resources/cd3-gui.qrc">
      <normaloff>:/icons/zoom-original.png</normaloff>:/icons/zoom-original.png</iconset>
    </property>
    <property name="text">
@@ -257,6 +273,8 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="../../data/resources/cd3-gui.qrc"/>
+ </resources>
  <connections/>
 </ui>

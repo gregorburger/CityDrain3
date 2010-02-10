@@ -4,7 +4,7 @@
 #include <iostream>
 
 int main(int argc, char *argv[]) {
-	Log::init(&cerr, Debug);
+	//Log::init(&cerr, Debug);
 	QApplication a(argc, argv);
 	MainWindow w;
 	w.show();
