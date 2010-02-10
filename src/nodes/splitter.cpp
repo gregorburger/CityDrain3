@@ -23,6 +23,10 @@ Splitter::~Splitter() {
 	delete in;
 }
 
+bool Splitter::init(ptime start, ptime end, int dt) {
+	return (ratio >= 0 && ratio <= 1.0);
+}
+
 int Splitter::f(ptime time, int dt) {
 	(void) time;
 
