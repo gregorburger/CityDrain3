@@ -12,7 +12,8 @@ CD3_DECLARE_NODE_NAME(Sewer)
 Sewer::Sewer() {
 	addInPort(ADD_PARAMETERS(in));
 	addOutPort(ADD_PARAMETERS(out));
-	addParameter(ADD_PARAMETERS(K));
+	addParameter(ADD_PARAMETERS(K))
+		.setUnit("s");
 	addParameter(ADD_PARAMETERS(X));
 	addParameter(ADD_PARAMETERS(N));
 	K = 300;

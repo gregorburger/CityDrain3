@@ -41,7 +41,24 @@ typedef std::map<std::string, ltvp>			ssltvp;
 struct CD3_PUBLIC NodeParameter {
 	NodeParameter(std::string name,
 				  cd3::TypeInfo type,
-				  void *value) : name(name), type(type), value(value) {}
+				  void *value) : name(name), type(type), value(value) {
+		unit = "-";
+	}
+	NodeParameter &setName(std::string newname) {
+		name = newname;
+		return *this;
+	}
+
+	NodeParameter &setDescription(std::string newdesc) {
+		description = newdesc;
+		return *this;
+	}
+
+	NodeParameter &setUnit(std::string newunit) {
+		unit = newunit;
+		return *this;
+	}
+
 	std::string name, description, unit;
 	cd3::TypeInfo type;
 	void *value;
@@ -167,12 +184,13 @@ public:
 	}
 
 	template<class T>
-	void addParameter(const std::string &name, T *ptr) {
+	NodeParameter &addParameter(const std::string &name, T *ptr) {
 		cd3assert(ptr, "adding null parameter");
 		cd3assert(!parameters.count(name), str(format("parameter %1% already defined") % name));
 		NodeParameter *p = new NodeParameter(name, cd3::TypeInfo(typeid(T)), ptr);
 		Logger(Debug) << this << "addParameter(" << name << ")";
 		parameters[name] = p;
+		return *p;
 	}
 
 	template<class T>

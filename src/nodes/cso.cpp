@@ -17,8 +17,10 @@ CSO::CSO() {
 	V_Max = 300;
 	Q_Max = 0.1;
 
-	addParameter(ADD_PARAMETERS(V_Max));
-	addParameter(ADD_PARAMETERS(Q_Max));
+	addParameter(ADD_PARAMETERS(V_Max))
+		.setUnit("m3");
+	addParameter(ADD_PARAMETERS(Q_Max))
+		.setUnit("m3/s");
 
 	addState(ADD_PARAMETERS(stored_volume));
 }

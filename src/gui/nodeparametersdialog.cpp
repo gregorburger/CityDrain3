@@ -35,7 +35,8 @@ NodeParametersDialog::NodeParametersDialog(Node *node, QWidget *parent)
 		QString name = QString::fromStdString(param->name);
 		QString unit = QString::fromStdString(param->unit);
 		QLabel *label = new QLabel(this);
-		label->setText(QString("%1 [%2] :").arg(name).arg(unit));
+		label->setText(QString("%1 (%2) :").arg(name).arg(unit));
+		label->setToolTip(QString::fromStdString(param->description));
 		QWidget *param_widget = widgetForParameter(param);
 		layout->addWidget(label, row, 0, Qt::AlignRight);
 		layout->addWidget(param_widget, row, 1);

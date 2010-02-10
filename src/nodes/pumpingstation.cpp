@@ -15,7 +15,8 @@ PumpingStation::PumpingStation() {
 	basin_volume = 360;
 	number_of_pollutants = 0;
 
-	addParameter(ADD_PARAMETERS(basin_volume));
+	addParameter(ADD_PARAMETERS(basin_volume))
+		.setUnit("m3");
 	//addParameter(ADD_PARAMETERS(NP));
 	addArrayParameter(ADD_PARAMETERS(Qp));
 	addArrayParameter(ADD_PARAMETERS(Von));

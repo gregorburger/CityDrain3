@@ -23,10 +23,14 @@ CatchmentCSS::CatchmentCSS() {
 
 	addOutPort(ADD_PARAMETERS_P(out));
 
-	addParameter(ADD_PARAMETERS(area));
-	addParameter(ADD_PARAMETERS(run_off_coeff));
-	addParameter(ADD_PARAMETERS(initial_loss));
-	addParameter(ADD_PARAMETERS(permanent_loss));
+	addParameter(ADD_PARAMETERS(area))
+		.setUnit("ha");
+	addParameter(ADD_PARAMETERS(run_off_coeff))
+		.setUnit("0-1");
+	addParameter(ADD_PARAMETERS(initial_loss))
+		.setUnit("mm");
+	addParameter(ADD_PARAMETERS(permanent_loss))
+		.setUnit("mm/day");
 	addParameter(ADD_PARAMETERS(N));
 	addParameter(ADD_PARAMETERS(K));
 	addParameter(ADD_PARAMETERS(X));
