@@ -14,6 +14,7 @@ class SimulationThread;
 class QDateTimeEdit;
 class QSpinBox;
 class QDateTime;
+class LogUpdaterThread;
 
 class MainWindow : public QMainWindow {
 	Q_OBJECT
@@ -33,6 +34,7 @@ private:
 	bool model_unsaved;
 	QDateTimeEdit *stop, *start;
 	QSpinBox *dt;
+	LogUpdaterThread *log_updater;
 
 public Q_SLOTS:
 	void on_actionAdd_Plugin_activated();

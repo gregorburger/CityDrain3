@@ -9,6 +9,7 @@
 #include "simulationscene.h"
 #include "newsimulationdialog.h"
 #include "simulationthread.h"
+#include "logupdaterthread.h"
 
 #include <QFileDialog>
 #include <QDebug>
@@ -40,7 +41,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	QLabel *stopLabel = new QLabel("stop:", ui->mainToolBar);
 	ui->mainToolBar->addWidget(stopLabel);
 
-
 	stop = new QDateTimeEdit(ui->mainToolBar);
 	stop->setDisplayFormat("d.M.yy h:mm:ss");
 	stop->setCalendarPopup(true);
@@ -56,9 +56,14 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->mainToolBar->addWidget(dt);
 	this->connect(dt, SIGNAL(valueChanged(int)), SLOT(dt_valueChanged(int)));
 	sceneChanged();
+
+	log_updater = new LogUpdaterThread();
+	log_updater->start();
+	ui->logWidget->connect(log_updater, SIGNAL(newLogLine(QString)), SLOT(appendPlainText(QString)), Qt::QueuedConnection);
 }
 
 MainWindow::~MainWindow() {
+	delete log_updater;
 	if (scene)
 		delete scene;
 	delete ui;
