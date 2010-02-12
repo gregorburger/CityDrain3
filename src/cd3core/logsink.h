@@ -4,9 +4,11 @@
 #include <string>
 #include <ostream>
 
-class LSEndl {};
+#include <cd3globals.h>
 
-class LogSink
+class CD3_PUBLIC LSEndl {};
+
+class CD3_PUBLIC LogSink
 {
 public:
 	virtual ~LogSink() {}
@@ -17,7 +19,7 @@ public:
 	virtual LogSink &operator<<(LSEndl) = 0;
 };
 
-class OStreamLogSink : public LogSink {
+class CD3_PUBLIC OStreamLogSink : public LogSink {
 public:
 	OStreamLogSink(std::ostream &ostream);
 

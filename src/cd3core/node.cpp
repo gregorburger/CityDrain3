@@ -52,7 +52,7 @@ void Node::setOutPort(const std::string &name, const Flow *outflow) {
 const Flow *Node::getOutPort(const std::string &name) const {
 	cd3assert(out_ports.find(name) != out_ports.end(),
 			  str(format("no such out port (%1%)") % name));
-	Flow *f = out_ports.at(name);
+	Flow *f = out_ports.find(name)->second;
 	return f;
 }
 
