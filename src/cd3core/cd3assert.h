@@ -10,7 +10,7 @@
 	std::abort(); \
 	}
 #else
-#define cd3assert(expr, message)
+#define cd3assert(expr, message) (void) (expr);
 #endif
 
 #endif // CD3ASSERT_H
