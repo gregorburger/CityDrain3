@@ -62,6 +62,15 @@ Logger &Logger::operator<< (const int i) {
 	return *this;
 }
 
+Logger &Logger::operator<< (const size_t i) {
+	if (level < max) {
+		return *this;
+	}
+	sink << " " << i;
+	dirty = true;
+	return *this;
+}
+
 Logger &Logger::operator<< (const long i) {
 	if (level < max) {
 		return *this;

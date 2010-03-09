@@ -21,6 +21,7 @@ public:
 	Logger &operator<< (const Node *node);
 	Logger &operator<< (const char* s);
 	Logger &operator<< (const int i);
+	Logger &operator<< (const size_t i);
 	Logger &operator<< (const long i);
 	Logger &operator<< (const double f);
 	Logger &operator<< (const float f);
