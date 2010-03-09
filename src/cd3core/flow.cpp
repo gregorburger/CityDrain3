@@ -149,7 +149,7 @@ void Flow::dump() const {
 	cout << endl;
 }
 
-unsigned int Flow::countUnits(Flow::CalculationUnit unit) {
+size_t Flow::countUnits(Flow::CalculationUnit unit) {
 	cd3assert(fd.defined, "flow not defined");
 	return fd.unit_names[unit].size();
 }

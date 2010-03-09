@@ -25,6 +25,10 @@ Sewer::~Sewer() {
 }
 
 void Sewer::deinit() {
+	for (int i = 0; i < N; i++) {
+		removeState(str(format("V[%1%]") % i));
+	}
+	V.clear();
 }
 
 bool Sewer::init(ptime start, ptime end, int dt) {

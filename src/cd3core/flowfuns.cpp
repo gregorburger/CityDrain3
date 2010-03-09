@@ -78,16 +78,15 @@ Flow FlowFuns::catchement_lossmodel(Flow in,
 Flow FlowFuns::catchment_flowmodel	(Flow in,
 							 int area,
 							 int dt,
-							 const std::vector<double *> &cvalues,
-							 const std::vector<std::string *> &cnames) {
+							 const std::vector<double> &cvalues) {
 
-	cd3assert(cvalues.size() == cnames.size(),
-			  "Flow::flowmodel: concentration values and names must be of same dimensions");
+	cd3assert(cvalues.size() == Flow::countUnits(Flow::concentration),
+			  "wrong size of concentration values vector");
 	Flow out;
 	double rain = in[0];
 
 	for (size_t i = 0; i < cvalues.size(); i++) {
-		out[i+1] = *cvalues[i];
+		out[i+1] = cvalues[i];
 	}
 
 	out[0] = rain/1000/dt*area;

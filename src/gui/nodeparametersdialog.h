@@ -11,6 +11,7 @@ namespace Ui {
 class Node;
 class NodeParameter;
 class QGridLayout;
+class QLineEdit;
 
 class NodeParametersDialog : public QDialog
 {
@@ -26,6 +27,7 @@ private:
 	Node *node;
 	QGridLayout *layout;
 	QMap<std::string, QWidget *> widgets;
+	QMap<std::string, QLineEdit *> array_widgets;
 };
 
 #endif // NODEPARAMETERSDIALOG_H

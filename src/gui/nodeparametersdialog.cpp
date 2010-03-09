@@ -45,6 +45,20 @@ NodeParametersDialog::NodeParametersDialog(Node *node, QWidget *parent)
 		//parameters << param->name;
 	}
 
+	const ssltvp *ap = node->const_array_parameters;
+	typedef std::pair<std::string, ltvp> ap_pair;
+	BOOST_FOREACH(ap_pair item, *ap) {
+		QString name = QString::fromStdString(item.first);
+		QLabel *label = new QLabel(this);
+		label->setText(QString("%1 ([-,-,...]) :").arg(name));
+		QLineEdit *param_widget = new QLineEdit(this);
+
+		layout->addWidget(label, row, 0, Qt::AlignRight);
+		layout->addWidget(param_widget, row, 1);
+		row ++;
+		array_widgets[item.first] = param_widget;
+	}
+
 	ui->verticalLayout->insertLayout(0, layout);
 	this->adjustSize();
 }
@@ -109,7 +123,7 @@ bool NodeParametersDialog::updateNodeParameters() {
 			vector<string> names = Flow::getNames();
 			QLineEdit *widget = (QLineEdit *) widgets[p];
 			QStringList values = widget->text().split(",");
-			if (values.length() != names.size()) {
+			if (values.size() != names.size()) {
 				qDebug() << "input format wrong";
 				return false;
 			}
@@ -130,5 +144,16 @@ bool NodeParametersDialog::updateNodeParameters() {
 		}
 		qWarning() << "cannot update node parameter " << QString::fromStdString(p);
 	}
+
+	Q_FOREACH(string pname, array_widgets.keys()) {
+		QLineEdit *line = array_widgets[pname];
+		QStringList values = line->text().split(",", QString::SkipEmptyParts);
+		node->clearArrayParameter<double>(pname);
+		Q_FOREACH(QString value, values) {
+			bool ok;
+			node->appendArrayParameter(pname, value.toDouble(&ok));
+		}
+	}
+
 	return true;
 }

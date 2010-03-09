@@ -17,6 +17,11 @@ bool ArrayParamTest::init(ptime start, ptime stop, int dt) {
 	(void) stop;
 	(void) dt;
 	out[0] = Qe;
+	size_t nconcs = Flow::countUnits(Flow::concentration);
+	if (C.size() != nconcs) {
+		Logger(Warning) << "Array Parameter C must contain" << nconcs << "elements";
+		return false;
+	}
 	for (size_t i = 0; i < C.size(); i++) {
 		out[i+1] = C[i];
 	}

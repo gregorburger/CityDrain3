@@ -13,15 +13,12 @@ CD3_DECLARE_NODE_NAME(PumpingStation)
 
 PumpingStation::PumpingStation() {
 	basin_volume = 360;
-	number_of_pollutants = 0;
 
 	addParameter(ADD_PARAMETERS(basin_volume))
-		.setUnit("m3");
-	//addParameter(ADD_PARAMETERS(NP));
+		.setUnit("m^3");
 	addArrayParameter(ADD_PARAMETERS(Qp));
 	addArrayParameter(ADD_PARAMETERS(Von));
 	addArrayParameter(ADD_PARAMETERS(Voff));
-	addParameter(ADD_PARAMETERS(number_of_pollutants));
 
 	addInPort(ADD_PARAMETERS(in));
 	addOutPort(ADD_PARAMETERS(out_p));
@@ -33,20 +30,38 @@ bool PumpingStation::init(int start, ptime end, int dt) {
 	(void) start;
 	(void) end;
 	(void) dt;
-	NP = Qp.size();
-	cd3assert(Von.size() == NP, "vector Von must be of same size as Qp"); //TODO convert all asserts to warnings with return false
-	cd3assert(Voff.size() == NP, "vector Voff must be of same size as Qp");
+	if (Qp.size() != Von.size() || Von.size() != Voff.size()) {
+		Logger(Warning) << "Array parameters Qp, Von and Voff must be of same dimension";
+		return false;
+	}
+
 	for (size_t i = 0; i < NP; ++i) {
-		cd3assert(Von[i] >= 0 && Von[i] <= basin_volume, "Von[i] ");
-		cd3assert(Voff[i] >= 0 && Voff[i] <= basin_volume, "Von[i] ");
-		cd3assert(Von[i] >= Voff[i], "Von[i] must be smaller than Voff[i]");
+		if (Von[i] < 0 || Von[i] > basin_volume) {
+			Logger(Warning) << "Von[i] ";
+			return false;
+		}
+
+		if (Voff[i] < 0 || Voff[i] > basin_volume) {
+			Logger(Warning) << "Von[i] ";
+			return false;
+		}
+		if (Von[i] < Voff[i]) {
+			Logger(Warning) << "Von[i] must be smaller than Voff[i]";
+			return false;
+		}
 	}
 
 	push_back(Qpp).repeat(NP, 0.0);
 
 	for (size_t i = 0; i < NP - 1; ++i) {
-		cd3assert(Von[i] <= Von[i+1], "Von[i] must be smaller than Von[i+1]");
-		cd3assert(Voff[i] <= Voff[i+1], "Voff[i] must be smaller than Voff[i+1]");
+		if (Von[i] > Von[i+1]) {
+			Logger(Warning) << "Von[i] must be smaller than Von[i+1]";
+			return false;
+		}
+		if (Voff[i] > Voff[i+1]) {
+			Logger(Warning) << "Voff[i] must be smaller than Voff[i+1]";
+			return false;
+		}
 	}
 	return true;
 }

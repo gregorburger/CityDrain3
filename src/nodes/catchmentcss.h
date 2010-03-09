@@ -28,9 +28,7 @@ private:
 	double permanent_loss;
 	int N;
 	double K, X;
-	int n_rain_conc;
-	std::vector<double *> rain_con_value;
-	std::vector<std::string *> rain_con_name;
+	std::vector<double> rain_concentration;
 
 	std::map<int, std::pair<double, double> > musk_param;
 };

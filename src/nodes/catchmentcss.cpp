@@ -34,7 +34,12 @@ CatchmentCSS::CatchmentCSS() {
 	addParameter(ADD_PARAMETERS(N));
 	addParameter(ADD_PARAMETERS(K));
 	addParameter(ADD_PARAMETERS(X));
-	addParameter(ADD_PARAMETERS(n_rain_conc));
+
+	for (size_t i = 0; i < Flow::countUnits(Flow::concentration); i++) {
+		rain_concentration.push_back(0.0);
+	}
+
+	addArrayParameter(ADD_PARAMETERS(rain_concentration));
 
 	addState(ADD_PARAMETERS_P(loss_basin));
 
@@ -45,7 +50,6 @@ CatchmentCSS::CatchmentCSS() {
 	N = 3;
 	K = 300;
 	X = 0;
-	n_rain_conc = 0;
 }
 
 
@@ -63,13 +67,9 @@ bool CatchmentCSS::init(ptime start, ptime end, int dt) {
 	(void) end;
 	(void) dt;
 
-	for (int i = 0; i < n_rain_conc; i++) {
-		double *rc = new double;
-		std::string *rn = new std::string();
-		rain_con_value.push_back(rc);
-		rain_con_name.push_back(rn);
-		addParameter(str(format("rain_con_value[%1%]") % i), rc);
-		addParameter(str(format("rain_con_name[%1%]") % i), rn);
+	size_t nconcs = Flow::countUnits(Flow::concentration);
+	while (rain_concentration.size() < nconcs) {
+		rain_concentration.push_back(0.0);
 	}
 
 	for (int i = 0; i < N; i++) {
@@ -77,20 +77,15 @@ bool CatchmentCSS::init(ptime start, ptime end, int dt) {
 		addState(str(format("V[%1%]") % i), f);
 		V.push_back(f);
 	}
-	permanent_loss = permanent_loss / 86400 * dt;
 	return true;
 }
 
 void CatchmentCSS::deinit() {
-
-	for (int i = 0; i < n_rain_conc; i++) {
-		delete rain_con_name[i];
-		delete rain_con_value[i];
-	}
-
 	for (int i = 0; i < N; i++) {
+		removeState(str(format("V[%1%]") % i));
 		delete V[i];
 	}
+	V.clear();
 }
 
 int CatchmentCSS::f(ptime time, int dt) {
@@ -99,8 +94,12 @@ int CatchmentCSS::f(ptime time, int dt) {
 	setMuskParam(&C_x, &C_y, dt);
 
 	std::vector<Flow> inputs;
-	Flow loss = FlowFuns::catchement_lossmodel(*rain_in, loss_basin, initial_loss, permanent_loss, run_off_coeff);
-	Flow flow = FlowFuns::catchment_flowmodel(loss, area, dt, rain_con_value, rain_con_name);
+	Flow loss = FlowFuns::catchement_lossmodel(*rain_in,
+											   loss_basin,
+											   initial_loss,
+											   permanent_loss / 86400 * dt,
+											   run_off_coeff);
+	Flow flow = FlowFuns::catchment_flowmodel(loss, area, dt, rain_concentration);
 	inputs.push_back(flow);
 	inputs.push_back(*dwf_in);
 	inputs.push_back(*parasite_in);

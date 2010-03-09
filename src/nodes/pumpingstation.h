@@ -19,7 +19,6 @@ private:
 	double basin_volume;
 	size_t NP;
 	std::vector<double> Qp, Von, Voff, Qpp;
-	int number_of_pollutants;
 };
 
 #endif // PUMPINGSTATION_H

@@ -163,6 +163,17 @@ public:
 		vp->push_back(param);
 	}
 
+	template<class T>
+	void clearArrayParameter(const std::string &name) {
+		cd3assert(array_parameters.find(name) != array_parameters.end(),
+				  str(format("no parameter with name %1%") % name));
+		ltvp p = array_parameters[name];
+		cd3assert(p.first == cd3::TypeInfo(typeid(T)),
+				  str(format("wrong type for parameter %1%") % name));
+		vector<T> *vp = static_cast<vector<T> *>(p.second);
+		vp->clear();
+	}
+
 
 	//const ssltvp	* const const_parameters;
 	parameters_type getParameters() const {
@@ -181,6 +192,13 @@ public:
 				  str(format("state %1% already defined") % name));
 		Logger(Debug) << this << "addState(" << name << ")";
 		states[name] = ltvp(cd3::TypeInfo(typeid(T)), ptr);
+	}
+
+	void removeState(const std::string &name) {
+		cd3assert(states.find(name) != states.end(),
+				  str(format("state %1% not defined") % name));
+		Logger(Debug) << this << "removeState(" << name << ")";
+		states.erase(name);
 	}
 
 	template<class T>

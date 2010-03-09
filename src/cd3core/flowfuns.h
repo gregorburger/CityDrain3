@@ -19,8 +19,7 @@ static std::pair<Flow, Flow> split(const Flow f,
 static Flow catchment_flowmodel(Flow f,
 								int area,
 								int dt,
-								const std::vector<double *> &cvalues,
-								const std::vector<std::string *> &cnames);
+								const std::vector<double> &cvalues);
 
 static Flow catchement_lossmodel(Flow f,
 								 Flow *basin,

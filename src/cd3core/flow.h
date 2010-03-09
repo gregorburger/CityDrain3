@@ -36,7 +36,7 @@ public:
 
 	double getValue(const std::string &name) const;
 	static CalculationUnit getUnit(const std::string &name);
-	static unsigned int countUnits(CalculationUnit unit);
+	static size_t countUnits(CalculationUnit unit);
 
 	double getIth(CalculationUnit unit, size_t i) const;
 	void setIth(CalculationUnit unit, size_t i, double value);
