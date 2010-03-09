@@ -64,10 +64,10 @@ MainWindow::MainWindow(QWidget *parent) :
 }
 
 MainWindow::~MainWindow() {
-	Log::shutDown();
 	if (scene)
 		delete scene;
 	delete ui;
+	Log::shutDown();
 }
 
 void MainWindow::changeEvent(QEvent *e) {
