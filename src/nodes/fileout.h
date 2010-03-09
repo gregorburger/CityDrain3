@@ -18,6 +18,7 @@ private:
 	string out_file_name;
 	QFile file;
 	QTextStream stream;
+	ptime end;
 };
 
 #endif // FILEOUT_H

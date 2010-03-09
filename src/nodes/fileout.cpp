@@ -45,6 +45,7 @@ bool FileOut::init(ptime start, ptime stop, int dt) {
 	}
 	Logger() << this << "using fileout:" << out_file_name;
 	stream.setRealNumberPrecision(10);
+	end = stop;
 	return true;
 }
 
@@ -71,5 +72,8 @@ int FileOut::f(ptime time, int dt) {
 			stream << "\t" << in.getValue(name);
 	}
 	stream << "\n";
+	if (time == end) {
+		stream.flush();
+	}
 	return dt;
 }
