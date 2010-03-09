@@ -68,7 +68,14 @@ int main(int argc, char **argv) {
 	p.add("model", 1);
 
 	po::variables_map vm;
-	po::store(po::command_line_parser(argc, argv).options(desc).positional(p).run(), vm);
+	try {
+		po::store(po::command_line_parser(argc, argv).options(desc).positional(p).run(), vm);
+	} catch (po::unknown_option o) {
+		std::cout << "unknown option " << endl << endl;
+		std::cout << desc << std::endl;
+		return 1;
+	}
+
 	po::notify(vm);
 
 	if (vm.count("help")) {
