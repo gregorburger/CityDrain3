@@ -30,6 +30,23 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->setupUi(this);
 	ui->graphicsView->setRenderHints(QPainter::Antialiasing);
 
+	setupTimeControls();
+
+	sceneChanged();
+
+	log_updater = new GuiLogSink();
+	Log::init(log_updater);
+	ui->logWidget->connect(log_updater, SIGNAL(newLogLine(QString)), SLOT(appendPlainText(QString)), Qt::QueuedConnection);
+}
+
+MainWindow::~MainWindow() {
+	if (scene)
+		delete scene;
+	delete ui;
+	Log::shutDown();
+}
+
+void MainWindow::setupTimeControls() {
 	QLabel *startLabel = new QLabel("start:", ui->mainToolBar);
 	ui->mainToolBar->addWidget(startLabel);
 
@@ -56,18 +73,11 @@ MainWindow::MainWindow(QWidget *parent) :
 	dt->setSingleStep(60);
 	ui->mainToolBar->addWidget(dt);
 	this->connect(dt, SIGNAL(valueChanged(int)), SLOT(dt_valueChanged(int)));
-	sceneChanged();
 
-	log_updater = new GuiLogSink();
-	Log::init(log_updater);
-	ui->logWidget->connect(log_updater, SIGNAL(newLogLine(QString)), SLOT(appendPlainText(QString)), Qt::QueuedConnection);
-}
-
-MainWindow::~MainWindow() {
-	if (scene)
-		delete scene;
-	delete ui;
-	Log::shutDown();
+	apply_time_button = new QPushButton("apply");
+	apply_time_button->setEnabled(false);
+	ui->mainToolBar->addWidget(apply_time_button);
+	this->connect(apply_time_button, SIGNAL(clicked()), SLOT(applyTime()));
 }
 
 void MainWindow::changeEvent(QEvent *e) {
@@ -207,10 +217,13 @@ void MainWindow::sceneChanged() {
 	start->setEnabled(true);
 	stop->setEnabled(true);
 	dt->setEnabled(true);
+
 	SimulationParameters sp = scene->getSimulation()->getSimulationParameters();
 	start->setDateTime(pttoqt(sp.start));
 	stop->setDateTime(pttoqt(sp.stop));
 	dt->setValue(sp.dt);
+
+	apply_time_button->setEnabled(false);
 }
 
 void MainWindow::on_actionSave_Simulation_activated() {
@@ -244,7 +257,10 @@ void MainWindow::on_action_open_activated() {
 		return;
 	}
 
-	QString path = QFileDialog::getOpenFileName(this, "Open Model File", ".", "XML Files (*.xml)");
+	QString path = QFileDialog::getOpenFileName(this,
+												"Open Model File",
+												".",
+												"XML Files (*.xml)");
 	if (path == "")
 		return;
 	if (!path.endsWith(".xml", Qt::CaseInsensitive)) {
@@ -268,19 +284,29 @@ void MainWindow::start_stop_dateTimeChanged(const QDateTime &date) {
 	if (stop->dateTime() == date) {
 		start->setMaximumDateTime(stop->dateTime().addSecs(-dt->value()));
 	}
-	setNewSimulationParameters();
+	apply_time_button->setEnabled(true);
 }
 
 void MainWindow::dt_valueChanged(int value) {
-	setNewSimulationParameters();
+	apply_time_button->setEnabled(true);
 }
 
-void MainWindow::setNewSimulationParameters() {
+void MainWindow::applyTime() {
 	SimulationParameters p = scene->getSimulation()->getSimulationParameters();
 	p.start = qttopt(start->dateTime());
 	p.stop = qttopt(stop->dateTime());
 	p.dt = dt->value();
+
+	scene->getModel()->deinitNodes();
+	if (!scene->getModel()->initNodes(p)) {
+		QMessageBox::critical(this, "failed to init nodes",
+							  "some nodes aren't happy with"
+							  "your new choice of simulation time.\n"
+							  "See log for more informations.");
+		return;
+	}
 	scene->getSimulation()->setSimulationParameters(p);
+	apply_time_button->setEnabled(false);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {

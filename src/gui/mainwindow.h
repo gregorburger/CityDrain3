@@ -14,6 +14,7 @@ class SimulationThread;
 class QDateTimeEdit;
 class QSpinBox;
 class QDateTime;
+class QPushButton;
 class GuiLogSink;
 
 class MainWindow : public QMainWindow {
@@ -27,6 +28,7 @@ protected:
 	void keyPressEvent(QKeyEvent *e);
 	void closeEvent(QCloseEvent *);
 
+	void setupTimeControls();
 private:
 	Ui::MainWindow *ui;
 	SimulationScene *scene;
@@ -34,6 +36,7 @@ private:
 	bool model_unsaved;
 	QDateTimeEdit *stop, *start;
 	QSpinBox *dt;
+	QPushButton *apply_time_button;
 	GuiLogSink *log_updater;
 
 public Q_SLOTS:
@@ -51,6 +54,7 @@ public Q_SLOTS:
 
 	void start_stop_dateTimeChanged(const QDateTime &date);
 	void dt_valueChanged(int value);
+	void applyTime();
 
 	void simulationThreadStarted();
 	void simulationThreadFinished();
@@ -58,7 +62,6 @@ public Q_SLOTS:
 	void zoomOut(int times = 1);
 	void pluginsAdded();
 	void sceneChanged();
-	void setNewSimulationParameters();
 };
 
 #endif // MAINWINDOW_H
