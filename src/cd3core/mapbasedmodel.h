@@ -31,7 +31,8 @@ public:
 
 
 	//call before adding Connections
-	void initNodes(const SimulationParameters &);
+	bool initNodes(const SimulationParameters &);
+	void deinitNodes();
 
 	node_set_type getSourceNodes();
 	const node_set_type getSourceNodes() const;

@@ -46,7 +46,9 @@ public:
 	virtual void addConnection(NodeConnection *con) = 0;
 	virtual void removeConnection(NodeConnection *con) = 0;
 
-	virtual void initNodes(const SimulationParameters &) = 0;
+	virtual bool initNodes(const SimulationParameters &) = 0;
+	virtual void deinitNodes() = 0;
+
 	virtual node_set_type getSourceNodes() = 0;
 	virtual node_set_type getSinkNodes() = 0;
 

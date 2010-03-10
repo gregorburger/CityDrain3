@@ -141,11 +141,22 @@ void MapBasedModel::removeConnection(NodeConnection *con) {
 	}
 }
 
-void MapBasedModel::initNodes(const SimulationParameters &sp) {
+bool MapBasedModel::initNodes(const SimulationParameters &sp) {
+	node_set_type::iterator it = all_nodes.begin();
+	bool all_good = true;
+	while (it != all_nodes.end()) {
+		Node *n = *it;
+		all_good = all_good && n->init(sp.start, sp.stop, sp.dt);
+		it++;
+	}
+	return all_good;
+}
+
+void MapBasedModel::deinitNodes() {
 	node_set_type::iterator it = all_nodes.begin();
 	while (it != all_nodes.end()) {
 		Node *n = *it;
-		cd3assert(n->init(sp.start, sp.stop, sp.dt), "node initialization failed");
+		n->deinit();
 		it++;
 	}
 }
