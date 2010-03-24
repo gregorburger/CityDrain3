@@ -57,7 +57,7 @@ void ConnectionItem::updatePositions() {
 	connection_path.moveTo(first);
 	connection_path.cubicTo(c1, c2, second);
 	handle_path = QPainterPath();
-	handle_path.addEllipse(mid(first.x(), second.x()) - 7, mid(first.y(),second.y()) - 7, 14, 14);
+	handle_path.addEllipse(mid(first.x(), second.x()) - 5, mid(first.y(),second.y()) - 5, 10, 10);
 	united = handle_path.united(connection_path);
 	update();
 }
@@ -71,7 +71,7 @@ void ConnectionItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 	if (hovered) {
 		c = Qt::green;
 	} else {
-		c = Qt::black;
+		c = Qt::white;
 	}
 	QBrush brush(c);
 	painter->strokePath(connection_path, painter->pen());
