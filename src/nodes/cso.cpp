@@ -28,8 +28,17 @@ CSO::CSO() {
 CSO::~CSO() {
 }
 
+bool CSO::init(ptime start, ptime end, int dt) {
+	(void) end;
+	(void) dt;
+	this->start = start;
+	return true;
+}
+
 int CSO::f(ptime time, int dt) {
-	(void) time;
+	if (time == start) {
+		stored_volume.clear();
+	}
 
 	double Q_In = in[0];
 	double V_Stored = stored_volume[0];

@@ -63,9 +63,10 @@ CatchmentCSS::~CatchmentCSS() {
 }
 
 bool CatchmentCSS::init(ptime start, ptime end, int dt) {
-	(void) start;
 	(void) end;
 	(void) dt;
+
+	this->start = start;
 
 	size_t nconcs = Flow::countUnits(Flow::concentration);
 	while (rain_concentration.size() < nconcs) {
@@ -89,7 +90,13 @@ void CatchmentCSS::deinit() {
 }
 
 int CatchmentCSS::f(ptime time, int dt) {
-	(void) time;
+	if (time == start) {
+		for (int i = 0; i < N; i++) {
+			V[i]->clear();
+		}
+		loss_basin->clear();
+	}
+
 	double C_x, C_y;
 	setMuskParam(&C_x, &C_y, dt);
 

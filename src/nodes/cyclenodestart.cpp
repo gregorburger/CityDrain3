@@ -10,11 +10,17 @@ CycleNodeStart::CycleNodeStart() {
 }
 
 CycleNodeStart::~CycleNodeStart() {
+}
 
+bool CycleNodeStart::init(ptime start, ptime end, int dt) {
+	this->start = start;
+	return true;
 }
 
 int CycleNodeStart::f(ptime time, int dt) {
 	(void) dt;
-	(void) time;
+	if (time == start) {
+		out.clear();
+	}
 	return dt;
 }

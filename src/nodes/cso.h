@@ -10,6 +10,7 @@ public:
 	CSO();
 	virtual ~CSO();
 	int f(ptime time, int dt);
+	bool init(ptime start, ptime end, int dt);
 
 private:
 	Flow in;
@@ -19,6 +20,8 @@ private:
 
 	double Q_Max;
 	double V_Max;
+
+	ptime start;
 };
 
 #endif // CSO_H

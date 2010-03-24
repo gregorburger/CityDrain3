@@ -26,10 +26,11 @@ PumpingStation::PumpingStation() {
 	addState(ADD_PARAMETERS(volume));
 }
 
-bool PumpingStation::init(int start, ptime end, int dt) {
-	(void) start;
+bool PumpingStation::init(ptime start, ptime end, int dt) {
 	(void) end;
 	(void) dt;
+	this->start = start;
+
 	if (Qp.size() != Von.size() || Von.size() != Voff.size()) {
 		Logger(Warning) << "Array parameters Qp, Von and Voff must be of same dimension";
 		return false;
@@ -74,10 +75,7 @@ double sum(const vector<double> &in) {
 }
 
 int PumpingStation::f(ptime time, int dt) {
-	(void) time;
-	static bool first = true;
-	if (first) {//init flows
-		first = false;
+	if (time == start) {//init flows
 		out_p = in;
 		out_p.clear();
 		out_w = in;

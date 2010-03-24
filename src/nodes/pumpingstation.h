@@ -10,7 +10,7 @@ CD3_DECLARE_NODE(PumpingStation)
 public:
 	PumpingStation();
 	virtual ~PumpingStation();
-	bool init(int start, ptime end, int dt);
+	bool init(ptime start, ptime end, int dt);
 	int f(ptime time, int dt);
 
 private:
@@ -19,6 +19,7 @@ private:
 	double basin_volume;
 	size_t NP;
 	std::vector<double> Qp, Von, Voff, Qpp;
+	ptime start;
 };
 
 #endif // PUMPINGSTATION_H
