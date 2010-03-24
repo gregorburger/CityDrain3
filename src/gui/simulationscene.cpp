@@ -80,6 +80,7 @@ void SimulationScene::load() {
 		NodeItem *sink = item_map[con->sink->getId()];
 		PortItem *sink_port = sink->getInPort(QString::fromStdString(con->sink_port));
 		ConnectionItem *citem = new ConnectionItem(source_port, sink_port, 0, 0);
+		citem->setConnection(con);
 		source_port->setSourceOf(citem);
 		sink_port->setSinkOf(citem);
 		citem->updatePositions();
