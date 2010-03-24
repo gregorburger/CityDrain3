@@ -310,9 +310,6 @@ void SimulationScene::remove(ConnectionItem *item) {
 }
 
 void SimulationScene::remove(NodeItem *item) {
-	node_items.removeAll(item);
-	removeItem(item);
-	model->removeNode(item->getNode());
 	Q_FOREACH(ConnectionItem *citem, connection_items) {
 		if (citem->source && citem->source->getNodeItem() == item) {
 			qDebug() << "removed a connection";
@@ -323,6 +320,10 @@ void SimulationScene::remove(NodeItem *item) {
 			remove(citem);
 		}
 	}
+
+	node_items.removeAll(item);
+	removeItem(item);
+	model->removeNode(item->getNode());
 
 	delete item;
 }
