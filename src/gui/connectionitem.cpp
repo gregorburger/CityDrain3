@@ -1,12 +1,13 @@
 #include "connectionitem.h"
 #include "portitem.h"
-#include <QPen>
+#include <QPainter>
+#include <QDebug>
 
 ConnectionItem::ConnectionItem(PortItem *source,
 							   QPointF second,
 							   QGraphicsItem *parent,
 							   QGraphicsScene *scene)
-			  : QGraphicsPathItem(parent, scene), source(source), sink(0) {
+			  : QGraphicsItem(parent, scene), source(source), sink(0), hovered(false) {
 	this->second = second;
 	setAcceptHoverEvents(true);
 	updatePositions();
@@ -16,7 +17,7 @@ ConnectionItem::ConnectionItem(PortItem *source,
 							   PortItem *sink,
 							   QGraphicsItem *parent,
 							   QGraphicsScene *scene)
-			  : QGraphicsPathItem(parent, scene), source(source), sink(sink) {
+			  : QGraphicsItem(parent, scene), source(source), sink(sink), hovered(false) {
 	setAcceptHoverEvents(true);
 	updatePositions();
 }
@@ -37,7 +38,13 @@ void ConnectionItem::setSecond(QPointF second) {
 	updatePositions();
 }
 
+
+qreal mid(qreal first, qreal second) {
+	return qMin(first, second) + (qAbs(first - second) / 2.0);
+}
+
 void ConnectionItem::updatePositions() {
+	connection_path = QPainterPath();
 	first = source->scenePos();
 	first.setX(first.x() + source->boundingRect().right());
 	if (sink) {
@@ -47,26 +54,37 @@ void ConnectionItem::updatePositions() {
 	qreal x = (first - second).x();
 	QPointF c1(first.x() - x / 2.0, first.y());
 	QPointF c2(second.x() + x / 2.0, second.y());
-	QPainterPath p;
-	p.moveTo(first);
-	p.cubicTo(c1, c2, second);
-	this->setPath(p);
+	connection_path.moveTo(first);
+	connection_path.cubicTo(c1, c2, second);
+	handle_path = QPainterPath();
+	handle_path.addEllipse(mid(first.x(), second.x()) - 7, mid(first.y(),second.y()) - 7, 14, 14);
+	united = handle_path.united(connection_path);
+	update();
 }
 
-QPainterPath ConnectionItem::shape() const {
-	return path();
+QRectF ConnectionItem::boundingRect() const {
+	return united.boundingRect();
+}
+
+void ConnectionItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *w) {
+	QColor c;
+	if (hovered) {
+		c = Qt::green;
+	} else {
+		c = Qt::black;
+	}
+	QBrush brush(c);
+	painter->strokePath(connection_path, painter->pen());
+	painter->fillPath(handle_path, brush);
+	painter->strokePath(handle_path, painter->pen());
 }
 
 void ConnectionItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
-	QPen p = pen();
-	p.setColor(Qt::red);
-	setPen(p);
+	hovered = true;
 	update();
 }
 
 void ConnectionItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
-	QPen p = pen();
-	p.setColor(Qt::black);
-	setPen(p);
+	hovered = false;
 	update();
 }

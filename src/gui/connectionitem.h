@@ -1,12 +1,13 @@
 #ifndef CONNECTIONITEM_H
 #define CONNECTIONITEM_H
 
-#include <QGraphicsPathItem>
+#include <QGraphicsItem>
+#include <QPen>
 
 class PortItem;
 class NodeConnection;
 
-class ConnectionItem : public QGraphicsPathItem
+class ConnectionItem : public QGraphicsItem
 {
 public:
 	ConnectionItem(PortItem *source, QPointF second,
@@ -15,6 +16,12 @@ public:
 				   QGraphicsItem *parent = 0, QGraphicsScene *scene = 0);
 	virtual ~ConnectionItem();
 
+	QRectF boundingRect() const;
+	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *w = 0);
+	QPainterPath shape() const {
+		return connection_path.united(handle_path);
+	}
+
 	void setSink(PortItem *sink);
 	void setSecond(QPointF second);
 	void updatePositions();
@@ -22,12 +29,12 @@ public:
 	void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
 	void setConnection(NodeConnection *con) { this->connection = con; }
 	NodeConnection *getConnection() const { return connection; }
-	QPainterPath shape() const;
 	PortItem *source, *sink;
-
 private:
+	QPainterPath connection_path, handle_path, united;
 	QPointF first, second;
 	NodeConnection *connection;
+	bool hovered;
 };
 
 #endif // CONNECTIONITEM_H
