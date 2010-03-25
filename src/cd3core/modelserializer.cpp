@@ -11,8 +11,6 @@
 #include <boost/foreach.hpp>
 #include <boost/filesystem.hpp>
 
-using namespace boost::filesystem;
-
 #include <cd3assert.h>
 
 typedef std::pair<std::string, Node *> snp;
@@ -28,13 +26,13 @@ ModelSerializer::~ModelSerializer() {
 }
 
 std::string ModelSerializer::pathForTimeStep(ptime time) const {
-	return boost::str(boost::format("%2%/%1%-cd3-state.xml") % to_simple_string(time) % dir);
+	return boost::str(boost::format("%2%/%1%-cd3-state.xml") % to_iso_string(time) % dir);
 }
 
 void ModelSerializer::serialize(ptime time) const {
-	path pdir(dir);
-	if (!exists(pdir)) {
-		create_directories(pdir);
+	boost::filesystem::path pdir(dir);
+	if (!boost::filesystem::exists(pdir)) {
+		boost::filesystem::create_directories(pdir);
 	}
 	std::string path = pathForTimeStep(time);
 	std::ofstream out(path.c_str());
@@ -89,7 +87,7 @@ void ModelSerializer::serializeNode(std::ostream &os, std::string &node_name, No
 
 void ModelSerializer::deserialize(ptime time) {
 	string path = pathForTimeStep(time);
-	cd3assert(exists(path), "no such state file");
+	cd3assert(boost::filesystem::exists(path), "no such state file");
 	Deserializer deser(model);
 	QXmlSimpleReader reader;
 	QFile f(QString::fromStdString(path));
