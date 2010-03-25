@@ -9,19 +9,12 @@ using namespace boost;
 CD3_DECLARE_NODE_NAME(CatchmentCSS)
 
 CatchmentCSS::CatchmentCSS() {
-	rain_in = new Flow();
-	dwf_in = new Flow();
-	parasite_in = new Flow();
-	q_upstream = new Flow();
-	out = new Flow();
-	loss_basin = new Flow();
+	addInPort(ADD_PARAMETERS(rain_in));
+	addInPort(ADD_PARAMETERS(dwf_in));
+	addInPort(ADD_PARAMETERS(parasite_in));
+	addInPort(ADD_PARAMETERS(q_upstream));
 
-	addInPort(ADD_PARAMETERS_P(rain_in));
-	addInPort(ADD_PARAMETERS_P(dwf_in));
-	addInPort(ADD_PARAMETERS_P(parasite_in));
-	addInPort(ADD_PARAMETERS_P(q_upstream));
-
-	addOutPort(ADD_PARAMETERS_P(out));
+	addOutPort(ADD_PARAMETERS(out));
 
 	addParameter(ADD_PARAMETERS(area))
 		.setUnit("ha");
@@ -41,7 +34,7 @@ CatchmentCSS::CatchmentCSS() {
 
 	addArrayParameter(ADD_PARAMETERS(rain_concentration));
 
-	addState(ADD_PARAMETERS_P(loss_basin));
+	addState(ADD_PARAMETERS(loss_basin));
 
 	area = 208;
 	run_off_coeff = 0.2;
@@ -54,12 +47,6 @@ CatchmentCSS::CatchmentCSS() {
 
 
 CatchmentCSS::~CatchmentCSS() {
-	delete out;
-	delete q_upstream;
-	delete parasite_in;
-	delete dwf_in;
-	delete rain_in;
-	delete loss_basin;
 }
 
 bool CatchmentCSS::init(ptime start, ptime end, int dt) {
@@ -94,29 +81,33 @@ int CatchmentCSS::f(ptime time, int dt) {
 		for (int i = 0; i < N; i++) {
 			V[i]->clear();
 		}
-		loss_basin->clear();
+		loss_basin.clear();
 	}
 
 	double C_x, C_y;
 	setMuskParam(&C_x, &C_y, dt);
 
 	std::vector<Flow> inputs;
-	Flow loss = FlowFuns::catchement_lossmodel(*rain_in,
-											   loss_basin,
+	Flow loss = FlowFuns::catchement_lossmodel(rain_in,
+											   &loss_basin,
 											   initial_loss,
 											   permanent_loss / 86400 * dt,
 											   run_off_coeff);
 	Flow flow = FlowFuns::catchment_flowmodel(loss, area, dt, rain_concentration);
+
 	inputs.push_back(flow);
-	inputs.push_back(*dwf_in);
-	inputs.push_back(*parasite_in);
+	inputs.push_back(dwf_in);
+	cout << "dwf: "; dwf_in.dump();
+	inputs.push_back(parasite_in);
+	cout << "parasite_in: "; parasite_in.dump();
 
 	Flow rain = FlowFuns::mix(inputs);
+	Flow qi = q_upstream;
 
 	for (int i = 0; i < N; i++) {
-		rain = FlowFuns::route_catchment(*q_upstream, rain, V[i], N, C_x, C_y, dt);
+		qi = FlowFuns::route_catchment(qi, rain, V[i], N, C_x, C_y, dt);
 	}
-	*out = rain;
+	out = qi;
 	return dt;
 }
 

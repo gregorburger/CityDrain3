@@ -11,12 +11,16 @@ Flow FlowFuns::mix(const std::vector<Flow*> &inputs) {
 		f[0] += (*inputs[i])[0];
 	}
 
-	for (size_t cn = 0; cn < f.countUnits(Flow::concentration); cn++) {
+	if (f[0] == 0.0) {
+		return f;
+	}
+
+	for (int cn = 1; cn < f.size(); cn++) {
 		double c = 0.0;
 		for (size_t i = 0; i <  inputs.size(); i++) {
-			c += (*inputs[i])[cn+1] * (*inputs[i])[0];
+			c += (*inputs[i])[cn] * (*inputs[i])[0];
 		}
-		f[cn+1] = c/f[0];
+		f[cn] = c/f[0];
 	}
 	return f;
 }
@@ -27,12 +31,16 @@ Flow FlowFuns::mix(const std::vector<Flow> &inputs) {
 		f[0] += inputs[i][0];
 	}
 
-	for (size_t cn = 0; cn < f.countUnits(Flow::concentration); cn++) {
+	if (f[0] == 0.0) {
+		return f;
+	}
+
+	for (int cn = 1; cn < f.size(); cn++) {
 		double c = 0.0;
 		for (size_t i = 0; i <  inputs.size(); i++) {
-			c += inputs[i][cn+1] * inputs[i][0];
+			c += inputs[i][cn] * inputs[i][0];
 		}
-		f[cn+1] = c/f[0];
+		f[cn] = c/f[0];
 	}
 	return f;
 }
@@ -119,9 +127,9 @@ Flow FlowFuns::route_sewer(const Flow inflow,
 	return out;
 }
 
-Flow FlowFuns::route_catchment(const Flow inflow,
+Flow FlowFuns::route_catchment(const Flow in,
 							   Flow rain,
-							   Flow *volume,
+							   Flow *_oldvolume,
 							   int N,
 							   double C_x,
 							   double C_y,
@@ -129,25 +137,25 @@ Flow FlowFuns::route_catchment(const Flow inflow,
 	cd3assert(rain.countUnits(Flow::flow) > 0 || rain.countUnits(Flow::rain) > 0,
 			  "rain_in in catchment is empty");
 	Flow newvolume;
+	Flow oldvolume = *_oldvolume;
 	Flow out;
-	double inqe = inflow.countUnits(Flow::flow) ? inflow[0] : 0.0;
-	double volqe = (*volume)[0];
-	double rainqe = rain[0] / N;
-	double outqe = (inqe + rainqe) * C_x + volqe * C_y;
-	double newvolqe = (inqe - outqe + rainqe) * dt + volqe;
+	rain[0] = rain[0] / N;
+	out[0] = (in[0] + rain[0]) * C_x + oldvolume[0] * C_y;
+	newvolume[0] = (in[0] - out[0] + rain[0]) * dt + oldvolume[0];
 
-	out[0] = outqe;
-
-	newvolume[0] = newvolqe;
-
-	if (inflow.countUnits(Flow::concentration)) {
-		for (size_t i = 0; i < Flow::countUnits(Flow::concentration); i++) {
-			double c0 = 0.5 * outqe + newvolqe/dt;
-			double c1 = inqe * inflow[i+1] + rainqe * rain[i+1] - (*volume)[i+1]*(0.5*outqe - volqe/dt);
-			newvolume[i+1] = std::max(0.0, c1/c0);
-			out[i+1] = (newvolume[i+1] + (*volume)[i+1]) * 0.5;
-		}
+	//QL = rain
+	//QI = in
+	for (int i = 1; i < Flow::size(); i++) {
+		//c0=0.5.*QE(1)+V(1)./tstep;
+		double c0 = 0.5 * out[0] + newvolume[0]/dt;
+		//     c1 = QI(1).* QI(k+1)+  QL(1).* QL(k+1)* N - Vold(k+1) * (0.5.* QE(1)  - Vold(1)     ./tstep);
+		double c1 = in[0] * in[i] + rain[0] * rain[i] - oldvolume[i] * (0.5 * out[0] - oldvolume[0] / dt);
+		cout << "c0: " << c0 << " c1 " << c1 << endl;
+		newvolume[i] = c0 <= 0 ? 0.0 :  c1/c0;
+		//newvolume[i] = std::max(0.0, c1/c0);
+		//QE(k+1)=( V(k+1) + Vold(k+1) )./2;
+		out[i] = (newvolume[i] + oldvolume[i]) * 0.5;
 	}
-	*volume = newvolume;
+	*_oldvolume = newvolume;
 	return out;
 }

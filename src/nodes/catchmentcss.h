@@ -4,7 +4,7 @@
 #include <node.h>
 #include <vector>
 #include <map>
-class Flow;
+#include <flow.h>
 
 CD3_DECLARE_NODE(CatchmentCSS)
 public:
@@ -18,9 +18,9 @@ private:
 	void setMuskParam(double *C_x, double *C_y, int dt);
 	void initFlows();
 
-	Flow *rain_in, *dwf_in, *parasite_in, *q_upstream, *out; //ports
+	Flow rain_in, dwf_in, parasite_in, q_upstream, out; //ports
 
-	Flow *loss_basin; //states
+	Flow loss_basin; //states
 	std::vector<Flow *> V;
 	int area;
 	double run_off_coeff;
