@@ -97,9 +97,7 @@ int CatchmentCSS::f(ptime time, int dt) {
 
 	inputs.push_back(flow);
 	inputs.push_back(dwf_in);
-	cout << "dwf: "; dwf_in.dump();
 	inputs.push_back(parasite_in);
-	cout << "parasite_in: "; parasite_in.dump();
 
 	Flow rain = FlowFuns::mix(inputs);
 	Flow qi = q_upstream;
