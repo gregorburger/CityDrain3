@@ -44,7 +44,9 @@ IF(WIN32 AND NOT UNIX)
 	${Boost_LIBRARY_DIRS}/boost_thread-*-mt-1_*.dll
 	${Boost_LIBRARY_DIRS}/boost_python-*-mt-1_*.dll
 	${Boost_LIBRARY_DIRS}/boost_program_options-*-mt-1_*.dll
-	${Boost_LIBRARY_DIRS}/boost_date_time-*-mt-1_*.dll)
+	${Boost_LIBRARY_DIRS}/boost_date_time-*-mt-1_*.dll
+	${Boost_LIBRARY_DIRS}/boost_system-*-mt-1_*.dll
+	${Boost_LIBRARY_DIRS}/boost_filesystem-*-mt-1_*.dll)
   install(FILES ${DLLS} DESTINATION bin)
   #set(CPACK_NSIS_MENU_LINKS "bin/cd3-gui.exe" "Run CityDrain3 GUI")
   #SET(CPACK_NSIS_MODIFY_PATH ON) 
