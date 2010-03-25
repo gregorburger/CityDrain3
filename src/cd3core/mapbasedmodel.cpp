@@ -200,7 +200,7 @@ name_node_map MapBasedModel::getNamesAndNodes() const {
 
 bool MapBasedModel::connected() const {
 		BOOST_FOREACH(Node * n, uncon_nodes) {
-		std::cerr << "node " << n->getId() << "not connected" << std::endl;
+		Logger(Warning) << "node" << n->getId() << "not connected";
 	}
 	return uncon_nodes.empty();
 }
@@ -217,7 +217,7 @@ void MapBasedModel::checkModel() const {
 				}
 			}
 			if (!found) {
-				cerr << "WARNING: inport " << port.first << " of node " << node->getId() <<  " is not connected" << endl;
+				Logger(Warning) << "inport" << port.first << "of node" << node->getId() << "is not connected";
 			}
 		}
 
@@ -230,7 +230,7 @@ void MapBasedModel::checkModel() const {
 				}
 			}
 			if (!found) {
-				cerr << "WARNING: outport " << port.first << " of node " << node->getId() <<  " is not connected" << endl;
+				Logger(Warning) << "outport" << port.first << "of node" << node->getId() << "is not connected";
 			}
 		}
 	}

@@ -19,7 +19,7 @@ struct PythonCallback {
 		try {
 			callable(ptr(s), time);
 		} catch(python::error_already_set const &) {
-			cerr << __FILE__ << ":" << __LINE__ << endl;
+			Logger(Error) << __FILE__ << ":" << __LINE__;
 			PyErr_Print();
 			abort();
 		}

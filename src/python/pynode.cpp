@@ -26,7 +26,7 @@ struct NodeWrapper : Node, python::wrapper<Node> {
 		try {
 			return python::call_method<int>(self, "f", time, dt);
 		} catch(python::error_already_set const &) {
-			cerr << __FILE__ << ":" << __LINE__ << endl;
+			Logger(Error) << __FILE__ << ":" << __LINE__;
 			PyErr_Print();
 			abort();
 		}
@@ -198,7 +198,7 @@ struct INodeFactoryWrapper : public INodeFactory, python::wrapper<INodeFactory> 
 		try {
 			return python::call_method<Node*>(self, "createNode");
 		} catch(python::error_already_set const &) {
-			cerr << __FILE__ << ":" << __LINE__ << endl;
+			Logger(Error) << __FILE__ << ":" << __LINE__;
 			PyErr_Print();
 			abort();
 		}
@@ -208,7 +208,7 @@ struct INodeFactoryWrapper : public INodeFactory, python::wrapper<INodeFactory> 
 		try {
 			return python::call_method<string>(self, "getNodeName");
 		} catch(python::error_already_set const &) {
-			cerr << __FILE__ << ":" << __LINE__ << endl;
+			Logger(Error) << __FILE__ << ":" << __LINE__;
 			PyErr_Print();
 			abort();
 		}

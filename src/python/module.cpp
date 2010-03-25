@@ -129,7 +129,7 @@ void PythonEnv::registerNodes(NodeRegistry *registry, const string &module) {
 		}
 		Logger(Debug) << "found" << numn << "Nodes in module" << module;
 	} catch(error_already_set const &) {
-		cerr << __FILE__ << ":" << __LINE__ << endl;
+		Logger(Error) << __FILE__ << ":" << __LINE__;
 		PyErr_Print();
 		abort();
 	}

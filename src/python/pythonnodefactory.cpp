@@ -23,11 +23,11 @@ Node *PythonNodeFactory::createNode() const {
 		object node = priv->klass();
 		return extract<Node *>(node);
 	} catch(error_already_set const &) {
-		cerr << __FILE__ << ":" << __LINE__ << endl;
+		Logger(Error) << __FILE__ << ":" << __LINE__;
 		PyErr_Print();
 		abort();
 	}
-        return 0;
+	return 0;
 }
 
 std::string PythonNodeFactory::getNodeName() {
