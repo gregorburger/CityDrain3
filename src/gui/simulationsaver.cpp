@@ -51,7 +51,7 @@ void SimulationSaver::save() {
 
 	writer->writeEndElement();
 	writer->writeEndDocument();
-
+	out->close();
 }
 
 inline
