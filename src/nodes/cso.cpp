@@ -39,53 +39,42 @@ int CSO::f(ptime time, int dt) {
 	if (time == start) {
 		stored_volume.clear();
 	}
+	Flow V_old = stored_volume;
+	//Vii=(u(1)-Qemax)*tstep+x(1);
+	double Vii = (in[0]-Q_Max)*dt + V_old[0];
 
-	double Q_In = in[0];
-	double V_Stored = stored_volume[0];
-	double V_Volume = (Q_In - Q_Max) * dt + V_Stored;
-	double Q_Out = 0;
-	double Q_Overflow = 0;
-	double V_Stored_new = 0;
-
-	if (V_Volume > 0) {
-		if (V_Volume < V_Max) {
-			//Case 3
-			V_Stored_new = (Q_In - Q_Max) * dt - V_Stored;
-			Q_Out = Q_Max;
-			Q_Overflow = 0;
-		} else {
-			//Case 2
-			V_Stored_new = V_Max;
-			Q_Out = Q_Max;
-			Q_Overflow = Q_In - Q_Max - (V_Max - V_Stored) / dt;
-		}
-	} else { //V_Volume < 0
-		//Case 1
-		V_Stored_new = 0;
-		Q_Out = V_Stored  / dt + Q_In;
-		Q_Overflow = 0;
+	if (Vii < 0) { //case 1
+		//	Vi=0;
+		stored_volume[0] = 0;
+		//	Qei=x(1)/tstep+u(1);
+		out[0] = V_old[0]/dt + in[0];
+		//	Qwi=0;
+		overflow[0] = 0;
+	}
+	if (Vii > V_Max) {//case 2
+		//Vi=Vmax;
+		stored_volume[0] = V_Max;
+		//Qei=Qemax;
+		out[0] = Q_Max;
+		//Qwi=u(1)-Qemax-(Vmax-x(1))/tstep;
+		overflow[0] = in[0] - Q_Max - (V_Max - V_old[0]) / dt;
+	}
+	if (Vii >= 0 && Vii <= V_Max) {//case 3
+		//Vi=(u(1)-Qemax)*tstep+x(1);
+		stored_volume[0] = (in[0]-Q_Max)*dt + V_old[0];
+		//Qei=Qemax;
+		out[0] = Q_Max;
+		//Qwi=0;
+		overflow[0] = 0;
 	}
 
-	out[0] = Q_Out;
-	overflow[0] = Q_Overflow;
-	stored_volume[0] = V_Stored_new;
+	double VPrime = in[0] * dt + V_old[0];
 
-	double V_Prime = Q_In * dt + V_Stored;
-
-	if (V_Prime > 0) {
-
-		cd3assert(V_Prime > 0, str(format("V_Prime (%1% needs to be bigger than 0") % V_Prime));
-		double V_Prime_Inv = 1 / V_Prime;
-
-		for (size_t i = 0; i < out.countUnits(Flow::concentration); i++) {
-			double Ci = (in[i+1] * Q_In * dt
-						+ stored_volume[i+1] * V_Stored) * V_Prime_Inv;
-			out[i+1] = Ci;
-			overflow[i+1] = Ci;
-			stored_volume[i+1] = Ci;
+	if (VPrime > 0) {
+		for (int i = 1; i < Flow::size(); i++) {
+			double c = (in[i]*in[0] * dt + V_old[i] * V_old[0]) / VPrime;
+			out[i] = overflow[i] = stored_volume[i] = c;
 		}
-	} else {
-		Logger(Warning) << "V_prime < 0 ";
 	}
 
 	return dt;
