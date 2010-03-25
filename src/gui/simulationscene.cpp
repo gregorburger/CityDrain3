@@ -72,6 +72,9 @@ void SimulationScene::load() {
 		addItem(item);
 		item->setPos(gml.getNodePosition(item->getId()));
 		item_map[node->getId()] = item;
+		if (!ids.contains(node->getClassName()))
+			ids[node->getClassName()] = 0;
+		ids[node->getClassName()]++;
 	}
 
 	BOOST_FOREACH(NodeConnection *con, *model->getConnections()) {
