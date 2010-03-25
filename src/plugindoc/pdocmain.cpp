@@ -27,32 +27,42 @@ int main(int argc, char **argv) {
 		r.addNativePlugin(argv[i]);
 		sr.addNativePlugin(argv[i]);
 	}
-	cout << "Nodes: ";
+	cout << "# Nodes ";
 	BOOST_FOREACH(string klass, r.getRegisteredNames()) {
 		Node *node = r.createNode(klass);
-		cout << endl << klass << ":" << endl;
+		cout << endl << "## " << klass << endl;
+
+		cout << "**Parameters**" << endl << endl;
 
 		BOOST_FOREACH(param_pair par, node->getParameters()) {
 			NodeParameter *p = par.second;
-			cout << "\tparameter: " << p->name << endl;
+			cout << "- parameter: " << p->name << endl;
 		}
+
+		BOOST_FOREACH(par_type par, *node->const_array_parameters) {
+			cout << "- array parameter: " << par.first << endl;
+		}
+
+		cout << endl << "**States**" << endl << endl;
 
 		BOOST_FOREACH(par_type state, *node->const_states) {
-			cout << "\tstate: " << state.first << endl;
+			cout << "- state: " << state.first << endl;
 		}
 
+		cout << endl << "**Ports**" << endl << endl;
+
 		BOOST_FOREACH(port_type port, *node->const_in_ports) {
-			cout << "\tin_port: " << port.first << endl;
+			cout << "- in: " << port.first << endl;
 		}
 
 		BOOST_FOREACH(port_type port, *node->const_out_ports) {
-			cout << "\tout_port: " << port.first << endl;
+			cout << "- out: " << port.first << endl;
 		}
 //		delete node;
 	}
-	cout << endl << "Simulations: " << endl;
+	cout << endl << "# Simulations " << endl;
 	BOOST_FOREACH(string klass, sr.getRegisteredNames()) {
-		cout << "\t" << klass << endl;
+		cout << "## " << klass << endl;
 	}
 	Log::shutDown();
 	return 0;
