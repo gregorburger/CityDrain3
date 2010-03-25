@@ -5,12 +5,13 @@
 #include <imodel.h>
 #include <fstream>
 #include <QDebug>
-#include <QFile>
-#include <QDir>
 
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/foreach.hpp>
+#include <boost/filesystem.hpp>
+
+using namespace boost::filesystem;
 
 #include <cd3assert.h>
 
@@ -31,12 +32,10 @@ std::string ModelSerializer::pathForTimeStep(ptime time) const {
 }
 
 void ModelSerializer::serialize(ptime time) const {
-	QString qs_dir = QString::fromStdString(dir);
-	QDir qdir = QDir::current();
-	if (!qdir.exists(qs_dir)) {
-		qdir.mkdir(qs_dir);
+	path pdir(dir);
+	if (!exists(pdir)) {
+		create_directories(pdir);
 	}
-
 	std::string path = pathForTimeStep(time);
 	std::ofstream out(path.c_str());
 	serialize(out);
@@ -89,11 +88,11 @@ void ModelSerializer::serializeNode(std::ostream &os, std::string &node_name, No
 }
 
 void ModelSerializer::deserialize(ptime time) {
-	QString path = QString::fromStdString(pathForTimeStep(time));
-	cd3assert(QDir::current().exists(path), "no such state file");
+	string path = pathForTimeStep(time);
+	cd3assert(exists(path), "no such state file");
 	Deserializer deser(model);
 	QXmlSimpleReader reader;
-	QFile f(path);
+	QFile f(QString::fromStdString(path));
 	cd3assert(f.open(QIODevice::ReadOnly), "could not open state file for reading");
 	QXmlInputSource s(&f);
 	reader.setContentHandler(&deser);

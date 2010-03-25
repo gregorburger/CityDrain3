@@ -14,7 +14,7 @@ endif()
 INCLUDE_DIRECTORIES(src/cd3core src/cd3core/qs src/python)
 find_package(Qt4 REQUIRED)
 
-find_package(Boost 1.38.0 COMPONENTS signals program_options thread python date_time REQUIRED)
+find_package(Boost 1.38.0 COMPONENTS signals program_options thread python date_time filesystem REQUIRED)
 #set(Boost_USE_STATIC_LIBS ON)
 add_definitions(${Boost_LIB_DIAGNOSTIC_DEFINITIONS})
 set(Boost_USE_MULTITHREADED ON)
