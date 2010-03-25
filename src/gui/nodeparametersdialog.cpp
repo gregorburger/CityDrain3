@@ -93,6 +93,13 @@ QWidget *NodeParametersDialog::widgetForParameter(NodeParameter *p) {
 		for (size_t i = 1; i < names.size(); i++)  {
 			text += ", " + QString::fromStdString(names[i]);
 		}
+		widget->setStatusTip(text);
+
+		Flow *f = (Flow*) p->value;
+		text = QString("%1").arg((*f)[0]);
+		for (int i = 1; i < Flow::size(); i++) {
+			text += QString(", %1").arg((*f)[i]);
+		}
 		widget->setText(text);
 		return widget;
 	}
