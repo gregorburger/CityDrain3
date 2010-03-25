@@ -57,7 +57,6 @@ Flow::Flow() {
 	for (size_t i = 0; i < fd.size; i++) {
 		f[i] = 0.0;
 	}
-	//fill(f->begin(), f->end(), 0.0);
 }
 
 Flow::Flow(const Flow &other) {
@@ -140,11 +139,8 @@ bool Flow::hasName(const std::string &name) {
 
 void Flow::dump() const {
 	cd3assert(fd.defined, "flow not defined");
-	cout << "name\tvalue\ttype\n";
-	BOOST_FOREACH(std::string name, fd.names) {
-		std::cout << name << "\t"
-				<< getValue(name) << "\t"
-				<< cu2string(getUnit(name)) << "\n";
+	for (size_t i = 0; i < fd.size; i++) {
+		cout << f[i] << "\t\t";
 	}
 	cout << endl;
 }
