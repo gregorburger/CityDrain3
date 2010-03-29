@@ -47,8 +47,8 @@ Flow FlowFuns::mix(const std::vector<Flow> &inputs) {
 
 std::pair<Flow, Flow> FlowFuns::split(const Flow f, float ratio) {
 	cd3assert(ratio <= 1.0 && ratio >= 0.0, "ratio must me between 0 and 1");
-	Flow f1;
-	Flow f2;
+	Flow f1 = f;
+	Flow f2 = f;
 
 	double qe = f[0];
 	f1[0] = qe * ratio;
