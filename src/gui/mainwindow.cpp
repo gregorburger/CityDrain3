@@ -26,7 +26,7 @@
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
-	ui(new Ui::MainWindow), scene(0), model_unsaved(false) {
+	ui(new Ui::MainWindow), scene(0), simulation_unsaved(false) {
 	ui->setupUi(this);
 	ui->graphicsView->setRenderHints(QPainter::Antialiasing);
 
@@ -191,6 +191,7 @@ void MainWindow::on_actionNewSimulation_activated() {
 		sceneChanged();
 		ui->graphicsView->setScene(scene);
 		ui->actionSave_Simulation->setEnabled(true);
+		ui->actionSave_as->setEnabled(true);
 		ui->runButton->setEnabled(true);
 		pluginsAdded();
 		ui->actionAdd_Plugin->setEnabled(true);
@@ -224,17 +225,14 @@ void MainWindow::sceneChanged() {
 	dt->setValue(sp.dt);
 
 	apply_time_button->setEnabled(false);
+	this->connect(scene, SIGNAL(unsavedChanged(bool)), SLOT(simulationUnsavedChanged(bool)));
 }
 
 void MainWindow::on_actionSave_Simulation_activated() {
 	if (scene->getModelFileName() == "") {
-		QString fileName = QFileDialog::getSaveFileName(this, "Save Model File", ".", "XML Files (*.xml)");
-		if (fileName == "")
-			return;
-		scene->setModelFileName(fileName);
+		on_actionSave_as_activated();
 	}
 	scene->save();
-	model_unsaved = false;
 }
 
 void MainWindow::on_actionAdd_Python_Module_activated() {
@@ -263,14 +261,12 @@ void MainWindow::on_action_open_activated() {
 												"XML Files (*.xml)");
 	if (path == "")
 		return;
-	if (!path.endsWith(".xml", Qt::CaseInsensitive)) {
-		qDebug() << "adding xml";
-		path = path + ".xml";
-	}
+	setWindowTitle(QString("CityDrain3 (%1)").arg(path));
 	scene = new SimulationScene(path);
 	sceneChanged();
 	ui->graphicsView->setScene(scene);
 	ui->actionSave_Simulation->setEnabled(true);
+	ui->actionSave_as->setEnabled(true);
 	ui->runButton->setEnabled(true);
 	ui->actionAdd_Plugin->setEnabled(true);
 	ui->actionAdd_Python_Module->setEnabled(true);
@@ -310,11 +306,37 @@ void MainWindow::applyTime() {
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
+	if (!simulation_unsaved) {
+		event->accept();
+		return;
+	}
 	if (QMessageBox::question(this, "Quit",
-							  "Do you really wan't to Quit?",
+							  "There are unsaved changes. Do you really wan't to Quit?",
 							  QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes) {
 		event->accept();
 	} else {
 		event->ignore();
 	}
+}
+
+void MainWindow::on_actionSave_as_activated() {
+	QString fileName = QFileDialog::getSaveFileName(this, "Save Model File", ".", "XML Files (*.xml)");
+	if (fileName == "")
+		return;
+	if (!fileName.endsWith(".xml", Qt::CaseInsensitive)) {
+		fileName = fileName + ".xml";
+	}
+	scene->setModelFileName(fileName);
+	scene->save();
+	setWindowTitle(QString("CityDrain3 (%1)").arg(fileName));
+}
+
+void MainWindow::simulationUnsavedChanged(bool unsaved) {
+	if (unsaved && !windowTitle().endsWith(" *")) {
+		setWindowTitle(windowTitle() + " *");
+	}
+	if (!unsaved && windowTitle().endsWith(" *")) {
+		setWindowTitle(windowTitle().left(windowTitle().length()-2));
+	}
+	simulation_unsaved = unsaved;
 }

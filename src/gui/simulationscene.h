@@ -2,7 +2,6 @@
 #define SIMULATIONSCENE_H
 
 #include <string>
-unsigned int qHash(std::string s);
 
 #include <QGraphicsScene>
 #include <QMap>
@@ -24,7 +23,9 @@ public:
 	virtual ~SimulationScene();
 	void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
 	void dropEvent(QGraphicsSceneDragDropEvent *event);
-	void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
+	void mousePressEvent(QGraphicsSceneMouseEvent *event);
+	void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+	void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 	void save();
 
@@ -43,10 +44,11 @@ public:
 	void remove(NodeItem *item);
 	void remove(ConnectionItem *item);
 
+Q_SIGNALS:
+	void unsavedChanged(bool unsaved);
+
 private Q_SLOTS:
-	void mousePressEvent(QGraphicsSceneMouseEvent *event);
-	void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-	void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+	void nodeChanged(NodeItem *nitem);
 
 private:
 	void load();
@@ -64,6 +66,7 @@ private:
 	QList<ConnectionItem *> connection_items;
 	QString model_file_name;
 	QStringList plugins, python_modules;
+	bool unsaved;
 };
 
 #endif // SIMULATIONSCENE_H

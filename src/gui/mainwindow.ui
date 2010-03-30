@@ -4,10 +4,10 @@
  <widget class="QMainWindow" name="MainWindow">
   <property name="geometry">
    <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>924</width>
-    <height>650</height>
+	<x>0</x>
+	<y>0</y>
+	<width>924</width>
+	<height>650</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,84 +15,85 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../../data/resources/cd3-gui.qrc">
-    <normaloff>:/icons/logo2.svg</normaloff>:/icons/logo2.svg</iconset>
+	<normaloff>:/icons/logo2.svg</normaloff>:/icons/logo2.svg</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
-    <item>
-     <widget class="QGraphicsView" name="graphicsView"/>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QProgressBar" name="simProgressBar">
-        <property name="value">
-         <number>0</number>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="runButton">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>&amp;run</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../../data/resources/cd3-gui.qrc">
-          <normaloff>:/icons/media-playback-start.png</normaloff>:/icons/media-playback-start.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="stopButton">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>&amp;stop</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../../data/resources/cd3-gui.qrc">
-          <normaloff>:/icons/process-stop.png</normaloff>:/icons/process-stop.png</iconset>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
+	<item>
+	 <widget class="QGraphicsView" name="graphicsView"/>
+	</item>
+	<item>
+	 <layout class="QHBoxLayout" name="horizontalLayout">
+	  <item>
+	   <widget class="QProgressBar" name="simProgressBar">
+		<property name="value">
+		 <number>0</number>
+		</property>
+	   </widget>
+	  </item>
+	  <item>
+	   <widget class="QPushButton" name="runButton">
+		<property name="enabled">
+		 <bool>false</bool>
+		</property>
+		<property name="text">
+		 <string>&amp;run</string>
+		</property>
+		<property name="icon">
+		 <iconset resource="../../data/resources/cd3-gui.qrc">
+		  <normaloff>:/icons/media-playback-start.png</normaloff>:/icons/media-playback-start.png</iconset>
+		</property>
+	   </widget>
+	  </item>
+	  <item>
+	   <widget class="QPushButton" name="stopButton">
+		<property name="enabled">
+		 <bool>false</bool>
+		</property>
+		<property name="text">
+		 <string>&amp;stop</string>
+		</property>
+		<property name="icon">
+		 <iconset resource="../../data/resources/cd3-gui.qrc">
+		  <normaloff>:/icons/process-stop.png</normaloff>:/icons/process-stop.png</iconset>
+		</property>
+	   </widget>
+	  </item>
+	 </layout>
+	</item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>924</width>
-     <height>23</height>
-    </rect>
+	<rect>
+	 <x>0</x>
+	 <y>0</y>
+	 <width>924</width>
+	 <height>25</height>
+	</rect>
    </property>
    <widget class="QMenu" name="menuFile">
-    <property name="title">
-     <string>&amp;Simulation</string>
-    </property>
-    <addaction name="actionNewSimulation"/>
-    <addaction name="actionSave_Simulation"/>
-    <addaction name="action_open"/>
-    <addaction name="separator"/>
-    <addaction name="actionAdd_Plugin"/>
-    <addaction name="actionAdd_Python_Module"/>
-    <addaction name="separator"/>
-    <addaction name="action_exit"/>
+	<property name="title">
+	 <string>&amp;Simulation</string>
+	</property>
+	<addaction name="actionNewSimulation"/>
+	<addaction name="actionSave_Simulation"/>
+	<addaction name="actionSave_as"/>
+	<addaction name="action_open"/>
+	<addaction name="separator"/>
+	<addaction name="actionAdd_Plugin"/>
+	<addaction name="actionAdd_Python_Module"/>
+	<addaction name="separator"/>
+	<addaction name="action_exit"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
+	<enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>false</bool>
+	<bool>false</bool>
    </attribute>
    <addaction name="actionNewSimulation"/>
    <addaction name="actionSave_Simulation"/>
@@ -107,168 +108,183 @@
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="dockWidget">
    <attribute name="dockWidgetArea">
-    <number>1</number>
+	<number>1</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents">
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="QTreeWidget" name="treeWidget">
-       <property name="dragEnabled">
-        <bool>true</bool>
-       </property>
-       <property name="columnCount">
-        <number>1</number>
-       </property>
-       <attribute name="headerVisible">
-        <bool>false</bool>
-       </attribute>
-       <attribute name="headerVisible">
-        <bool>false</bool>
-       </attribute>
-       <column>
-        <property name="text">
-         <string notr="true">1</string>
-        </property>
-       </column>
-      </widget>
-     </item>
-    </layout>
+	<layout class="QVBoxLayout" name="verticalLayout">
+	 <item>
+	  <widget class="QTreeWidget" name="treeWidget">
+	   <property name="dragEnabled">
+		<bool>true</bool>
+	   </property>
+	   <property name="columnCount">
+		<number>1</number>
+	   </property>
+	   <attribute name="headerVisible">
+		<bool>false</bool>
+	   </attribute>
+	   <attribute name="headerVisible">
+		<bool>false</bool>
+	   </attribute>
+	   <column>
+		<property name="text">
+		 <string notr="true">1</string>
+		</property>
+	   </column>
+	  </widget>
+	 </item>
+	</layout>
    </widget>
   </widget>
   <widget class="QDockWidget" name="dockWidget_2">
    <attribute name="dockWidgetArea">
-    <number>8</number>
+	<number>8</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_2">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QPlainTextEdit" name="logWidget">
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
+	<layout class="QHBoxLayout" name="horizontalLayout_2">
+	 <item>
+	  <widget class="QPlainTextEdit" name="logWidget">
+	   <property name="readOnly">
+		<bool>true</bool>
+	   </property>
+	  </widget>
+	 </item>
+	</layout>
    </widget>
   </widget>
   <action name="actionAdd_Plugin">
    <property name="enabled">
-    <bool>false</bool>
+	<bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="../../data/resources/cd3-gui.qrc">
-     <normaloff>:/icons/list-add.png</normaloff>:/icons/list-add.png</iconset>
+	<iconset resource="../../data/resources/cd3-gui.qrc">
+	 <normaloff>:/icons/list-add.png</normaloff>:/icons/list-add.png</iconset>
    </property>
    <property name="text">
-    <string>add Plugin</string>
+	<string>add Plugin</string>
    </property>
    <property name="toolTip">
-    <string>add a native plugin to the project</string>
+	<string>add a native plugin to the project</string>
    </property>
   </action>
   <action name="actionNewSimulation">
    <property name="icon">
-    <iconset resource="../../data/resources/cd3-gui.qrc">
-     <normaloff>:/icons/document-new.png</normaloff>:/icons/document-new.png</iconset>
+	<iconset resource="../../data/resources/cd3-gui.qrc">
+	 <normaloff>:/icons/document-new.png</normaloff>:/icons/document-new.png</iconset>
    </property>
    <property name="text">
-    <string>new</string>
+	<string>new</string>
    </property>
    <property name="toolTip">
-    <string>Create a new Project</string>
+	<string>Create a new Project</string>
    </property>
   </action>
   <action name="actionSave_Simulation">
    <property name="enabled">
-    <bool>false</bool>
+	<bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="../../data/resources/cd3-gui.qrc">
-     <normaloff>:/icons/document-save.png</normaloff>:/icons/document-save.png</iconset>
+	<iconset resource="../../data/resources/cd3-gui.qrc">
+	 <normaloff>:/icons/document-save.png</normaloff>:/icons/document-save.png</iconset>
    </property>
    <property name="text">
-    <string>save</string>
+	<string>save</string>
    </property>
    <property name="toolTip">
-    <string>Save the current Project</string>
+	<string>Save the current Project</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+S</string>
+	<string>Ctrl+S</string>
    </property>
   </action>
   <action name="action_open">
    <property name="icon">
-    <iconset resource="../../data/resources/cd3-gui.qrc">
-     <normaloff>:/icons/document-open.png</normaloff>:/icons/document-open.png</iconset>
+	<iconset resource="../../data/resources/cd3-gui.qrc">
+	 <normaloff>:/icons/document-open.png</normaloff>:/icons/document-open.png</iconset>
    </property>
    <property name="text">
-    <string>open</string>
+	<string>open</string>
    </property>
    <property name="toolTip">
-    <string>Open a Project</string>
+	<string>Open a Project</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+O</string>
+	<string>Ctrl+O</string>
    </property>
   </action>
   <action name="actionAdd_Python_Module">
    <property name="enabled">
-    <bool>false</bool>
+	<bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="../../data/resources/cd3-gui.qrc">
-     <normaloff>:/icons/list-add.png</normaloff>:/icons/list-add.png</iconset>
+	<iconset resource="../../data/resources/cd3-gui.qrc">
+	 <normaloff>:/icons/list-add.png</normaloff>:/icons/list-add.png</iconset>
    </property>
    <property name="text">
-    <string>add Python Module</string>
+	<string>add Python Module</string>
    </property>
    <property name="toolTip">
-    <string>add a Python Module to the Project</string>
+	<string>add a Python Module to the Project</string>
    </property>
   </action>
   <action name="action_exit">
    <property name="icon">
-    <iconset resource="../../data/resources/cd3-gui.qrc">
-     <normaloff>:/icons/application-exit.png</normaloff>:/icons/application-exit.png</iconset>
+	<iconset resource="../../data/resources/cd3-gui.qrc">
+	 <normaloff>:/icons/application-exit.png</normaloff>:/icons/application-exit.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;exit</string>
+	<string>&amp;exit</string>
    </property>
    <property name="toolTip">
-    <string>exit the application</string>
+	<string>exit the application</string>
    </property>
   </action>
   <action name="actionZoom_in">
    <property name="icon">
-    <iconset resource="../../data/resources/cd3-gui.qrc">
-     <normaloff>:/icons/zoom-in.png</normaloff>:/icons/zoom-in.png</iconset>
+	<iconset resource="../../data/resources/cd3-gui.qrc">
+	 <normaloff>:/icons/zoom-in.png</normaloff>:/icons/zoom-in.png</iconset>
    </property>
    <property name="text">
-    <string>zoom in</string>
+	<string>zoom in</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl++</string>
+	<string>Ctrl++</string>
    </property>
   </action>
   <action name="actionZoom_out">
    <property name="icon">
-    <iconset resource="../../data/resources/cd3-gui.qrc">
-     <normaloff>:/icons/zoom-out.png</normaloff>:/icons/zoom-out.png</iconset>
+	<iconset resource="../../data/resources/cd3-gui.qrc">
+	 <normaloff>:/icons/zoom-out.png</normaloff>:/icons/zoom-out.png</iconset>
    </property>
    <property name="text">
-    <string>zoom out</string>
+	<string>zoom out</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+-</string>
+	<string>Ctrl+-</string>
    </property>
   </action>
   <action name="actionZoom_reset">
    <property name="icon">
-    <iconset resource="../../data/resources/cd3-gui.qrc">
-     <normaloff>:/icons/zoom-original.png</normaloff>:/icons/zoom-original.png</iconset>
+	<iconset resource="../../data/resources/cd3-gui.qrc">
+	 <normaloff>:/icons/zoom-original.png</normaloff>:/icons/zoom-original.png</iconset>
    </property>
    <property name="text">
-    <string>Zoom_reset</string>
+	<string>Zoom_reset</string>
+   </property>
+  </action>
+  <action name="actionSave_as">
+   <property name="enabled">
+	<bool>false</bool>
+   </property>
+   <property name="icon">
+	<iconset resource="../../data/resources/cd3-gui.qrc">
+	 <normaloff>:/icons/document-save-as.png</normaloff>:/icons/document-save-as.png</iconset>
+   </property>
+   <property name="text">
+	<string>save as</string>
+   </property>
+   <property name="shortcut">
+	<string>Ctrl+Shift+S</string>
    </property>
   </action>
  </widget>

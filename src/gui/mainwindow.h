@@ -18,7 +18,7 @@ class QPushButton;
 class GuiLogSink;
 
 class MainWindow : public QMainWindow {
-	Q_OBJECT
+Q_OBJECT
 public:
 	MainWindow(QWidget *parent = 0);
 	virtual ~MainWindow();
@@ -33,7 +33,7 @@ private:
 	Ui::MainWindow *ui;
 	SimulationScene *scene;
 	SimulationThread *current_thread;
-	bool model_unsaved;
+	bool simulation_unsaved;
 	QDateTimeEdit *stop, *start;
 	QSpinBox *dt;
 	QPushButton *apply_time_button;
@@ -43,6 +43,7 @@ public Q_SLOTS:
 	void on_actionAdd_Plugin_activated();
 	void on_actionNewSimulation_activated();
 	void on_actionSave_Simulation_activated();
+	void on_actionSave_as_activated();
 	void on_runButton_clicked();
 	void on_stopButton_clicked();
 	void on_actionAdd_Python_Module_activated();
@@ -62,6 +63,7 @@ public Q_SLOTS:
 	void zoomOut(int times = 1);
 	void pluginsAdded();
 	void sceneChanged();
+	void simulationUnsavedChanged(bool unsaved);
 };
 
 #endif // MAINWINDOW_H

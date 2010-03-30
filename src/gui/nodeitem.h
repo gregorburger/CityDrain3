@@ -1,10 +1,11 @@
 #ifndef NODEITEM_H
 #define NODEITEM_H
 
+#include <string>
+unsigned int qHash(std::string s);
 #include <QGraphicsItem>
 class Node;
 class PortItem;
-class SimulationScene;
 
 class NodeItem : public QObject, public QGraphicsItem
 {
@@ -14,8 +15,7 @@ public:
 	QRectF boundingRect() const;
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
 
-	void mousePressEvent(QGraphicsSceneMouseEvent *event);
-	void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+	void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
 
 	QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
@@ -28,10 +28,13 @@ public:
 	QMap<std::string, PortItem *> in_ports, out_ports;
 
 	QPainterPath shape() const;
-	void nodeChanged();
+	void updatePorts();
 
 	PortItem *getInPort(QString id);
 	PortItem *getOutPort(QString id);
+Q_SIGNALS:
+	void changed(NodeItem *nitem);
+
 private:
 	void moveItems();
 

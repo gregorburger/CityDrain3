@@ -27,10 +27,6 @@
 
 using namespace std;
 
-uint qHash(std::string s) {
-	return qHash(QString::fromStdString(s));
-}
-
 SimulationScene::SimulationScene(QString model_file_name, QObject *parent)
 	: QGraphicsScene(parent), model_file_name(model_file_name) {
 	model = new MapBasedModel();
@@ -56,6 +52,7 @@ void SimulationScene::save() {
 	Q_ASSERT(model_file_name != "");
 	SimulationSaver ss(this, model_file_name, plugins, python_modules);
 	ss.save();
+	Q_EMIT(unsavedChanged(false));
 }
 
 void SimulationScene::load() {
@@ -75,6 +72,7 @@ void SimulationScene::load() {
 		if (!ids.contains(node->getClassName()))
 			ids[node->getClassName()] = 0;
 		ids[node->getClassName()]++;
+		this->connect(item, SIGNAL(changed(NodeItem*)), SLOT(nodeChanged(NodeItem*)));
 	}
 
 	BOOST_FOREACH(NodeConnection *con, *model->getConnections()) {
@@ -93,6 +91,7 @@ void SimulationScene::load() {
 	plugins << gml.getPlugins();
 	python_modules << gml.getPythonModules();
 	update();
+	Q_EMIT(unsavedChanged(false));
 }
 
 void SimulationScene::setSimulation(ISimulation *simulation) {
@@ -101,53 +100,6 @@ void SimulationScene::setSimulation(ISimulation *simulation) {
 }
 
 
-
-void SimulationScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
-	NodeItem *item = (NodeItem *) itemAt(event->scenePos());
-	if (item && node_items.contains(item)) {
-		QMap<string, PortItem*> in_before = item->in_ports;
-		QMap<string, PortItem*> out_before = item->out_ports;
-
-		NodeParametersDialog np(item->getNode());
-		if (np.exec()) {
-			item->getNode()->deinit();
-			np.updateNodeParameters();
-			SimulationParameters sp = simulation->getSimulationParameters();
-			item->getNode()->init(sp.start, sp.stop, sp.dt);
-
-			QMap<string, Flow*> in_after(*item->getNode()->const_in_ports);
-			QMap<string, Flow*> out_after(*item->getNode()->const_out_ports);
-
-			QSet<string> in_removed = in_before.keys().toSet() - in_after.keys().toSet();
-
-			Q_FOREACH(string s, in_removed) {
-				PortItem *pitem = in_before[s];
-				if (pitem->getSinkOf()) {
-					remove(pitem->getSinkOf());
-				}
-				item->in_ports.remove(s);
-				delete pitem;
-			}
-
-			QSet<string> out_removed = out_before.keys().toSet() - out_after.keys().toSet();
-
-			Q_FOREACH(string s, out_removed) {
-				PortItem *pitem = out_before[s];
-				if (pitem->getSourceOf()) {
-					remove(pitem->getSourceOf());
-				}
-				item->out_ports.remove(s);
-				delete pitem;
-			}
-
-			item->nodeChanged();
-			item->update();
-		}
-		return;
-	}
-
-	QGraphicsScene::mouseDoubleClickEvent(event);
-}
 
 void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 	if (!simulation) {
@@ -184,6 +136,8 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 	this->addItem(nitem);
 	nitem->setPos(event->scenePos());
 	node_items << nitem;
+	this->connect(nitem, SIGNAL(changed(NodeItem*)), SLOT(nodeChanged(NodeItem*)));
+	Q_EMIT(unsavedChanged(true));
 }
 
 void SimulationScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event) {
@@ -261,6 +215,7 @@ void SimulationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 		connection_start = 0;
 		current_connection = 0;
 		update();
+		Q_EMIT(unsavedChanged(true));
 		return;
 	}
 
@@ -295,6 +250,7 @@ void SimulationScene::addPlugin(QString pname) {
 	node_reg->addNativePlugin(plugin_name);
 	sim_reg->addNativePlugin(plugin_name); //TODO do we need this?
 	plugins << pname;
+	Q_EMIT(unsavedChanged(true));
 }
 
 void SimulationScene::addPythonModule(QString pname) {
@@ -303,6 +259,7 @@ void SimulationScene::addPythonModule(QString pname) {
 	string module_name = module_file.baseName().toStdString();
 	PythonEnv::getInstance()->registerNodes(node_reg, module_name);
 	python_modules << pname;
+	Q_EMIT(unsavedChanged(true));
 }
 
 void SimulationScene::remove(ConnectionItem *item) {
@@ -310,6 +267,7 @@ void SimulationScene::remove(ConnectionItem *item) {
 	removeItem(item);
 	model->removeConnection(item->getConnection());
 	delete item;
+	Q_EMIT(unsavedChanged(true));
 }
 
 void SimulationScene::remove(NodeItem *item) {
@@ -329,5 +287,10 @@ void SimulationScene::remove(NodeItem *item) {
 	model->removeNode(item->getNode());
 
 	delete item;
+	Q_EMIT(unsavedChanged(true));
 }
 
+void SimulationScene::nodeChanged(NodeItem *nitem) {
+	(void) nitem;
+	Q_EMIT(unsavedChanged(true));
+}

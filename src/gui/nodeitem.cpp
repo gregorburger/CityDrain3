@@ -1,5 +1,7 @@
 #include "nodeitem.h"
 #include "portitem.h"
+#include "nodeparametersdialog.h"
+#include "simulationscene.h"
 
 #include <QPainter>
 #include <QDebug>
@@ -8,6 +10,7 @@
 #include <boost/foreach.hpp>
 
 #include <node.h>
+#include <simulation.h>
 
 typedef pair<std::string, Flow *> port_pair;
 
@@ -19,7 +22,7 @@ NodeItem::NodeItem(Node* node)
 	setFlag(ItemSendsGeometryChanges, true);
 #endif
 	setZValue(1);
-	nodeChanged();
+	updatePorts();
 }
 
 PortItem *NodeItem::getInPort(QString id) {
@@ -30,7 +33,7 @@ PortItem *NodeItem::getOutPort(QString id) {
 	return out_ports[id.toStdString()];
 }
 
-void NodeItem::nodeChanged() {
+void NodeItem::updatePorts() {
 	BOOST_FOREACH(port_pair item, *node->const_in_ports) {
 		if (in_ports.contains(item.first)) {
 			continue;
@@ -73,17 +76,17 @@ QPainterPath NodeItem::shape() const {
 
 void NodeItem::moveItems() {
 	double y = boundingRect().top();
-	Q_FOREACH(PortItem *item, in_ports) {
-		QRectF ir = item->boundingRect();
-		item->setPos(bounding.left() - ir.left(), y - ir.top());
-		y += item->boundingRect().height();
+	Q_FOREACH(PortItem *pitem, in_ports) {
+		QRectF ir = pitem->boundingRect();
+		pitem->setPos(bounding.left() - ir.left(), y - ir.top());
+		y += pitem->boundingRect().height();
 	}
 
 	y = boundingRect().top();
-	Q_FOREACH(PortItem *item, out_ports) {
-		QRectF ir = item->boundingRect();
-		item->setPos(bounding.right() - ir.right(), y - ir.top());
-		y += item->boundingRect().height();
+	Q_FOREACH(PortItem *pitem, out_ports) {
+		QRectF ir = pitem->boundingRect();
+		pitem->setPos(bounding.right() - ir.right(), y - ir.top());
+		y += pitem->boundingRect().height();
 	}
 }
 
@@ -97,14 +100,6 @@ void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 	}
 	painter->strokePath(path, painter->pen());
 	painter->drawText(0, 0, node->getClassName());
-}
-
-void NodeItem::mousePressEvent(QGraphicsSceneMouseEvent *event) {
-	QGraphicsItem::mousePressEvent(event);
-}
-
-void NodeItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
-	QGraphicsItem::mouseReleaseEvent(event);
 }
 
 void NodeItem::updateBoundingRect() {
@@ -130,24 +125,64 @@ void NodeItem::updateBoundingRect() {
 }
 
 QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant &value) {
-	if (change == ItemPositionChange) {
-		//qDebug() << "ItemPositionChange";
-		if (collidingItems().length() > 0) {
-			//return pos();
-			return value;
-		}
-	}
 	if (change == ItemPositionHasChanged) {
-		//qDebug() << "ItemPositionHasChanged";
-		Q_FOREACH(PortItem *item, out_ports) {
-			item->updateConnection();
+		Q_FOREACH(PortItem *pitem, out_ports) {
+			pitem->updateConnection();
 		}
-		Q_FOREACH(PortItem *item, in_ports) {
-			item->updateConnection();
+		Q_FOREACH(PortItem *pitem, in_ports) {
+			pitem->updateConnection();
 		}
+		Q_EMIT(changed(this));
 	}
 	if (change == ItemSelectedHasChanged) {
-		update();
+		//update();
 	}
 	return QGraphicsItem::itemChange(change, value);
+}
+
+uint qHash(std::string s) {
+	return qHash(QString::fromStdString(s));
+}
+
+void NodeItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
+	SimulationScene *parentscene = (SimulationScene*) scene();
+	QMap<string, PortItem*> in_before = in_ports;
+	QMap<string, PortItem*> out_before = out_ports;
+
+	NodeParametersDialog np(getNode());
+	if (np.exec()) {
+		getNode()->deinit();
+		np.updateNodeParameters();
+		SimulationParameters sp = parentscene->getSimulation()->getSimulationParameters();
+		getNode()->init(sp.start, sp.stop, sp.dt);
+
+		QMap<string, Flow*> in_after(*getNode()->const_in_ports);
+		QMap<string, Flow*> out_after(*getNode()->const_out_ports);
+
+		QSet<string> in_removed = in_before.keys().toSet() - in_after.keys().toSet();
+
+		Q_FOREACH(string s, in_removed) {
+			PortItem *pitem = in_before[s];
+			if (pitem->getSinkOf()) {
+				parentscene->remove(pitem->getSinkOf());
+			}
+			in_ports.remove(s);
+			delete pitem;
+		}
+
+		QSet<string> out_removed = out_before.keys().toSet() - out_after.keys().toSet();
+
+		Q_FOREACH(string s, out_removed) {
+			PortItem *pitem = out_before[s];
+			if (pitem->getSourceOf()) {
+				parentscene->remove(pitem->getSourceOf());
+			}
+			out_ports.remove(s);
+			delete pitem;
+		}
+
+		updatePorts();
+		parentscene->update();
+		Q_EMIT(changed(this));
+	}
 }
