@@ -22,14 +22,7 @@ NewSimulationDialog::NewSimulationDialog(QWidget *parent,
 	ui->setupUi(this);
 	QStringList list;
 
-	default_node_paths << "./libnodes.so" << "../../libnodes.so" << "./build/libnodes.so";
-	default_node_paths << "./nodes.dll"  << "bin/nodes.dll" << "../../nodes.dll" << "./build/nodes.dll";
-	Q_FOREACH(QString path, default_node_paths) {
-		if (QFile::exists(path)) {
-			registry->addNativePlugin(path.toStdString());
-			break;
-		}
-	}
+	registry->addNativePlugin("nodes");
 
 	BOOST_FOREACH(std::string name, registry->getRegisteredNames()) {
 		list << QString::fromStdString(name);
@@ -62,12 +55,7 @@ SimulationScene *NewSimulationDialog::createSimulationScene() {
 	SimulationScene *scene = new SimulationScene();
 	scene->setSimulation(sim);
 	if (ui->defaultNodesCheckBox->isChecked()) {
-		Q_FOREACH(QString path, default_node_paths) {
-			if (QFile::exists(path)) {
-				scene->addPlugin(path);
-				break;
-			}
-		}
+		scene->addPlugin("nodes");
 	}
 	defineFlow();
 	return scene;

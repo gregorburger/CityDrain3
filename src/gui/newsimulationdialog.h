@@ -27,7 +27,6 @@ private:
 	void defineFlow();
 	SimulationRegistry *registry;
 	SimulationScene *scene;
-	QStringList default_node_paths;
 };
 
 boost::posix_time::ptime qttopt(const QDateTime &dt);
