@@ -300,10 +300,11 @@ void MainWindow::applyTime() {
 		QMessageBox::critical(this, "failed to init nodes",
 							  "some nodes aren't happy with"
 							  "your new choice of simulation time.\n"
-							  "See log for more informations.");
+							  "See the log for more informations.");
 		return;
 	}
 	scene->getSimulation()->setSimulationParameters(p);
+	simulationUnsavedChanged(true);
 	apply_time_button->setEnabled(false);
 }
 
@@ -313,7 +314,7 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 		return;
 	}
 	if (QMessageBox::question(this, "Quit",
-							  "There are unsaved changes. Do you really wan't to Quit?",
+							  "There are unsaved changes. Do you really wan't to quit?",
 							  QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes) {
 		event->accept();
 	} else {
