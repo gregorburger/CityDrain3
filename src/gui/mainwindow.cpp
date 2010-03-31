@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include <simulationregistry.h>
 #include <simulation.h>
 #include <noderegistry.h>
 #include <mapbasedmodel.h>
@@ -231,6 +230,9 @@ void MainWindow::sceneChanged() {
 void MainWindow::on_actionSave_Simulation_activated() {
 	if (scene->getModelFileName() == "") {
 		on_actionSave_as_activated();
+	}
+	if (scene->getModelFileName() == "") {//happens when save as was not accepted
+		return;
 	}
 	scene->save();
 }
