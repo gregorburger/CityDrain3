@@ -33,3 +33,9 @@ double RainBuffer::take(int dt) {
 	assert(dt == 0);
 	return rain;
 }
+
+void RainBuffer::clear() {
+	dt = 0;
+	avail.clear();
+	buffer.clear();
+}

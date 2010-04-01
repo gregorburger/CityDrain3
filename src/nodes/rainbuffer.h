@@ -14,6 +14,7 @@ public:
 	void put(int dt, double value);
 	double take(int dt);
 	int available() const;
+	void clear();
 private:
 	int dt;
 	std::deque<rain_event> buffer;
