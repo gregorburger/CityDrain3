@@ -69,7 +69,7 @@
 	 <x>0</x>
 	 <y>0</y>
 	 <width>924</width>
-	 <height>25</height>
+	 <height>23</height>
 	</rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -178,6 +178,9 @@
    <property name="toolTip">
 	<string>Create a new Project</string>
    </property>
+   <property name="shortcut">
+	<string>Ctrl+N</string>
+   </property>
   </action>
   <action name="actionSave_Simulation">
    <property name="enabled">
@@ -237,6 +240,9 @@
    </property>
    <property name="toolTip">
 	<string>exit the application</string>
+   </property>
+   <property name="shortcut">
+	<string>Ctrl+X</string>
    </property>
   </action>
   <action name="actionZoom_in">
