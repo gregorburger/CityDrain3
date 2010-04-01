@@ -176,6 +176,21 @@ void SimulationSaver::saveNodeParameters(const Node *n) {
 		}
 		qWarning() << "can not save value of parameter " << QString::fromStdString(p->name);
 	}
+	const ssltvp *ap = n->const_array_parameters;
+	typedef std::pair<std::string, ltvp> ap_pair;
+	BOOST_FOREACH(ap_pair item, *ap) {
+		writer->writeStartElement("parameter");
+		writer->writeAttribute("name", QString::fromStdString(item.first));
+		writer->writeAttribute("kind", "array");
+		writer->writeAttribute("type", "double");
+		vector<double> values = *((vector<double>*) item.second.second);
+		BOOST_FOREACH(double v, values) {
+			writer->writeEmptyElement("arrayentry");
+			writer->writeAttribute("value", QString("%1").arg(v));
+		}
+
+		writer->writeEndElement();
+	}
 }
 
 void SimulationSaver::saveFlowParameter(NodeParameter *p) {
