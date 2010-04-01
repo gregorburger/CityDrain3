@@ -57,6 +57,13 @@ NodeParametersDialog::NodeParametersDialog(Node *node, QWidget *parent)
 		layout->addWidget(param_widget, row, 1);
 		row ++;
 		array_widgets[item.first] = param_widget;
+		vector<double> values = *((vector<double> *) item.second.second);
+
+		QString s;
+		for (size_t i = 0; i < values.size(); i++) {
+			s += i == 0 ? QString("%1").arg(values[i]) : QString(", %1").arg(values[i]);
+		}
+		param_widget->setText(s);
 	}
 
 	ui->verticalLayout->insertLayout(0, layout);
