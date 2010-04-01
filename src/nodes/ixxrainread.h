@@ -13,6 +13,7 @@ public:
 	IxxRainRead();
 	virtual ~IxxRainRead();
 	bool init(ptime start, ptime end, int dt);
+	void deinit();
 	int f(ptime time, int dt);
 private:
 	IxxRainReadPrivate *data;

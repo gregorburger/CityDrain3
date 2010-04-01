@@ -48,6 +48,7 @@ bool IxxRainRead::init(ptime start, ptime end, int dt) {
 			ixx_value v = data->parseLine();
 			time_period p(data->current_time, v.first);
 			data->rain_buf.put(p.length().total_seconds(), v.second);
+			data->current_time = v.first;
 		}
 
 		int cut_off = time_period(first_time, start).length().total_seconds();
@@ -68,6 +69,11 @@ bool IxxRainRead::init(ptime start, ptime end, int dt) {
 	return true;
 }
 
+void IxxRainRead::deinit() {
+	data->rain_buf.clear();
+	data->in.close();
+}
+
 int IxxRainRead::f(ptime time, int dt) {
 	while (data->rain_buf.available() < dt) {
 		if (data->in.eof()) {
@@ -77,6 +83,7 @@ int IxxRainRead::f(ptime time, int dt) {
 		ixx_value v = data->parseLine();
 		time_period p(data->current_time, v.first);
 		data->rain_buf.put(p.length().total_seconds(), v.second);
+		data->current_time = v.first;
 	}
 	out[0] = data->rain_buf.take(dt);
 	return dt;
