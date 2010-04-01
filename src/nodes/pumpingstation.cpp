@@ -36,6 +36,13 @@ bool PumpingStation::init(ptime start, ptime end, int dt) {
 		return false;
 	}
 
+	if (Qp.size() < 1) {
+		Logger(Warning) << "At least one Pump must me be given";
+		return false;
+	}
+
+	NP = Von.size();
+
 	for (size_t i = 0; i < NP; ++i) {
 		if (Von[i] < 0 || Von[i] > basin_volume) {
 			Logger(Warning) << "Von[i] ";
