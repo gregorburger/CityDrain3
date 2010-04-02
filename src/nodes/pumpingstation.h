@@ -19,7 +19,6 @@ private:
 	double basin_volume;
 	size_t NP;
 	std::vector<double> Qp, Von, Voff, Qpp;
-	ptime start;
 };
 
 #endif // PUMPINGSTATION_H

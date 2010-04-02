@@ -29,7 +29,7 @@ PumpingStation::PumpingStation() {
 bool PumpingStation::init(ptime start, ptime end, int dt) {
 	(void) end;
 	(void) dt;
-	this->start = start;
+	(void) start;
 
 	if (Qp.size() != Von.size() || Von.size() != Voff.size()) {
 		Logger(Warning) << "Array parameters Qp, Von and Voff must be of same dimension";
@@ -71,6 +71,12 @@ bool PumpingStation::init(ptime start, ptime end, int dt) {
 			return false;
 		}
 	}
+	out_p = in;
+	out_p.clear();
+	out_w = in;
+	out_w.clear();
+	volume = in;
+	volume.clear();
 	return true;
 }
 
@@ -82,14 +88,8 @@ double sum(const vector<double> &in) {
 }
 
 int PumpingStation::f(ptime time, int dt) {
-	if (time == start) {//init flows
-		out_p = in;
-		out_p.clear();
-		out_w = in;
-		out_w.clear();
-		volume = in;
-		volume.clear();
-	}
+	(void) time;
+
 	double qin = in.getIth(Flow::flow, 0);
 	double vi = volume.getIth(Flow::flow, 0);
 	vector<double> Qpmod, Qpplast;
