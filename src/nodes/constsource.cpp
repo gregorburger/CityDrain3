@@ -23,6 +23,7 @@ bool ConstSource::init(ptime start, ptime end, int dt) {
 	(void) end;
 	(void) dt;
 	out = const_flow;
-	const_flow[0] = const_flow[0] * dt;
+	out[0] = out[0] * dt;
+	this->dt = dt;
 	return true;
 }
