@@ -149,40 +149,43 @@ void NodeItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
 	QMap<string, PortItem*> in_before = in_ports;
 	QMap<string, PortItem*> out_before = out_ports;
 
-	NodeParametersDialog np(getNode());
-	if (np.exec()) {
+	SimulationParameters sp = parentscene->getSimulation()->getSimulationParameters();
+
+	do {
+		NodeParametersDialog np(getNode());
+		if (!np.exec()) {
+			return;
+		}
 		getNode()->deinit();
 		np.updateNodeParameters();
-		SimulationParameters sp = parentscene->getSimulation()->getSimulationParameters();
-		getNode()->init(sp.start, sp.stop, sp.dt);
+	} while (!getNode()->init(sp.start, sp.stop, sp.dt));
 
-		QMap<string, Flow*> in_after(*getNode()->const_in_ports);
-		QMap<string, Flow*> out_after(*getNode()->const_out_ports);
+	QMap<string, Flow*> in_after(*getNode()->const_in_ports);
+	QMap<string, Flow*> out_after(*getNode()->const_out_ports);
 
-		QSet<string> in_removed = in_before.keys().toSet() - in_after.keys().toSet();
+	QSet<string> in_removed = in_before.keys().toSet() - in_after.keys().toSet();
 
-		Q_FOREACH(string s, in_removed) {
-			PortItem *pitem = in_before[s];
-			if (pitem->getSinkOf()) {
-				parentscene->remove(pitem->getSinkOf());
-			}
-			in_ports.remove(s);
-			delete pitem;
+	Q_FOREACH(string s, in_removed) {
+		PortItem *pitem = in_before[s];
+		if (pitem->getSinkOf()) {
+			parentscene->remove(pitem->getSinkOf());
 		}
-
-		QSet<string> out_removed = out_before.keys().toSet() - out_after.keys().toSet();
-
-		Q_FOREACH(string s, out_removed) {
-			PortItem *pitem = out_before[s];
-			if (pitem->getSourceOf()) {
-				parentscene->remove(pitem->getSourceOf());
-			}
-			out_ports.remove(s);
-			delete pitem;
-		}
-
-		updatePorts();
-		parentscene->update();
-		Q_EMIT(changed(this));
+		in_ports.remove(s);
+		delete pitem;
 	}
+
+	QSet<string> out_removed = out_before.keys().toSet() - out_after.keys().toSet();
+
+	Q_FOREACH(string s, out_removed) {
+		PortItem *pitem = out_before[s];
+		if (pitem->getSourceOf()) {
+			parentscene->remove(pitem->getSourceOf());
+		}
+		out_ports.remove(s);
+		delete pitem;
+	}
+
+	updatePorts();
+	parentscene->update();
+	Q_EMIT(changed(this));
 }
