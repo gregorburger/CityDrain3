@@ -57,7 +57,7 @@ struct FPSer : public IStateSerializer {
 		return stream.str();
 	}
 	void deserialize(const std::string &invalue,
-										 const std::string &name,  Node *node) {
+					 const std::string &name,  Node *node) {
 		std::istringstream stream(invalue);
 		double fract;
 		int exp;
