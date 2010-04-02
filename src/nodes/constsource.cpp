@@ -5,7 +5,8 @@
 CD3_DECLARE_NODE_NAME(ConstSource)
 
 ConstSource::ConstSource() {
-	addParameter(ADD_PARAMETERS(const_flow));
+	addParameter(ADD_PARAMETERS(const_flow))
+		.setUnit("V/s");
 	addOutPort(ADD_PARAMETERS(out));
 }
 
@@ -22,5 +23,6 @@ bool ConstSource::init(ptime start, ptime end, int dt) {
 	(void) end;
 	(void) dt;
 	out = const_flow;
+	const_flow[0] = const_flow[0] * dt;
 	return true;
 }
