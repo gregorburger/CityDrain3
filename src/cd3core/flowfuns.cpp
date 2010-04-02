@@ -83,10 +83,10 @@ Flow FlowFuns::catchement_lossmodel(Flow in,
 	return out;
 }
 
-Flow FlowFuns::catchment_flowmodel	(Flow in,
-							 int area,
-							 int dt,
-							 const std::vector<double> &cvalues) {
+Flow FlowFuns::catchment_flowmodel(Flow in,
+								   int area,
+								   int dt,
+								   const std::vector<double> &cvalues) {
 
 	cd3assert(cvalues.size() == Flow::countUnits(Flow::concentration),
 			  "wrong size of concentration values vector");
