@@ -31,7 +31,6 @@ private:
 	std::vector<double> rain_concentration;
 
 	std::map<int, std::pair<double, double> > musk_param;
-	ptime start;
 };
 
 #endif // CATCHMENTCSS_H
