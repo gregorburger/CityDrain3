@@ -303,8 +303,13 @@ void SaxLoader::loadParameter(const QXmlAttributes& atts) {
 		return;
 	}
 
-	if (kind == "complex" || kind == "array") {
+	if (kind == "complex") {
 		pd->param_name = atts.value("name").toStdString();
+		return;
+	}
+	if (kind == "array") {
+		pd->param_name = atts.value("name").toStdString();
+		current->clearArrayParameter<double>(pd->param_name);
 		return;
 	}
 
