@@ -37,7 +37,8 @@ IModel *ISimulation::getModel() const {
 void ISimulation::start(ptime time) {
 	(void) time;
 	cd3assert(model, "model not set");
-	cd3assert(model->connected(), "model not fully connected");
+	if (!model->connected())
+		Logger(Warning) << "model not fully connected";
 	running = true;
 	if (!model->cycleFree()) {
 		Logger(Warning) << "model not cyclefree ";
