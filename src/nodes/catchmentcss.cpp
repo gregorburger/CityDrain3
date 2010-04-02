@@ -52,8 +52,7 @@ CatchmentCSS::~CatchmentCSS() {
 bool CatchmentCSS::init(ptime start, ptime end, int dt) {
 	(void) end;
 	(void) dt;
-
-	this->start = start;
+	(void) start;
 
 	size_t nconcs = Flow::countUnits(Flow::concentration);
 	while (rain_concentration.size() < nconcs) {
@@ -65,6 +64,7 @@ bool CatchmentCSS::init(ptime start, ptime end, int dt) {
 		addState(str(format("V[%1%]") % i), f);
 		V.push_back(f);
 	}
+	loss_basin.clear();
 	return true;
 }
 
@@ -77,12 +77,7 @@ void CatchmentCSS::deinit() {
 }
 
 int CatchmentCSS::f(ptime time, int dt) {
-	if (time == start) {
-		for (int i = 0; i < N; i++) {
-			V[i]->clear();
-		}
-		loss_basin.clear();
-	}
+	(void) time;
 
 	double C_x, C_y;
 	setMuskParam(&C_x, &C_y, dt);
@@ -93,7 +88,7 @@ int CatchmentCSS::f(ptime time, int dt) {
 											   initial_loss,
 											   permanent_loss / 86400 * dt,
 											   run_off_coeff);
-	Flow flow = FlowFuns::catchment_flowmodel(loss, area, dt, rain_concentration);
+	Flow flow = FlowFuns::catchment_flowmodel(loss, area*1000, dt, rain_concentration);
 
 	inputs.push_back(flow);
 	inputs.push_back(dwf_in);
