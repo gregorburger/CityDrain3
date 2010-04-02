@@ -1,5 +1,6 @@
 #include "simulationthread.h"
 #include <simulation.h>
+#include <imodel.h>
 #include <boost/bind.hpp>
 #include <boost/signals.hpp>
 
@@ -19,5 +20,7 @@ SimulationThread::~SimulationThread() {
 
 void SimulationThread::run() {
 	SimulationParameters sp = simulation->getSimulationParameters();
+	simulation->getModel()->deinitNodes();
+	simulation->getModel()->initNodes(sp);
 	simulation->start(sp.start);
 }
