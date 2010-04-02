@@ -58,7 +58,7 @@ bool IxxRainRead::init(ptime start, ptime end, int dt) {
 	}
 
 	if (first_time > start) { //fill up with zeroes
-		long zerosecs = time_period(start, data->current_time).length().total_seconds();
+		long zerosecs = time_period(start, data->current_time + seconds(raindt)).length().total_seconds();
 		Logger(Debug) << "filling up rainbuffer with" << zerosecs << "seconds of zero";
 		while (zerosecs > 0) {
 			data->rain_buf.put(dt, 0.0);
