@@ -20,8 +20,6 @@ private:
 
 	double Q_Max;
 	double V_Max;
-
-	ptime start;
 };
 
 #endif // CSO_H

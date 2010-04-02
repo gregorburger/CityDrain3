@@ -23,6 +23,7 @@ CSO::CSO() {
 		.setUnit("m3/s");
 
 	addState(ADD_PARAMETERS(stored_volume));
+	stored_volume.clear();
 }
 
 CSO::~CSO() {
@@ -31,14 +32,12 @@ CSO::~CSO() {
 bool CSO::init(ptime start, ptime end, int dt) {
 	(void) end;
 	(void) dt;
-	this->start = start;
+	(void) start;
 	return true;
 }
 
 int CSO::f(ptime time, int dt) {
-	if (time == start) {
-		stored_volume.clear();
-	}
+	(void) time;
 	Flow V_old = stored_volume;
 	//Vii=(u(1)-Qemax)*tstep+x(1);
 	double Vii = (in[0]-Q_Max)*dt + V_old[0];
