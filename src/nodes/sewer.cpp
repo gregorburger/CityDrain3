@@ -33,7 +33,6 @@ void Sewer::deinit() {
 
 bool Sewer::init(ptime start, ptime end, int dt) {
 	(void) end;
-	this->start = start;
 	for (int i = 0; i < N; i++) {
 		V.push_back(Flow());
 		addState(str(format("V[%1%]") % i), &V[i]);
@@ -45,11 +44,7 @@ bool Sewer::init(ptime start, ptime end, int dt) {
 
 
 int Sewer::f(ptime time, int dt) {
-	if (time == start) {
-		for (int i = 0; i < N; i++) {
-			V[i].clear();
-		}
-	}
+	(void) time;
 	double C_x, C_y;
 	setMuskParam(&C_x, &C_y, dt);
 

@@ -26,7 +26,6 @@ private:
 	int N;
 	std::vector<Flow> V;
 	std::map<int, std::pair<double, double> > musk_param;
-	ptime start;
 };
 
 #endif // SEWER_H
