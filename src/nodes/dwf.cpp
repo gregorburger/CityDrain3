@@ -64,13 +64,20 @@ bool DWF::load(int dt) {
 }
 
 bool DWF::init(ptime start, ptime end, int dt) {
-	this->start = start;
+	(void) end;
+	(void) dt;
+	(void) start;
 	if (!load(dt)) {
 		return false;
 	}
 	dwf_work = dwf;
 	setOut();
 	return true;
+}
+
+void DWF::deinit() {
+	dwf.clear();
+	dwf_work.clear();
 }
 
 void DWF::setOut() {

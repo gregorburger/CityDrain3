@@ -12,6 +12,7 @@ public:
 	DWF();
 	virtual ~DWF();
 	bool init(ptime start, ptime end, int dt);
+	void deinit();
 	int f(ptime time, int dt);
 private:
 	bool load(int dt);
@@ -20,7 +21,6 @@ private:
 	double q_scale;
 	Flow out;
 	deque<dwf_entry> dwf, dwf_work;
-	ptime start;
 };
 
 #endif // DWF_H
