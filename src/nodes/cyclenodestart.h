@@ -11,8 +11,6 @@ public:
 	bool init(ptime start, ptime end, int dt);
 	int f(ptime time, int dt);
 	Flow out;
-private:
-	ptime start;
 };
 
 #endif // CYCLENODESTART_H

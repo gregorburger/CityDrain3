@@ -13,14 +13,12 @@ CycleNodeStart::~CycleNodeStart() {
 }
 
 bool CycleNodeStart::init(ptime start, ptime end, int dt) {
-	this->start = start;
+	out.clear();
 	return true;
 }
 
 int CycleNodeStart::f(ptime time, int dt) {
 	(void) dt;
-	if (time == start) {
-		out.clear();
-	}
+	(void) time;
 	return dt;
 }
