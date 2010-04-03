@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FindNodeDialog</class>
+ <widget class="QDialog" name="FindNodeDialog">
+  <property name="geometry">
+   <rect>
+	<x>0</x>
+	<y>0</y>
+	<width>388</width>
+	<height>84</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+	<layout class="QHBoxLayout" name="horizontalLayout">
+	 <item>
+	  <widget class="QLabel" name="label">
+	   <property name="sizePolicy">
+		<sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+		 <horstretch>0</horstretch>
+		 <verstretch>0</verstretch>
+		</sizepolicy>
+	   </property>
+	   <property name="text">
+		<string>Node ID:</string>
+	   </property>
+	  </widget>
+	 </item>
+	 <item>
+	  <widget class="QComboBox" name="id">
+	   <property name="editable">
+		<bool>true</bool>
+	   </property>
+	  </widget>
+	 </item>
+	</layout>
+   </item>
+   <item>
+	<widget class="QDialogButtonBox" name="buttonBox">
+	 <property name="orientation">
+	  <enum>Qt::Horizontal</enum>
+	 </property>
+	 <property name="standardButtons">
+	  <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+	 </property>
+	</widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>FindNodeDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+	<hint type="sourcelabel">
+	 <x>198</x>
+	 <y>70</y>
+	</hint>
+	<hint type="destinationlabel">
+	 <x>157</x>
+	 <y>79</y>
+	</hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>FindNodeDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+	<hint type="sourcelabel">
+	 <x>198</x>
+	 <y>70</y>
+	</hint>
+	<hint type="destinationlabel">
+	 <x>207</x>
+	 <y>79</y>
+	</hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

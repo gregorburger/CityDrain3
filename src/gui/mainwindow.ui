@@ -86,7 +86,14 @@
 	<addaction name="separator"/>
 	<addaction name="action_exit"/>
    </widget>
+   <widget class="QMenu" name="menuEdit">
+	<property name="title">
+	 <string>&amp;Edit</string>
+	</property>
+	<addaction name="actionFind_node"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -291,6 +298,14 @@
    </property>
    <property name="shortcut">
 	<string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+  <action name="actionFind_node">
+   <property name="text">
+	<string>find node</string>
+   </property>
+   <property name="shortcut">
+	<string>Ctrl+F</string>
    </property>
   </action>
  </widget>

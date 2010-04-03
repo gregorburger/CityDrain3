@@ -52,6 +52,7 @@ public Q_SLOTS:
 	void on_actionZoom_in_activated();
 	void on_actionZoom_out_activated();
 	void on_actionZoom_reset_activated();
+	void on_actionFind_node_activated();
 
 	void start_stop_dateTimeChanged(const QDateTime &date);
 	void dt_valueChanged(int value);

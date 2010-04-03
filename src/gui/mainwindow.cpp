@@ -8,6 +8,7 @@
 #include "ui_newsimulationdialog.h"
 #include "simulationscene.h"
 #include "newsimulationdialog.h"
+#include "findnodedialog.h"
 #include "simulationthread.h"
 #include "guilogsink.h"
 
@@ -342,4 +343,10 @@ void MainWindow::simulationUnsavedChanged(bool unsaved) {
 		setWindowTitle(windowTitle().left(windowTitle().length()-2));
 	}
 	simulation_unsaved = unsaved;
+}
+void MainWindow::on_actionFind_node_activated() {
+	FindNodeDialog fn(scene, this);
+	if (fn.exec() && fn.found) {
+		ui->graphicsView->centerOn(fn.found);
+	}
 }
