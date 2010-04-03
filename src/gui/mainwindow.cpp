@@ -21,6 +21,7 @@
 #include <QSpinBox>
 #include <QDate>
 #include <QDateTime>
+#include <QPrinter>
 #include <QSettings>
 #include <boost/foreach.hpp>
 #include <boost/date_time.hpp>
@@ -185,21 +186,25 @@ void MainWindow::simulationThreadStarted() {
 }
 
 void MainWindow::on_actionNewSimulation_activated() {
-	if (scene) {
+	/*if (scene) {
 		QMessageBox::warning(this, "New Simulation", "A simulation is already defined");
 		return;
+	}*/
+	if (simulation_unsaved
+		&&
+		QMessageBox::question(this, "Quit",
+							  "There are unsaved changes.",
+							  QMessageBox::No, QMessageBox::Yes) == QMessageBox::No) {
+		return;
+	}
+	if (scene) {
+		unload();
 	}
 	NewSimulationDialog ns(this);
 	if (ns.exec()) {
 		scene = ns.createSimulationScene();
-		sceneChanged();
 		ui->graphicsView->setScene(scene);
-		ui->actionSave_Simulation->setEnabled(true);
-		ui->actionSave_as->setEnabled(true);
-		ui->runButton->setEnabled(true);
-		pluginsAdded();
-		ui->actionAdd_Plugin->setEnabled(true);
-		ui->actionAdd_Python_Module->setEnabled(true);
+		sceneChanged();
 	}
 }
 
@@ -229,7 +234,17 @@ void MainWindow::sceneChanged() {
 	dt->setValue(sp.dt);
 
 	apply_time_button->setEnabled(false);
+	simulation_unsaved = false;
 	this->connect(scene, SIGNAL(unsavedChanged(bool)), SLOT(simulationUnsavedChanged(bool)));
+	ui->graphicsView->setScene(scene);
+	ui->actionSave_Simulation->setEnabled(true);
+	ui->actionSave_as->setEnabled(true);
+	ui->runButton->setEnabled(true);
+	ui->actionAdd_Plugin->setEnabled(true);
+	ui->actionAdd_Python_Module->setEnabled(true);
+	ui->actionFind_node->setEnabled(true);
+	ui->actionExport_to_pdf->setEnabled(true);
+	pluginsAdded();
 }
 
 void MainWindow::on_actionSave_Simulation_activated() {
@@ -257,9 +272,15 @@ void MainWindow::on_action_exit_activated() {
 }
 
 void MainWindow::on_action_open_activated() {
-	if (scene) {
-		//TODO show dialog
-		return;
+	if (scene && simulation_unsaved) {
+
+		if (QMessageBox::question(this, "Quit",
+									   "There are unsaved changes. Don't save the changes?",
+									   QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes) {
+			unload();
+		} else {
+			return;
+		}
 	}
 
 	QString path = QFileDialog::getOpenFileName(this,
@@ -271,13 +292,6 @@ void MainWindow::on_action_open_activated() {
 	setWindowTitle(QString("CityDrain3 (%1)").arg(path));
 	scene = new SimulationScene(path);
 	sceneChanged();
-	ui->graphicsView->setScene(scene);
-	ui->actionSave_Simulation->setEnabled(true);
-	ui->actionSave_as->setEnabled(true);
-	ui->runButton->setEnabled(true);
-	ui->actionAdd_Plugin->setEnabled(true);
-	ui->actionAdd_Python_Module->setEnabled(true);
-	pluginsAdded();
 }
 
 void MainWindow::start_stop_dateTimeChanged(const QDateTime &date) {
@@ -348,6 +362,36 @@ void MainWindow::simulationUnsavedChanged(bool unsaved) {
 	}
 	simulation_unsaved = unsaved;
 }
+
+void MainWindow::on_actionExport_to_pdf_activated() {
+	QString fileName = QFileDialog::getSaveFileName(this, "Export To PDF", ".", "PDF Files (*.pdf)");
+	if (fileName == "")
+		return;
+
+	QPrinter printer;
+
+	printer.setOutputFileName(fileName);
+	printer.setOutputFormat(QPrinter::PdfFormat);
+	QRectF rect = scene->itemsBoundingRect();
+	printer.setPaperSize(QSizeF(rect.width(), rect.height()), QPrinter::Millimeter);
+
+	QPainter painter(&printer);
+	painter.setRenderHint(QPainter::Antialiasing);
+	scene->clearSelection();
+	scene->render(&painter);//, QRectF(0, 0, rect.width(), rect.height()), rect);
+}
+
+void MainWindow::unload() {
+	ui->actionSave_as->setEnabled(false);
+	ui->actionSave_Simulation->setEnabled(false);
+
+	QObject::disconnect(scene, SIGNAL(unsavedChanged(bool)), 0, 0);
+	ui->treeWidget->clear();
+	ui->graphicsView->setScene(0);
+	delete scene;
+	scene = 0;
+}
+
 void MainWindow::on_actionFind_node_activated() {
 	FindNodeDialog fn(scene, this);
 	if (fn.exec() && fn.found) {

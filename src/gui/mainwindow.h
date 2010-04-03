@@ -29,6 +29,7 @@ protected:
 	void closeEvent(QCloseEvent *);
 
 	void setupTimeControls();
+	void unload();
 private:
 	Ui::MainWindow *ui;
 	SimulationScene *scene;
@@ -52,6 +53,7 @@ public Q_SLOTS:
 	void on_actionZoom_in_activated();
 	void on_actionZoom_out_activated();
 	void on_actionZoom_reset_activated();
+	void on_actionExport_to_pdf_activated();
 	void on_actionFind_node_activated();
 
 	void start_stop_dateTimeChanged(const QDateTime &date);
@@ -65,6 +67,8 @@ public Q_SLOTS:
 	void pluginsAdded();
 	void sceneChanged();
 	void simulationUnsavedChanged(bool unsaved);
+
+
 };
 
 #endif // MAINWINDOW_H

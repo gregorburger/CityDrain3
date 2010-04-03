@@ -48,7 +48,9 @@ public:
 
 	void dump() const;
 
+	static bool defined();
 	static void define(std::map<std::string, CalculationUnit> definition);
+	static void undefine();
 
 	inline double &operator[](int i) {
 		copyData();

@@ -43,6 +43,8 @@ void NewSimulationDialog::defineFlow() {
 	Q_FOREACH(QString c, ui->concentrationNames->text().split(' ', QString::SkipEmptyParts)) {
 		definition[c.trimmed().toStdString()] = Flow::concentration;
 	}
+	if (Flow::defined())
+		Flow::undefine();
 	Flow::define(definition);
 }
 

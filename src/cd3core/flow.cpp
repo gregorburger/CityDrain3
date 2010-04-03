@@ -30,6 +30,20 @@ FlowDefinition Flow::fd;
 
 typedef std::pair<std::string, Flow::CalculationUnit> fdpair;
 
+bool Flow::defined() {
+	return fd.defined;
+}
+
+void Flow::undefine() {
+	if (fd.defined) {
+		fd.names.clear();
+		fd.positions.clear();
+		fd.units.clear();
+		fd.unit_names.clear();
+		fd.size = 0;
+	}
+}
+
 void Flow::define(std::map<std::string, CalculationUnit> definition) {
 	cd3assert(!fd.defined, "flow already defined");
 	bool qfound = false;

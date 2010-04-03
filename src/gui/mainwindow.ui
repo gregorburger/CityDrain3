@@ -80,6 +80,7 @@
 	<addaction name="actionSave_Simulation"/>
 	<addaction name="actionSave_as"/>
 	<addaction name="action_open"/>
+	<addaction name="actionExport_to_pdf"/>
 	<addaction name="separator"/>
 	<addaction name="actionAdd_Plugin"/>
 	<addaction name="actionAdd_Python_Module"/>
@@ -282,7 +283,7 @@
 	 <normaloff>:/icons/zoom-original.png</normaloff>:/icons/zoom-original.png</iconset>
    </property>
    <property name="text">
-	<string>Zoom_reset</string>
+	<string>zoom_reset</string>
    </property>
   </action>
   <action name="actionSave_as">
@@ -300,7 +301,21 @@
 	<string>Ctrl+Shift+S</string>
    </property>
   </action>
+  <action name="actionExport_to_pdf">
+   <property name="enabled">
+	<bool>false</bool>
+   </property>
+   <property name="text">
+	<string>export to pdf</string>
+   </property>
+   <property name="shortcut">
+	<string>Ctrl+E</string>
+   </property>
+  </action>
   <action name="actionFind_node">
+   <property name="enabled">
+	<bool>false</bool>
+   </property>
    <property name="text">
 	<string>find node</string>
    </property>
