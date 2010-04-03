@@ -2,7 +2,7 @@
 #include "node.h"
 
 NodeConnection::NodeConnection(Node * source, const std::string &soport,
-                                                           Node *sink, const std::string &siport)
+							   Node *sink, const std::string &siport)
 	: source(source), sink(sink), source_port(soport), sink_port(siport) {
 	cd3assert(source->const_out_ports->count(source_port),
 			  str(format("source node[%1%] port[%2%] not found") % source->getId() % source_port));
