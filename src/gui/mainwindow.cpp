@@ -21,6 +21,7 @@
 #include <QSpinBox>
 #include <QDate>
 #include <QDateTime>
+#include <QSettings>
 #include <boost/foreach.hpp>
 #include <boost/date_time.hpp>
 
@@ -33,6 +34,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	setupTimeControls();
 
 	sceneChanged();
+	QSettings s;
+	this->restoreState(s.value("gui/mainwindow/state").toByteArray());
+	this->restoreGeometry(s.value("gui/mainwindow/geometry").toByteArray());
 
 	log_updater = new GuiLogSink();
 	Log::init(log_updater);
@@ -310,14 +314,14 @@ void MainWindow::applyTime() {
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
-	if (!simulation_unsaved) {
+	if (!simulation_unsaved || QMessageBox::question(this, "Quit",
+													 "There are unsaved changes. Don't save changes?",
+													 QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes) {
+		QSettings s;
+		s.setValue("gui/mainwindow", this->saveState());
+		s.setValue("gui/mainwindow/geometry", this->saveGeometry());
 		event->accept();
 		return;
-	}
-	if (QMessageBox::question(this, "Quit",
-							  "There are unsaved changes. Do you really wan't to quit?",
-							  QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes) {
-		event->accept();
 	} else {
 		event->ignore();
 	}
