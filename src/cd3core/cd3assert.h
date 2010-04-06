@@ -5,7 +5,7 @@
 #include <logger.h>
 #ifdef DEBUG
 #define cd3assert(expr, message) if (!(expr)) { \
-	Logger(Debug) << __FILE__ << ":" << __FUNCTION__ << ":" << __LINE__ \
+	Logger(Error) << __FILE__ << ":" << __FUNCTION__ << ":" << __LINE__ \
 			<< " assert:" << message; \
 	std::abort(); \
 	}
