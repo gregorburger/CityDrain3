@@ -133,7 +133,7 @@ void MainWindow::on_actionZoom_out_activated() {
 }
 
 void MainWindow::on_actionZoom_reset_activated() {
-	ui->graphicsView->setTransform(QTransform());
+	ui->graphicsView->fitInView(ui->graphicsView->sceneRect(), Qt::KeepAspectRatio);
 }
 
 void MainWindow::pluginsAdded() {
@@ -315,11 +315,8 @@ void MainWindow::applyTime() {
 	p.dt = dt->value();
 
 	scene->getModel()->deinitNodes();
-	if (!scene->getModel()->initNodes(p)) {
-		QMessageBox::critical(this, "failed to init nodes",
-							  "some nodes aren't happy with"
-							  "your new choice of simulation time.\n"
-							  "See the log for more informations.");
+	if (scene->getModel()->initNodes(p).size() > 0) { //TODO check for uninited nodes here
+		QMessageBox::critical(this, "", "Some nodes failed to initialize!\nSee log window for more informations!");
 		return;
 	}
 	scene->getSimulation()->setSimulationParameters(p);
@@ -378,7 +375,7 @@ void MainWindow::on_actionExport_to_pdf_activated() {
 	QPainter painter(&printer);
 	painter.setRenderHint(QPainter::Antialiasing);
 	scene->clearSelection();
-	scene->render(&painter);//, QRectF(0, 0, rect.width(), rect.height()), rect);
+	scene->render(&painter, QRectF(), scene->itemsBoundingRect());//, QRectF(0, 0, rect.width(), rect.height()), rect);
 }
 
 void MainWindow::unload() {
@@ -396,5 +393,7 @@ void MainWindow::on_actionFind_node_activated() {
 	FindNodeDialog fn(scene, this);
 	if (fn.exec() && fn.found) {
 		ui->graphicsView->centerOn(fn.found);
+		scene->clearSelection();
+		fn.found->setSelected(true);
 	}
 }

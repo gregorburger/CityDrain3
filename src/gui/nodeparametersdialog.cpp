@@ -18,7 +18,6 @@
 typedef pair<string, NodeParameter*> ptype;
 
 NodeParametersDialog::~NodeParametersDialog() {
-	delete layout;
 }
 
 NodeParametersDialog::NodeParametersDialog(Node *node, QWidget *parent)
@@ -26,9 +25,12 @@ NodeParametersDialog::NodeParametersDialog(Node *node, QWidget *parent)
 	ui = new Ui::NodeParametersDialog();
 	ui->setupUi(this);
 
-	layout = new QGridLayout();
+	QLabel *label = new QLabel("Node ID:", this);
+	ui->gridLayout->addWidget(label, 0, 0, Qt::AlignRight);
+	nodeId = new QLineEdit(QString::fromStdString(node->getId()), this);
+	ui->gridLayout->addWidget(nodeId, 0, 1);
 
-	int row = 0;
+	int row = 1;
 
 	BOOST_FOREACH(ptype p, node->getParameters()) {
 		NodeParameter *param = p.second;
@@ -38,8 +40,8 @@ NodeParametersDialog::NodeParametersDialog(Node *node, QWidget *parent)
 		label->setText(QString("%1 (%2) :").arg(name).arg(unit));
 		label->setToolTip(QString::fromStdString(param->description));
 		QWidget *param_widget = widgetForParameter(param);
-		layout->addWidget(label, row, 0, Qt::AlignRight);
-		layout->addWidget(param_widget, row, 1);
+		ui->gridLayout->addWidget(label, row, 0, Qt::AlignRight);
+		ui->gridLayout->addWidget(param_widget, row, 1);
 		row ++;
 		widgets[param->name] = param_widget;
 		//parameters << param->name;
@@ -53,8 +55,8 @@ NodeParametersDialog::NodeParametersDialog(Node *node, QWidget *parent)
 		label->setText(QString("%1 ([-,-,...]) :").arg(name));
 		QLineEdit *param_widget = new QLineEdit(this);
 
-		layout->addWidget(label, row, 0, Qt::AlignRight);
-		layout->addWidget(param_widget, row, 1);
+		ui->gridLayout->addWidget(label, row, 0, Qt::AlignRight);
+		ui->gridLayout->addWidget(param_widget, row, 1);
 		row ++;
 		array_widgets[item.first] = param_widget;
 		vector<double> values = *((vector<double> *) item.second.second);
@@ -66,7 +68,6 @@ NodeParametersDialog::NodeParametersDialog(Node *node, QWidget *parent)
 		param_widget->setText(s);
 	}
 
-	ui->verticalLayout->insertLayout(0, layout);
 	this->adjustSize();
 }
 
@@ -170,4 +171,8 @@ bool NodeParametersDialog::updateNodeParameters() {
 	}
 
 	return true;
+}
+
+QString NodeParametersDialog::newId() {
+	return nodeId->text();
 }

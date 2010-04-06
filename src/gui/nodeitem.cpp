@@ -11,6 +11,7 @@
 
 #include <node.h>
 #include <simulation.h>
+#include <mapbasedmodel.h>
 
 typedef pair<std::string, Flow *> port_pair;
 
@@ -99,13 +100,16 @@ void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 		painter->fillPath(path, Qt::white);
 	}
 	painter->strokePath(path, painter->pen());
-	painter->drawText(0, 0, node->getClassName());
+	QString text = getId() + "\n" + node->getClassName();
+	QFont f;
+	QFontMetrics fm(f);
+	painter->drawText(QRectF(fm.boundingRect(text)), Qt::AlignCenter, text);
 }
 
 void NodeItem::updateBoundingRect() {
 	QFont f;
 	QFontMetrics fm(f);
-	QRectF r = QRectF(fm.boundingRect(node->getClassName()));
+	QRectF r = QRectF(fm.boundingRect(getId() + "\n" + node->getClassName()));
 	qreal max_outp_width = 0;
 
 	Q_FOREACH(PortItem *out, out_ports) {
@@ -145,20 +149,34 @@ uint qHash(std::string s) {
 }
 
 void NodeItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
+	(void) event;
+	changeParameters();
+}
+
+void NodeItem::changeParameters() {
 	SimulationScene *parentscene = (SimulationScene*) scene();
 	QMap<string, PortItem*> in_before = in_ports;
 	QMap<string, PortItem*> out_before = out_ports;
 
 	SimulationParameters sp = parentscene->getSimulation()->getSimulationParameters();
+	MapBasedModel *model = parentscene->getModel();
+
+	bool ok;
 
 	do {
+		ok = true;
 		NodeParametersDialog np(getNode());
 		if (!np.exec()) {
 			return;
 		}
 		getNode()->deinit();
 		np.updateNodeParameters();
-	} while (!getNode()->init(sp.start, sp.stop, sp.dt));
+		ok &= node->init(sp.start, sp.stop, sp.dt);
+		if (getId() == np.newId())
+			continue;
+
+		ok &= model->renameNode(node, np.newId().toStdString());
+	} while (!ok);
 
 	QMap<string, Flow*> in_after(*getNode()->const_in_ports);
 	QMap<string, Flow*> out_after(*getNode()->const_out_ports);

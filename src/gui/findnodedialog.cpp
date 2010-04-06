@@ -2,7 +2,7 @@
 #include "ui_findnodedialog.h"
 #include "simulationscene.h"
 #include <QList>
-#include <QDebug>
+#include <QLineEdit>
 
 FindNodeDialog::FindNodeDialog(SimulationScene *scene, QWidget *parent) :
 	QDialog(parent), found(0), ui(new Ui::FindNodeDialog), scene(scene) {
@@ -14,6 +14,8 @@ FindNodeDialog::FindNodeDialog(SimulationScene *scene, QWidget *parent) :
 		this->items[item->getId()] = item;
 	}
 	ui->id->addItems(ids);
+	QLineEdit *e = ui->id->lineEdit();
+	e->setSelection(0, e->text().length());
 }
 
 FindNodeDialog::~FindNodeDialog() {

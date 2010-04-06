@@ -69,10 +69,10 @@ void SimulationScene::load() {
 		addItem(item);
 		item->setPos(gml.getNodePosition(item->getId()));
 		item_map[node->getId()] = item;
-		if (!ids.contains(node->getClassName()))
-			ids[node->getClassName()] = 0;
-		ids[node->getClassName()]++;
 		this->connect(item, SIGNAL(changed(NodeItem*)), SLOT(nodeChanged(NodeItem*)));
+		if (gml.getFailedNodes().contains(node)) {
+			item->changeParameters();
+		}
 	}
 
 	BOOST_FOREACH(NodeConnection *con, *model->getConnections()) {
@@ -113,10 +113,17 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 	Node *node = node_reg->createNode(klassName);
 
 	//default id is klassname_+counter
-	if (!ids.contains(klassName))
-		ids[klassName] = 0;
-	string id_count = lexical_cast<string>(ids[node->getClassName()]++);
-	node->setId(node->getClassName() + string("_") + id_count);
+	name_node_map nodes = model->getNamesAndNodes();
+	int count = 0;
+	string id;
+	while (true) {
+		id = node->getClassName() +  string("_") + lexical_cast<string>(count++);
+		if (nodes.find(id) == nodes.end()) {
+			break; //found an id
+		}
+	}
+
+	model->addNode(id, node);
 
 	SimulationParameters sp = simulation->getSimulationParameters();
 
@@ -131,7 +138,7 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 			}
 		}
 	} while (!node->init(sp.start, sp.stop, sp.dt));
-	model->addNode(node);
+
 	NodeItem *nitem = new NodeItem(node);
 	this->addItem(nitem);
 	nitem->setPos(event->scenePos());

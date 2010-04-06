@@ -32,6 +32,7 @@ public:
 
 	PortItem *getInPort(QString id);
 	PortItem *getOutPort(QString id);
+	void changeParameters();
 Q_SIGNALS:
 	void changed(NodeItem *nitem);
 
