@@ -234,10 +234,10 @@ void adaptive_heun(	int		n,
 // 27.5.98
 // 18.8.98	Change call to logfile
 /* =================================================================== */
-int init_open_logfile()
+int init_open_logfile(const char *logfile_path)
 {
 
-	if ((logfile = fopen("wtplog.txt","w")) == NULL)
+	if ((logfile = fopen(logfile_path,"w")) == NULL)
 	{
 		printf("\n ERROR: CANNOT OPEN LOG FILE: wtplog.txt \n");
 		wait;
@@ -260,13 +260,13 @@ int init_open_logfile()
 // 18.8.98	Change call to logfile
 // 20.4.99  change in input text and read text procedure (fgets included)
 /* =================================================================== */
-int init_read_sysdata()
+int init_read_sysdata(const char *sysdata_path)
 {
 
 	char	txt[205];
 	FILE    *infile;
 
-	if ((infile = fopen("data/rumba/sys_data.txt","r")) == NULL)
+	if ((infile = fopen(sysdata_path,"r")) == NULL)
 	{
 		fprintf(logfile,"\n ERROR: CANNOT OPEN INPUT FILE: sys_data.txt \n");
 		fclose (logfile);
@@ -330,13 +330,13 @@ int init_read_sysdata()
 // 18.8.98	Change call to logfile
 // 20.4.99  change in input text and read text procedure (fgets included)
 /* =================================================================== */
-int init_read_parameter()
+int init_read_parameter(const char *parameter_path)
 {
 
 	char	txt[205];
 	FILE    *infile;
 
-	if ((infile = fopen("data/rumba/wtp_para.txt","r")) == NULL)
+	if ((infile = fopen(parameter_path,"r")) == NULL)
 	{
 		fprintf(logfile,"\n ERROR: CANNOT OPEN INPUT FILE: wtp_para.txt \n");
 		fclose (logfile);
@@ -410,13 +410,13 @@ int init_read_parameter()
 // 18.8.98	Change call to logfile
 // 20.4.99  change in input text and read text procedure (fgets included)
 /* =================================================================== */
-int init_read_odedata()
+int init_read_odedata(const char *odedata_path)
 {
 
 	char	txt[205];
 	FILE    *infile;
 
-	if ((infile = fopen("data/rumba/ode_para.txt","r")) == NULL)
+	if ((infile = fopen(odedata_path,"r")) == NULL)
 	{
 		fprintf(logfile,"\n ERROR: CANNOT OPEN INPUT FILE: ode_para.txt \n");
 		fclose (logfile);
@@ -555,19 +555,21 @@ void init_stoicmat()
 // WR
 // 27.5.98
 /* =================================================================== */
-DLLexport int init_wtp()
+DLLexport int init_wtp(const char *logfile_path,
+					   const char *sysdata_path,
+					   const char *parameter_path,
+					   const char *odedata_path)
 {
-
-	if (!init_open_logfile()) {
+	if (!init_open_logfile(logfile_path)) {
 		return -1;
 	}
-	if (!init_read_sysdata()) {
+	if (!init_read_sysdata(sysdata_path)) {
 		return -1;
 	}
-	if (!init_read_parameter()) {
+	if (!init_read_parameter(parameter_path)) {
 		return -1;
 	}
-	if (!init_read_odedata()) {
+	if (!init_read_odedata(odedata_path)) {
 		return -1;
 	}
 	init_system();
@@ -588,7 +590,6 @@ DLLexport int init_wtp()
 /* =================================================================== */
 DLLexport void exit_wtp()
 {
-
 	fprintf(logfile, "\n EXIT RUMBA: SUCCESS \n");
 	fclose (logfile);
 }

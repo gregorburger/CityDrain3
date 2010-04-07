@@ -8,6 +8,13 @@ WWTP::WWTP() {
 	addOutPort(ADD_PARAMETERS(out));
 	temperature = 15.0;
 	addParameter(ADD_PARAMETERS(temperature));
+	addParameter(ADD_PARAMETERS(logfile));
+	sysdata = "../data/rumba/sys_data.txt";
+	addParameter(ADD_PARAMETERS(sysdata));
+	parameter = "../data/rumba/wtp_para.txt";
+	addParameter(ADD_PARAMETERS(parameter));
+	odedata = "../data/rumba/ode_para.txt";
+	addParameter(ADD_PARAMETERS(odedata));
 }
 
 WWTP::~WWTP() {
@@ -15,8 +22,14 @@ WWTP::~WWTP() {
 }
 
 bool WWTP::init(ptime start, ptime end, int dt) {
+	(void) start;
+	(void) end;
+	(void) dt;
 	float CSe,CPe,Ne,Pe,SBLHe;
-	if (!init_wtp()) {
+	if (!init_wtp(logfile.c_str(),
+				  sysdata.c_str(),
+				  parameter.c_str(),
+				  odedata.c_str())) {
 		return false;
 	}
 	init_relaxation(1.0, 15.0, 2.0,

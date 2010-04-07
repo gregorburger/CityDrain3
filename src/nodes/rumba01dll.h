@@ -169,14 +169,17 @@ void run_clarifier_CSTR(float t, float y[], float dy[]);
 void run_clarifier_flux(float t, float y[], float dy[]);void point_settler();
 void waste_sludge_removal(float flow);
 
-int init_open_logfile();
-int init_read_sysdata();
-int init_read_parameter();
-int init_read_odedata();
+int init_open_logfile(const char *logfile_path);
+int init_read_sysdata(const char *sysdata_path);
+int init_read_parameter(const char *parameter_path);
+int init_read_odedata(const char *odedata_path);
 void init_system();
 int init_stoichmat();
 
-DLLexport int init_wtp();
+DLLexport int init_wtp(const char *logfile_path,
+					   const char *sysdata_path,
+					   const char *parameter_path,
+					   const char *odedata_path);
 DLLexport void exit_wtp();
 
 void internal_print_sysdata();
