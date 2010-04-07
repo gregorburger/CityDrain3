@@ -396,3 +396,29 @@ void MainWindow::on_actionFind_node_activated() {
 		fn.found->setSelected(true);
 	}
 }
+
+void MainWindow::on_actionHorizontal_center_align_activated() {
+	if (scene->selectedItems().size() < 2) {
+		return;
+	}
+
+	int y = scene->selectedItems()[0]->pos().y();
+
+	Q_FOREACH(QGraphicsItem *item, scene->selectedItems()) {
+		int x = item->pos().x();
+		item->setPos(x, y);
+	}
+}
+
+void MainWindow::on_actionAlign_vertically_center_activated() {
+	if (scene->selectedItems().size() < 2) {
+		return;
+	}
+
+	int x = scene->selectedItems()[0]->pos().x();
+
+	Q_FOREACH(QGraphicsItem *item, scene->selectedItems()) {
+		int y = item->pos().y();
+		item->setPos(x, y);
+	}
+}

@@ -56,6 +56,10 @@ public Q_SLOTS:
 	void on_actionExport_to_pdf_activated();
 	void on_actionFind_node_activated();
 
+	//align stuff
+	void on_actionHorizontal_center_align_activated();
+	void on_actionAlign_vertically_center_activated();
+
 	void start_stop_dateTimeChanged(const QDateTime &date);
 	void dt_valueChanged(int value);
 	void applyTime();
@@ -67,8 +71,6 @@ public Q_SLOTS:
 	void pluginsAdded();
 	void sceneChanged();
 	void simulationUnsavedChanged(bool unsaved);
-
-
 };
 
 #endif // MAINWINDOW_H

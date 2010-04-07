@@ -15,5 +15,8 @@
         <file>logo.png</file>
         <file>logo2.svg</file>
         <file>process-stop.png</file>
+        <file>edit-find.svg</file>
+        <file>stock_graphics-align-top.png</file>
+        <file>stock_graphics-align-left.png</file>
     </qresource>
 </RCC>
