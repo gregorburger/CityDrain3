@@ -6,10 +6,10 @@ add_library(nodes SHARED ${CPP_FILES})
 IF (MINGW)
 	SET_TARGET_PROPERTIES(nodes PROPERTIES PREFIX "")
 endif()
-if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
-	target_link_libraries(nodes cd3core)
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
+    target_link_libraries(nodes cd3core ${Boost_THREAD_LIBRARY})
 else()
-	target_link_libraries(nodes cd3core ${Boost_THREAD_LIBRARY})
+    target_link_libraries(nodes cd3core)
 endif()
 
 
