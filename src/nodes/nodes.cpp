@@ -18,6 +18,7 @@
 #include "ixxrainread.h"
 #include "pumpingstation.h"
 #include "dwf.h"
+#include "wwtp.h"
 
 #include <noderegistry.h>
 #include <nodefactory.h>
@@ -45,6 +46,7 @@ extern "C" {
 		registry->addNodeFactory(new NodeFactory<IxxRainRead>());
 		registry->addNodeFactory(new NodeFactory<PumpingStation>());
 		registry->addNodeFactory(new NodeFactory<DWF>());
+		registry->addNodeFactory(new NodeFactory<WWTP>());
 	}
 
 	void CD3_PUBLIC registerTypes(TypeRegistry *registry) {
