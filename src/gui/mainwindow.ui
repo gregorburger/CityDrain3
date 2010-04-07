@@ -20,7 +20,17 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
 	<item>
-	 <widget class="QGraphicsView" name="graphicsView"/>
+	 <widget class="QGraphicsView" name="graphicsView">
+	  <property name="renderHints">
+	   <set>QPainter::Antialiasing|QPainter::HighQualityAntialiasing|QPainter::TextAntialiasing</set>
+	  </property>
+	  <property name="rubberBandSelectionMode">
+	   <enum>Qt::IntersectsItemBoundingRect</enum>
+	  </property>
+	  <property name="optimizationFlags">
+	   <set>QGraphicsView::IndirectPainting</set>
+	  </property>
+	 </widget>
 	</item>
 	<item>
 	 <layout class="QHBoxLayout" name="horizontalLayout">

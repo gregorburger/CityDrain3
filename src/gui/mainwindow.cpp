@@ -30,7 +30,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::MainWindow), scene(0), simulation_unsaved(false) {
 	ui->setupUi(this);
-	ui->graphicsView->setRenderHints(QPainter::Antialiasing);
 
 	setupTimeControls();
 
