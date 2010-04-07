@@ -24,14 +24,15 @@ public:
 
 	bool empty() const { return all_nodes.size() == 0; }
 
-	void addNode(Node *node);
+	void addNode(const string &id, Node *node);
 	void removeNode(Node *node);
+	bool renameNode(Node *node, const string &new_id);
 	void addConnection(NodeConnection *con);
 	void removeConnection(NodeConnection *con);
 
 
 	//call before adding Connections
-	bool initNodes(const SimulationParameters &);
+	node_set_type initNodes(const SimulationParameters &);
 	void deinitNodes();
 
 	node_set_type getSourceNodes();
@@ -57,7 +58,7 @@ public:
 	node_set_type cycleNodes() const;
 
 private:
-		bool cycleNodesHelper(Node *n, node_set_type) const;
+	bool cycleNodesHelper(Node *n, node_set_type) const;
 
 	node_set_type all_nodes;
 	node_set_type sink_nodes;

@@ -38,11 +38,12 @@ Node *MapBasedModel::getNode(const string &name) const {
 	return names_nodes.find(name)->second;
 }
 
-void MapBasedModel::addNode(Node *node) {
-	cd3assert(node->getId() != "", "node has no id");
+void MapBasedModel::addNode(const string &id, Node *node) {
+	cd3assert(id != "", "node has no id");
 	cd3assert(node, "cannot add null node");
-	cd3assert(names_nodes.find(node->getId()) == names_nodes.end(), "node name already defined");
+	cd3assert(names_nodes.find(id) == names_nodes.end(), "node name already defined");
 
+	node->setId(id);
 	names_nodes[node->getId()] = node;
 	all_nodes.insert(node);
 	sink_nodes.insert(node);
@@ -141,15 +142,17 @@ void MapBasedModel::removeConnection(NodeConnection *con) {
 	}
 }
 
-bool MapBasedModel::initNodes(const SimulationParameters &sp) {
+node_set_type MapBasedModel::initNodes(const SimulationParameters &sp) {
 	node_set_type::iterator it = all_nodes.begin();
-	bool all_good = true;
+	node_set_type problem_nodes;
 	while (it != all_nodes.end()) {
 		Node *n = *it;
-		all_good = all_good && n->init(sp.start, sp.stop, sp.dt);
+		if (!n->init(sp.start, sp.stop, sp.dt)) {
+			problem_nodes.insert(n);
+		}
 		it++;
 	}
-	return all_good;
+	return problem_nodes;
 }
 
 void MapBasedModel::deinitNodes() {
@@ -283,4 +286,16 @@ bool MapBasedModel::cycleNodesHelper(Node *n,
 
 bool MapBasedModel::cycleFree() const {
 	return cycleNodes().empty();
+}
+
+bool MapBasedModel::renameNode(Node *node, const string &new_id) {
+	//TODO assert here
+	if (names_nodes.count(new_id)) {
+		Logger(Warning) << "new node name already used";
+		return false;
+	}
+	names_nodes.erase(node->getId());
+	node->setId(new_id);
+	names_nodes[node->getId()] = node;
+	return true;
 }

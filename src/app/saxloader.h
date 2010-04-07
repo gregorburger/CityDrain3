@@ -30,10 +30,13 @@ public:
 	bool fatalError(const QXmlParseException &exception);
 	bool warning(const QXmlParseException &exception);
 	ISimulation *load(QFile &f);
+protected:
+	IModel *model;
+	ISimulation *simulation;
 private:
+	SaxLoaderPriv *pd;
 	void loadParameter(const QXmlAttributes &atts);
 	void breakCycle();
-	SaxLoaderPriv *pd;
 	Node *current;
 	bool cycle_break;
 	std::string source_id, source_port, sink_port, sink_id;

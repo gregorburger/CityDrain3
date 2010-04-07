@@ -146,6 +146,7 @@ int main(int argc, char **argv) {
 
 	if (max <= Standard) //don't even call the progress handler
 		s->timestep_before.connect(ProgressHandler(s));
+
 	s->start(starttime);
 	Logger(Debug) << "shutting down";
 	Log::shutDown();

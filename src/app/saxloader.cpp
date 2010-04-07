@@ -26,8 +26,6 @@ struct SaxLoaderPriv {
 	NodeRegistry *node_registry;
 	SimulationRegistry *sim_registry;
 	TypeRegistry type_registry;
-	IModel *model;
-	ISimulation *simulation;
 	Flow *f;
 	std::string param_name;
 	std::map<std::string, Flow::CalculationUnit> flow_definition;
@@ -39,8 +37,8 @@ SaxLoader::SaxLoader(IModel *model) : delete_node_reg(true), delete_sim_reg(true
 	pd = new SaxLoaderPriv();
 	pd->node_registry = new NodeRegistry();
 	pd->sim_registry = new SimulationRegistry();
-	pd->model = model;
-	pd->simulation = 0;
+	this->model = model;
+	this->simulation =0;
 }
 
 SaxLoader::SaxLoader(IModel *model,
@@ -50,8 +48,8 @@ SaxLoader::SaxLoader(IModel *model,
 	pd = new SaxLoaderPriv();
 	pd->node_registry = nr;
 	pd->sim_registry = sr;
-	pd->model = model;
-	pd->simulation = 0;
+	this->model = model;
+	this->simulation =0;
 }
 
 SaxLoader::~SaxLoader() {
@@ -73,8 +71,7 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		std::string klass = atts.value("class").toStdString();
 		Logger(Debug) << "creating a" << klass << "node with id:" << id;
 		current = pd->node_registry->createNode(klass);
-		current->setId(id);
-		pd->model->addNode(current);
+		model->addNode(id, current);
 		consumed = true;
 	}
 	if (lname == "sink") {
@@ -92,10 +89,10 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		consumed = true;
 	}
 	if (lname == "simulation") {
-		cd3assert(pd->simulation == 0, "Simulation already set");
+		cd3assert(simulation == 0, "Simulation already set");
 		std::string klass = atts.value("class").toStdString();
 		Logger(Debug) << "loading simulation" << klass;
-		pd->simulation = pd->sim_registry->createSimulation(klass);
+		this->simulation =pd->sim_registry->createSimulation(klass);
 		consumed = true;
 	}
 	if (lname == "time") {
@@ -109,7 +106,7 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		p.start = time_from_string(atts.value("start").toStdString());
 		Logger(Debug) << "parsing posix time " << atts.value("stat").toStdString();
 		p.stop = time_from_string(atts.value("stop").toStdString());
-		pd->simulation->setSimulationParameters(p);
+		simulation->setSimulationParameters(p);
 		consumed = true;
 	}
 	if (lname == "unit") {
@@ -206,8 +203,8 @@ ISimulation *SaxLoader::load(QFile &file) {
 	r.setLexicalHandler(this);
 	QXmlInputSource source(&file);
 	r.parse(&source);
-	cd3assert(pd->simulation, "could not load simulation");
-	return pd->simulation;
+	cd3assert(simulation, "could not load simulation");
+	return simulation;
 }
 
 bool SaxLoader::endElement(const QString &/*ns*/,
@@ -224,19 +221,19 @@ bool SaxLoader::endElement(const QString &/*ns*/,
 			breakCycle();
 			cycle_break = false;
 		} else {
-			Node *sink = pd->model->getNode(sink_id);
-			Node *source = pd->model->getNode(source_id);
+			Node *sink = model->getNode(sink_id);
+			Node *source = model->getNode(source_id);
 			Logger(Debug) << "creating connection:"
 					<< source << "[" << source_port << "] => "
 					<< sink << "[" << sink_port << "]";
-			pd->model->addConnection(
-					pd->simulation->createConnection(source, source_port,
+			model->addConnection(
+					simulation->createConnection(source, source_port,
 													 sink, sink_port));
 		}
 		consumed = true;
 	}
 	if (lname == "nodelist") {
-		pd->model->initNodes(pd->simulation->getSimulationParameters());
+		model->initNodes(simulation->getSimulationParameters());
 		consumed = true;
 	}
 	if (lname == "flow") {
@@ -247,6 +244,7 @@ bool SaxLoader::endElement(const QString &/*ns*/,
 		consumed = true;
 	}
 	if (lname == "flowdefinition") {
+		Flow::undefine();
 		Flow::define(pd->flow_definition);
 		consumed = true;
 	}
@@ -317,20 +315,18 @@ void SaxLoader::loadParameter(const QXmlAttributes& atts) {
 }
 
 void SaxLoader::breakCycle() {
-	Node *sink = pd->model->getNode(sink_id);
-	Node *source = pd->model->getNode(source_id);
+	Node *sink = model->getNode(sink_id);
+	Node *source = model->getNode(source_id);
 
 	Node *start = pd->node_registry->createNode("CycleNodeStart");
-	start->setId(sink_id+source_id+"-cycle_start");
-		Node *end = pd->node_registry->createNode("CycleNodeEnd");
-	end->setId(sink_id+source_id+"-cycle_end");
-	pd->model->addNode(start);
-	pd->model->addNode(end);
+	Node *end = pd->node_registry->createNode("CycleNodeEnd");
+	model->addNode(sink_id+source_id+"-cycle_start", start);
+	model->addNode(sink_id+source_id+"-cycle_end", end);
 	end->setParameter("start", start);
-	pd->model->addConnection(pd->simulation->createConnection(start, "out",
+	model->addConnection(simulation->createConnection(start, "out",
 															  sink, sink_port));
 
 
-	pd->model->addConnection(pd->simulation->createConnection(source, source_port,
+	model->addConnection(simulation->createConnection(source, source_port,
 															  end, "in"));
 }

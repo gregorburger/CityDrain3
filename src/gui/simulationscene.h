@@ -58,7 +58,6 @@ private:
 	SimulationRegistry *sim_reg;
 	ISimulation *simulation;
 
-	QMap<std::string, int> ids;
 	MapBasedModel *model;
 	PortItem *connection_start;
 	ConnectionItem *current_connection;

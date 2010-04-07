@@ -74,9 +74,10 @@ void ConnectionItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 		c = Qt::white;
 	}
 	QBrush brush(c);
-	painter->strokePath(connection_path, painter->pen());
+	QPen pen(Qt::black);
+	painter->strokePath(connection_path, pen);
 	painter->fillPath(handle_path, brush);
-	painter->strokePath(handle_path, painter->pen());
+	painter->strokePath(handle_path, pen);
 }
 
 void ConnectionItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {

@@ -1,5 +1,7 @@
 #include "guimodelloader.h"
 #include <imodel.h>
+#include <simulation.h>
+#include <boost/foreach.hpp>
 
 GuiModelLoader::GuiModelLoader(IModel *m,
 							   NodeRegistry *nr,
@@ -34,4 +36,18 @@ bool GuiModelLoader::startElement(const QString &ns,
 	}
 
 	return SaxLoader::startElement(ns, lname, qname, atts);
+}
+
+bool GuiModelLoader::endElement(const QString &ns,
+								const QString &lname,
+								const QString &qname) {
+	if (lname == "nodelist") {
+		node_set_type ns = model->initNodes(simulation->getSimulationParameters());
+		BOOST_FOREACH(Node *n, ns) {
+			failed_nodes << n;
+		}
+
+		return true;
+	}
+	return SaxLoader::endElement(ns, lname, qname);
 }

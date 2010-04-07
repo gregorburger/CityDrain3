@@ -41,6 +41,7 @@ void Flow::undefine() {
 		fd.units.clear();
 		fd.unit_names.clear();
 		fd.size = 0;
+		fd.defined = false;
 	}
 }
 

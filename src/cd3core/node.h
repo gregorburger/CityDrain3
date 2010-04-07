@@ -76,7 +76,6 @@ public:
 	virtual ~Node();
 	virtual int f(ptime time, int dt) = 0;
 
-	void setId(const std::string &id);
 	std::string getId() const;
 
 	virtual const char *getClassName() const = 0;
@@ -237,6 +236,9 @@ protected:
 	ssf		out_ports;
 	int		dt;
 	std::string		id;
+private:
+	friend class MapBasedModel;
+	void setId(const std::string &id);
 };
 
 #endif // NODE_H

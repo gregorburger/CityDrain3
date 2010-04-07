@@ -21,6 +21,6 @@ SimulationThread::~SimulationThread() {
 void SimulationThread::run() {
 	SimulationParameters sp = simulation->getSimulationParameters();
 	simulation->getModel()->deinitNodes();
-	simulation->getModel()->initNodes(sp);
+	simulation->getModel()->initNodes(sp);//TODO check for uninited nodes here
 	simulation->start(sp.start);
 }

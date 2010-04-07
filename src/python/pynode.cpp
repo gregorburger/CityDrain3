@@ -234,7 +234,6 @@ void wrap_node() {
 		.def("deinit", &Node::deinit, &NodeWrapper::deinit)
 		.def("addInPort", &NodeWrapper::addInPort)
 		.def("addOutPort", &NodeWrapper::addOutPort)
-		.def("setId", &NodeWrapper::setId)
 		.def("getParameterNames", n_getParameterNames)
 		.def("addParameters", &NodeWrapper::pyAddParameters)
 		.def("setIntParameter", &Node::setParameter<int>)

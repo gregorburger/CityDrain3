@@ -21,13 +21,15 @@ public:
 
 	bool updateNodeParameters();
 
+	QString newId();
+
 private:
 	QWidget *widgetForParameter(NodeParameter *);
 	Ui::NodeParametersDialog *ui;
 	Node *node;
-	QGridLayout *layout;
 	QMap<std::string, QWidget *> widgets;
 	QMap<std::string, QLineEdit *> array_widgets;
+	QLineEdit *nodeId;
 };
 
 #endif // NODEPARAMETERSDIALOG_H

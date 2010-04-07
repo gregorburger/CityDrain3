@@ -7,8 +7,8 @@
 using namespace boost::python;
 
 /** transfer ownership*/
-static void m_addNode(MapBasedModel &model, auto_ptr<Node> node) {
-	model.addNode(node.get());
+static void m_addNode(MapBasedModel &model, const string &id, auto_ptr<Node> node) {
+	model.addNode(id, node.get());
 	node.release();
 }
 
