@@ -1,0 +1,11 @@
+50.000000		// Primary Clarifier Volume in m3
+300.000000		// Reactor 1 Volume in m3
+500.000000		// Reactor 2 Volume in m3
+100.000000		// Settler area in m2
+3.500000		// Settler height in m
+1.000000		// Fractionof influent into the 1st R.
+1.000000		// Rel. Recycle flow
+2.000000		// Rel. internal Recycle flow
+12.000000		// Sludge age in d
+0.000000		// O2 setpoint in Reator1 in gO2/m3
+2.000000		// O2 setpoint in Reator2 in gO2/m3

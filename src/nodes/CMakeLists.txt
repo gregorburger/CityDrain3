@@ -1,4 +1,5 @@
 file(GLOB_RECURSE CPP_FILES ./ *.cpp)
+set(CPP_FILES ${CPP_FILES} rumba01dll.c)
 
 add_library(nodes SHARED ${CPP_FILES})
 
