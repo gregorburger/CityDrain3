@@ -10,7 +10,14 @@ StringParameterEdit::StringParameterEdit(QWidget *parent)
 }
 
 void StringParameterEdit::on_fileButton_clicked() {
-	QString name = QFileDialog::getSaveFileName(this, "Choose File or FileName", QDir::current().path());
+	QFileInfo info(ui->value->text());
+	QString path = QDir::current().path();
+	if (info.dir().exists()) {
+		path = info.dir().path();
+	}
+	QString name = QFileDialog::getSaveFileName(this,
+												"Choose File or FileName",
+												path);
 	if (name != "") {
 		ui->value->setText(name);
 	}
