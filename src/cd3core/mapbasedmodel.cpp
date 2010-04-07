@@ -17,7 +17,7 @@ MapBasedModel::MapBasedModel() {
 
 MapBasedModel::~MapBasedModel() {
 	BOOST_FOREACH(nodes_pair_type p, names_nodes) {
-		p.second->deinit();
+		p.second->deinit();//TODO should we do this here?
 		delete p.second;
 	}
 	BOOST_FOREACH(NodeConnection *con, all_connections) {
