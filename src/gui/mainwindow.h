@@ -29,7 +29,7 @@ protected:
 	void closeEvent(QCloseEvent *);
 
 	void setupTimeControls();
-	void unload();
+	bool unload();
 private:
 	Ui::MainWindow *ui;
 	SimulationScene *scene;

@@ -186,19 +186,8 @@ void MainWindow::simulationThreadStarted() {
 }
 
 void MainWindow::on_actionNewSimulation_activated() {
-	/*if (scene) {
-		QMessageBox::warning(this, "New Simulation", "A simulation is already defined");
+	if (!unload()) {
 		return;
-	}*/
-	if (simulation_unsaved
-		&&
-		QMessageBox::question(this, "Quit",
-							  "There are unsaved changes.",
-							  QMessageBox::No, QMessageBox::Yes) == QMessageBox::No) {
-		return;
-	}
-	if (scene) {
-		unload();
 	}
 	NewSimulationDialog ns(this);
 	if (ns.exec()) {
@@ -258,9 +247,11 @@ void MainWindow::on_actionSave_Simulation_activated() {
 }
 
 void MainWindow::on_actionAdd_Python_Module_activated() {
-	QString plugin = QFileDialog::getOpenFileName(this,
-												  "select python module",
-												  "./data/scripts", "*.py");
+	QString plugin;
+	plugin = QFileDialog::getOpenFileName(this,
+										  "select python module",
+										  "./data/scripts",
+										  "*.py");
 	if (plugin == "")
 		return;
 	scene->addPythonModule(plugin);
@@ -272,24 +263,18 @@ void MainWindow::on_action_exit_activated() {
 }
 
 void MainWindow::on_action_open_activated() {
-	if (scene && simulation_unsaved) {
-
-		if (QMessageBox::question(this, "Quit",
-									   "There are unsaved changes. Don't save the changes?",
-									   QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes) {
-			unload();
-		} else {
-			return;
-		}
+	if (!unload()) {
+		return;
 	}
 
-	QString path = QFileDialog::getOpenFileName(this,
-												"Open Model File",
-												".",
-												"XML Files (*.xml)");
+	QString path;
+	path = QFileDialog::getOpenFileName(this,
+										"Open Model File",
+										".",
+										"XML Files (*.xml)");
 	if (path == "")
 		return;
-	setWindowTitle(QString("CityDrain3 (%1)").arg(path));
+	setWindowTitle(QString("%2 (%1)").arg(path, QApplication::applicationName()));
 	scene = new SimulationScene(path);
 	sceneChanged();
 }
@@ -325,14 +310,11 @@ void MainWindow::applyTime() {
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
-	if (!simulation_unsaved || QMessageBox::question(this, "Quit",
-													 "There are unsaved changes. Don't save changes?",
-													 QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes) {
+	if (unload()) {
 		QSettings s;
 		s.setValue("gui/mainwindow", this->saveState());
 		s.setValue("gui/mainwindow/geometry", this->saveGeometry());
 		event->accept();
-		return;
 	} else {
 		event->ignore();
 	}
@@ -347,7 +329,7 @@ void MainWindow::on_actionSave_as_activated() {
 	}
 	scene->setModelFileName(fileName);
 	scene->save();
-	setWindowTitle(QString("CityDrain3 (%1)").arg(fileName));
+	setWindowTitle(QString("%2 (%1)").arg(fileName, QApplication::applicationName()));
 }
 
 void MainWindow::simulationUnsavedChanged(bool unsaved) {
@@ -378,7 +360,23 @@ void MainWindow::on_actionExport_to_pdf_activated() {
 	scene->render(&painter, QRectF(), scene->itemsBoundingRect());//, QRectF(0, 0, rect.width(), rect.height()), rect);
 }
 
-void MainWindow::unload() {
+bool MainWindow::unload() {
+	if (scene && simulation_unsaved) {
+		QString message("%1 has been modified. Do you want to save?");
+		QMessageBox::StandardButton ret = QMessageBox::question(this,
+							  "unsaved changes",
+							  message.arg(scene->getModelFileName()),
+							  QMessageBox::No | QMessageBox::Cancel | QMessageBox::Yes,
+							  QMessageBox::Yes);
+		if (ret == QMessageBox::Yes) {
+			on_actionSave_Simulation_activated();
+		}
+		if (ret == QMessageBox::Cancel) {
+			return false;
+		}
+	} else {
+		return true;
+	}
 	ui->actionSave_as->setEnabled(false);
 	ui->actionSave_Simulation->setEnabled(false);
 
@@ -387,6 +385,8 @@ void MainWindow::unload() {
 	ui->graphicsView->setScene(0);
 	delete scene;
 	scene = 0;
+	this->setWindowTitle(QApplication::applicationName());
+	return true;
 }
 
 void MainWindow::on_actionFind_node_activated() {
