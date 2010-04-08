@@ -38,6 +38,8 @@ Q_SIGNALS:
 
 private:
 	void moveItems();
+	QMap<std::string, std::string> saveParameters();
+	void restoreParameters(QMap<std::string, std::string> p);
 
 	QRectF bounding;
 	Node *node;

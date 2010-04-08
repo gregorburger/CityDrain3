@@ -12,6 +12,7 @@
 #include <node.h>
 #include <simulation.h>
 #include <mapbasedmodel.h>
+#include <typeconverter.h>
 
 typedef pair<std::string, Flow *> port_pair;
 
@@ -161,22 +162,31 @@ void NodeItem::changeParameters() {
 	SimulationParameters sp = parentscene->getSimulation()->getSimulationParameters();
 	MapBasedModel *model = parentscene->getModel();
 
-	bool ok;
+	QMap<std::string, std::string> saved = saveParameters();
 
-	do {
-		ok = true;
+	while (true) {
 		NodeParametersDialog np(getNode());
 		if (!np.exec()) {
+			restoreParameters(saved);
 			return;
 		}
 		getNode()->deinit();
 		np.updateNodeParameters();
-		ok &= node->init(sp.start, sp.stop, sp.dt);
-		if (getId() == np.newId())
+		if (!node->init(sp.start, sp.stop, sp.dt)) {
+			restoreParameters(saved);
 			continue;
+		}
 
-		ok &= model->renameNode(node, np.newId().toStdString());
-	} while (!ok);
+		if (getId() == np.newId()) {
+			break;
+		}
+
+		if (!model->renameNode(node, np.newId().toStdString())) {
+			restoreParameters(saved);
+			continue;
+		}
+		break;
+	}
 
 	QMap<string, Flow*> in_after(*getNode()->const_in_ports);
 	QMap<string, Flow*> out_after(*getNode()->const_out_ports);
@@ -206,4 +216,22 @@ void NodeItem::changeParameters() {
 	updatePorts();
 	parentscene->update();
 	Q_EMIT(changed(this));
+}
+
+typedef std::pair<std::string, NodeParameter *> pair_type;
+QMap<std::string, std::string> NodeItem::saveParameters() {
+	QMap<std::string, std::string> saved;
+	BOOST_FOREACH(pair_type p, node->getParameters()) {
+		TypeConverter *con = TypeConverter::get(p.second->type);
+		saved[p.first] = con->toStringExact(p.second->value);
+	}
+	return saved;
+}
+
+void NodeItem::restoreParameters(QMap<std::string, std::string> p) {
+	Q_FOREACH(std::string name, p.keys()) {
+		NodeParameter *param = node->getParameters()[name];
+		TypeConverter *con = TypeConverter::get(param->type);
+		con->fromStringExact(p[name], param->value);
+	}
 }

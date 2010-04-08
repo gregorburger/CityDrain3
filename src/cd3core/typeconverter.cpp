@@ -176,6 +176,7 @@ struct ArrayTC : public TypeConverter {
 		vector<T> *values = (vector<T> *) dest;
 		vector<string> items;
 		split(items, s, algorithm::is_any_of(";"));
+		values->clear();
 		BOOST_FOREACH(string item, items) {
 			T value;
 			sub_con->fromString(item, &value);
@@ -188,6 +189,7 @@ struct ArrayTC : public TypeConverter {
 		vector<T> *values = (vector<T> *) dest;
 		vector<string> items;
 		split(items, s, algorithm::is_any_of(";"));
+		values->clear();
 		BOOST_FOREACH(string item, items) {
 			T value;
 			sub_con->fromString(item, &value);
