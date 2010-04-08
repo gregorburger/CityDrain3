@@ -70,7 +70,7 @@ int CSO::f(ptime time, int dt) {
 	double VPrime = in[0] * dt + V_old[0];
 
 	if (VPrime > 0) {
-		for (int i = 1; i < Flow::size(); i++) {
+		for (size_t i = 1; i < Flow::size(); i++) {
 			double c = (in[i]*in[0] * dt + V_old[i] * V_old[0]) / VPrime;
 			out[i] = overflow[i] = stored_volume[i] = c;
 		}

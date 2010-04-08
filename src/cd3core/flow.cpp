@@ -188,7 +188,7 @@ void Flow::clear() {
 	}
 }
 
-int Flow::size() {
+size_t Flow::size() {
 	cd3assert(fd.defined, "flow not defined");
 	return fd.size;
 }

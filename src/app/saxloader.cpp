@@ -21,6 +21,7 @@ using namespace std;
 #include <simulation.h>
 #include <flow.h>
 #include <module.h>
+#include <typeconverter.h>
 
 struct SaxLoaderPriv {
 	NodeRegistry *node_registry;
@@ -29,7 +30,7 @@ struct SaxLoaderPriv {
 	Flow *f;
 	std::string param_name;
 	std::map<std::string, Flow::CalculationUnit> flow_definition;
-	stack<string> parent_nodes;
+	//stack<string> parent_nodes;
 };
 
 SaxLoader::SaxLoader(IModel *model) : delete_node_reg(true), delete_sim_reg(true) {
@@ -139,24 +140,11 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 	if (lname == "connectionlist") {
 		consumed = true;
 	}
-	if (lname == "flow") {
-		if (pd->parent_nodes.top() == "parameter")
-			pd->f = new Flow();
-		consumed = true;
-	}
 	if (lname == "connection") {
 		cycle_break = atts.value("cycle_break") == "true";
 		if (cycle_break) {
 			Logger(Standard) << "got cyclebreak";
 		}
-		consumed = true;
-	}
-	if (lname == "arrayentry") {
-		cd3assert(atts.index("value") >= 0, "arrayentry must provide a value");
-		bool ok;
-		double value = atts.value("value").toDouble(&ok);
-		cd3assert(ok, "value is not a double value");
-		current->appendArrayParameter(pd->param_name, value);
 		consumed = true;
 	}
 	if (lname == "concentration") {
@@ -170,10 +158,15 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		pd->flow_definition["Q"] = Flow::flow;
 		consumed = true;
 	}
+	if (lname == "flow") {
+		consumed = true;
+	}
 	if (lname == "gui" || lname == "nodeposition") { //used for gui
 		consumed = true;
 	}
-	pd->parent_nodes.push(lname.toStdString());
+	if (!consumed) {
+		Logger(Warning) << "not used xml elemetn" << lname.toStdString();
+	}
 	cd3assert(consumed, str(format("not used element: %1%") % lname.toStdString()));
 	return consumed;
 }
@@ -210,7 +203,6 @@ ISimulation *SaxLoader::load(QFile &file) {
 bool SaxLoader::endElement(const QString &/*ns*/,
 						   const QString &lname,
 						   const QString &/*qname*/) {
-	pd->parent_nodes.pop();
 	bool consumed;
 	if (lname == "connection") {
 		cd3assert(!source_id.empty(), "source node not set");
@@ -236,13 +228,6 @@ bool SaxLoader::endElement(const QString &/*ns*/,
 		model->initNodes(simulation->getSimulationParameters());
 		consumed = true;
 	}
-	if (lname == "flow") {
-		if (pd->parent_nodes.top() == "parameter") {
-			current->setParameter<Flow>(pd->param_name, *pd->f);
-			delete pd->f;
-		}
-		consumed = true;
-	}
 	if (lname == "flowdefinition") {
 		Flow::undefine();
 		Flow::define(pd->flow_definition);
@@ -254,64 +239,14 @@ bool SaxLoader::endElement(const QString &/*ns*/,
 void SaxLoader::loadParameter(const QXmlAttributes& atts) {
 	cd3assert(atts.index("name") >= 0, "no parameter name set");
 	std::string name = atts.value("name").toStdString();
-	std::string kind = "simple";
-	if (atts.index("kind") >= 0)
-		kind = atts.value("kind").toStdString();
 	std::string type = "double";
 	if (atts.index("type") >= 0)
 		type = atts.value("type").toStdString();
 
-	/*cd3assert(current->const_parameters->count(name) ||
-			  current->const_array_parameters->count(name),
-			  str(format("no such parameter in node %1%") % name.c_str()));*/
-
-	if (kind == "simple") {
-		QString value = atts.value("value");
-
-		if (type == "double") {
-			double d = value.toDouble();
-			current->setParameter<double>(name, d);
-			return;
-		}
-
-		if (type == "float") {
-			float d = value.toFloat();
-			current->setParameter<float>(name, d);
-			return;
-		}
-
-		if (type == "int") {
-			int ivalue = value.toInt();
-			current->setParameter<int>(name, ivalue);
-			return;
-		}
-
-		if (type == "bool") {
-			bool bvalue = value == "true";
-			current->setParameter<bool>(name, bvalue);
-			return;
-		}
-
-		if (type == "string") {
-			std::string std = value.toStdString();
-			current->setParameter<std::string>(name, std);
-			return;
-		}
-		cd3assert(false, str(format("unnknown simple type %1%") % type.c_str()));
-		return;
-	}
-
-	if (kind == "complex") {
-		pd->param_name = atts.value("name").toStdString();
-		return;
-	}
-	if (kind == "array") {
-		pd->param_name = atts.value("name").toStdString();
-		current->clearArrayParameter<double>(pd->param_name);
-		return;
-	}
-
-	cd3assert(false, str(format("unknown kind %1%") % kind.c_str()));
+	std::string value = atts.value("value").toStdString();
+	TypeConverter *conv = TypeConverter::get(type);
+	cd3assert(conv, "no type converter found for type");
+	conv->setParameter(current, name, value);
 }
 
 void SaxLoader::breakCycle() {

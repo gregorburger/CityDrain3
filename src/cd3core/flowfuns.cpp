@@ -15,7 +15,7 @@ Flow FlowFuns::mix(const std::vector<Flow*> &inputs) {
 		return f;
 	}
 
-	for (int cn = 1; cn < f.size(); cn++) {
+	for (size_t cn = 1; cn < f.size(); cn++) {
 		double c = 0.0;
 		for (size_t i = 0; i <  inputs.size(); i++) {
 			c += (*inputs[i])[cn] * (*inputs[i])[0];
@@ -35,7 +35,7 @@ Flow FlowFuns::mix(const std::vector<Flow> &inputs) {
 		return f;
 	}
 
-	for (int cn = 1; cn < f.size(); cn++) {
+	for (size_t cn = 1; cn < f.size(); cn++) {
 		double c = 0.0;
 		for (size_t i = 0; i <  inputs.size(); i++) {
 			c += inputs[i][cn] * inputs[i][0];
@@ -145,7 +145,7 @@ Flow FlowFuns::route_catchment(const Flow in,
 
 	//QL = rain
 	//QI = in
-	for (int i = 1; i < Flow::size(); i++) {
+	for (size_t i = 1; i < Flow::size(); i++) {
 		//c0=0.5.*QE(1)+V(1)./tstep;
 		double c0 = 0.5 * out[0] + newvolume[0]/dt;
 		//     c1 = QI(1).* QI(k+1)+  QL(1).* QL(k+1)* N - Vold(k+1) * (0.5.* QE(1)  - Vold(1)     ./tstep);

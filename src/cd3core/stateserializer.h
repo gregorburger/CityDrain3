@@ -21,8 +21,8 @@ typedef std::map<cd3::TypeInfo, boost::shared_ptr<IStateSerializer> > type_ser_m
 struct CD3_PUBLIC IStateSerializer
 {
 	virtual ~IStateSerializer(){}
-        virtual std::string serialize(const std::string &name, Node *node) = 0;
-        virtual void deserialize(const std::string &value, const std::string &name,  Node *node) = 0;
+	virtual std::string serialize(const std::string &name, Node *node) = 0;
+	virtual void deserialize(const std::string &value, const std::string &name,  Node *node) = 0;
 
 	static type_ser_map standard;
 };

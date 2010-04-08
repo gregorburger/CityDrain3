@@ -146,40 +146,11 @@ public:
 		*vp = param;
 	}
 
-	template<class T>
-	void appendArrayParameter(const std::string &name,
-							  T param) {
-		cd3assert(array_parameters.find(name) != array_parameters.end(),
-				  str(format("no parameter with name %1%") % name));
-		ltvp p = array_parameters[name];
-
-		cd3assert(p.first == cd3::TypeInfo(typeid(T)),
-				  str(format("wrong type for parameter %1%") % name));
-
-		vector<T> *vp = static_cast<vector<T> *>(p.second);
-		cd3assert(vp, str(format("parameter %1% null") % name));
-		Logger(Debug) << this << "appendArrayParameter(" << name << ")";
-		vp->push_back(param);
-	}
-
-	template<class T>
-	void clearArrayParameter(const std::string &name) {
-		cd3assert(array_parameters.find(name) != array_parameters.end(),
-				  str(format("no parameter with name %1%") % name));
-		ltvp p = array_parameters[name];
-		cd3assert(p.first == cd3::TypeInfo(typeid(T)),
-				  str(format("wrong type for parameter %1%") % name));
-		vector<T> *vp = static_cast<vector<T> *>(p.second);
-		vp->clear();
-	}
-
-
 	//const ssltvp	* const const_parameters;
 	parameters_type getParameters() const {
 		return parameters;
 	}
 
-	const ssltvp	* const const_array_parameters;
 	const ssltvp	* const const_states;
 	const ssf		* const const_in_ports;
 	const ssf		* const const_out_ports;
@@ -210,16 +181,6 @@ public:
 		return *p;
 	}
 
-	template<class T>
-	void addArrayParameter(const std::string &name,
-						   std::vector<T> *v) {
-		cd3assert(v, "adding null array parameter");
-		cd3assert(array_parameters.find(name) == array_parameters.end(),
-				  str(format("parameter %1% already defined") % name));
-		Logger(Debug) << this << "addArrayParameter(" << name << ")";
-		array_parameters[name] = ltvp(cd3::TypeInfo(typeid(T)), v);
-	}
-
 	int num_inputed;
 
 protected:
@@ -231,7 +192,6 @@ protected:
 protected:
 	ssltvp	states;
 	std::map<std::string, NodeParameter*> parameters;
-	ssltvp	array_parameters;
 	ssf		in_ports;
 	ssf		out_ports;
 	int		dt;

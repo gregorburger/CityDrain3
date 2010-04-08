@@ -44,34 +44,25 @@ NodeParametersDialog::NodeParametersDialog(Node *node, QWidget *parent)
 		ui->gridLayout->addWidget(param_widget, row, 1);
 		row ++;
 		widgets[param->name] = param_widget;
-		//parameters << param->name;
-	}
-
-	const ssltvp *ap = node->const_array_parameters;
-	typedef std::pair<std::string, ltvp> ap_pair;
-	BOOST_FOREACH(ap_pair item, *ap) {
-		QString name = QString::fromStdString(item.first);
-		QLabel *label = new QLabel(this);
-		label->setText(QString("%1 ([-,-,...]) :").arg(name));
-		QLineEdit *param_widget = new QLineEdit(this);
-
-		ui->gridLayout->addWidget(label, row, 0, Qt::AlignRight);
-		ui->gridLayout->addWidget(param_widget, row, 1);
-		row ++;
-		array_widgets[item.first] = param_widget;
-		vector<double> values = *((vector<double> *) item.second.second);
-
-		QString s;
-		for (size_t i = 0; i < values.size(); i++) {
-			s += i == 0 ? QString("%1").arg(values[i]) : QString(", %1").arg(values[i]);
-		}
-		param_widget->setText(s);
 	}
 
 	this->adjustSize();
 }
 
 QWidget *NodeParametersDialog::widgetForParameter(NodeParameter *p) {
+	if (p->type == cd3::TypeInfo(typeid(vector<double>))) {
+		QLineEdit *param_widget = new QLineEdit(this);
+
+		vector<double> values = *((vector<double> *) p->value);
+
+		QString s;
+		for (size_t i = 0; i < values.size(); i++) {
+			s += i == 0 ? QString("%1").arg(values[i]) : QString(", %1").arg(values[i]);
+		}
+		param_widget->setText(s);
+		return param_widget;
+	}
+
 	if (p->type == cd3::TypeInfo(typeid(int))) {
 		QSpinBox *widget = new QSpinBox();
 		widget->setRange(numeric_limits<int>::min(), numeric_limits<int>::max());
@@ -105,13 +96,13 @@ QWidget *NodeParametersDialog::widgetForParameter(NodeParameter *p) {
 
 		Flow *f = (Flow*) p->value;
 		text = QString("%1").arg((*f)[0]);
-		for (int i = 1; i < Flow::size(); i++) {
+		for (size_t i = 1; i < Flow::size(); i++) {
 			text += QString(", %1").arg((*f)[i]);
 		}
 		widget->setText(text);
 		return widget;
 	}
-	qDebug() << "UNKNOWN  type of parameter " << QString::fromStdString(p->name);
+	Logger() << "UNKNOWN  type of parameter " << p->name;
 	return new QLineEdit(this);
 }
 
@@ -157,19 +148,19 @@ bool NodeParametersDialog::updateNodeParameters() {
 			node->setParameter(p, f);
 			continue;
 		}
-		qWarning() << "cannot update node parameter " << QString::fromStdString(p);
-	}
-
-	Q_FOREACH(string pname, array_widgets.keys()) {
-		QLineEdit *line = array_widgets[pname];
-		QStringList values = line->text().split(",", QString::SkipEmptyParts);
-		node->clearArrayParameter<double>(pname);
-		Q_FOREACH(QString value, values) {
-			bool ok;
-			node->appendArrayParameter(pname, value.toDouble(&ok));
+		if (param->type == cd3::TypeInfo(typeid(vector<double>))) {
+			vector<double> v;
+			QLineEdit *line = (QLineEdit *) widgets[p];
+			QStringList values = line->text().split(",", QString::SkipEmptyParts);
+			Q_FOREACH(QString value, values) {
+				bool ok;
+				v.push_back(value.toDouble(&ok));
+			}
+			node->setParameter(p, v);
+			continue;
 		}
+		Logger() << "cannot update node parameter " << p;
 	}
-
 	return true;
 }
 

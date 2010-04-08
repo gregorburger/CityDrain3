@@ -16,9 +16,9 @@ PumpingStation::PumpingStation() {
 
 	addParameter(ADD_PARAMETERS(basin_volume))
 		.setUnit("m^3");
-	addArrayParameter(ADD_PARAMETERS(Qp));
-	addArrayParameter(ADD_PARAMETERS(Von));
-	addArrayParameter(ADD_PARAMETERS(Voff));
+	addParameter(ADD_PARAMETERS(Qp));
+	addParameter(ADD_PARAMETERS(Von));
+	addParameter(ADD_PARAMETERS(Voff));
 
 	addInPort(ADD_PARAMETERS(in));
 	addOutPort(ADD_PARAMETERS(out_p));

@@ -44,7 +44,7 @@ public:
 	static const std::vector<std::string> &getNames();
 	static const std::vector<std::string> &getUnitNames(CalculationUnit unit);
 	static bool hasName(const std::string &name);
-	static int size();
+	static size_t size();
 
 	void dump() const;
 

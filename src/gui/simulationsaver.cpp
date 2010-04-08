@@ -4,6 +4,7 @@
 #include <node.h>
 #include <nodeconnection.h>
 #include <flow.h>
+#include <typeconverter.h>
 
 #include <simulationscene.h>
 
@@ -139,57 +140,15 @@ typedef pair<string, NodeParameter*> ppair;
 void SimulationSaver::saveNodeParameters(const Node *n) {
 	BOOST_FOREACH(ppair item, n->getParameters()) {
 		NodeParameter *p = item.second;
-		if (p->type == cd3::TypeInfo(typeid(Flow))) {
-			writer->writeStartElement("parameter");
-			writer->writeAttribute("name", tos(p->name));
-			writer->writeAttribute("kind", "complex");
-			writer->writeAttribute("type", "Flow");
-			saveFlowParameter(p);
-			writer->writeEndElement();
+		TypeConverter *con = TypeConverter::get(p->type);
+		if (!con) {
+			Logger(Error) << "can not save value of parameter " << p->name;
 			continue;
 		}
 		writer->writeEmptyElement("parameter");
 		writer->writeAttribute("name", tos(p->name));
-		if (p->type == cd3::TypeInfo(typeid(double))) {
-			writer->writeAttribute("type", "double");
-			double *value = (double *) p->value;
-			writer->writeAttribute("value", QString("%1").arg(*value));
-			continue;
-		}
-		if (p->type == cd3::TypeInfo(typeid(int))) {
-			writer->writeAttribute("type", "int");
-			int *value = (int *) p->value;
-			writer->writeAttribute("value", QString("%1").arg(*value));
-			continue;
-		}
-		if (p->type == cd3::TypeInfo(typeid(bool))) {
-			writer->writeAttribute("type", "bool");
-			bool *value = (bool *) p->value;
-			writer->writeAttribute("value", QString("%1").arg(*value));
-			continue;
-		}
-		if (p->type == cd3::TypeInfo(typeid(string))) {
-			writer->writeAttribute("type", "string");
-			string *value = (string *) p->value;
-			writer->writeAttribute("value", QString::fromStdString(*value));
-			continue;
-		}
-		qWarning() << "can not save value of parameter " << QString::fromStdString(p->name);
-	}
-	const ssltvp *ap = n->const_array_parameters;
-	typedef std::pair<std::string, ltvp> ap_pair;
-	BOOST_FOREACH(ap_pair item, *ap) {
-		writer->writeStartElement("parameter");
-		writer->writeAttribute("name", QString::fromStdString(item.first));
-		writer->writeAttribute("kind", "array");
-		writer->writeAttribute("type", "double");
-		vector<double> values = *((vector<double>*) item.second.second);
-		BOOST_FOREACH(double v, values) {
-			writer->writeEmptyElement("arrayentry");
-			writer->writeAttribute("value", QString("%1").arg(v));
-		}
-
-		writer->writeEndElement();
+		writer->writeAttribute("type", tos(con->getTypeName()));
+		writer->writeAttribute("value", tos(con->toString(p->value)));
 	}
 }
 

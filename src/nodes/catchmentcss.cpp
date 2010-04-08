@@ -32,7 +32,7 @@ CatchmentCSS::CatchmentCSS() {
 		rain_concentration.push_back(0.0);
 	}
 
-	addArrayParameter(ADD_PARAMETERS(rain_concentration));
+	addParameter(ADD_PARAMETERS(rain_concentration));
 
 	addState(ADD_PARAMETERS(loss_basin));
 

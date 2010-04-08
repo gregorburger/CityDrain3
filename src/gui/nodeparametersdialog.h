@@ -28,7 +28,6 @@ private:
 	Ui::NodeParametersDialog *ui;
 	Node *node;
 	QMap<std::string, QWidget *> widgets;
-	QMap<std::string, QLineEdit *> array_widgets;
 	QLineEdit *nodeId;
 };
 
