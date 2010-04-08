@@ -101,6 +101,8 @@
     <property name="title">
      <string>&amp;Edit</string>
     </property>
+    <addaction name="actionCopy"/>
+    <addaction name="actionPaste"/>
     <addaction name="actionFind_node"/>
     <addaction name="separator"/>
     <addaction name="actionHorizontal_center_align"/>
@@ -356,6 +358,22 @@
    </property>
    <property name="text">
     <string>vertical center align</string>
+   </property>
+  </action>
+  <action name="actionCopy">
+   <property name="text">
+    <string>copy</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="actionPaste">
+   <property name="text">
+    <string>paste</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
    </property>
   </action>
  </widget>

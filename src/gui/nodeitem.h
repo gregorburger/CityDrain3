@@ -33,13 +33,14 @@ public:
 	PortItem *getInPort(QString id);
 	PortItem *getOutPort(QString id);
 	bool changeParameters();
+	QMap<std::string, std::string> saveParameters();
+	void restoreParameters(QMap<std::string, std::string> p);
+
 Q_SIGNALS:
 	void changed(NodeItem *nitem);
 
 private:
 	void moveItems();
-	QMap<std::string, std::string> saveParameters();
-	void restoreParameters(QMap<std::string, std::string> p);
 
 	QRectF bounding;
 	Node *node;

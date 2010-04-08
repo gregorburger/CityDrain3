@@ -13,6 +13,7 @@ PortItem::PortItem(QString portName,
 	at_top(false), at_bottom(false)
 {
 	setAcceptHoverEvents(true);
+	setFlag(QGraphicsItem::ItemIsSelectable, false);
 	setZValue(2);
 }
 

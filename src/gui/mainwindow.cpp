@@ -422,3 +422,11 @@ void MainWindow::on_actionAlign_vertically_center_activated() {
 		item->setPos(x, y);
 	}
 }
+
+void MainWindow::on_actionCopy_activated() {
+	scene->copy();
+}
+
+void MainWindow::on_actionPaste_activated() {
+	scene->paste();
+}

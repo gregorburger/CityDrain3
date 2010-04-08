@@ -54,7 +54,11 @@ public Q_SLOTS:
 	void on_actionZoom_out_activated();
 	void on_actionZoom_reset_activated();
 	void on_actionExport_to_pdf_activated();
+
+	//edit stuff
 	void on_actionFind_node_activated();
+	void on_actionPaste_activated();
+	void on_actionCopy_activated();
 
 	//align stuff
 	void on_actionHorizontal_center_align_activated();

@@ -10,6 +10,7 @@ ConnectionItem::ConnectionItem(PortItem *source,
 			  : QGraphicsItem(parent, scene), source(source), sink(0), hovered(false) {
 	this->second = second;
 	setAcceptHoverEvents(true);
+	setFlag(QGraphicsItem::ItemIsSelectable, false);
 	updatePositions();
 }
 

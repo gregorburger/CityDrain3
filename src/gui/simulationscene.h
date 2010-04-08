@@ -15,6 +15,8 @@ class QTreeWidget;
 class PortItem;
 class ConnectionItem;
 
+typedef std::pair<std::string, QMap<std::string, std::string> > copied_node;
+
 class SimulationScene : public QGraphicsScene
 {
 Q_OBJECT
@@ -28,6 +30,8 @@ public:
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 	void save();
+	void copy();
+	void paste();
 
 	const NodeRegistry *getNodeRegistry() const { return node_reg; }
 	SimulationRegistry *getSimulationRegistry() const { return sim_reg; }
@@ -51,6 +55,7 @@ private Q_SLOTS:
 	void nodeChanged(NodeItem *nitem);
 
 private:
+	std::string getDefaultId(Node *node) const;
 	void load();
 	bool isInPort(QGraphicsItem *item) const;
 	bool isOutPort(QGraphicsItem *item) const;
@@ -66,6 +71,7 @@ private:
 	QString model_file_name;
 	QStringList plugins, python_modules;
 	bool unsaved;
+	QList<copied_node> copied_nodes;
 };
 
 #endif // SIMULATIONSCENE_H

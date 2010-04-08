@@ -99,7 +99,19 @@ void SimulationScene::setSimulation(ISimulation *simulation) {
 	this->simulation = simulation;
 }
 
-
+//default id is klassname_+counter
+string SimulationScene::getDefaultId(Node *node) const {
+	name_node_map nodes = model->getNamesAndNodes();
+	int count = 0;
+	string id;
+	while (true) {
+		id = node->getClassName() +  string("_") + lexical_cast<string>(count++);
+		if (nodes.find(id) == nodes.end()) {
+			break; //found an id
+		}
+	}
+	return id;
+}
 
 void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 	if (!simulation) {
@@ -111,18 +123,7 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 	QGraphicsScene::dragMoveEvent(event);
 
 	Node *node = node_reg->createNode(klassName);
-
-	//default id is klassname_+counter
-	name_node_map nodes = model->getNamesAndNodes();
-	int count = 0;
-	string id;
-	while (true) {
-		id = node->getClassName() +  string("_") + lexical_cast<string>(count++);
-		if (nodes.find(id) == nodes.end()) {
-			break; //found an id
-		}
-	}
-
+	string id = getDefaultId(node);
 	model->addNode(id, node);
 
 	NodeItem *nitem = new NodeItem(node);
@@ -296,4 +297,27 @@ void SimulationScene::remove(NodeItem *item) {
 void SimulationScene::nodeChanged(NodeItem *nitem) {
 	(void) nitem;
 	Q_EMIT(unsavedChanged(true));
+}
+
+void SimulationScene::copy() {
+	copied_nodes.clear();
+	Q_FOREACH(QGraphicsItem *item, selectedItems()) {
+		NodeItem *node_item = (NodeItem *) item;
+		copied_nodes << copied_node(node_item->getClassName().toStdString(), node_item->saveParameters());
+	}
+}
+
+void SimulationScene::paste() {
+	Q_FOREACH(copied_node cn, copied_nodes) {
+		Node *n = node_reg->createNode(cn.first);
+		string id  = this->getDefaultId(n);
+		model->addNode(id, n);
+		NodeItem *item = new NodeItem(n);
+		item->restoreParameters(cn.second);
+		node_items << item;
+		this->addItem(item);
+	}
+	if (copied_nodes.size() >  0) {
+		Q_EMIT(unsavedChanged(true));
+	}
 }
