@@ -154,7 +154,7 @@ void NodeItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
 	changeParameters();
 }
 
-void NodeItem::changeParameters() {
+bool NodeItem::changeParameters() {
 	SimulationScene *parentscene = (SimulationScene*) scene();
 	QMap<string, PortItem*> in_before = in_ports;
 	QMap<string, PortItem*> out_before = out_ports;
@@ -168,7 +168,7 @@ void NodeItem::changeParameters() {
 		NodeParametersDialog np(getNode());
 		if (!np.exec()) {
 			restoreParameters(saved);
-			return;
+			return false;
 		}
 		getNode()->deinit();
 		np.updateNodeParameters();
@@ -216,6 +216,7 @@ void NodeItem::changeParameters() {
 	updatePorts();
 	parentscene->update();
 	Q_EMIT(changed(this));
+	return true;
 }
 
 typedef std::pair<std::string, NodeParameter *> pair_type;
