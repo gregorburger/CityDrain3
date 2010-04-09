@@ -54,6 +54,14 @@ struct PrimTC : TC {
 		n->setParameter<T>(pname, v);
 	}
 
+	void setParameterExact(Node *n,
+						   const std::string &pname,
+						   const std::string &pvalue) const {
+		T v;
+		fromStringExact(pvalue, &v);
+		n->setParameter<T>(pname, v);
+	}
+
 	string type_name;
 };
 
@@ -120,10 +128,10 @@ struct FlowTC : public TypeConverter {
 		vector<string> items;
 		split(items, s, algorithm::is_any_of(";"));
 		cd3assert(items.size() == Flow::size() / 2, "wrong string format of type Flow");
-		for (size_t i = 0; i < Flow::size(); i += 2) {
-			string name = items[i];
+		for (size_t i = 0; i < Flow::size(); i++) {
+			string name = items[i*2];
 			double value;
-			double_con.fromStringExact(items[i+1], &value);
+			double_con.fromStringExact(items[i*2+1], &value);
 			f->setValue(name, value);
 		}
 	}
@@ -133,6 +141,14 @@ struct FlowTC : public TypeConverter {
 					  const std::string &pvalue) const {
 		Flow f;
 		fromString(pvalue, &f);
+		n->setParameter(pname, f);
+	}
+
+	void setParameterExact(Node *n,
+						   const std::string &pname,
+						   const std::string &pvalue) const {
+		Flow f;
+		fromStringExact(pvalue, &f);
 		n->setParameter(pname, f);
 	}
 };
@@ -202,6 +218,14 @@ struct ArrayTC : public TypeConverter {
 					  const std::string &pvalue) const {
 		vector<T> v;
 		fromString(pvalue, &v);
+		n->setParameter(pname, v);
+	}
+
+	void setParameterExact(Node *n,
+						   const std::string &pname,
+						   const std::string &pvalue) const {
+		vector<T> v;
+		fromStringExact(pvalue, &v);
 		n->setParameter(pname, v);
 	}
 	string type_name;

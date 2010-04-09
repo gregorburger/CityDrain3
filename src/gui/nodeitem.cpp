@@ -233,7 +233,7 @@ void NodeItem::restoreParameters(QMap<std::string, std::string> p) {
 	Q_FOREACH(std::string name, p.keys()) {
 		NodeParameter *param = node->getParameters()[name];
 		TypeConverter *con = TypeConverter::get(param->type);
-		con->setParameter(node, name, p[name]);
+		con->setParameterExact(node, name, p[name]);
 	}
 	updatePorts();
 	update();

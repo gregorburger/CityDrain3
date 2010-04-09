@@ -314,8 +314,12 @@ void SimulationScene::paste() {
 		model->addNode(id, n);
 		NodeItem *item = new NodeItem(n);
 		item->restoreParameters(cn.second);
+		SimulationParameters param = simulation->getSimulationParameters();
+		n->init(param.start, param.stop, param.dt);
+		item->updatePorts();
 		node_items << item;
 		this->addItem(item);
+		this->connect(item, SIGNAL(changed(NodeItem*)), SLOT(nodeChanged(NodeItem*)));
 	}
 	if (copied_nodes.size() >  0) {
 		Q_EMIT(unsavedChanged(true));
