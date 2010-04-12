@@ -10,14 +10,15 @@ class ISimulation;
 class SimulationThread : public QThread
 {
 public:
-	SimulationThread(ISimulation *simulation);
+	SimulationThread();
 	virtual ~SimulationThread();
+	void setSimulation(ISimulation *simulation) { this->simulation = simulation; }
 	void run();
 	TimeStepHandler *handler;
 	ISimulation *getSimulation() const { return simulation; }
 private:
-	ISimulation *simulation;
 	boost::signals::connection c;
+	ISimulation *simulation;
 };
 
 #endif // SIMULATIONTHREAD_H
