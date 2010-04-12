@@ -129,7 +129,7 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 	NodeItem *nitem = new NodeItem(node);
 	this->addItem(nitem);
 
-	if (!nitem->changeParameters()) {
+	if (!nitem->changeParameters(true)) {
 		this->removeItem(nitem);
 		delete nitem;
 		model->removeNode(node);
