@@ -15,7 +15,11 @@ class QTreeWidget;
 class PortItem;
 class ConnectionItem;
 
-typedef std::pair<std::string, QMap<std::string, std::string> > copied_node;
+struct CopyState {
+	std::string _class;
+	QMap<std::string, std::string> parameters;
+	QPointF position;
+};
 
 class SimulationScene : public QGraphicsScene
 {
@@ -71,7 +75,8 @@ private:
 	QString model_file_name;
 	QStringList plugins, python_modules;
 	bool unsaved;
-	QList<copied_node> copied_nodes;
+	QList<CopyState> copied_nodes;
+	QPointF current_mouse;
 };
 
 #endif // SIMULATIONSCENE_H

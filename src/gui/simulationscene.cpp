@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QFileInfo>
 #include <QDir>
+#include <QGraphicsView>
 
 #include <noderegistry.h>
 #include <simulationregistry.h>
@@ -157,6 +158,7 @@ void SimulationScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 	if (connection_start && isOutPort(connection_start) && !connection_start->isConnected()) {
 		current_connection = new ConnectionItem(connection_start, event->scenePos(), 0, this);
 		current_connection->setZValue(0);
+		views()[0]->setDragMode(QGraphicsView::NoDrag);
 		return;
 	}
 
@@ -187,15 +189,16 @@ void SimulationScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 }
 
 void SimulationScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
+	current_mouse = event->scenePos();
 	if (connection_start) {
 		current_connection->setSecond(event->scenePos());
 	}
 	QGraphicsScene::mouseMoveEvent(event);
-	return;
 }
 
 void SimulationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 	PortItem *connection_end = (PortItem *) itemAt(event->scenePos());
+	views()[0]->setDragMode(QGraphicsView::RubberBandDrag);
 
 	if (connection_end &&
 		connection_start &&
@@ -222,7 +225,6 @@ void SimulationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 		Q_EMIT(unsavedChanged(true));
 		return;
 	}
-
 
 	if (current_connection)
 		delete current_connection;
@@ -301,21 +303,35 @@ void SimulationScene::nodeChanged(NodeItem *nitem) {
 
 void SimulationScene::copy() {
 	copied_nodes.clear();
+	if (selectedItems().size() == 0)
+		return;
+
+	float x = selectedItems()[0]->pos().x();
+	float y = selectedItems()[0]->pos().y();
+
 	Q_FOREACH(QGraphicsItem *item, selectedItems()) {
 		NodeItem *node_item = (NodeItem *) item;
-		copied_nodes << copied_node(node_item->getClassName().toStdString(), node_item->saveParameters());
+		CopyState cs;
+		cs._class = node_item->getClassName().toStdString();
+		cs.parameters = node_item->saveParameters();
+		cs.position = QPointF(x - node_item->pos().x(), y - node_item->pos().y());
+		copied_nodes << cs;
 	}
 }
 
 void SimulationScene::paste() {
-	Q_FOREACH(copied_node cn, copied_nodes) {
-		Node *n = node_reg->createNode(cn.first);
+	clearSelection();
+	Q_FOREACH(CopyState cn, copied_nodes) {
+		Node *n = node_reg->createNode(cn._class);
 		string id  = this->getDefaultId(n);
 		model->addNode(id, n);
 		NodeItem *item = new NodeItem(n);
-		item->restoreParameters(cn.second);
+		item->restoreParameters(cn.parameters);
 		node_items << item;
+		item->setSelected(true);
 		this->addItem(item);
+		qDebug() << current_mouse;
+		item->setPos(current_mouse.x() + cn.position.x(), current_mouse.y() + cn.position.y());
 	}
 	if (copied_nodes.size() >  0) {
 		Q_EMIT(unsavedChanged(true));
