@@ -9,24 +9,25 @@ namespace Ui {
 }
 class SimulationRegistry;
 class ISimulation;
-class SimulationScene;
 class QDateTime;
 
 class NewSimulationDialog : public QDialog
 {
 	Q_OBJECT
 public:
-	NewSimulationDialog(QWidget *parent = 0,
+	NewSimulationDialog(SimulationRegistry *sim_reg,
+						QWidget *parent = 0,
 						Qt::WindowFlags f = 0);
 
-	SimulationScene *createSimulationScene();
+	ISimulation *createSimulation();
+	SimulationRegistry *registry;
 	Ui::NewSimulationDialog *ui;
+
 private Q_SLOTS:
 	void on_start_dateTimeChanged(const QDateTime &date);
 private:
 	void defineFlow();
-	SimulationRegistry *registry;
-	SimulationScene *scene;
+
 };
 
 boost::posix_time::ptime qttopt(const QDateTime &dt);

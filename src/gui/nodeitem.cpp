@@ -154,7 +154,7 @@ void NodeItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
 	changeParameters();
 }
 
-bool NodeItem::changeParameters() {
+bool NodeItem::changeParameters(bool _new) {
 	SimulationScene *parentscene = (SimulationScene*) scene();
 	QMap<string, PortItem*> in_before = in_ports;
 	QMap<string, PortItem*> out_before = out_ports;
@@ -162,7 +162,9 @@ bool NodeItem::changeParameters() {
 	SimulationParameters sp = parentscene->getSimulation()->getSimulationParameters();
 	MapBasedModel *model = parentscene->getModel();
 
-	QMap<std::string, std::string> saved = saveParameters();
+	QMap<std::string, std::string> saved;
+	if (!_new)
+		saved = saveParameters();
 
 	while (true) {
 		NodeParametersDialog np(getNode());
@@ -170,7 +172,9 @@ bool NodeItem::changeParameters() {
 			restoreParameters(saved);
 			return false;
 		}
-		getNode()->deinit();
+		if (!_new)
+			getNode()->deinit();
+
 		np.updateNodeParameters();
 		if (!node->init(sp.start, sp.stop, sp.dt)) {
 			restoreParameters(saved);
@@ -233,7 +237,7 @@ void NodeItem::restoreParameters(QMap<std::string, std::string> p) {
 	Q_FOREACH(std::string name, p.keys()) {
 		NodeParameter *param = node->getParameters()[name];
 		TypeConverter *con = TypeConverter::get(param->type);
-		con->setParameter(node, name, p[name]);
+		con->setParameterExact(node, name, p[name]);
 	}
 	updatePorts();
 	update();

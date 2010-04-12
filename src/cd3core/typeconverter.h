@@ -26,6 +26,9 @@ public:
 	virtual void setParameter(Node *n,
 							  const std::string &pname,
 							  const std::string &pvalue) const = 0;
+	virtual void setParameterExact(Node *n,
+								   const std::string &pname,
+								   const std::string &pvalue) const = 0;
 	static std::list<TypeConverter *> converters;
 };
 

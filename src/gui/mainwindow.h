@@ -7,6 +7,7 @@ class QTreeWidgetItem;
 
 namespace Ui {
 	class MainWindow;
+	class TimeControls;
 }
 
 class SimulationScene;
@@ -16,9 +17,11 @@ class QSpinBox;
 class QDateTime;
 class QPushButton;
 class GuiLogSink;
+class QStateMachine;
 
 class MainWindow : public QMainWindow {
 Q_OBJECT
+Q_PROPERTY(bool unsavedChanges);
 public:
 	MainWindow(QWidget *parent = 0);
 	virtual ~MainWindow();
@@ -34,11 +37,14 @@ private:
 	Ui::MainWindow *ui;
 	SimulationScene *scene;
 	SimulationThread *current_thread;
-	bool simulation_unsaved;
-	QDateTimeEdit *stop, *start;
-	QSpinBox *dt;
-	QPushButton *apply_time_button;
+	bool unsaved_changes;
+	Ui::TimeControls *time_controls;
+	QWidget *tc_widget;
 	GuiLogSink *log_updater;
+
+private:
+	void setupStateMachine();
+	QStateMachine *state_machine;
 
 public Q_SLOTS:
 	void on_actionAdd_Plugin_activated();
@@ -68,13 +74,12 @@ public Q_SLOTS:
 	void dt_valueChanged(int value);
 	void applyTime();
 
-	void simulationThreadStarted();
-	void simulationThreadFinished();
 	void zoomIn(int times = 1);
 	void zoomOut(int times = 1);
 	void pluginsAdded();
 	void sceneChanged();
-	void simulationUnsavedChanged(bool unsaved);
+	void simulationChanged();
+	void simulationSaved();
 };
 
 #endif // MAINWINDOW_H

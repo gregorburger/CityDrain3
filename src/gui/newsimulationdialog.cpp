@@ -8,17 +8,12 @@
 
 #include <QFile>
 #include <QString>
-#include <QDateTime>
 #include <boost/foreach.hpp>
-#include <boost/date_time.hpp>
 
-using namespace boost::posix_time;
-using namespace boost::gregorian;
-
-NewSimulationDialog::NewSimulationDialog(QWidget *parent,
+NewSimulationDialog::NewSimulationDialog(SimulationRegistry *registry,
+										 QWidget *parent,
 										 Qt::WindowFlags f)
-	: QDialog(parent, f), ui(new Ui::NewSimulationDialog()) {
-	registry = new SimulationRegistry();
+	: QDialog(parent, f), registry(registry), ui(new Ui::NewSimulationDialog()) {
 	ui->setupUi(this);
 	QStringList list;
 
@@ -30,11 +25,7 @@ NewSimulationDialog::NewSimulationDialog(QWidget *parent,
 	ui->simulationComboBox->addItems(list);
 }
 
-ptime qttopt(const QDateTime &dt) {
-	date d(dt.date().year(), dt.date().month(), dt.date().day());
-	ptime t(d, time_duration(dt.time().hour(), dt.time().minute(), dt.time().second()));
-	return t;
-}
+
 
 void NewSimulationDialog::defineFlow() {
 	using namespace std;
@@ -47,19 +38,15 @@ void NewSimulationDialog::defineFlow() {
 	Flow::define(definition);
 }
 
-SimulationScene *NewSimulationDialog::createSimulationScene() {
+ISimulation *NewSimulationDialog::createSimulation() {
 	SimulationParameters p(qttopt(ui->start->dateTime()),
 						   qttopt(ui->stop->dateTime()),
 						   ui->dt->value());
 	ISimulation *sim = registry->createSimulation(ui->simulationComboBox->currentText().toStdString());
 	sim->setSimulationParameters(p);
-	SimulationScene *scene = new SimulationScene();
-	scene->setSimulation(sim);
-	if (ui->defaultNodesCheckBox->isChecked()) {
-		scene->addPlugin("nodes");
-	}
+
 	defineFlow();
-	return scene;
+	return sim;
 }
 
 void NewSimulationDialog::on_start_dateTimeChanged(const QDateTime &date) {

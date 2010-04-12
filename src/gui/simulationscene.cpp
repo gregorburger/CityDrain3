@@ -8,6 +8,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QGraphicsView>
+#include <QDateTime>
 
 #include <noderegistry.h>
 #include <simulationregistry.h>
@@ -23,25 +24,60 @@
 #include <guimodelloader.h>
 
 #include <nodeparametersdialog.h>
+#include <newsimulationdialog.h>
+#include <ui_newsimulationdialog.h>
+
 #include <boost/lexical_cast.hpp>
 #include <boost/foreach.hpp>
+#include <boost/date_time/gregorian/gregorian.hpp>
+using namespace boost::gregorian;
 
 using namespace std;
 
-SimulationScene::SimulationScene(QString model_file_name, QObject *parent)
-	: QGraphicsScene(parent), model_file_name(model_file_name) {
-	model = new MapBasedModel();
-	node_reg = new NodeRegistry();
-	sim_reg = new SimulationRegistry();
-	simulation = 0;
-	current_connection = 0;
-	connection_start = 0;
+SimulationScene::SimulationScene(QObject *parent)
+	: QGraphicsScene(parent), node_reg(0), sim_reg(0), simulation(0), model(0) {
+
 	if (model_file_name != "") {
-		load();
+		load(model_file_name);
 	}
 }
 
 SimulationScene::~SimulationScene() {
+
+}
+
+ptime qttopt(const QDateTime &dt) {
+	date d(dt.date().year(), dt.date().month(), dt.date().day());
+	ptime t(d, time_duration(dt.time().hour(), dt.time().minute(), dt.time().second()));
+	return t;
+}
+
+void SimulationScene::_new() {
+	Q_ASSERT(!model);
+	Q_ASSERT(!node_reg);
+	Q_ASSERT(!sim_reg);
+	Q_ASSERT(!simulation);
+
+	sim_reg = new SimulationRegistry();
+	NewSimulationDialog ns(sim_reg);
+	if (ns.exec()) {
+		model = new MapBasedModel();
+		node_reg = new NodeRegistry();
+		simulation = ns.createSimulation();
+		simulation->setModel(model);
+		if (ns.ui->defaultNodesCheckBox->isChecked()) {
+			addPlugin("nodes");
+		}
+		current_connection = 0;
+		connection_start = 0;
+		Q_EMIT(loaded());
+	} else {
+		delete sim_reg;
+		sim_reg = 0;
+	}
+}
+
+void SimulationScene::unload() {
 	delete sim_reg;
 	delete node_reg;
 	delete model;
@@ -49,15 +85,22 @@ SimulationScene::~SimulationScene() {
 		delete simulation;
 }
 
-void SimulationScene::save() {
+void SimulationScene::save(QString path) {
+	model_file_name = path;
 	Q_ASSERT(model_file_name != "");
 	SimulationSaver ss(this, model_file_name, plugins, python_modules);
 	ss.save();
-	Q_EMIT(unsavedChanged(false));
+	Q_EMIT(saved());
 }
 
-void SimulationScene::load() {
-	Q_ASSERT(model->empty());
+void SimulationScene::load(QString model_file_name) {
+	model = new MapBasedModel();
+	node_reg = new NodeRegistry();
+	sim_reg = new SimulationRegistry();
+	simulation = 0;
+	current_connection = 0;
+	connection_start = 0;
+
 	Q_ASSERT(model_file_name != "");
 	QFile xmlModelFile(model_file_name);
 	GuiModelLoader gml(model, node_reg, sim_reg);
@@ -92,12 +135,7 @@ void SimulationScene::load() {
 	plugins << gml.getPlugins();
 	python_modules << gml.getPythonModules();
 	update();
-	Q_EMIT(unsavedChanged(false));
-}
-
-void SimulationScene::setSimulation(ISimulation *simulation) {
-	simulation->setModel(model);
-	this->simulation = simulation;
+	Q_EMIT(loaded());
 }
 
 //default id is klassname_+counter
@@ -130,7 +168,7 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 	NodeItem *nitem = new NodeItem(node);
 	this->addItem(nitem);
 
-	if (!nitem->changeParameters()) {
+	if (!nitem->changeParameters(true)) {
 		this->removeItem(nitem);
 		delete nitem;
 		model->removeNode(node);
@@ -142,7 +180,7 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 
 	this->connect(nitem, SIGNAL(changed(NodeItem*)), SLOT(nodeChanged(NodeItem*)));
 	update();
-	Q_EMIT(unsavedChanged(true));
+	Q_EMIT(changed());
 }
 
 void SimulationScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event) {
@@ -222,7 +260,7 @@ void SimulationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 		connection_start = 0;
 		current_connection = 0;
 		update();
-		Q_EMIT(unsavedChanged(true));
+		Q_EMIT(changed());
 		return;
 	}
 
@@ -256,7 +294,8 @@ void SimulationScene::addPlugin(QString pname) {
 	node_reg->addNativePlugin(plugin_name);
 	sim_reg->addNativePlugin(plugin_name); //TODO do we need this?
 	plugins << pname;
-	Q_EMIT(unsavedChanged(true));
+	Q_EMIT(changed());
+	Q_EMIT(nodesRegistered());
 }
 
 void SimulationScene::addPythonModule(QString pname) {
@@ -265,7 +304,8 @@ void SimulationScene::addPythonModule(QString pname) {
 	string module_name = module_file.baseName().toStdString();
 	PythonEnv::getInstance()->registerNodes(node_reg, module_name);
 	python_modules << pname;
-	Q_EMIT(unsavedChanged(true));
+	Q_EMIT(changed());
+	Q_EMIT(nodesRegistered());
 }
 
 void SimulationScene::remove(ConnectionItem *item) {
@@ -273,7 +313,7 @@ void SimulationScene::remove(ConnectionItem *item) {
 	removeItem(item);
 	model->removeConnection(item->getConnection());
 	delete item;
-	Q_EMIT(unsavedChanged(true));
+	Q_EMIT(changed());
 }
 
 void SimulationScene::remove(NodeItem *item) {
@@ -293,12 +333,12 @@ void SimulationScene::remove(NodeItem *item) {
 	model->removeNode(item->getNode());
 
 	delete item;
-	Q_EMIT(unsavedChanged(true));
+	Q_EMIT(changed());
 }
 
 void SimulationScene::nodeChanged(NodeItem *nitem) {
 	(void) nitem;
-	Q_EMIT(unsavedChanged(true));
+	Q_EMIT(changed());
 }
 
 void SimulationScene::copy() {
@@ -327,13 +367,16 @@ void SimulationScene::paste() {
 		model->addNode(id, n);
 		NodeItem *item = new NodeItem(n);
 		item->restoreParameters(cn.parameters);
+		SimulationParameters param = simulation->getSimulationParameters();
+		n->init(param.start, param.stop, param.dt);
+		item->updatePorts();
 		node_items << item;
 		item->setSelected(true);
 		this->addItem(item);
-		qDebug() << current_mouse;
 		item->setPos(current_mouse.x() + cn.position.x(), current_mouse.y() + cn.position.y());
+		this->connect(item, SIGNAL(changed(NodeItem*)), SLOT(nodeChanged(NodeItem*)));
 	}
 	if (copied_nodes.size() >  0) {
-		Q_EMIT(unsavedChanged(true));
+		Q_EMIT(changed());
 	}
 }

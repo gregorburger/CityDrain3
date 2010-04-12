@@ -7,10 +7,9 @@
 using namespace boost;
 using namespace boost::signals;
 
-SimulationThread::SimulationThread(ISimulation *simulation)
-	: simulation(simulation) {
+SimulationThread::SimulationThread() {
 	handler = new TimeStepHandler();
-	c = simulation->timestep_after.connect(bind(&TimeStepHandler::after, handler, _1, _2));
+
 }
 
 SimulationThread::~SimulationThread() {
@@ -19,7 +18,9 @@ SimulationThread::~SimulationThread() {
 }
 
 void SimulationThread::run() {
+	Q_ASSERT(simulation);
 	SimulationParameters sp = simulation->getSimulationParameters();
+	c = simulation->timestep_after.connect(bind(&TimeStepHandler::after, handler, _1, _2));
 	simulation->getModel()->deinitNodes();
 	simulation->getModel()->initNodes(sp);//TODO check for uninited nodes here
 	simulation->start(sp.start);
