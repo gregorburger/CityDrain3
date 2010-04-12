@@ -162,7 +162,9 @@ bool NodeItem::changeParameters(bool _new) {
 	SimulationParameters sp = parentscene->getSimulation()->getSimulationParameters();
 	MapBasedModel *model = parentscene->getModel();
 
-	QMap<std::string, std::string> saved = saveParameters();
+	QMap<std::string, std::string> saved;
+	if (!_new)
+		saved = saveParameters();
 
 	while (true) {
 		NodeParametersDialog np(getNode());
@@ -172,6 +174,7 @@ bool NodeItem::changeParameters(bool _new) {
 		}
 		if (!_new)
 			getNode()->deinit();
+
 		np.updateNodeParameters();
 		if (!node->init(sp.start, sp.stop, sp.dt)) {
 			restoreParameters(saved);

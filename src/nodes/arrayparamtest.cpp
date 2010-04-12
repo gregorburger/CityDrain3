@@ -4,6 +4,7 @@
 CD3_DECLARE_NODE_NAME(ArrayParamTest)
 
 ArrayParamTest::ArrayParamTest() {
+	Qe = 0.0;
 	addParameter(ADD_PARAMETERS(Qe));
 	addParameter(ADD_PARAMETERS(C));
 	addOutPort(ADD_PARAMETERS(out));
