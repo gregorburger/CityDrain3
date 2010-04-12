@@ -52,6 +52,18 @@ ptime qttopt(const QDateTime &dt) {
 	return t;
 }
 
+using namespace boost::gregorian;
+using namespace boost::posix_time;
+
+QDateTime pttoqt(const boost::posix_time::ptime &pt) {
+	date gd = pt.date();
+	time_duration gt = pt.time_of_day();
+	QDate qdate(gd.year(), gd.month(), gd.day());
+	QTime qtime(gt.hours(), gt.minutes(), gt.seconds());
+
+	return QDateTime(qdate, qtime);
+}
+
 void SimulationScene::_new() {
 	Q_ASSERT(!model);
 	Q_ASSERT(!node_reg);
@@ -83,6 +95,7 @@ void SimulationScene::unload() {
 	delete model;
 	if (simulation)
 		delete simulation;
+	Q_EMIT(unloaded());
 }
 
 void SimulationScene::save(QString path) {

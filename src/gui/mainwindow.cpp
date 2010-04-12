@@ -106,6 +106,7 @@ void MainWindow::setupStateMachine() {
 	unloaded->assignProperty(ui->actionAdd_Plugin, "enabled", false);
 	unloaded->assignProperty(ui->actionAdd_Python_Module, "enabled", false);
 	unloaded->assignProperty(ui->actionExport_to_pdf, "enabled", false);
+	unloaded->assignProperty(ui->actionClose, "enabled", false);
 	//run buttons
 	unloaded->assignProperty(ui->runButton, "enabled", false);
 	unloaded->assignProperty(ui->stopButton, "enabled", false);
@@ -119,13 +120,20 @@ void MainWindow::setupStateMachine() {
 	loaded->assignProperty(ui->actionAdd_Plugin, "enabled", true);
 	loaded->assignProperty(ui->actionAdd_Python_Module, "enabled", true);
 	loaded->assignProperty(ui->actionExport_to_pdf, "enabled", true);
+	loaded->assignProperty(ui->actionClose, "enabled", true);
 	//run buttons
 	loaded->assignProperty(ui->runButton, "enabled", true);
 	loaded->assignProperty(ui->stopButton, "enabled", true);
 	loaded->assignProperty(ui->runButton, "enabled", true);
 	//time controls
 	loaded->assignProperty(tc_widget, "enabled", true);
+	loaded->assignProperty(time_controls->start, "dateTime", pttoqt(scene->getSimulation()->getSimulationParameters().start));
+	loaded->assignProperty(time_controls->stop, "dateTime", pttoqt(scene->getSimulation()->getSimulationParameters().stop));
+	loaded->assignProperty(time_controls->dt, "value", scene->getSimulation()->getSimulationParameters().dt);
 	state_machine->addState(loaded);
+
+	unloaded->addTransition(scene, SIGNAL(loaded()), loaded);
+	loaded->addTransition(scene, SIGNAL(unloaded()), unloaded);
 
 	/*save stuff*/
 	QState *save_group = new QState(loaded);
@@ -162,7 +170,6 @@ void MainWindow::setupStateMachine() {
 	running->addTransition(current_thread, SIGNAL(finished()), not_running);
 	running_group->setInitialState(not_running);
 
-	unloaded->addTransition(scene, SIGNAL(loaded()), loaded);
 
 	state_machine->setInitialState(unloaded);
 	state_machine->start();
@@ -251,13 +258,13 @@ void MainWindow::on_actionNewSimulation_activated() {
 	scene->_new();
 }
 
-QDateTime pttoqt(const ptime &dt) {
+/*QDateTime pttoqt(const ptime &dt) {
 	time_duration td = dt.time_of_day();
 	QTime t(td.hours(), td.minutes(), td.seconds());
 	gregorian::date dtd = dt.date();
 	QDate d(dtd.year(), dtd.month(), dtd.day());
 	return QDateTime(d, t);
-}
+}*/
 
 void MainWindow::sceneChanged() {
 	/*if (!scene) {
@@ -438,11 +445,12 @@ bool MainWindow::unload() {
 	/*ui->actionSave_as->setEnabled(false);
 	ui->actionSave_Simulation->setEnabled(false);*/
 
-	QObject::disconnect(scene, SIGNAL(unsavedChanged(bool)), 0, 0);
+	//QObject::disconnect(scene, SIGNAL(unsavedChanged(bool)), 0, 0);
 	ui->treeWidget->clear();
 	//ui->graphicsView->setScene(0);
 	/*delete scene;
 	scene = 0;*/
+	scene->unload();
 	this->setWindowTitle(QApplication::applicationName());
 	return true;
 }
@@ -488,4 +496,8 @@ void MainWindow::on_actionCopy_activated() {
 
 void MainWindow::on_actionPaste_activated() {
 	scene->paste();
+}
+
+void MainWindow::on_actionClose_activated() {
+	unload();
 }

@@ -90,6 +90,7 @@
     <addaction name="actionSave_Simulation"/>
     <addaction name="actionSave_as"/>
     <addaction name="action_open"/>
+    <addaction name="actionClose"/>
     <addaction name="actionExport_to_pdf"/>
     <addaction name="separator"/>
     <addaction name="actionAdd_Plugin"/>
@@ -374,6 +375,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>close</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
    </property>
   </action>
  </widget>

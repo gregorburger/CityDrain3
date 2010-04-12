@@ -21,10 +21,12 @@ class QStateMachine;
 
 class MainWindow : public QMainWindow {
 Q_OBJECT
-Q_PROPERTY(bool unsavedChanges);
+Q_PROPERTY(bool unsavedChanges READ getUnsavedChanges WRITE setUnsavedChanges);
 public:
 	MainWindow(QWidget *parent = 0);
 	virtual ~MainWindow();
+	bool getUnsavedChanges() const { return unsaved_changes; }
+	void setUnsavedChanges(bool unsaved) { unsaved_changes = unsaved; }
 
 protected:
 	void changeEvent(QEvent *e);
@@ -56,6 +58,7 @@ public Q_SLOTS:
 	void on_actionAdd_Python_Module_activated();
 	void on_action_exit_activated();
 	void on_action_open_activated();
+	void on_actionClose_activated();
 	void on_actionZoom_in_activated();
 	void on_actionZoom_out_activated();
 	void on_actionZoom_reset_activated();
@@ -80,6 +83,7 @@ public Q_SLOTS:
 	void sceneChanged();
 	void simulationChanged();
 	void simulationSaved();
+
 };
 
 #endif // MAINWINDOW_H

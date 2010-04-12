@@ -16,6 +16,9 @@ class QTreeWidget;
 class PortItem;
 class ConnectionItem;
 
+boost::posix_time::ptime qttopt(const QDateTime &dt);
+QDateTime pttoqt(const boost::posix_time::ptime &dt);
+
 struct CopyState {
 	std::string _class;
 	QMap<std::string, std::string> parameters;
@@ -88,6 +91,5 @@ private:
 	QPointF current_mouse;
 };
 
-boost::posix_time::ptime qttopt(const QDateTime &dt);
 
 #endif // SIMULATIONSCENE_H
