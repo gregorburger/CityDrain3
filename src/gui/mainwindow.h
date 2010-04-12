@@ -83,6 +83,7 @@ public Q_SLOTS:
 	void sceneChanged();
 	void simulationChanged();
 	void simulationSaved();
+	void updateTimeControls();
 
 };
 

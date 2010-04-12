@@ -127,9 +127,7 @@ void MainWindow::setupStateMachine() {
 	loaded->assignProperty(ui->runButton, "enabled", true);
 	//time controls
 	loaded->assignProperty(tc_widget, "enabled", true);
-	loaded->assignProperty(time_controls->start, "dateTime", pttoqt(scene->getSimulation()->getSimulationParameters().start));
-	loaded->assignProperty(time_controls->stop, "dateTime", pttoqt(scene->getSimulation()->getSimulationParameters().stop));
-	loaded->assignProperty(time_controls->dt, "value", scene->getSimulation()->getSimulationParameters().dt);
+	this->connect(loaded, SIGNAL(entered()), SLOT(updateTimeControls()));
 	state_machine->addState(loaded);
 
 	unloaded->addTransition(scene, SIGNAL(loaded()), loaded);
@@ -258,13 +256,12 @@ void MainWindow::on_actionNewSimulation_activated() {
 	scene->_new();
 }
 
-/*QDateTime pttoqt(const ptime &dt) {
-	time_duration td = dt.time_of_day();
-	QTime t(td.hours(), td.minutes(), td.seconds());
-	gregorian::date dtd = dt.date();
-	QDate d(dtd.year(), dtd.month(), dtd.day());
-	return QDateTime(d, t);
-}*/
+void MainWindow::updateTimeControls() {
+	SimulationParameters sp = scene->getSimulation()->getSimulationParameters();
+	time_controls->start->setDateTime(pttoqt(sp.start));
+	time_controls->stop->setDateTime(pttoqt(sp.stop));
+	time_controls->dt->setValue(sp.dt);
+}
 
 void MainWindow::sceneChanged() {
 	/*if (!scene) {
