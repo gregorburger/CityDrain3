@@ -5,13 +5,14 @@
 
 #include <QGraphicsScene>
 #include <QMap>
+#include <QDateTime>
 #include <nodeitem.h> //for PortType
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include <simulation.h>
 
 class NodeRegistry;
 class SimulationRegistry;
 class MapBasedModel;
-class ISimulation;
 class QTreeWidget;
 class PortItem;
 class ConnectionItem;
@@ -38,20 +39,23 @@ public:
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 
-	const NodeRegistry *getNodeRegistry() const { return node_reg; }
-	SimulationRegistry *getSimulationRegistry() const { return sim_reg; }
-	ISimulation *getSimulation() const { return simulation; }
-	//void setSimulation(ISimulation *simulation);
-	MapBasedModel *getModel() const { return model; }
-	QList<NodeItem*> getNodeItems() const { return node_items; }
+	inline const NodeRegistry *getNodeRegistry() const { return node_reg; }
+	inline SimulationRegistry *getSimulationRegistry() const { return sim_reg; }
+	inline ISimulation *getSimulation() const { return simulation; }
+	inline MapBasedModel *getModel() const { return model; }
+	inline QList<NodeItem*> getNodeItems() const { return node_items; }
 
-	QString getModelFileName() const { return model_file_name; }
-	//void setModelFileName(QString name) { model_file_name = name; }
+	inline QString getModelFileName() const { return model_file_name; }
 	void addPlugin(QString pname);
 	void addPythonModule(QString pname);
 
 	void remove(NodeItem *item);
 	void remove(ConnectionItem *item);
+
+	//time convinience
+	inline int getDt() const  { return simulation->getSimulationParameters().dt; }
+	inline QDateTime getStart() const { return pttoqt(simulation->getSimulationParameters().start); }
+	inline QDateTime getStop() const { return pttoqt(simulation->getSimulationParameters().stop); }
 
 public Q_SLOTS:
 	void _new();

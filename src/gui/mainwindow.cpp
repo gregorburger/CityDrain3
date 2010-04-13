@@ -48,8 +48,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	Log::init(log_updater);
 	ui->logWidget->connect(log_updater, SIGNAL(newLogLine(QString)), SLOT(appendPlainText(QString)), Qt::QueuedConnection);
 	this->connect(scene, SIGNAL(nodesRegistered()), SLOT(pluginsAdded()));
-	this->connect(scene, SIGNAL(changed()), SLOT(simulationChanged()));
-	this->connect(scene, SIGNAL(saved()), SLOT(simulationSaved()));
 }
 
 MainWindow::~MainWindow() {
@@ -60,43 +58,14 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::setupTimeControls() {
-	Ui::TimeControls *time_controls = new Ui::TimeControls();
+	time_controls = new Ui::TimeControls();
 	tc_widget = new QWidget(ui->mainToolBar);
 	time_controls->setupUi(tc_widget);
 	ui->mainToolBar->addWidget(tc_widget);
-
-
-	/*QLabel *startLabel = new QLabel("start:", ui->mainToolBar);
-	ui->mainToolBar->addWidget(startLabel);
-
-	start = new QDateTimeEdit(ui->mainToolBar);
-	start->setDisplayFormat("d.M.yy h:mm:ss");
-	start->setCalendarPopup(true);
-	ui->mainToolBar->addWidget(start);
-	this->connect(start, SIGNAL(dateTimeChanged(QDateTime)), SLOT(start_stop_dateTimeChanged(QDateTime)));
-
-	QLabel *stopLabel = new QLabel("stop:", ui->mainToolBar);
-	ui->mainToolBar->addWidget(stopLabel);
-
-	stop = new QDateTimeEdit(ui->mainToolBar);
-	stop->setDisplayFormat("d.M.yy h:mm:ss");
-	stop->setCalendarPopup(true);
-	ui->mainToolBar->addWidget(stop);
-	this->connect(stop, SIGNAL(dateTimeChanged(QDateTime)), SLOT(start_stop_dateTimeChanged(QDateTime)));
-
-	QLabel *dtLabel = new QLabel("dt:", ui->mainToolBar);
-	ui->mainToolBar->addWidget(dtLabel);
-
-	dt = new QSpinBox(ui->mainToolBar);
-	dt->setRange(0, INT_MAX-1);
-	dt->setSingleStep(60);
-	ui->mainToolBar->addWidget(dt);
-	this->connect(dt, SIGNAL(valueChanged(int)), SLOT(dt_valueChanged(int)));
-
-	apply_time_button = new QPushButton("apply");
-	apply_time_button->setEnabled(false);
-	ui->mainToolBar->addWidget(apply_time_button);
-	this->connect(apply_time_button, SIGNAL(clicked()), SLOT(applyTime()));*/
+	this->connect(time_controls->start, SIGNAL(dateTimeChanged(QDateTime)), SLOT(start_stop_dateTimeChanged(QDateTime)));
+	this->connect(time_controls->stop, SIGNAL(dateTimeChanged(QDateTime)), SLOT(start_stop_dateTimeChanged(QDateTime)));
+	this->connect(time_controls->dt, SIGNAL(valueChanged(int)), SLOT(dt_valueChanged(int)));
+	this->connect(time_controls->apply_time_button, SIGNAL(clicked()), SLOT(applyTime()));
 }
 
 void MainWindow::setupStateMachine() {
@@ -113,7 +82,9 @@ void MainWindow::setupStateMachine() {
 	unloaded->assignProperty(ui->runButton, "enabled", false);
 	//time controls
 	unloaded->assignProperty(tc_widget, "enabled", false);
-	state_machine->addState(unloaded);
+	//when nothing is loaded nothing can be unsaved!!!
+	unloaded->assignProperty(this, "unsaved_changes", false);
+
 
 	QState *loaded = new QState(QState::ParallelStates);
 	//actions
@@ -128,7 +99,6 @@ void MainWindow::setupStateMachine() {
 	//time controls
 	loaded->assignProperty(tc_widget, "enabled", true);
 	this->connect(loaded, SIGNAL(entered()), SLOT(updateTimeControls()));
-	state_machine->addState(loaded);
 
 	unloaded->addTransition(scene, SIGNAL(loaded()), loaded);
 	loaded->addTransition(scene, SIGNAL(unloaded()), unloaded);
@@ -136,17 +106,21 @@ void MainWindow::setupStateMachine() {
 	/*save stuff*/
 	QState *save_group = new QState(loaded);
 	QState *saved = new QState(save_group);
-	saved->assignProperty(this, "unsavedChanged", false);
+	saved->assignProperty(this, "unsaved_changes", false);
 	saved->assignProperty(ui->actionSave_as, "enabled", false);
 	saved->assignProperty(ui->actionSave_Simulation, "enabled", false);
 
 	QState *unsaved = new QState(save_group);
-	unsaved->assignProperty(this, "unsavedChanged", true);
+	unsaved->assignProperty(this, "unsaved_changes", true);
 	unsaved->assignProperty(ui->actionSave_as, "enabled", true);
 	unsaved->assignProperty(ui->actionSave_Simulation, "enabled", true);
 
 	saved->addTransition(scene, SIGNAL(changed()), unsaved);
 	unsaved->addTransition(scene, SIGNAL(saved()), saved);
+	save_group->setInitialState(saved);
+
+	this->connect(unsaved, SIGNAL(entered()), SLOT(simulationChanged()));
+	this->connect(saved, SIGNAL(entered()), SLOT(simulationSaved()));
 
 	/*running stuff*/
 	QState *running_group = new QState(loaded);
@@ -168,7 +142,8 @@ void MainWindow::setupStateMachine() {
 	running->addTransition(current_thread, SIGNAL(finished()), not_running);
 	running_group->setInitialState(not_running);
 
-
+	state_machine->addState(unloaded);
+	state_machine->addState(loaded);
 	state_machine->setInitialState(unloaded);
 	state_machine->start();
 }
@@ -257,52 +232,27 @@ void MainWindow::on_actionNewSimulation_activated() {
 }
 
 void MainWindow::updateTimeControls() {
-	SimulationParameters sp = scene->getSimulation()->getSimulationParameters();
-	time_controls->start->setDateTime(pttoqt(sp.start));
-	time_controls->stop->setDateTime(pttoqt(sp.stop));
-	time_controls->dt->setValue(sp.dt);
-}
-
-void MainWindow::sceneChanged() {
-	/*if (!scene) {
-		start->setEnabled(false);
-		stop->setEnabled(false);
-		dt->setEnabled(false);
-		return;
-	}
-
-	start->setEnabled(true);
-	stop->setEnabled(true);
-	dt->setEnabled(true);
-
-	SimulationParameters sp = scene->getSimulation()->getSimulationParameters();
-	start->setDateTime(pttoqt(sp.start));
-	stop->setDateTime(pttoqt(sp.stop));
-	dt->setValue(sp.dt);
-
-	apply_time_button->setEnabled(false);
-	unsaved_changes = false;
-	this->connect(scene, SIGNAL(changed()), SLOT(simulationChanged()));
-	this->connect(scene, SIGNAL(saved()), SLOT(simulationSaved()));
-	ui->graphicsView->setScene(scene);
-	ui->actionSave_Simulation->setEnabled(true);
-	ui->actionSave_as->setEnabled(true);
-	ui->runButton->setEnabled(true);
-	ui->actionAdd_Plugin->setEnabled(true);
-	ui->actionAdd_Python_Module->setEnabled(true);
-	ui->actionFind_node->setEnabled(true);
-	ui->actionExport_to_pdf->setEnabled(true);
-	pluginsAdded();*/
+	time_controls->start->setDateTime(scene->getStart());
+	time_controls->stop->setDateTime(scene->getStop());
+	time_controls->dt->setValue(scene->getDt());
 }
 
 void MainWindow::on_actionSave_Simulation_activated() {
 	if (scene->getModelFileName() == "") {
 		on_actionSave_as_activated();
-	}
-	if (scene->getModelFileName() == "") {//happens when save as was not accepted
 		return;
 	}
 	scene->save(scene->getModelFileName());
+}
+
+void MainWindow::on_actionSave_as_activated() {
+	QString fileName = QFileDialog::getSaveFileName(this, "Save Model File", ".", "XML Files (*.xml)");
+	if (fileName == "")
+		return;
+	if (!fileName.endsWith(".xml", Qt::CaseInsensitive)) {
+		fileName = fileName + ".xml";
+	}
+	scene->save(fileName);
 }
 
 void MainWindow::on_actionAdd_Python_Module_activated() {
@@ -363,7 +313,6 @@ void MainWindow::applyTime() {
 		return;
 	}
 	scene->getSimulation()->setSimulationParameters(p);
-	simulationChanged();
 	time_controls->apply_time_button->setEnabled(false);
 }
 
@@ -378,30 +327,13 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 	}
 }
 
-void MainWindow::on_actionSave_as_activated() {
-	QString fileName = QFileDialog::getSaveFileName(this, "Save Model File", ".", "XML Files (*.xml)");
-	if (fileName == "")
-		return;
-	if (!fileName.endsWith(".xml", Qt::CaseInsensitive)) {
-		fileName = fileName + ".xml";
-	}
-//	scene->setModelFileName(fileName);
-	scene->save(fileName);
-	setWindowTitle(QString("%2 (%1)").arg(fileName, QApplication::applicationName()));
-}
 
 void MainWindow::simulationSaved() {
-	if (windowTitle().endsWith(" *")) {
-		setWindowTitle(windowTitle().left(windowTitle().length()-2));
-	}
-	unsaved_changes = false;
+	setWindowTitle(QString("%2 (%1)").arg(scene->getModelFileName(), QApplication::applicationName()));
 }
 
 void MainWindow::simulationChanged() {
-	if (!windowTitle().endsWith(" *")) {
-		setWindowTitle(windowTitle() + " *");
-	}
-	unsaved_changes = true;
+	setWindowTitle(QString("%2 (%1) *").arg(scene->getModelFileName(), QApplication::applicationName()));
 }
 
 void MainWindow::on_actionExport_to_pdf_activated() {
@@ -423,7 +355,7 @@ void MainWindow::on_actionExport_to_pdf_activated() {
 }
 
 bool MainWindow::unload() {
-	if (scene && unsaved_changes) {
+	if (unsaved_changes) {
 		QString message("%1 has been modified. Do you want to save?");
 		QMessageBox::StandardButton ret = QMessageBox::question(this,
 							  "unsaved changes",
@@ -436,17 +368,8 @@ bool MainWindow::unload() {
 		if (ret == QMessageBox::Cancel) {
 			return false;
 		}
-	} else {
-		return true;
 	}
-	/*ui->actionSave_as->setEnabled(false);
-	ui->actionSave_Simulation->setEnabled(false);*/
-
-	//QObject::disconnect(scene, SIGNAL(unsavedChanged(bool)), 0, 0);
 	ui->treeWidget->clear();
-	//ui->graphicsView->setScene(0);
-	/*delete scene;
-	scene = 0;*/
 	scene->unload();
 	this->setWindowTitle(QApplication::applicationName());
 	return true;

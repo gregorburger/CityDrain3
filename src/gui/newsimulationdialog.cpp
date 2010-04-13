@@ -42,7 +42,8 @@ ISimulation *NewSimulationDialog::createSimulation() {
 	SimulationParameters p(qttopt(ui->start->dateTime()),
 						   qttopt(ui->stop->dateTime()),
 						   ui->dt->value());
-	ISimulation *sim = registry->createSimulation(ui->simulationComboBox->currentText().toStdString());
+	std::string sim_class = ui->simulationComboBox->currentText().toStdString();
+	ISimulation *sim = registry->createSimulation(sim_class);
 	sim->setSimulationParameters(p);
 
 	defineFlow();

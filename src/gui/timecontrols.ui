@@ -35,6 +35,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="displayFormat">
+      <string>d.M.yy h:mm:ss</string>
+     </property>
      <property name="calendarPopup">
       <bool>true</bool>
      </property>
@@ -54,6 +57,9 @@
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="displayFormat">
+      <string>d.M.yy h:mm:ss</string>
      </property>
      <property name="calendarPopup">
       <bool>true</bool>
@@ -94,6 +100,9 @@
    </item>
    <item>
     <widget class="QPushButton" name="apply_time_button">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="text">
       <string>apply</string>
      </property>

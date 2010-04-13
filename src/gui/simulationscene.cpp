@@ -30,7 +30,9 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/foreach.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
+
 using namespace boost::gregorian;
+using namespace boost::posix_time;
 
 using namespace std;
 
@@ -51,9 +53,6 @@ ptime qttopt(const QDateTime &dt) {
 	ptime t(d, time_duration(dt.time().hour(), dt.time().minute(), dt.time().second()));
 	return t;
 }
-
-using namespace boost::gregorian;
-using namespace boost::posix_time;
 
 QDateTime pttoqt(const boost::posix_time::ptime &pt) {
 	date gd = pt.date();
@@ -90,11 +89,16 @@ void SimulationScene::_new() {
 }
 
 void SimulationScene::unload() {
+	clear();
 	delete sim_reg;
 	delete node_reg;
 	delete model;
 	if (simulation)
 		delete simulation;
+	sim_reg = 0;
+	node_reg = 0;
+	model = 0;
+	simulation = 0;
 	Q_EMIT(unloaded());
 }
 

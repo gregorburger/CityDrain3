@@ -21,7 +21,7 @@ class QStateMachine;
 
 class MainWindow : public QMainWindow {
 Q_OBJECT
-Q_PROPERTY(bool unsavedChanges READ getUnsavedChanges WRITE setUnsavedChanges);
+Q_PROPERTY(bool unsaved_changes READ getUnsavedChanges WRITE setUnsavedChanges);
 public:
 	MainWindow(QWidget *parent = 0);
 	virtual ~MainWindow();
@@ -43,10 +43,9 @@ private:
 	Ui::TimeControls *time_controls;
 	QWidget *tc_widget;
 	GuiLogSink *log_updater;
-
-private:
-	void setupStateMachine();
 	QStateMachine *state_machine;
+
+	void setupStateMachine();
 
 public Q_SLOTS:
 	void on_actionAdd_Plugin_activated();
@@ -80,7 +79,6 @@ public Q_SLOTS:
 	void zoomIn(int times = 1);
 	void zoomOut(int times = 1);
 	void pluginsAdded();
-	void sceneChanged();
 	void simulationChanged();
 	void simulationSaved();
 	void updateTimeControls();
