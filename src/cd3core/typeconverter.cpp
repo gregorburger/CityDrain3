@@ -114,7 +114,7 @@ struct FlowTC : public TypeConverter {
 		Flow *f = (Flow *) dest;
 		vector<string> items;
 		split(items, s, algorithm::is_any_of(";"));
-		cd3assert(items.size() == Flow::size() / 2, "wrong string format of type Flow");
+		cd3assert(items.size() == Flow::size() * 2, "wrong string format of type Flow");
 		for (size_t i = 0; i < Flow::size(); i += 2) {
 			string name = items[i];
 			double value = lexical_cast<double>(items[i+1]);
@@ -195,8 +195,11 @@ struct ArrayTC : public TypeConverter {
 		values->clear();
 		BOOST_FOREACH(string item, items) {
 			T value;
-			sub_con->fromString(item, &value);
-			values->push_back(value);
+			try {
+				sub_con->fromString(item, &value);
+				values->push_back(value);
+			} catch (bad_lexical_cast e) {
+			}
 		}
 	}
 
@@ -208,8 +211,11 @@ struct ArrayTC : public TypeConverter {
 		values->clear();
 		BOOST_FOREACH(string item, items) {
 			T value;
-			sub_con->fromString(item, &value);
-			values->push_back(value);
+			try {
+				sub_con->fromString(item, &value);
+				values->push_back(value);
+			} catch (bad_lexical_cast e) {
+			}
 		}
 	}
 
