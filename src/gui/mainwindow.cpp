@@ -76,6 +76,8 @@ void MainWindow::setupStateMachine() {
 	unloaded->assignProperty(ui->actionAdd_Python_Module, "enabled", false);
 	unloaded->assignProperty(ui->actionExport_to_pdf, "enabled", false);
 	unloaded->assignProperty(ui->actionClose, "enabled", false);
+	unloaded->assignProperty(ui->actionSave_Simulation, "enabled", false);
+	unloaded->assignProperty(ui->actionSave_as, "enabled", false);
 	//run buttons
 	unloaded->assignProperty(ui->runButton, "enabled", false);
 	unloaded->assignProperty(ui->stopButton, "enabled", false);
@@ -84,6 +86,7 @@ void MainWindow::setupStateMachine() {
 	unloaded->assignProperty(tc_widget, "enabled", false);
 	//when nothing is loaded nothing can be unsaved!!!
 	unloaded->assignProperty(this, "unsaved_changes", false);
+	ui->logWidget->connect(unloaded, SIGNAL(entered()), SLOT(clear()));
 
 
 	QState *loaded = new QState(QState::ParallelStates);

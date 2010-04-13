@@ -111,6 +111,7 @@ void SimulationScene::save(QString path) {
 }
 
 void SimulationScene::load(QString model_file_name) {
+	this->model_file_name = model_file_name;
 	model = new MapBasedModel();
 	node_reg = new NodeRegistry();
 	sim_reg = new SimulationRegistry();
@@ -153,6 +154,7 @@ void SimulationScene::load(QString model_file_name) {
 	python_modules << gml.getPythonModules();
 	update();
 	Q_EMIT(loaded());
+	Q_EMIT(nodesRegistered());
 }
 
 //default id is klassname_+counter
