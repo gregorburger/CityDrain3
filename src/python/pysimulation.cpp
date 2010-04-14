@@ -35,14 +35,6 @@ static void s_addHandlerBefore(ISimulation &sim, object o) {
 	sim.timestep_before.connect(PythonCallback(o));
 }
 
-static python::list sr_getRegisteredNames(SimulationRegistry &nr) {
-	python::list names;
-	BOOST_FOREACH(string name, nr.getRegisteredNames()) {
-		names.append(name);
-	}
-	return names;
-}
-
 void wrap_simulation() {
 	class_<NodeConnection>("NodeConnection", init<Node *, string, Node *, string>());
 
@@ -58,7 +50,7 @@ void wrap_simulation() {
 	class_<SimulationRegistry>("SimulationRegistry")
 		.def("addNativePlugin", &SimulationRegistry::addNativePlugin)
 		.def("createSimulation", &SimulationRegistry::createSimulation, return_value_policy<manage_new_object>())
-		.def("getRegisteredNames", sr_getRegisteredNames)
+		.def("getRegisteredNames", &SimulationRegistry::getRegisteredNames)
 		;
 	class_<SimulationParameters>("SimulationParameters", init<string, string, string>())
 		.def_readwrite("start", &SimulationParameters::start)

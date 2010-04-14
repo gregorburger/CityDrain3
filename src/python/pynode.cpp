@@ -4,6 +4,7 @@
 #include <nodefactory.h>
 #include <flow.h>
 #include <boost/python.hpp>
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include <boost/foreach.hpp>
 #include <nodefactory.h>
 
@@ -177,14 +178,6 @@ static python::list n_getParameterNames(Node &n) {
 	return l;
 }
 
-static python::list nr_getRegisteredNames(NodeRegistry &nr) {
-	python::list names;
-	BOOST_FOREACH(string name, nr.getRegisteredNames()) {
-		names.append(name);
-	}
-	return names;
-}
-
 struct INodeFactoryWrapper : public INodeFactory, python::wrapper<INodeFactory> {
 	INodeFactoryWrapper(PyObject *_self) : self(_self) {
 		Py_INCREF(self);
@@ -248,6 +241,10 @@ void wrap_node() {
 		.def("addNativePlugin", &NodeRegistry::addNativePlugin)
 		.def("addNodeFactory", nr_addNodeFactory)
 		.def("createNode", &NodeRegistry::createNode, python::return_value_policy<python::manage_new_object>())
-		.def("getRegisteredNames", nr_getRegisteredNames)
+		.def("getRegisteredNames", &NodeRegistry::getRegisteredNames)
 		;
+
+	python::class_<std::vector<string> >("StringVector")
+			.def(python::vector_indexing_suite<std::vector<string> >())
+			;
 }

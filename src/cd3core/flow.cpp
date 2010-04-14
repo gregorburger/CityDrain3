@@ -134,12 +134,12 @@ Flow::CalculationUnit Flow::getUnit(const std::string &name) {
 	return fd.units[name];
 }
 
-const std::vector<std::string> & Flow::getNames() {
+std::vector<std::string> Flow::getNames() {
 	cd3assert(fd.defined, "flow not defined");
 	return fd.names;
 }
 
-const std::vector<std::string> &
+std::vector<std::string>
 Flow::getUnitNames(Flow::CalculationUnit unit) {
 	cd3assert(fd.defined, "flow not defined");
 	cd3assert(unit != Flow::null, "null unit not allowed");

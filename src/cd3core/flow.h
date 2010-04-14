@@ -41,8 +41,8 @@ public:
 	double getIth(CalculationUnit unit, size_t i) const;
 	void setIth(CalculationUnit unit, size_t i, double value);
 
-	static const std::vector<std::string> &getNames();
-	static const std::vector<std::string> &getUnitNames(CalculationUnit unit);
+	static std::vector<std::string> getNames();
+	static std::vector<std::string> getUnitNames(CalculationUnit unit);
 	static bool hasName(const std::string &name);
 	static size_t size();
 
