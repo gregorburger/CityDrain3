@@ -10,164 +10,153 @@
 
 using namespace boost;
 
-struct NodeWrapper : Node, python::wrapper<Node> {
-	NodeWrapper(PyObject *_self) : self(_self) {
-		Py_INCREF(self);
-		PyObject *klass = PyObject_GetAttrString(self, "__class__");
-		PyObject *name = PyObject_GetAttrString(klass, "__name__");
-		class_name = PyString_AsString(name);
+NodeWrapper::NodeWrapper() {
+	class_name = "";
+}
+
+NodeWrapper::~NodeWrapper() {
+	cout << "~NodeWrapper" << endl;
+}
+
+void NodeWrapper::setSelf(boost::python::object self) {
+	this->self = self;
+	//Py_INCREF(self.ptr());
+}
+
+int NodeWrapper::f(ptime time, int dt) {
+	updateParameters();
+	try {
+		if (python::override f = this->get_override("f"))
+			return f(time, dt);
+		//return python::call_method<int>(self, "f", time, dt);
+	} catch(python::error_already_set const &) {
+		Logger(Error) << __FILE__ << ":" << __LINE__;
+		PyErr_Print();
+		abort();
+	}
+}
+
+bool NodeWrapper::init(ptime start, ptime stop, int dt) {
+	try {
+		//updateParameters();
+		if (python::override init = this->get_override("init"))
+			return init(start, stop, dt);
+		//return python::call_method<bool>(self, "init", start, stop, dt);
+	} catch(python::error_already_set const &) {
+	}
+	return true;
+}
+
+void NodeWrapper::deinit() {
+	try {
+		if (python::override deinit = this->get_override("deinit"))
+			deinit();
+		//python::call_method<void>(self, "deinit");
+	} catch(python::error_already_set const &) {
+	}
+}
+
+const char *NodeWrapper::getClassName() const {
+	return class_name;
+}
+
+void NodeWrapper::setClassName(string class_name) {
+	this->class_name = strdup(class_name.c_str());
+}
+
+void NodeWrapper::addInPort(const std::string &name, Flow *inflow) {
+	Node::addInPort(name, inflow);
+}
+
+void NodeWrapper::addOutPort(const std::string &name, Flow *outflow) {
+	Node::addOutPort(name, outflow);
+}
+
+typedef pair<string, int> intp;
+typedef pair<string, string> stringp;
+typedef pair<string, float> floatp;
+typedef pair<string, double> doublep;
+typedef pair<string, bool> boolp;
+void NodeWrapper::updateParameters() {
+	/*python::object self_obj = python::object(python::handle<>(python::borrowed(self)));
+	python::dict self_dict = python::extract<python::dict>(self_obj.attr("__dict__"));
+
+
+	BOOST_FOREACH(intp i, int_params) {
+		self_dict[i.first] = i.second;
 	}
 
-	virtual ~NodeWrapper() {
-		//Py_DECREF(self); FIXME something is double clean up LEAK HERE
+	BOOST_FOREACH(stringp i, string_params) {
+		self_dict[i.first] = i.second;
 	}
 
-	int f(ptime time, int dt) {
-		updateParameters();
-		try {
-			return python::call_method<int>(self, "f", time, dt);
-		} catch(python::error_already_set const &) {
-			Logger(Error) << __FILE__ << ":" << __LINE__;
-			PyErr_Print();
-			abort();
+	BOOST_FOREACH(doublep i, double_params) {
+		self_dict[i.first] = i.second;
+	}
+
+	BOOST_FOREACH(boolp i, bool_params) {
+		self_dict[i.first] = i.second;
+	}*/
+}
+
+void NodeWrapper::pyAddParameters() {
+	/*python::object s = python::object(python::handle<>(python::borrowed(self)));
+	python::dict param = python::extract<python::dict>(s.attr("__dict__"));
+
+	python::list keys = param.keys();
+	for (int i = 0; i < len(keys); i++) {
+		string key = python::extract<string>(keys[i]);
+
+		if (key == "self") {
+			continue;
 		}
-	}
-
-	void pushInStates() {
-
-	}
-
-	void pullOutStates() {
-
-	}
-
-	bool init(ptime start, ptime stop, int dt) {
-		try {
-			updateParameters();
-			return python::call_method<bool>(self, "init", start, stop, dt);
-		} catch(python::error_already_set const &) {
-		}
-		return true;
-	}
-
-	void deinit() {
-		try {
-			python::call_method<void>(self, "deinit");
-		} catch(python::error_already_set const &) {
-		}
-	}
-
-	const char *getClassName() const {
-		return class_name;
-	}
-
-	void addInPort(const std::string &name, Flow *inflow) {
-		Node::addInPort(name, inflow);
-	}
-
-	void addOutPort(const std::string &name, Flow *outflow) {
-		Node::addOutPort(name, outflow);
-	}
-
-	template<typename T>
-	T getRefParameter(string name) {
-		return *getParameter<T>(name);
-	}
-
-	typedef pair<string, int> intp;
-	typedef pair<string, string> stringp;
-	typedef pair<string, float> floatp;
-	typedef pair<string, double> doublep;
-	typedef pair<string, bool> boolp;
-	void updateParameters() {
-		python::object self_obj = python::object(python::handle<>(python::borrowed(self)));
-		python::dict self_dict = python::extract<python::dict>(self_obj.attr("__dict__"));
-
-
-		BOOST_FOREACH(intp i, int_params) {
-			self_dict[i.first] = i.second;
+		python::extract<int> ix(param[key]);
+		if (ix.check()) {
+			Logger(Debug) << this << "adding int parameter " << key;
+			int value = ix;
+			int_params[key] = value;
+			addParameter(key, &int_params[key]);
+			continue;
 		}
 
-		BOOST_FOREACH(stringp i, string_params) {
-			self_dict[i.first] = i.second;
+		python::extract<string> sx(param[key]);
+		if (sx.check()) {
+			Logger(Debug) << this << "adding string parameter " << key;
+			string value = sx;
+			string_params[key] = value;
+			addParameter(key, &string_params[key]);
+			continue;
 		}
 
-		BOOST_FOREACH(doublep i, double_params) {
-			self_dict[i.first] = i.second;
+		python::extract<double> dx(param[key]);
+		if (dx.check()) {
+			Logger(Debug) << this << "adding double parameter " << key;
+			double value = dx;
+			double_params[key] = value;
+			addParameter(key, &double_params[key]);
+			continue;
 		}
 
-		BOOST_FOREACH(boolp i, bool_params) {
-			self_dict[i.first] = i.second;
+		python::extract<float> fx(param[key]);
+		if (fx.check()) {
+			Logger(Debug) << this << "adding float parameter " << key;
+			float value = fx;
+			float_params[key] = value;
+			addParameter(key, &float_params[key]);
+			continue;
 		}
-	}
 
-	void pyAddParameters() {
-		python::object s = python::object(python::handle<>(python::borrowed(self)));
-		python::dict param = python::extract<python::dict>(s.attr("__dict__"));
-
-		python::list keys = param.keys();
-		for (int i = 0; i < len(keys); i++) {
-			string key = python::extract<string>(keys[i]);
-
-			if (key == "self") {
-				continue;
-			}
-			python::extract<int> ix(param[key]);
-			if (ix.check()) {
-				Logger(Debug) << this << "adding int parameter " << key;
-				int value = ix;
-				int_params[key] = value;
-				addParameter(key, &int_params[key]);
-				continue;
-			}
-
-			python::extract<string> sx(param[key]);
-			if (sx.check()) {
-				Logger(Debug) << this << "adding string parameter " << key;
-				string value = sx;
-				string_params[key] = value;
-				addParameter(key, &string_params[key]);
-				continue;
-			}
-
-			python::extract<double> dx(param[key]);
-			if (dx.check()) {
-				Logger(Debug) << this << "adding double parameter " << key;
-				double value = dx;
-				double_params[key] = value;
-				addParameter(key, &double_params[key]);
-				continue;
-			}
-
-			python::extract<float> fx(param[key]);
-			if (fx.check()) {
-				Logger(Debug) << this << "adding float parameter " << key;
-				float value = fx;
-				float_params[key] = value;
-				addParameter(key, &float_params[key]);
-				continue;
-			}
-
-			python::extract<bool> bx(param[key]);
-			if (bx.check()) {
-				Logger(Debug) << this << "adding bool parameter " << key;
-				bool value = bx;
-				bool_params[key] = value;
-				addParameter(key, &bool_params[key]);
-				continue;
-			}
-			cout << "unsupported type of param " << key << endl;
+		python::extract<bool> bx(param[key]);
+		if (bx.check()) {
+			Logger(Debug) << this << "adding bool parameter " << key;
+			bool value = bx;
+			bool_params[key] = value;
+			addParameter(key, &bool_params[key]);
+			continue;
 		}
-	}
-
-	map<string, int> int_params;
-	map<string, string> string_params;
-	map<string, double> double_params;
-	map<string, bool> bool_params;
-	map<string, float> float_params;
-	PyObject *self;
-	char *class_name;
-};
+		cout << "unsupported type of param " << key << endl;
+	}*/
+}
 
 typedef pair<string, NodeParameter*> param_pair;
 static python::list n_getParameterNames(Node &n) {
@@ -221,10 +210,10 @@ void wrap_node() {
 		.def("getNodeName", pure_virtual(&INodeFactoryWrapper::getNodeName))
 		;
 	python::implicitly_convertible<auto_ptr<INodeFactoryWrapper>, auto_ptr<INodeFactory> >();
-	python::class_<Node, auto_ptr<NodeWrapper>, boost::noncopyable>("Node")
+	python::class_<NodeWrapper, auto_ptr<NodeWrapper>, boost::noncopyable>("Node")
 		.def("f", python::pure_virtual(&Node::f))
-		.def("init", &Node::init, &NodeWrapper::init)
-		.def("deinit", &Node::deinit, &NodeWrapper::deinit)
+		.def("init", &NodeWrapper::init)
+		.def("deinit", &NodeWrapper::deinit)
 		.def("addInPort", &NodeWrapper::addInPort)
 		.def("addOutPort", &NodeWrapper::addOutPort)
 		.def("getParameterNames", n_getParameterNames)
@@ -235,7 +224,7 @@ void wrap_node() {
 		.def("setBoolParameter", &Node::setParameter<bool>)
 		.def("setParameter", &Node::setParameter<Flow>)
 		;
-	python::implicitly_convertible<auto_ptr<NodeWrapper>, auto_ptr<Node> >();
+	//python::implicitly_convertible<auto_ptr<NodeWrapper>, auto_ptr<Node> >();
 	python::class_<NodeRegistry>("NodeRegistry")
 		.def("contains", &NodeRegistry::contains)
 		.def("addNativePlugin", &NodeRegistry::addNativePlugin)

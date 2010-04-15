@@ -1,5 +1,6 @@
 #include "pythonnodefactory.h"
 #include "module.h"
+#include "pynode.h"
 
 using namespace boost::python;
 
@@ -21,7 +22,12 @@ PythonNodeFactory::~PythonNodeFactory() {
 Node *PythonNodeFactory::createNode() const {
 	try {
 		object node = priv->klass();
-		return extract<Node *>(node);
+		auto_ptr<NodeWrapper> apn = extract<auto_ptr<NodeWrapper> >(node);
+		apn->setClassName(priv->name);
+		apn->setSelf(node);
+		Node *n = apn.get();
+		apn.release();
+		return n;
 	} catch(error_already_set const &) {
 		Logger(Error) << __FILE__ << ":" << __LINE__;
 		PyErr_Print();

@@ -53,17 +53,15 @@ class RandomCatchment(Node):
     def __init__(self):
         Node.__init__(self)
         self.out = Flow()
-        self.addOutPort('out', self.out)        
-        
-    def init(self, start, stop, dt):
+        self.addOutPort('out', self.out)
         r.seed()
-        return True
     
     def f(self, time, dt):
-        for n in self.out.names():
+        for n in self.out.getNames():
             if Flow.getUnit(n) == CU.flow:
                 self.out.setValue(n, r.random()*30)
             else:
                 self.out.setValue(n, r.random())
-        return dt  
-      
+        return dt
+    def __del__(self):
+        print "del"
