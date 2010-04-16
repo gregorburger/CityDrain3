@@ -7,8 +7,10 @@
 class PortItem;
 class NodeConnection;
 
-class ConnectionItem : public QGraphicsItem
+class ConnectionItem : public QObject, public QGraphicsItem
 {
+Q_OBJECT
+Q_INTERFACES(QGraphicsItem)
 public:
 	ConnectionItem(PortItem *source, QPointF second,
 				   QGraphicsItem *parent = 0, QGraphicsScene *scene = 0);

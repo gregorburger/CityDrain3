@@ -10,6 +10,7 @@ class ConnectionItem;
 
 class PortItem : public QObject, public QGraphicsItem {
 Q_OBJECT
+Q_INTERFACES(QGraphicsItem)
 public:
 	PortItem(QString portName,
 			 NodeItem *parent);

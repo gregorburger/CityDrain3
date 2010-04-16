@@ -89,6 +89,11 @@ void SimulationScene::_new() {
 }
 
 void SimulationScene::unload() {
+	node_items.clear();
+	connection_items.clear();
+	plugins.clear();
+	python_modules.clear();
+	model_file_name = "";
 	clear();
 	delete sim_reg;
 	delete node_reg;
@@ -99,6 +104,8 @@ void SimulationScene::unload() {
 	node_reg = 0;
 	model = 0;
 	simulation = 0;
+	current_connection = 0;
+	connection_start = 0;
 	Q_EMIT(unloaded());
 }
 
@@ -185,6 +192,7 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 	model->addNode(id, node);
 
 	NodeItem *nitem = new NodeItem(node);
+	nitem->setPos(event->scenePos());
 	this->addItem(nitem);
 
 	if (!nitem->changeParameters(true)) {
@@ -194,7 +202,6 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 		return;
 	}
 
-	nitem->setPos(event->scenePos());
 	node_items << nitem;
 
 	this->connect(nitem, SIGNAL(changed(NodeItem*)), SLOT(nodeChanged(NodeItem*)));
