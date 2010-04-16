@@ -1,3 +1,4 @@
+#include <Python.h>
 #include "pymodel.h"
 #include "mapbasedmodel.h"
 #include "nodeconnection.h"

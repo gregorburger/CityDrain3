@@ -76,6 +76,8 @@ public Q_SLOTS:
 	void dt_valueChanged(int value);
 	void applyTime();
 
+	void checkThreadOk();
+
 	void zoomIn(int times = 1);
 	void zoomOut(int times = 1);
 	void pluginsAdded();

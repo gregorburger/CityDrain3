@@ -2,7 +2,8 @@
 #include <simulation.h>
 #include <noderegistry.h>
 #include <mapbasedmodel.h>
-#include <log.h>
+#include <logger.h>
+#include <pythonexception.h>
 
 #include "ui_mainwindow.h"
 #include "simulationscene.h"
@@ -34,9 +35,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->graphicsView->setScene(scene);
 
 	current_thread = new SimulationThread();
-	QObject::connect(current_thread->handler, SIGNAL(progress(int)),
-					 ui->simProgressBar, SLOT(setValue(int)), Qt::QueuedConnection);
-
+	ui->simProgressBar->connect(current_thread->handler, SIGNAL(progress(int)),
+								SLOT(setValue(int)), Qt::QueuedConnection);
+	this->connect(current_thread, SIGNAL(finished()), SLOT(checkThreadOk()));
 	setupTimeControls();
 	setupStateMachine();
 
@@ -266,7 +267,20 @@ void MainWindow::on_actionAdd_Python_Module_activated() {
 										  "*.py");
 	if (plugin == "")
 		return;
-	scene->addPythonModule(plugin);
+	try {
+		scene->addPythonModule(plugin);
+	} catch (PythonException e) {
+		QString type = QString::fromStdString(e.type);
+		QString value = QString::fromStdString(e.value);
+		QString msg = QString("failed to load python module.\n"
+							  "python error: \n\t%1\t\n%2")
+							  .arg(type, value);
+		Logger(Error) << e.type;
+		Logger(Error) << e.value;
+		QMessageBox::critical(this, "Python module failure", msg);
+		return;
+	}
+
 	pluginsAdded();
 }
 
@@ -286,8 +300,20 @@ void MainWindow::on_action_open_activated() {
 										"XML Files (*.xml)");
 	if (path == "")
 		return;
+	try {
+		scene->load(path);
+	} catch (PythonException e) {
+		QString type = QString::fromStdString(e.type);
+		QString value = QString::fromStdString(e.value);
+		QString msg = QString("failed to load model.\n"
+							  "python error: \n\t%1\t\n%2")
+							  .arg(type, value);
+		Logger(Error) << e.type;
+		Logger(Error) << e.value;
+		QMessageBox::critical(this, "Python module failure", msg);
+		return;
+	}
 	setWindowTitle(QString("%2 (%1)").arg(path, QApplication::applicationName()));
-	scene->load(path);
 }
 
 void MainWindow::start_stop_dateTimeChanged(const QDateTime &date) {
@@ -423,4 +449,10 @@ void MainWindow::on_actionPaste_activated() {
 
 void MainWindow::on_actionClose_activated() {
 	unload();
+}
+
+void MainWindow::checkThreadOk() {
+	if (current_thread->hasFailed()) {
+		QMessageBox::critical(this, "Simulation run failed", "The simulation has failed. See log for more informations.");
+	}
 }

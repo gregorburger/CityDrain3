@@ -25,10 +25,16 @@ void test_flow(Flow *f) {
 	}
 }
 
+void flow_assign(Flow *f1, Flow *f2) {
+	*f1 = *f2;
+}
+
 void wrap_flow() {
-	class_<Flow, boost::noncopyable>("Flow")
+	def("assign", flow_assign);
+	class_<Flow>("Flow")
 			.def("define", &Flow::define, "call first to globally define the flow")
 			.def("__len__", &Flow::size, "return the number of entries in each flow")
+			.def("size", &Flow::size, "return the number of entries in each flow")
 			.def("__getitem__", flow_getitem, "index based value lookup")
 			.def("__setitem__", flow_setitem, "index based value update")
 			.def("getNames", &Flow::getNames, "return all defined names")
@@ -41,9 +47,10 @@ void wrap_flow() {
 			.def("dump", &Flow::dump, "dump to stdout")
 			.def("getUnit", &Flow::getUnit, "get unit by name")
 			.staticmethod("define")
-			.staticmethod("__len__")
 			.staticmethod("getNames")
+			.staticmethod("size")
 			.staticmethod("getUnit")
+			.staticmethod("countUnits")
 			;
 	enum_<Flow::CalculationUnit>("CalculationUnit")
 			.value("flow", Flow::flow)

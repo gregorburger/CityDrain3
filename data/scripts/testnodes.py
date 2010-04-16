@@ -25,6 +25,45 @@ class PyMixer(Node):
         self.out[0] = q
         return dt  
 
+class PyNull(Node):
+    def __init__(self):
+        Node.__init__(self)
+        self.out = Flow()
+        self.addOutPort('out', self.out)
+        self.c = 0
+
+    def init(self, s, st, dt):
+        return True
+
+    def deinit(self):
+        pass
+
+    def f(self, time, dt):
+        print "hallo %s" % self.c
+        self.c += 1
+        return dt
+        
+class PyConstFlow(Node):
+    def __init__(self):
+        Node.__init__(self)
+        self.const_flow = Flow()
+        self.addParameters()
+        self.out = Flow()
+        self.addOutPort('out', self.out)
+        self.x = 10
+       
+#    def init(self, start, stop, dt):
+#        print "init"
+#        return True
+
+    def deinit(self):
+        print "gaga"
+
+    def f(self, time, dt):
+#        print "f"
+        assign(self.out, self.const_flow)
+        return dt
+
 class PyOut(Node):
 	def __init__(self):
 		Node.__init__(self)
@@ -54,14 +93,17 @@ class RandomCatchment(Node):
         Node.__init__(self)
         self.out = Flow()
         self.addOutPort('out', self.out)
+        
+    def init(self, start, stop, dt):
         r.seed()
-    
+        return True
+
+    def deinit(self):
+        pass
+        
     def f(self, time, dt):
-        for n in self.out.getNames():
-            if Flow.getUnit(n) == CU.flow:
-                self.out.setValue(n, r.random()*30)
-            else:
-                self.out.setValue(n, r.random())
-        return dt
-    def __del__(self):
-        print "del"
+        print "f in time: %s" % time.to_datetime()
+        self.out[0] = r.random()*30
+        for i in range(len(self.out)):
+            self.out[i] = r.random()
+        return dt  

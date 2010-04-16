@@ -1,6 +1,7 @@
 #ifndef PYNODE_H
 #define PYNODE_H
 
+#include <Python.h>
 #include <boost/python/wrapper.hpp>
 #include <node.h>
 
@@ -8,7 +9,6 @@ void wrap_node();
 
 struct NodeWrapper : Node, python::wrapper<Node> {
 	NodeWrapper();
-
 	virtual ~NodeWrapper();
 
 	int f(ptime time, int dt);
@@ -19,7 +19,6 @@ struct NodeWrapper : Node, python::wrapper<Node> {
 	void addInPort(const std::string &name, Flow *inflow);
 	void addOutPort(const std::string &name, Flow *outflow);
 	void updateParameters();
-	void pyAddParameters();
 
 	void setSelf(boost::python::object self);
 
@@ -28,7 +27,7 @@ struct NodeWrapper : Node, python::wrapper<Node> {
 	map<string, double> double_params;
 	map<string, bool> bool_params;
 	map<string, float> float_params;
-	//PyObject *self;
+	map<string, Flow> flow_params;
 	char *class_name;
 	boost::python::object self;
 };

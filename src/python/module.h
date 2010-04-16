@@ -29,5 +29,7 @@ private:
 	static PythonEnv *instance;
 };
 
+void handle_python_exception();
+
 #endif
 #endif // MODULE_H

@@ -1,3 +1,4 @@
+#include <Python.h>
 #include "module.h"
 #include <noderegistry.h>
 #include "pythonnodefactory.h"
@@ -9,6 +10,7 @@
 #include "pyflow.h"
 #include "pysimulation.h"
 #include "pyptime.h"
+#include "pythonexception.h"
 
 #include <boost/python.hpp>
 #include <string>
@@ -130,7 +132,21 @@ void PythonEnv::registerNodes(NodeRegistry *registry, const string &module) {
 		Logger(Debug) << "found" << numn << "Nodes in module" << module;
 	} catch(error_already_set const &) {
 		Logger(Error) << __FILE__ << ":" << __LINE__;
-		PyErr_Print();
-		abort();
+		handle_python_exception();
+	}
+}
+
+void handle_python_exception() {
+	try {
+		throw ;
+	} catch(python::error_already_set const &) {
+		PyObject* type, *value, *traceback;
+		PyErr_Fetch(&type, &value, &traceback);
+		python::handle<> ty(type), v(value), tr(traceback);
+		python::str format("%s|%s|%s");//fucking dirty hack because python error handling sucks soooo much
+		python::object ret = format % python::make_tuple(ty, v, tr);
+		string error = python::extract<string>(ret);
+		//Logger(Error) error;
+		throw PythonException(error);
 	}
 }

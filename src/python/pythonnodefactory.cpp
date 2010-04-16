@@ -1,6 +1,8 @@
+#include <Python.h>
 #include "pythonnodefactory.h"
 #include "module.h"
 #include "pynode.h"
+#include "pythonexception.h"
 
 using namespace boost::python;
 
@@ -28,8 +30,7 @@ Node *PythonNodeFactory::createNode() const {
 		return apn.release();
 	} catch(error_already_set const &) {
 		Logger(Error) << __FILE__ << ":" << __LINE__;
-		PyErr_Print();
-		abort();
+		handle_python_exception();
 	}
 	return 0;
 }

@@ -1,9 +1,11 @@
+#include <Python.h>
 #include "pysimulation.h"
 #include <simulation.h>
 #include <simulationregistry.h>
 #include <nodeconnection.h>
 #include <node.h>
 #include <mapbasedmodel.h>
+#include "module.h"
 
 #include <boost/foreach.hpp>
 #include <boost/python.hpp>
@@ -18,10 +20,9 @@ struct PythonCallback {
 	void operator()(ISimulation *s, ptime time) {
 		try {
 			callable(ptr(s), time);
-		} catch(python::error_already_set const &) {
+		} catch(...) {
 			Logger(Error) << __FILE__ << ":" << __LINE__;
-			PyErr_Print();
-			abort();
+			handle_python_exception();
 		}
 	}
 	object callable;

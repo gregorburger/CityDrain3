@@ -1,3 +1,4 @@
+#include <Python.h>
 #include "pyptime.h"
 #include <boost/date_time.hpp>
 #include <boost/python.hpp>

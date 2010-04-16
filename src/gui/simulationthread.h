@@ -16,9 +16,11 @@ public:
 	void run();
 	TimeStepHandler *handler;
 	ISimulation *getSimulation() const { return simulation; }
+	inline bool hasFailed() const { return failed; }
 private:
 	boost::signals::connection c;
 	ISimulation *simulation;
+	bool failed;
 };
 
 #endif // SIMULATIONTHREAD_H
