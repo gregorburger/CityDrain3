@@ -25,9 +25,7 @@ Node *PythonNodeFactory::createNode() const {
 		auto_ptr<NodeWrapper> apn = extract<auto_ptr<NodeWrapper> >(node);
 		apn->setClassName(priv->name);
 		apn->setSelf(node);
-		Node *n = apn.get();
-		apn.release();
-		return n;
+		return apn.release();
 	} catch(error_already_set const &) {
 		Logger(Error) << __FILE__ << ":" << __LINE__;
 		PyErr_Print();

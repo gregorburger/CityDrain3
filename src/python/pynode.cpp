@@ -28,7 +28,6 @@ int NodeWrapper::f(ptime time, int dt) {
 	try {
 		if (python::override f = this->get_override("f"))
 			return f(time, dt);
-		//return python::call_method<int>(self, "f", time, dt);
 	} catch(python::error_already_set const &) {
 		Logger(Error) << __FILE__ << ":" << __LINE__;
 		PyErr_Print();
