@@ -88,7 +88,7 @@ int CatchmentCSS::f(ptime time, int dt) {
 											   initial_loss,
 											   permanent_loss / 86400 * dt,
 											   run_off_coeff);
-	Flow flow = FlowFuns::catchment_flowmodel(loss, area*1000, dt, rain_concentration);
+	Flow flow = FlowFuns::catchment_flowmodel(loss, area*10000, dt, rain_concentration);
 
 	inputs.push_back(flow);
 	inputs.push_back(dwf_in);
