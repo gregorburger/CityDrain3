@@ -26,6 +26,8 @@
 #include <nodeparametersdialog.h>
 #include <newsimulationdialog.h>
 #include <ui_newsimulationdialog.h>
+#include <mainwindow.h>
+#include <ui_mainwindow.h>
 
 #include <boost/lexical_cast.hpp>
 #include <boost/foreach.hpp>
@@ -227,6 +229,16 @@ void SimulationScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 	}
 
 	QGraphicsItem *iAt = itemAt(event->scenePos());
+	qDebug() << views()[0]->parentWidget()->objectName();
+
+	MainWindow *mw = qApp->findChild<MainWindow*>();
+
+	if (iAt && event->button() == Qt::RightButton &&
+		node_items.contains((NodeItem*)iAt)) {
+		QMenu m;
+		m.addAction(mw->ui->action_delete);
+		m.exec(event->screenPos());
+	}
 
 	if (iAt && event->button() == Qt::RightButton &&
 		connection_items.contains((ConnectionItem*)iAt)) {
@@ -235,16 +247,6 @@ void SimulationScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 		QAction *selected = m.exec(event->screenPos());
 		if (selected == del) {
 			remove((ConnectionItem *) iAt);
-		}
-	}
-
-	if (iAt && event->button() == Qt::RightButton &&
-		node_items.contains((NodeItem*)iAt)) {
-		QMenu m;
-		QAction *del = m.addAction("&delete");
-		QAction *selected = m.exec(event->screenPos());
-		if (selected == del) {
-			remove((NodeItem *) iAt);
 		}
 	}
 
@@ -404,5 +406,14 @@ void SimulationScene::paste() {
 	}
 	if (copied_nodes.size() >  0) {
 		Q_EMIT(changed());
+	}
+}
+
+void SimulationScene::deleteSelectedItems() {
+	Q_FOREACH(QGraphicsItem *item, selectedItems()) {
+		if (!node_items.contains((NodeItem*) item)) {
+			return;
+		}
+		remove((NodeItem*) item);
 	}
 }

@@ -3,6 +3,8 @@ import random as r
 
 CU = CalculationUnit
 
+asdf
+
 class PyMixer(Node):
     def __init__(self):
         Node.__init__(self)

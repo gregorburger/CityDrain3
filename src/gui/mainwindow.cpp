@@ -79,6 +79,8 @@ void MainWindow::setupStateMachine() {
 	unloaded->assignProperty(ui->actionClose, "enabled", false);
 	unloaded->assignProperty(ui->actionSave_Simulation, "enabled", false);
 	unloaded->assignProperty(ui->actionSave_as, "enabled", false);
+	unloaded->assignProperty(ui->action_delete, "enabled", false);
+	unloaded->assignProperty(ui->graphicsView, "enabled", false);
 	//run buttons
 	unloaded->assignProperty(ui->runButton, "enabled", false);
 	unloaded->assignProperty(ui->stopButton, "enabled", false);
@@ -96,6 +98,8 @@ void MainWindow::setupStateMachine() {
 	loaded->assignProperty(ui->actionAdd_Python_Module, "enabled", true);
 	loaded->assignProperty(ui->actionExport_to_pdf, "enabled", true);
 	loaded->assignProperty(ui->actionClose, "enabled", true);
+	loaded->assignProperty(ui->action_delete, "enabled", true);
+	loaded->assignProperty(ui->graphicsView, "enabled", true);
 	//run buttons
 	loaded->assignProperty(ui->runButton, "enabled", true);
 	loaded->assignProperty(ui->stopButton, "enabled", true);
@@ -455,4 +459,8 @@ void MainWindow::checkThreadOk() {
 	if (current_thread->hasFailed()) {
 		QMessageBox::critical(this, "Simulation run failed", "The simulation has failed. See log for more informations.");
 	}
+}
+
+void MainWindow::on_action_delete_activated() {
+	scene->deleteSelectedItems();
 }

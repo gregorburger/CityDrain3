@@ -64,6 +64,7 @@ public Q_SLOTS:
 	void unload();
 	void copy();
 	void paste();
+	void deleteSelectedItems();
 
 Q_SIGNALS:
 	void changed();

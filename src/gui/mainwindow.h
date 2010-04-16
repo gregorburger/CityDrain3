@@ -27,6 +27,7 @@ public:
 	virtual ~MainWindow();
 	bool getUnsavedChanges() const { return unsaved_changes; }
 	void setUnsavedChanges(bool unsaved) { unsaved_changes = unsaved; }
+	Ui::MainWindow *ui;
 
 protected:
 	void changeEvent(QEvent *e);
@@ -36,7 +37,6 @@ protected:
 	void setupTimeControls();
 	bool unload();
 private:
-	Ui::MainWindow *ui;
 	SimulationScene *scene;
 	SimulationThread *current_thread;
 	bool unsaved_changes;
@@ -67,6 +67,7 @@ public Q_SLOTS:
 	void on_actionFind_node_activated();
 	void on_actionPaste_activated();
 	void on_actionCopy_activated();
+	void on_action_delete_activated();
 
 	//align stuff
 	void on_actionHorizontal_center_align_activated();
