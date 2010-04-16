@@ -2,8 +2,9 @@
 #define PYTHONEXCEPTION_H
 
 #include <string>
+#include <cd3globals.h>
 
-class PythonException {
+class CD3_PUBLIC PythonException {
 public:
 	PythonException(std::string error);
 	std::string type;
