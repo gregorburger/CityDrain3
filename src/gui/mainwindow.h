@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QObject>
+#include <QUndoStack>
 class QTreeWidgetItem;
 
 namespace Ui {
@@ -44,6 +45,7 @@ private:
 	QWidget *tc_widget;
 	GuiLogSink *log_updater;
 	QStateMachine *state_machine;
+	QUndoStack undo_stack;
 
 	void setupStateMachine();
 
@@ -68,6 +70,8 @@ public Q_SLOTS:
 	void on_actionPaste_activated();
 	void on_actionCopy_activated();
 	void on_action_delete_activated();
+	void on_actionRedo_activated();
+	void on_actionUndo_activated();
 
 	//align stuff
 	void on_actionHorizontal_center_align_activated();
@@ -82,10 +86,9 @@ public Q_SLOTS:
 	void zoomIn(int times = 1);
 	void zoomOut(int times = 1);
 	void pluginsAdded();
-	void simulationChanged();
+	void simulationChanged(QUndoCommand *);
 	void simulationSaved();
 	void updateTimeControls();
-
 };
 
 #endif // MAINWINDOW_H

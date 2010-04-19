@@ -6,6 +6,7 @@ unsigned int qHash(std::string s);
 #include <QGraphicsItem>
 class Node;
 class PortItem;
+class QUndoCommand;
 
 class NodeItem : public QObject, public QGraphicsItem
 {
@@ -38,7 +39,7 @@ public:
 	void restoreParameters(QMap<std::string, std::string> p);
 
 Q_SIGNALS:
-	void changed(NodeItem *nitem);
+	void changed(QUndoCommand *cmd);
 
 private:
 	void moveItems();

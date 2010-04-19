@@ -18,5 +18,7 @@
         <file>edit-find.svg</file>
         <file>stock_graphics-align-top.png</file>
         <file>stock_graphics-align-left.png</file>
+        <file>edit-redo.svg</file>
+        <file>edit-undo.svg</file>
     </qresource>
 </RCC>

@@ -68,14 +68,14 @@ public Q_SLOTS:
 	void deleteSelectedItems();
 
 Q_SIGNALS:
-	void changed();
+	void changed(QUndoCommand *cmd);
 	void loaded();
 	void unloaded();
 	void saved();
 	void nodesRegistered();
 
 private Q_SLOTS:
-	void nodeChanged(NodeItem *nitem);
+	void nodeChanged(QUndoCommand *cmd);
 
 private:
 	std::string getDefaultId(Node *node) const;

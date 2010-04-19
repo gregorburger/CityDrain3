@@ -140,7 +140,7 @@ void SimulationScene::load(QString model_file_name) {
 		addItem(item);
 		item->setPos(gml.getNodePosition(item->getId()));
 		item_map[node->getId()] = item;
-		this->connect(item, SIGNAL(changed(NodeItem*)), SLOT(nodeChanged(NodeItem*)));
+		this->connect(item, SIGNAL(changed(QUndoCommand*)), SLOT(nodeChanged(QUndoCommand*)));
 		if (gml.getFailedNodes().contains(node)) {
 			item->changeParameters();
 		}
@@ -206,9 +206,9 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 
 	node_items << nitem;
 
-	this->connect(nitem, SIGNAL(changed(NodeItem*)), SLOT(nodeChanged(NodeItem*)));
+	this->connect(nitem, SIGNAL(changed(QUndoCommand*)), SLOT(nodeChanged(QUndoCommand*)));
 	update();
-	Q_EMIT(changed());
+	Q_EMIT(changed(0));
 }
 
 void SimulationScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event) {
@@ -279,7 +279,7 @@ void SimulationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 		connection_start = 0;
 		current_connection = 0;
 		update();
-		Q_EMIT(changed());
+		Q_EMIT(changed(0));
 		return;
 	}
 
@@ -313,7 +313,7 @@ void SimulationScene::addPlugin(QString pname) {
 	node_reg->addNativePlugin(plugin_name);
 	sim_reg->addNativePlugin(plugin_name); //TODO do we need this?
 	plugins << pname;
-	Q_EMIT(changed());
+	Q_EMIT(changed(0));
 	Q_EMIT(nodesRegistered());
 }
 
@@ -323,7 +323,7 @@ void SimulationScene::addPythonModule(QString pname) {
 	string module_name = module_file.baseName().toStdString();
 	PythonEnv::getInstance()->registerNodes(node_reg, module_name);
 	python_modules << pname;
-	Q_EMIT(changed());
+	Q_EMIT(changed(0));
 	Q_EMIT(nodesRegistered());
 }
 
@@ -332,7 +332,7 @@ void SimulationScene::remove(ConnectionItem *item) {
 	removeItem(item);
 	model->removeConnection(item->getConnection());
 	delete item;
-	Q_EMIT(changed());
+	Q_EMIT(changed(0));
 }
 
 void SimulationScene::remove(NodeItem *item) {
@@ -352,12 +352,11 @@ void SimulationScene::remove(NodeItem *item) {
 	model->removeNode(item->getNode());
 
 	delete item;
-	Q_EMIT(changed());
+	Q_EMIT(changed(0));
 }
 
-void SimulationScene::nodeChanged(NodeItem *nitem) {
-	(void) nitem;
-	Q_EMIT(changed());
+void SimulationScene::nodeChanged(QUndoCommand *cmd) {
+	Q_EMIT(changed(cmd));
 }
 
 void SimulationScene::copy() {
@@ -393,10 +392,10 @@ void SimulationScene::paste() {
 		item->setSelected(true);
 		this->addItem(item);
 		item->setPos(current_mouse.x() + cn.position.x(), current_mouse.y() + cn.position.y());
-		this->connect(item, SIGNAL(changed(NodeItem*)), SLOT(nodeChanged(NodeItem*)));
+		this->connect(item, SIGNAL(changed(QUndoCommand*)), SLOT(nodeChanged(QUndoCommand*)));
 	}
 	if (copied_nodes.size() >  0) {
-		Q_EMIT(changed());
+		Q_EMIT(changed(0));
 	}
 }
 
@@ -424,6 +423,6 @@ bool SimulationScene::setSimulationParameters(SimulationParameters &p) {
 		return false;
 	}
 	getSimulation()->setSimulationParameters(p);
-	Q_EMIT(changed());
+	Q_EMIT(changed(0));
 	return true;
 }

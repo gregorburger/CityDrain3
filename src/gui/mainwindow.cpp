@@ -49,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	Log::init(log_updater);
 	ui->logWidget->connect(log_updater, SIGNAL(newLogLine(QString)), SLOT(appendPlainText(QString)), Qt::QueuedConnection);
 	this->connect(scene, SIGNAL(nodesRegistered()), SLOT(pluginsAdded()));
+	this->connect(scene, SIGNAL(changed(QUndoCommand*)), SLOT(simulationChanged(QUndoCommand*)));
 }
 
 MainWindow::~MainWindow() {
@@ -80,6 +81,10 @@ void MainWindow::setupStateMachine() {
 	unloaded->assignProperty(ui->actionSave_Simulation, "enabled", false);
 	unloaded->assignProperty(ui->actionSave_as, "enabled", false);
 	unloaded->assignProperty(ui->action_delete, "enabled", false);
+	unloaded->assignProperty(ui->actionCopy, "enabled", false);
+	unloaded->assignProperty(ui->actionPaste, "enabled", false);
+	unloaded->assignProperty(ui->actionUndo, "enabled", false);
+	unloaded->assignProperty(ui->actionRedo, "enabled", false);
 	unloaded->assignProperty(ui->graphicsView, "enabled", false);
 	//run buttons
 	unloaded->assignProperty(ui->runButton, "enabled", false);
@@ -100,6 +105,10 @@ void MainWindow::setupStateMachine() {
 	loaded->assignProperty(ui->actionClose, "enabled", true);
 	loaded->assignProperty(ui->action_delete, "enabled", true);
 	loaded->assignProperty(ui->graphicsView, "enabled", true);
+	loaded->assignProperty(ui->actionCopy, "enabled", true);
+	loaded->assignProperty(ui->actionPaste, "enabled", true);
+	loaded->assignProperty(ui->actionUndo, "enabled", true);
+	loaded->assignProperty(ui->actionRedo, "enabled", true);
 	//run buttons
 	loaded->assignProperty(ui->runButton, "enabled", true);
 	loaded->assignProperty(ui->stopButton, "enabled", true);
@@ -123,11 +132,10 @@ void MainWindow::setupStateMachine() {
 	unsaved->assignProperty(ui->actionSave_as, "enabled", true);
 	unsaved->assignProperty(ui->actionSave_Simulation, "enabled", true);
 
-	saved->addTransition(scene, SIGNAL(changed()), unsaved);
+	saved->addTransition(scene, SIGNAL(changed(QUndoCommand*)), unsaved);
 	unsaved->addTransition(scene, SIGNAL(saved()), saved);
 	save_group->setInitialState(saved);
 
-	this->connect(unsaved, SIGNAL(entered()), SLOT(simulationChanged()));
 	this->connect(saved, SIGNAL(entered()), SLOT(simulationSaved()));
 
 	/*running stuff*/
@@ -376,8 +384,12 @@ void MainWindow::simulationSaved() {
 	setWindowTitle(QString("%2 (%1)").arg(scene->getModelFileName(), QApplication::applicationName()));
 }
 
-void MainWindow::simulationChanged() {
+void MainWindow::simulationChanged(QUndoCommand *cmd) {
 	setWindowTitle(QString("%2 (%1) *").arg(scene->getModelFileName(), QApplication::applicationName()));
+	if (cmd) {
+		qDebug() << "pushing command";
+		undo_stack.push(cmd);
+	}
 }
 
 void MainWindow::on_actionExport_to_pdf_activated() {
@@ -414,6 +426,7 @@ bool MainWindow::unload() {
 		}
 	}
 	ui->treeWidget->clear();
+	undo_stack.clear();
 	scene->unload();
 	this->setWindowTitle(QApplication::applicationName());
 	return true;
@@ -474,4 +487,18 @@ void MainWindow::checkThreadOk() {
 
 void MainWindow::on_action_delete_activated() {
 	scene->deleteSelectedItems();
+}
+
+void MainWindow::on_actionUndo_activated() {
+	if (!undo_stack.canUndo()) {
+		return;
+	}
+	undo_stack.undo();
+}
+
+void MainWindow::on_actionRedo_activated() {
+	if (!undo_stack.canRedo()) {
+		return;
+	}
+	undo_stack.redo();
 }

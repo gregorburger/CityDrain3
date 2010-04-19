@@ -2,6 +2,7 @@
 #include "portitem.h"
 #include "nodeparametersdialog.h"
 #include "simulationscene.h"
+#include "commands/nodemove.h"
 
 #include <QPainter>
 #include <QDebug>
@@ -130,6 +131,11 @@ void NodeItem::updateBoundingRect() {
 }
 
 QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant &value) {
+	static QPointF old_pos;
+
+	if (change == ItemPositionChange) {
+		old_pos = pos();
+	}
 	if (change == ItemPositionHasChanged) {
 		Q_FOREACH(PortItem *pitem, out_ports) {
 			pitem->updateConnection();
@@ -137,10 +143,7 @@ QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant &value) 
 		Q_FOREACH(PortItem *pitem, in_ports) {
 			pitem->updateConnection();
 		}
-		Q_EMIT(changed(this));
-	}
-	if (change == ItemSelectedHasChanged) {
-		//update();
+		Q_EMIT(changed(new NodeMove(this, old_pos, pos())));
 	}
 	return QGraphicsItem::itemChange(change, value);
 }
@@ -219,7 +222,7 @@ bool NodeItem::changeParameters(bool _new) {
 
 	updatePorts();
 	parentscene->update();
-	Q_EMIT(changed(this));
+	Q_EMIT(changed(0));
 	return true;
 }
 
