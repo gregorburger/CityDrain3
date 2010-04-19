@@ -19,6 +19,7 @@
 #include "pumpingstation.h"
 #include "dwf.h"
 #include "wwtp.h"
+#include "simplepump.h"
 
 #include <noderegistry.h>
 #include <nodefactory.h>
@@ -47,6 +48,7 @@ extern "C" {
 		registry->addNodeFactory(new NodeFactory<PumpingStation>());
 		registry->addNodeFactory(new NodeFactory<DWF>());
 		registry->addNodeFactory(new NodeFactory<WWTP>());
+		registry->addNodeFactory(new NodeFactory<SimplePump>());
 	}
 
 	void CD3_PUBLIC registerTypes(TypeRegistry *registry) {
