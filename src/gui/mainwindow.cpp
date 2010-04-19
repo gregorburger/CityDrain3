@@ -150,6 +150,18 @@ void MainWindow::setupStateMachine() {
 	running->addTransition(current_thread, SIGNAL(finished()), not_running);
 	running_group->setInitialState(not_running);
 
+	QState *time_group = new QState(loaded);
+
+	QState *time_unchanged = new QState(time_group);
+	time_unchanged->assignProperty(time_controls->apply_time_button, "enabled", false);
+
+	QState *time_changed = new QState(time_group);
+	time_changed->assignProperty(time_controls->apply_time_button, "enabled", true);
+	time_unchanged->addTransition(time_controls->start, SIGNAL(dateTimeChanged(QDateTime)), time_changed);
+	time_unchanged->addTransition(time_controls->stop, SIGNAL(dateTimeChanged(QDateTime)), time_changed);
+	time_unchanged->addTransition(time_controls->dt, SIGNAL(valueChanged(int)), time_changed);
+	time_group->setInitialState(time_unchanged);
+
 	state_machine->addState(unloaded);
 	state_machine->addState(loaded);
 	state_machine->setInitialState(unloaded);
@@ -340,12 +352,11 @@ void MainWindow::applyTime() {
 	p.stop = qttopt(time_controls->stop->dateTime());
 	p.dt = time_controls->dt->value();
 
-	scene->getModel()->deinitNodes();
-	if (scene->getModel()->initNodes(p).size() > 0) { //TODO check for uninited nodes here
-		QMessageBox::critical(this, "", "Some nodes failed to initialize!\nSee log window for more informations!");
+	if (!scene->setSimulationParameters(p)) {
+		QMessageBox::critical(this, "", "Some nodes failed to initialize!\n"
+										"See log window for more informations!");
 		return;
 	}
-	scene->getSimulation()->setSimulationParameters(p);
 	time_controls->apply_time_button->setEnabled(false);
 }
 

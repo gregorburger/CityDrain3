@@ -221,7 +221,9 @@ void SimulationScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event) {
 void SimulationScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 	connection_start = (PortItem *) itemAt(event->scenePos());
 
-	if (connection_start && isOutPort(connection_start) && !connection_start->isConnected()) {
+	if (connection_start &&
+		isOutPort(connection_start) &&
+		!connection_start->isConnected()) {
 		current_connection = new ConnectionItem(connection_start, event->scenePos(), 0, this);
 		current_connection->setZValue(0);
 		views()[0]->setDragMode(QGraphicsView::NoDrag);
@@ -229,25 +231,14 @@ void SimulationScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 	}
 
 	QGraphicsItem *iAt = itemAt(event->scenePos());
-	qDebug() << views()[0]->parentWidget()->objectName();
 
-	MainWindow *mw = qApp->findChild<MainWindow*>();
-
-	if (iAt && event->button() == Qt::RightButton &&
-		node_items.contains((NodeItem*)iAt)) {
-		QMenu m;
-		m.addAction(mw->ui->action_delete);
-		m.exec(event->screenPos());
-	}
-
-	if (iAt && event->button() == Qt::RightButton &&
-		connection_items.contains((ConnectionItem*)iAt)) {
+	if (iAt && event->button() == Qt::RightButton) {
 		QMenu m;
 		QAction *del = m.addAction("&delete");
-		QAction *selected = m.exec(event->screenPos());
-		if (selected == del) {
-			remove((ConnectionItem *) iAt);
-		}
+		this->connect(del, SIGNAL(triggered()), SLOT(deleteSelectedItems()));
+		m.exec(event->screenPos());
+		connection_start = 0;
+		return;
 	}
 
 	connection_start = 0;
@@ -410,10 +401,32 @@ void SimulationScene::paste() {
 }
 
 void SimulationScene::deleteSelectedItems() {
+	int size = selectedItems().size();
+	qDebug() << "selected before nodes "  << size;
 	Q_FOREACH(QGraphicsItem *item, selectedItems()) {
-		if (!node_items.contains((NodeItem*) item)) {
-			return;
+		if (node_items.contains((NodeItem*) item)) {
+			remove((NodeItem*) item);
 		}
-		remove((NodeItem*) item);
 	}
+
+	size = selectedItems().size();
+	qDebug() << "selected after nodes "  << size;
+
+	Q_FOREACH(QGraphicsItem *item, selectedItems()) {
+		if (connection_items.contains((ConnectionItem*) item)) {
+			remove((ConnectionItem*) item);
+		}
+	}
+	qDebug() << "selected after connections "  << size;
+	size = selectedItems().size();
+}
+
+bool SimulationScene::setSimulationParameters(SimulationParameters &p) {
+	getModel()->deinitNodes();
+	if (getModel()->initNodes(p).size() > 0) { //TODO check for uninited nodes here
+		return false;
+	}
+	getSimulation()->setSimulationParameters(p);
+	Q_EMIT(changed());
+	return true;
 }

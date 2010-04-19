@@ -10,7 +10,7 @@ ConnectionItem::ConnectionItem(PortItem *source,
 			  : QGraphicsItem(parent, scene), source(source), sink(0), hovered(false) {
 	this->second = second;
 	setAcceptHoverEvents(true);
-	setFlag(QGraphicsItem::ItemIsSelectable, false);
+	setFlag(QGraphicsItem::ItemIsSelectable, true);
 	updatePositions();
 }
 
@@ -20,6 +20,7 @@ ConnectionItem::ConnectionItem(PortItem *source,
 							   QGraphicsScene *scene)
 			  : QGraphicsItem(parent, scene), source(source), sink(sink), hovered(false) {
 	setAcceptHoverEvents(true);
+	setFlag(QGraphicsItem::ItemIsSelectable, true);
 	updatePositions();
 }
 
@@ -69,10 +70,9 @@ QRectF ConnectionItem::boundingRect() const {
 
 void ConnectionItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *w) {
 	QColor c;
+	c = isSelected() ? Qt::gray : Qt::white;
 	if (hovered) {
 		c = Qt::green;
-	} else {
-		c = Qt::white;
 	}
 	QBrush brush(c);
 	QPen pen(Qt::black);
