@@ -28,6 +28,11 @@ bool DWF::load(int dt) {
 	bool ok;
 	while (!in.atEnd()) {
 		QString line = in.readLine();
+		QString t = line.trimmed();
+		if (t.isEmpty()) {
+			Logger(Debug) << "found empty line in DWF";
+			continue;
+		}
 		QStringList values = line.split(";");
 		if (values.size() < 2) {
 			Logger(Warning) << "wrong dwf file format" << line.toStdString();
