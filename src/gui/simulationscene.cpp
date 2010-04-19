@@ -402,7 +402,6 @@ void SimulationScene::paste() {
 
 void SimulationScene::deleteSelectedItems() {
 	int size = selectedItems().size();
-	qDebug() << "selected before nodes "  << size;
 	Q_FOREACH(QGraphicsItem *item, selectedItems()) {
 		if (node_items.contains((NodeItem*) item)) {
 			remove((NodeItem*) item);
@@ -410,14 +409,12 @@ void SimulationScene::deleteSelectedItems() {
 	}
 
 	size = selectedItems().size();
-	qDebug() << "selected after nodes "  << size;
 
 	Q_FOREACH(QGraphicsItem *item, selectedItems()) {
 		if (connection_items.contains((ConnectionItem*) item)) {
 			remove((ConnectionItem*) item);
 		}
 	}
-	qDebug() << "selected after connections "  << size;
 	size = selectedItems().size();
 }
 

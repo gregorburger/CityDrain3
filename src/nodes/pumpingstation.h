@@ -18,7 +18,7 @@ private:
 
 	double basin_volume;
 	size_t NP;
-	std::vector<double> Qp, Von, Voff, Qpp;
+	std::vector<double> Qp, Von, Voff, Qpp, Qpplast;
 };
 
 #endif // PUMPINGSTATION_H

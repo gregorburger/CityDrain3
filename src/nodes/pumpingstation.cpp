@@ -16,9 +16,12 @@ PumpingStation::PumpingStation() {
 
 	addParameter(ADD_PARAMETERS(basin_volume))
 		.setUnit("m^3");
-	addParameter(ADD_PARAMETERS(Qp));
-	addParameter(ADD_PARAMETERS(Von));
-	addParameter(ADD_PARAMETERS(Voff));
+	addParameter(ADD_PARAMETERS(Qp))
+		.setUnit("m^3/s");
+	addParameter(ADD_PARAMETERS(Von))
+		.setUnit("m^3");
+	addParameter(ADD_PARAMETERS(Voff))
+		.setUnit("m^3");
 
 	addInPort(ADD_PARAMETERS(in));
 	addOutPort(ADD_PARAMETERS(out_p));
@@ -59,7 +62,9 @@ bool PumpingStation::init(ptime start, ptime end, int dt) {
 		}
 	}
 
-	push_back(Qpp).repeat(NP, 0.0);
+	//push_back(Qpp).repeat(NP, 0.0);
+	Qpp = vector<double>(NP);
+	Qpplast = vector<double>(NP);
 
 	for (size_t i = 0; i < NP - 1; ++i) {
 		if (Von[i] > Von[i+1]) {
@@ -90,46 +95,57 @@ double sum(const vector<double> &in) {
 int PumpingStation::f(ptime time, int dt) {
 	(void) time;
 
-	double qin = in.getIth(Flow::flow, 0);
-	double vi = volume.getIth(Flow::flow, 0);
-	vector<double> Qpmod, Qpplast;
+	double qi = in[0];
+	double Vi = volume[0];
 	Qpplast = Qpp;
 
-	Qpmod += 0.0;
-	Qpmod.insert(Qpmod.end(), Qp.begin(), Qp.end());
 	vector<double> vik(NP);
 	for (size_t i = 0; i < NP; i++) {
-		vik[i] = vi + qin * dt - accumulate(Qpmod.begin(), Qpmod.begin()+i, 0) * dt;
-		//Qopt1=(((Vik(k)-Voff(k))/tstep)+abs((Vik(k)-Voff(k))/tstep))/2;
-		double Qopt1_tmp = (vik[i]-Voff[i])/dt;
-		double Qopt1 = (( Qopt1_tmp ) + abs( Qopt1_tmp )) / 2;
+		double qpsum = 0.0;
+		for (size_t k = 0; k < i; k++) {
+			qpsum += Qp[k];
+		}
+		vik[i] = Vi + qi * dt - qpsum * dt;
+
+		double Qopt1 = max(0.0, (vik[i]-Voff[i])/dt);
+
 		//(Vik(k)>Von(k)) | (Qpplast(k)==Qp(k))
 		Qpp[i] = 0.0;
-		if (vik[i] > Von[i] || Qpplast[i] == Qp[i]) {
+		if ((vik[i] > Von[i]) || (Qpplast[i] == Qp[i])) {
 			Qpp[i] = min(Qopt1, Qp[i]);
 		}
-
-		//Vii=Vi+qi.*tstep-Vpp; % Volume after pumping
-		double Vii = qin*dt-sum(Qpp)*dt;
-		out_w.clear();
-		if (Vii > basin_volume) {
-			out_w.setIth(Flow::flow, 0, (Vii-basin_volume) * dt);
-			Vii = basin_volume;
-		}
-		//Vip=qi*tstep+Vi; % Virtual volume after inflow
-		double Vip = qin * dt + vi;
-		BOOST_FOREACH(string c, in.getUnitNames(Flow::concentration)) {
-			double Cin = in.getValue(c);
-			double C = volume.getValue(c);
-			//Cprime=(Cin.*qi.*tstep+C.*Vi)./Vip;
-			double cprime = (Cin*qin*dt+C*vi) / Vip;
-			out_w.setValue(c, cprime);
-			out_w.setValue(c, cprime);
-			volume.setValue(c, cprime);
-		}
-		out_p.setIth(Flow::flow, 0, sum(Qpp));
-		volume.setIth(Flow::flow, 0, Vii);
 	}
+
+	//Vii=Vi+qi.*tstep-Vpp; % Volume after pumping
+	double Vpp = 0.0;
+	for (size_t k = 0; k < Qpp.size(); k++) {
+		Vpp += Qpp[k];
+	}
+	Vpp *= dt;
+	double Vii = Vi+qi*dt-Vpp;
+	out_w.clear();
+	if (Vii > basin_volume) {
+		out_w[0] = (Vii-basin_volume) / dt;
+		Vii = basin_volume;
+	}
+	//Vip=qi*tstep+Vi; % Virtual volume after inflow
+	double Vip = qi * dt + Vi;
+	for (size_t c = 1; c < Flow::size(); c++) {
+		double Cin = in[c];
+		double C = volume[c];
+		//Cprime=(Cin.*qi.*tstep+C.*Vi)./Vip;
+		double cprime = (Cin*qi*dt+C*Vi) / Vip;
+		out_w[c] = cprime;
+		out_p[c] = cprime;
+		volume[c] = cprime;
+	}
+
+	out_p[0] = 0;
+	for (size_t k = 0; k < Qpp.size(); k++) {
+		out_p[0] += Qpp[k];
+	}
+
+	volume[0] = Vii;
 
 	return dt;
 }
