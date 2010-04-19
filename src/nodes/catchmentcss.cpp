@@ -104,10 +104,6 @@ int CatchmentCSS::f(ptime time, int dt) {
 	return dt;
 }
 
-void CatchmentCSS::initFlows() {
-}
-
-
 void CatchmentCSS::addMuskParam(int dt) {
 	double dt_halve = static_cast<double>(dt) / 2;
 	double K_1_min_X = K*(1-X);

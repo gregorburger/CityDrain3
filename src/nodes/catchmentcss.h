@@ -16,7 +16,6 @@ public:
 private:
 	void addMuskParam(int dt);
 	void setMuskParam(double *C_x, double *C_y, int dt);
-	void initFlows();
 
 	Flow rain_in, dwf_in, parasite_in, q_upstream, out; //ports
 
