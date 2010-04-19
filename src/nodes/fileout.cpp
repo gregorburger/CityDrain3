@@ -55,6 +55,7 @@ int FileOut::f(ptime time, int dt) {
 		stream.setDevice(&file);
 		Logger(Debug) << this << "opening file";
 		stream << qSetFieldWidth(15);
+		stream << qSetRealNumberPrecision(15);
 		stream << fixed;
 		stream << "time";
 		BOOST_FOREACH(std::string name, Flow::getNames()) {
