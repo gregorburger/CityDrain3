@@ -406,3 +406,22 @@ void SimulationScene::paste() {
 		Q_EMIT(changed());
 	}
 }
+
+void SimulationScene::deleteSelectedItems() {
+	Q_FOREACH(QGraphicsItem *item, selectedItems()) {
+		if (!node_items.contains((NodeItem*) item)) {
+			return;
+		}
+		remove((NodeItem*) item);
+	}
+}
+
+bool SimulationScene::setSimulationParameters(SimulationParameters &p) {
+	getModel()->deinitNodes();
+	if (getModel()->initNodes(p).size() > 0) { //TODO check for uninited nodes here
+		return false;
+	}
+	getSimulation()->setSimulationParameters(p);
+	Q_EMIT(changed());
+	return true;
+}

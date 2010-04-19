@@ -51,6 +51,7 @@ public:
 
 	void remove(NodeItem *item);
 	void remove(ConnectionItem *item);
+	bool setSimulationParameters(SimulationParameters &p);
 
 	//time convinience
 	inline int getDt() const  { return simulation->getSimulationParameters().dt; }
