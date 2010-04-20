@@ -29,6 +29,8 @@ struct CopyState {
 class SimulationScene : public QGraphicsScene
 {
 Q_OBJECT
+	friend class DeleteConnection;
+	friend class DeleteNode;
 public:
 	SimulationScene(QObject *parent = 0);
 	virtual ~SimulationScene();

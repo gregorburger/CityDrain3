@@ -25,6 +25,9 @@
 #include <guimodelloader.h>
 #include <pythonexception.h>
 
+#include "commands/deleteconnection.h"
+#include "commands/deletenode.h"
+
 #include <nodeparametersdialog.h>
 #include <newsimulationdialog.h>
 #include <ui_newsimulationdialog.h>
@@ -341,11 +344,7 @@ void SimulationScene::addPythonModule(QString pname) {
 }
 
 void SimulationScene::remove(ConnectionItem *item) {
-	connection_items.removeAll(item);
-	removeItem(item);
-	model->removeConnection(item->getConnection());
-	delete item;
-	Q_EMIT(changed(0));
+	Q_EMIT(changed(new DeleteConnection(this, item)));
 }
 
 void SimulationScene::remove(NodeItem *item) {
@@ -359,13 +358,7 @@ void SimulationScene::remove(NodeItem *item) {
 			remove(citem);
 		}
 	}
-
-	node_items.removeAll(item);
-	removeItem(item);
-	model->removeNode(item->getNode());
-
-	delete item;
-	Q_EMIT(changed(0));
+	Q_EMIT(changed(new DeleteNode(this, item)));
 }
 
 void SimulationScene::nodeChanged(QUndoCommand *cmd) {
@@ -413,21 +406,17 @@ void SimulationScene::paste() {
 }
 
 void SimulationScene::deleteSelectedItems() {
-	int size = selectedItems().size();
 	Q_FOREACH(QGraphicsItem *item, selectedItems()) {
 		if (node_items.contains((NodeItem*) item)) {
 			remove((NodeItem*) item);
 		}
 	}
 
-	size = selectedItems().size();
-
 	Q_FOREACH(QGraphicsItem *item, selectedItems()) {
 		if (connection_items.contains((ConnectionItem*) item)) {
 			remove((ConnectionItem*) item);
 		}
 	}
-	size = selectedItems().size();
 }
 
 bool SimulationScene::setSimulationParameters(SimulationParameters &p) {
