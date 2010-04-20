@@ -468,7 +468,15 @@ void MainWindow::on_actionClose_activated() {
 
 void MainWindow::checkThreadOk() {
 	if (current_thread->hasFailed()) {
-		QMessageBox::critical(this, "Simulation run failed", "The simulation has failed. See log for more informations.");
+		PythonException e = current_thread->exception;
+		QString type = QString::fromStdString(e.type);
+		QString value = QString::fromStdString(e.value);
+		QString msg = QString("failed to run simulation.\n"
+							  "python error: \n\t%1\t\n%2")
+							  .arg(type, value);
+		Logger(Error) << e.type;
+		Logger(Error) << e.value;
+		QMessageBox::critical(this, "Python module failure", msg);
 	}
 }
 
