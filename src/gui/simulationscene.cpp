@@ -428,3 +428,27 @@ bool SimulationScene::setSimulationParameters(SimulationParameters &p) {
 	Q_EMIT(changed(0));
 	return true;
 }
+
+NodeItem *SimulationScene::findItem(QString node_id) const {
+	Q_FOREACH(NodeItem *item, node_items) {
+		if (item->getId() == node_id) {
+			return item;
+		}
+	}
+	return 0;
+}
+
+ConnectionItem *SimulationScene::findItem(QString source, QString source_port,
+										  QString sink, QString sink_port) const {
+
+	Q_FOREACH(ConnectionItem *item, connection_items) {
+		NodeConnection *con = item->getConnection();
+		if (con->source->getId() == source.toStdString() &&
+			con->source_port == source_port.toStdString() &&
+			con->sink->getId() == sink.toStdString() &&
+			con->sink_port == sink_port.toStdString()) {
+			return item;
+		}
+	}
+	return 0;
+}

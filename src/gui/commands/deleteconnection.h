@@ -15,9 +15,6 @@ public:
 	void undo();
 	void redo();
 
-	ConnectionItem *findItem();
-	NodeItem *findItem(QString node_id);
-
 private:
 	SimulationScene *scene;
 	std::string source, source_port, sink, sink_port;

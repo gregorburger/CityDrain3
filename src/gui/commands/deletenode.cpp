@@ -30,15 +30,7 @@ void DeleteNode::undo() {
 }
 
 void DeleteNode::redo() {
-	NodeItem *item;
-
-	Q_FOREACH(NodeItem *i, scene->node_items) {
-		if (i->getNode()->getId() == node_id) {
-			item = i;
-			break;
-		}
-	}
-
+	NodeItem *item = scene->findItem(QString::fromStdString(node_id));
 	Q_ASSERT(item != 0);
 
 	scene->node_items.removeAll(item);

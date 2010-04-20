@@ -31,6 +31,7 @@ class SimulationScene : public QGraphicsScene
 Q_OBJECT
 	friend class DeleteConnection;
 	friend class DeleteNode;
+	friend class ChangeParameters;
 public:
 	SimulationScene(QObject *parent = 0);
 	virtual ~SimulationScene();
@@ -60,6 +61,9 @@ public:
 	inline QDateTime getStart() const { return pttoqt(simulation->getSimulationParameters().start); }
 	inline QDateTime getStop() const { return pttoqt(simulation->getSimulationParameters().stop); }
 
+	NodeItem *findItem(QString id) const;
+	ConnectionItem *findItem(QString source, QString source_port,
+							 QString sink, QString sink_port) const;
 public Q_SLOTS:
 	void _new();
 	void save(QString path);

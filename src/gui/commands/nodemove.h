@@ -6,10 +6,12 @@
 #include <QDebug>
 
 class NodeItem;
+class SimulationScene;
 
 class NodeMove : public QUndoCommand {
 public:
-	NodeMove(NodeItem *item, QPointF old, QPointF _new);
+	NodeMove(SimulationScene *scene, NodeItem *item,
+			 QPointF old, QPointF _new);
 	virtual ~NodeMove();
 	void undo();
 	void redo();
@@ -20,8 +22,9 @@ public:
 	virtual bool mergeWith(const QUndoCommand *other);
 
 private:
-	NodeItem *item;
+	SimulationScene *scene;
 	QPointF old, _new;
+	QString node_id;
 };
 
 #endif // NODEMOVE_H
