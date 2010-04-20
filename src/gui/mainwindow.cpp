@@ -50,6 +50,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->logWidget->connect(log_updater, SIGNAL(newLogLine(QString)), SLOT(appendPlainText(QString)), Qt::QueuedConnection);
 	this->connect(scene, SIGNAL(nodesRegistered()), SLOT(pluginsAdded()));
 	this->connect(scene, SIGNAL(changed(QUndoCommand*)), SLOT(simulationChanged(QUndoCommand*)));
+
+	ui->actionUndo->connect(&undo_stack, SIGNAL(canUndoChanged(bool)), SLOT(setEnabled(bool)));
+	ui->actionRedo->connect(&undo_stack, SIGNAL(canRedoChanged(bool)), SLOT(setEnabled(bool)));
 }
 
 MainWindow::~MainWindow() {
@@ -107,8 +110,8 @@ void MainWindow::setupStateMachine() {
 	loaded->assignProperty(ui->graphicsView, "enabled", true);
 	loaded->assignProperty(ui->actionCopy, "enabled", true);
 	loaded->assignProperty(ui->actionPaste, "enabled", true);
-	loaded->assignProperty(ui->actionUndo, "enabled", true);
-	loaded->assignProperty(ui->actionRedo, "enabled", true);
+	/*loaded->assignProperty(ui->actionUndo, "enabled", true);
+	loaded->assignProperty(ui->actionRedo, "enabled", true);*/
 	//run buttons
 	loaded->assignProperty(ui->runButton, "enabled", true);
 	loaded->assignProperty(ui->stopButton, "enabled", true);
