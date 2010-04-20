@@ -4,6 +4,7 @@
 #include <QThread>
 #include "timestephandler.h"
 #include <boost/signals.hpp>
+#include <pythonexception.h>
 
 class ISimulation;
 
@@ -17,6 +18,7 @@ public:
 	TimeStepHandler *handler;
 	ISimulation *getSimulation() const { return simulation; }
 	inline bool hasFailed() const { return failed; }
+	PythonException exception;
 private:
 	boost::signals::connection c;
 	ISimulation *simulation;

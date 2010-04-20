@@ -11,7 +11,7 @@ using namespace boost::signals;
 
 SimulationThread::SimulationThread() {
 	handler = new TimeStepHandler();
-
+	failed = false;
 }
 
 SimulationThread::~SimulationThread() {
@@ -28,12 +28,8 @@ void SimulationThread::run() {
 		simulation->getModel()->deinitNodes();
 		simulation->getModel()->initNodes(sp);//TODO check for uninited nodes here
 		simulation->start(sp.start);
-	} /*catch (PythonException e) {
-		Logger(Error) << e.type;
-		Logger(Error) << e.value;
-		failed = true;
-	}*/
-	catch (...) {
+	} catch (PythonException e) {
+		exception = e;
 		failed = true;
 	}
 }
