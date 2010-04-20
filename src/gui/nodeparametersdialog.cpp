@@ -74,6 +74,7 @@ QWidget *NodeParametersDialog::widgetForParameter(NodeParameter *p) {
 	if (p->type == cd3::TypeInfo(typeid(double))) {
 		QDoubleSpinBox *widget = new QDoubleSpinBox(this);
 		widget->setRange(-numeric_limits<double>::max(), numeric_limits<double>::max());
+		widget->setDecimals(10);
 		double *value = (double *) p->value;
 		widget->setValue(*value);
 		return widget;
