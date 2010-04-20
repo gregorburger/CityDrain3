@@ -3,6 +3,7 @@
 #include "nodeparametersdialog.h"
 #include "simulationscene.h"
 #include "commands/nodemove.h"
+#include "commands/changeparameters.h"
 
 #include <QPainter>
 #include <QDebug>
@@ -143,7 +144,8 @@ QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant &value) 
 		Q_FOREACH(PortItem *pitem, in_ports) {
 			pitem->updateConnection();
 		}
-		Q_EMIT(changed(new NodeMove(this, old_pos, pos())));
+		Q_EMIT(changed(new NodeMove((SimulationScene*) scene(), this, old_pos, pos())));
+		return QVariant();
 	}
 	return QGraphicsItem::itemChange(change, value);
 }
@@ -165,10 +167,11 @@ bool NodeItem::changeParameters(bool _new) {
 	SimulationParameters sp = parentscene->getSimulation()->getSimulationParameters();
 	MapBasedModel *model = parentscene->getModel();
 
-	QMap<std::string, std::string> saved;
+	SavedParameters saved;
 	if (!_new)
 		saved = saveParameters();
 
+	std::string id_before = node->getId();
 	while (true) {
 		NodeParametersDialog np(getNode());
 		if (!np.exec()) {
@@ -222,13 +225,15 @@ bool NodeItem::changeParameters(bool _new) {
 
 	updatePorts();
 	parentscene->update();
-	Q_EMIT(changed(0));
+	if (!_new)
+		Q_EMIT(changed(new ChangeParameters((SimulationScene *)scene(), this,
+											saved, id_before)));
 	return true;
 }
 
 typedef std::pair<std::string, NodeParameter *> pair_type;
-QMap<std::string, std::string> NodeItem::saveParameters() {
-	QMap<std::string, std::string> saved;
+SavedParameters NodeItem::saveParameters() {
+	SavedParameters saved;
 	BOOST_FOREACH(pair_type p, node->getParameters()) {
 		TypeConverter *con = TypeConverter::get(p.second->type);
 		saved[p.first] = con->toStringExact(p.second->value);
@@ -236,7 +241,7 @@ QMap<std::string, std::string> NodeItem::saveParameters() {
 	return saved;
 }
 
-void NodeItem::restoreParameters(QMap<std::string, std::string> p) {
+void NodeItem::restoreParameters(SavedParameters p) {
 	Q_FOREACH(std::string name, p.keys()) {
 		NodeParameter *param = node->getParameters()[name];
 		TypeConverter *con = TypeConverter::get(param->type);

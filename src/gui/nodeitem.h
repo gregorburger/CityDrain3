@@ -8,6 +8,8 @@ class Node;
 class PortItem;
 class QUndoCommand;
 
+typedef QMap<std::string, std::string> SavedParameters;
+
 class NodeItem : public QObject, public QGraphicsItem
 {
 Q_OBJECT
@@ -35,8 +37,8 @@ public:
 	PortItem *getInPort(QString id);
 	PortItem *getOutPort(QString id);
 	bool changeParameters(bool _new = false);
-	QMap<std::string, std::string> saveParameters();
-	void restoreParameters(QMap<std::string, std::string> p);
+	SavedParameters saveParameters();
+	void restoreParameters(SavedParameters p);
 
 Q_SIGNALS:
 	void changed(QUndoCommand *cmd);
