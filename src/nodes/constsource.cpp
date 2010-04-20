@@ -21,9 +21,7 @@ int ConstSource::f(ptime time, int dt) {
 bool ConstSource::init(ptime start, ptime end, int dt) {
 	(void) start;
 	(void) end;
-	(void) dt;
 	out = const_flow;
 	out[0] = out[0] * dt;
-	this->dt = dt;
 	return true;
 }
