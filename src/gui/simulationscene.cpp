@@ -221,7 +221,7 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 		QMessageBox::critical(0, "Python module failure", msg);
 		return;
 	}
-	Q_EMIT(changed());
+	Q_EMIT(changed(0));
 }
 
 void SimulationScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event) {
