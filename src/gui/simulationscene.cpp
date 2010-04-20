@@ -9,6 +9,7 @@
 #include <QDir>
 #include <QGraphicsView>
 #include <QDateTime>
+#include <QMessageBox>
 
 #include <noderegistry.h>
 #include <simulationregistry.h>
@@ -22,6 +23,7 @@
 #include <mapbasedmodel.h>
 #include <simulationsaver.h>
 #include <guimodelloader.h>
+#include <pythonexception.h>
 
 #include <nodeparametersdialog.h>
 #include <newsimulationdialog.h>
@@ -189,25 +191,37 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 	string klassName = treeWidget->selectedItems()[0]->text(0).toStdString();
 	QGraphicsScene::dragMoveEvent(event);
 
-	Node *node = node_reg->createNode(klassName);
-	string id = getDefaultId(node);
-	model->addNode(id, node);
+	try {
+		Node *node = node_reg->createNode(klassName);
+		string id = getDefaultId(node);
+		model->addNode(id, node);
 
-	NodeItem *nitem = new NodeItem(node);
-	nitem->setPos(event->scenePos());
-	this->addItem(nitem);
+		NodeItem *nitem = new NodeItem(node);
+		nitem->setPos(event->scenePos());
+		this->addItem(nitem);
 
-	if (!nitem->changeParameters(true)) {
-		this->removeItem(nitem);
-		delete nitem;
-		model->removeNode(node);
+		if (!nitem->changeParameters(true)) {
+			this->removeItem(nitem);
+			delete nitem;
+			model->removeNode(node);
+			return;
+		}
+
+		node_items << nitem;
+
+		this->connect(nitem, SIGNAL(changed(NodeItem*)), SLOT(nodeChanged(NodeItem*)));
+		update();
+	} catch (PythonException e) {
+		QString type = QString::fromStdString(e.type);
+		QString value = QString::fromStdString(e.value);
+		QString msg = QString("failed to load python module.\n"
+							  "python error: \n\t%1\t\n%2")
+							  .arg(type, value);
+		Logger(Error) << e.type;
+		Logger(Error) << e.value;
+		QMessageBox::critical(0, "Python module failure", msg);
 		return;
 	}
-
-	node_items << nitem;
-
-	this->connect(nitem, SIGNAL(changed(NodeItem*)), SLOT(nodeChanged(NodeItem*)));
-	update();
 	Q_EMIT(changed());
 }
 
