@@ -1,5 +1,6 @@
 #include "simplepump.h"
-#include <QDebug>
+#include <flowfuns.h>
+#include <boost/assign.hpp>
 
 CD3_DECLARE_NODE_NAME(SimplePump)
 
@@ -20,24 +21,39 @@ SimplePump::SimplePump() {
 		.setUnit("m^3/s");
 	addParameter(ADD_PARAMETERS(Vmax))
 		.setUnit("m^3");
+	addState(ADD_PARAMETERS(on));
 }
 
 SimplePump::~SimplePump() {
 
 }
 
+using namespace boost::assign;
+
 int SimplePump::f(ptime time, int dt) {
 	(void) time;
-	volume[0] += in[0] * dt;
-	if (volume[0] > Von) {
+
+	//volume[0] += in[0] * dt;
+	vector<Flow> tomix;
+	tomix += volume, in;
+	volume = FlowFuns::mix(tomix);
+	if (volume[0] > Von || on) {
+		on = true;
+	}
+	out_p = volume; //assign concentrations
+	out_w = volume;
+	if (on) {
 		double volume_after_pump = max(Voff, volume[0] - Qpp);
-		out_p[0] = (volume[0] - volume_after_pump)/dt;
+		out_p[0] = (volume[0] - volume_after_pump);
 		volume[0] = volume_after_pump;
-		out_w[0] = max(0.0, volume[0] - Vmax)/dt;
-		volume[0] -= out_w[0]*dt;
+		out_w[0] = max(0.0, volume[0] - Vmax);
+		volume[0] -= out_w[0];
 	} else {
 		out_p[0] = 0.0;
 		out_w[0] = 0.0;
+	}
+	if (volume[0] <= Voff) {
+		on = false;
 	}
 	return dt;
 }
@@ -54,6 +70,7 @@ bool SimplePump::init(ptime start, ptime end, int dt) {
 	}
 	volume.clear();
 	Qpp = Qp * dt;
+	on = false;
 	return true;
 }
 

@@ -72,6 +72,7 @@ bool DWF::init(ptime start, ptime end, int dt) {
 	(void) end;
 	(void) dt;
 	(void) start;
+	mdt = dt;
 	if (!load(dt)) {
 		return false;
 	}
@@ -90,7 +91,7 @@ void DWF::setOut() {
 	for (size_t i = 0; i < Flow::size(); i++) {
 		out[i] = current_dwf[i];
 	}
-	out[0] = out[0] * q_scale;
+	out[0] = out[0] * mdt * q_scale;
 }
 
 int DWF::f(ptime time, int dt) {

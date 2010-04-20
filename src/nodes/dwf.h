@@ -21,6 +21,7 @@ private:
 	double q_scale;
 	Flow out;
 	deque<dwf_entry> dwf, dwf_work;
+	int mdt;
 };
 
 #endif // DWF_H

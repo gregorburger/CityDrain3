@@ -17,6 +17,7 @@ private:
 	double Von, Voff;
 	double Qp, Qpp;
 	double Vmax;
+	bool on;
 };
 
 #endif // SIMPLEPUMP_H
