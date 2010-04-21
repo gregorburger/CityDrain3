@@ -11,11 +11,12 @@ class NodeItem;
 class DeleteConnection : public QUndoCommand {
 public:
 	DeleteConnection(SimulationScene *scene, ConnectionItem *item);
+	virtual ~DeleteConnection() {}
 
-	void undo();
-	void redo();
+	virtual void undo();
+	virtual void redo();
 
-private:
+protected:
 	SimulationScene *scene;
 	std::string source, source_port, sink, sink_port;
 };

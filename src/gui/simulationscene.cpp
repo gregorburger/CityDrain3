@@ -27,6 +27,7 @@
 
 #include "commands/deleteconnection.h"
 #include "commands/deletenode.h"
+#include "commands/addconnection.h"
 
 #include <nodeparametersdialog.h>
 #include <newsimulationdialog.h>
@@ -277,9 +278,9 @@ void SimulationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 		current_connection->setConnection(con);
 		add(current_connection);
 		connection_start = 0;
-		current_connection = 0;
 		update();
-		Q_EMIT(changed(0));
+		Q_EMIT(changed(new AddConnection(this, current_connection)));
+		current_connection = 0;
 		return;
 	}
 

@@ -30,7 +30,7 @@ public:
 	void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
 	void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
 	void setConnection(NodeConnection *con);
-	NodeConnection *getConnection() const { return connection; }
+	inline NodeConnection *getConnection() const { return connection; }
 
 	inline const QString &getSourceId() const {
 		return source_id;
