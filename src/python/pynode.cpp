@@ -6,10 +6,12 @@
 #include <boost/python.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include <boost/foreach.hpp>
+#include <boost/assign.hpp>
 #include <nodefactory.h>
 #include "module.h"
 
 using namespace boost;
+using namespace boost::assign;
 
 NodeWrapper::NodeWrapper() {
 }
@@ -79,6 +81,7 @@ typedef pair<string, string> stringp;
 typedef pair<string, float> floatp;
 typedef pair<string, double> doublep;
 typedef pair<string, bool> boolp;
+typedef pair<string, vector<double> > vecp;
 void NodeWrapper::updateParameters() {
 	python::dict self_dict = python::extract<python::dict>(self.attr("__dict__"));
 
@@ -96,6 +99,16 @@ void NodeWrapper::updateParameters() {
 
 	BOOST_FOREACH(boolp i, bool_params) {
 		self_dict[i.first] = i.second;
+	}
+
+	BOOST_FOREACH(vecp i, array_params) {
+		python::list l;
+
+		BOOST_FOREACH(double d, i.second) {
+			l.append(d);
+		}
+
+		self_dict[i.first] = l;
 	}
 }
 
@@ -162,6 +175,20 @@ void addParameters(python::object self) {
 			bool value = bx;
 			node_wrapper->bool_params[key] = value;
 			node_wrapper->addParameter(key, &node_wrapper->bool_params[key]);
+			continue;
+		}
+
+		python::extract<python::list> lx(param[key]);
+		if (lx.check()) {
+			Logger(Debug) << node_wrapper << "adding vector<double> parameter " << key;
+			python::list value = lx;
+			vector<double> vec_value;
+			for (int v = 0; v < python::len(value); v++) {
+				double dval = python::extract<double>(value[v]);
+				vec_value += dval;
+			}
+			node_wrapper->array_params[key] = vec_value;
+			node_wrapper->addParameter(key, &node_wrapper->array_params[key]);
 			continue;
 		}
 		cout << "unsupported type of param " << key << endl;
