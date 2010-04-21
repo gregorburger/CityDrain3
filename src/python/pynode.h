@@ -27,6 +27,7 @@ struct NodeWrapper : Node, python::wrapper<Node> {
 	map<string, double> double_params;
 	map<string, bool> bool_params;
 	map<string, float> float_params;
+	map<string, vector<double> > array_params;
 	map<string, Flow> flow_params;
 	char *class_name;
 	boost::python::object self;
