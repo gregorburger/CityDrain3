@@ -27,15 +27,15 @@ public:
 		return sink_of || source_of;
 	}
 
-	void updateConnection();
+	//void updateConnection();
 
 	QString getPortName() { return portName; }
 	NodeItem *getNodeItem() const { return node_item; }
 
-	ConnectionItem *getSinkOf() const { return sink_of; }
+	/*ConnectionItem *getSinkOf() const { return sink_of; }
 	void setSinkOf(ConnectionItem *connection) {sink_of = connection; }
 	ConnectionItem *getSourceOf() const { return source_of; }
-	void setSourceOf(ConnectionItem *connection) {source_of = connection; }
+	void setSourceOf(ConnectionItem *connection) {source_of = connection; }*/
 
 	void setIsAtTop() { at_top = true; }
 	void setIsAtBottom() { at_bottom = true; }

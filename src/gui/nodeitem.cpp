@@ -1,5 +1,6 @@
 #include "nodeitem.h"
 #include "portitem.h"
+#include "connectionitem.h"
 #include "nodeparametersdialog.h"
 #include "simulationscene.h"
 #include "commands/nodemove.h"
@@ -12,6 +13,7 @@
 #include <boost/foreach.hpp>
 
 #include <node.h>
+#include <nodeconnection.h>
 #include <simulation.h>
 #include <mapbasedmodel.h>
 #include <typeconverter.h>
@@ -38,19 +40,19 @@ PortItem *NodeItem::getOutPort(QString id) {
 }
 
 void NodeItem::updatePorts() {
+	Q_FOREACH(PortItem *i, in_ports.values() + out_ports.values()) {
+		delete i;
+	}
+	in_ports.clear();
+	out_ports.clear();
+
 	BOOST_FOREACH(port_pair item, *node->const_in_ports) {
-		if (in_ports.contains(item.first)) {
-			continue;
-		}
 		QString pname = QString::fromStdString(item.first);
 		PortItem *pitem = new PortItem(pname, this);
 		in_ports[item.first] = pitem;
 	}
 
 	BOOST_FOREACH(port_pair item, *node->const_out_ports) {
-		if (out_ports.contains(item.first)) {
-			continue;
-		}
 		QString pname = QString::fromStdString(item.first);
 		PortItem *pitem = new PortItem(pname, this);
 		out_ports[item.first] = pitem;
@@ -58,6 +60,7 @@ void NodeItem::updatePorts() {
 
 	updateBoundingRect();
 	moveItems();
+	update();
 }
 
 QString NodeItem::getClassName() const {
@@ -138,13 +141,14 @@ QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant &value) 
 		old_pos = pos();
 	}
 	if (change == ItemPositionHasChanged) {
-		Q_FOREACH(PortItem *pitem, out_ports) {
-			pitem->updateConnection();
+		SimulationScene *parentScene = (SimulationScene*) scene();
+		if (!parentScene)
+			return QGraphicsItem::itemChange(change, value);
+		Q_FOREACH(ConnectionItem *con, parentScene->getConnectionsOf(this->getId())) {
+			con->updatePositions();
+			parentScene->update();
 		}
-		Q_FOREACH(PortItem *pitem, in_ports) {
-			pitem->updateConnection();
-		}
-		Q_EMIT(changed(new NodeMove((SimulationScene*) scene(), this, old_pos, pos())));
+		Q_EMIT(changed(new NodeMove(parentScene, this, old_pos, pos())));
 		return QVariant();
 	}
 	return QGraphicsItem::itemChange(change, value);
@@ -176,7 +180,7 @@ bool NodeItem::changeParameters(bool _new) {
 		NodeParametersDialog np(getNode());
 		if (!np.exec()) {
 			restoreParameters(saved);
-			return false;
+			return false; //user canceled dialog
 		}
 		if (!_new)
 			getNode()->deinit();
@@ -184,16 +188,12 @@ bool NodeItem::changeParameters(bool _new) {
 		np.updateNodeParameters();
 		if (!node->init(sp.start, sp.stop, sp.dt)) {
 			restoreParameters(saved);
-			continue;
-		}
-
-		if (getId() == np.newId()) {
-			break;
+			continue; //parameters were not accepted by node
 		}
 
 		if (!model->renameNode(node, np.newId().toStdString())) {
 			restoreParameters(saved);
-			continue;
+			continue; //node id alread used
 		}
 		break;
 	}
@@ -202,31 +202,20 @@ bool NodeItem::changeParameters(bool _new) {
 	QMap<string, Flow*> out_after(*getNode()->const_out_ports);
 
 	QSet<string> in_removed = in_before.keys().toSet() - in_after.keys().toSet();
-
-	Q_FOREACH(string s, in_removed) {
-		PortItem *pitem = in_before[s];
-		if (pitem->getSinkOf()) {
-			parentscene->remove(pitem->getSinkOf());
-		}
-		in_ports.remove(s);
-		delete pitem;
-	}
-
 	QSet<string> out_removed = out_before.keys().toSet() - out_after.keys().toSet();
 
-	Q_FOREACH(string s, out_removed) {
-		PortItem *pitem = out_before[s];
-		if (pitem->getSourceOf()) {
-			parentscene->remove(pitem->getSourceOf());
+	Q_FOREACH(ConnectionItem *citem, parentscene->getConnectionsOf(getId())) {
+		NodeConnection *con = citem->getConnection();
+		if (in_removed.contains(con->sink_port) || out_removed.contains(con->source_port)) {
+			parentscene->remove(citem);
+			continue;
 		}
-		out_ports.remove(s);
-		delete pitem;
 	}
 
 	updatePorts();
 	parentscene->update();
 	if (!_new)
-		Q_EMIT(changed(new ChangeParameters((SimulationScene *)scene(), this,
+		Q_EMIT(changed(new ChangeParameters(parentscene, this,
 											saved, id_before)));
 	return true;
 }
@@ -243,6 +232,7 @@ SavedParameters NodeItem::saveParameters() {
 
 void NodeItem::restoreParameters(SavedParameters p) {
 	Q_FOREACH(std::string name, p.keys()) {
+		qDebug() << "setting parameter " << name.c_str() << " to " << p[name].c_str();
 		NodeParameter *param = node->getParameters()[name];
 		TypeConverter *con = TypeConverter::get(param->type);
 		con->setParameterExact(node, name, p[name]);

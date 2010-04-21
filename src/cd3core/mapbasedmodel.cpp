@@ -289,11 +289,16 @@ bool MapBasedModel::cycleFree() const {
 }
 
 bool MapBasedModel::renameNode(Node *node, const string &new_id) {
-	//TODO assert here
-	if (names_nodes.count(new_id)) {
-		Logger(Warning) << "new node name already used";
+	if (names_nodes[new_id] != 0 && names_nodes[new_id] != node) {
+		Logger(Warning) << "can not rename, new id already in use";
 		return false;
 	}
+
+	if (names_nodes[new_id] == node) {
+		//Logger(Debug) << "new node id is old id";
+		return true;
+	}
+
 	names_nodes.erase(node->getId());
 	node->setId(new_id);
 	names_nodes[node->getId()] = node;

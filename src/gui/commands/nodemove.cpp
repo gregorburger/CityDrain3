@@ -1,5 +1,6 @@
 #include "nodemove.h"
 #include "../nodeitem.h"
+#include "../connectionitem.h"
 #include <simulationscene.h>
 
 NodeMove::NodeMove(SimulationScene *scene, NodeItem *item, QPointF old, QPointF _new)
@@ -15,14 +16,18 @@ void NodeMove::undo() {
 	NodeItem *item = scene->findItem(node_id);
 	item->setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
 	item->setPos(old);
+	updateConnections(); //Work around
 	item->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
+	scene->update();
 }
 
 void NodeMove::redo() {
 	NodeItem *item = scene->findItem(node_id);
 	item->setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
 	item->setPos(_new);
+	updateConnections(); //Work around
 	item->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
+	scene->update();
 }
 
 bool NodeMove::mergeWith(const QUndoCommand *other) {
@@ -32,4 +37,10 @@ bool NodeMove::mergeWith(const QUndoCommand *other) {
 		return true;
 	}
 	return false;
+}
+
+void NodeMove::updateConnections() {
+	Q_FOREACH(ConnectionItem *citem, scene->getConnectionsOf(node_id)) {
+		citem->updatePositions();
+	}
 }

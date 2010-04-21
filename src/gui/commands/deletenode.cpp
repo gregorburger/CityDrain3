@@ -20,12 +20,11 @@ void DeleteNode::undo() {
 	NodeItem *nitem = new NodeItem(node);
 
 	nitem->restoreParameters(parameters);
-
+	SimulationParameters sp = scene->simulation->getSimulationParameters();
+	node->init(sp.start, sp.stop, sp.dt);
+	nitem->updatePorts();
 	nitem->setPos(pos);
-	scene->addItem(nitem);
-
-	scene->node_items << nitem;
-	scene->connect(nitem, SIGNAL(changed(QUndoCommand*)), SLOT(nodeChanged(QUndoCommand*)));
+	scene->add(nitem);
 	scene->update();
 }
 
@@ -33,7 +32,7 @@ void DeleteNode::redo() {
 	NodeItem *item = scene->findItem(QString::fromStdString(node_id));
 	Q_ASSERT(item != 0);
 
-	scene->node_items.removeAll(item);
+	scene->node_items.remove(item->getId());
 	scene->removeItem(item);
 	scene->model->removeNode(item->getNode());
 

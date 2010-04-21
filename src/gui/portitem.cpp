@@ -43,15 +43,3 @@ void PortItem::paint(QPainter *painter,
 	painter->drawText(fm.boundingRect(portName), portName);
 	painter->drawRect(boundingRect());
 }
-
-void PortItem::updateConnection() {
-	if (sink_of) {
-		sink_of->updatePositions();
-		scene()->update();
-	}
-
-	if (source_of) {
-		source_of->updatePositions();
-		scene()->update();
-	}
-}

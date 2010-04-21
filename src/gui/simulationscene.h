@@ -46,12 +46,15 @@ public:
 	inline SimulationRegistry *getSimulationRegistry() const { return sim_reg; }
 	inline ISimulation *getSimulation() const { return simulation; }
 	inline MapBasedModel *getModel() const { return model; }
-	inline QList<NodeItem*> getNodeItems() const { return node_items; }
+	inline QList<NodeItem*> getNodeItems() const { return node_items.values(); }
+	inline QList<ConnectionItem*> getConnectionsOf(QString node_id) { return connections_of_node.values(node_id); }
 
 	inline QString getModelFileName() const { return model_file_name; }
 	void addPlugin(QString pname);
 	void addPythonModule(QString pname);
 
+	void add(NodeItem *item);
+	void add(ConnectionItem *item);
 	void remove(NodeItem *item);
 	void remove(ConnectionItem *item);
 	bool setSimulationParameters(SimulationParameters &p);
@@ -94,7 +97,8 @@ private:
 	MapBasedModel *model;
 	PortItem *connection_start;
 	ConnectionItem *current_connection;
-	QList<NodeItem*> node_items;
+	QMap<QString, NodeItem*> node_items;
+	QMultiMap<QString, ConnectionItem*> connections_of_node;
 	QList<ConnectionItem *> connection_items;
 	QString model_file_name;
 	QStringList plugins, python_modules;
