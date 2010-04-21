@@ -13,8 +13,9 @@ class DeleteNode : public QUndoCommand
 {
 public:
 	DeleteNode(SimulationScene *scene, NodeItem *item);
-	void undo();
-	void redo();
+	virtual ~DeleteNode() {}
+	virtual void undo();
+	virtual void redo();
 private:
 	SimulationScene *scene;
 	std::string node_id;

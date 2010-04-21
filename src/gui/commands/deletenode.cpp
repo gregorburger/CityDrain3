@@ -33,8 +33,7 @@ void DeleteNode::redo() {
 	Q_ASSERT(item != 0);
 
 	scene->node_items.remove(item->getId());
-	scene->removeItem(item);
 	scene->model->removeNode(item->getNode());
-
+	scene->removeItem(item);
 	delete item;
 }

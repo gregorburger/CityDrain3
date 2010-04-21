@@ -28,6 +28,7 @@
 #include "commands/deleteconnection.h"
 #include "commands/deletenode.h"
 #include "commands/addconnection.h"
+#include "commands/addnode.h"
 
 #include <nodeparametersdialog.h>
 #include <newsimulationdialog.h>
@@ -203,6 +204,7 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 
 		add(nitem);
 		update();
+		Q_EMIT(changed(new AddNode(this, nitem)));
 	} catch (PythonException e) {
 		QString type = QString::fromStdString(e.type);
 		QString value = QString::fromStdString(e.value);
@@ -214,7 +216,6 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 		QMessageBox::critical(0, "Python module failure", msg);
 		return;
 	}
-	Q_EMIT(changed(0));
 }
 
 void SimulationScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event) {
@@ -389,9 +390,7 @@ void SimulationScene::paste() {
 		item->updatePorts();
 		item->setSelected(true);
 		add(item);
-	}
-	if (copied_nodes.size() >  0) {
-		Q_EMIT(changed(0));
+		Q_EMIT(changed(new AddNode(this, item)));
 	}
 }
 
