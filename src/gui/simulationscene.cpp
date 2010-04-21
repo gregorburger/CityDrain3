@@ -138,31 +138,21 @@ void SimulationScene::load(QString model_file_name) {
 	GuiModelLoader gml(model, node_reg, sim_reg);
 	simulation = gml.load(xmlModelFile);
 	simulation->setModel(model);
-	QMap<string, NodeItem*> item_map;
 	BOOST_FOREACH(Node *node, *model->getNodes()) {
 		NodeItem *item = new NodeItem(node);
-		node_items << item;
-		addItem(item);
 		item->setPos(gml.getNodePosition(item->getId()));
-		item_map[node->getId()] = item;
-		this->connect(item, SIGNAL(changed(QUndoCommand*)), SLOT(nodeChanged(QUndoCommand*)));
+		add(item);
 		if (gml.getFailedNodes().contains(node)) {
 			item->changeParameters();
 		}
 	}
 
 	BOOST_FOREACH(NodeConnection *con, *model->getConnections()) {
-		NodeItem *source = item_map[con->source->getId()];
-		PortItem *source_port = source->getOutPort(QString::fromStdString(con->source_port));
-		NodeItem *sink = item_map[con->sink->getId()];
-		PortItem *sink_port = sink->getInPort(QString::fromStdString(con->sink_port));
-		ConnectionItem *citem = new ConnectionItem(source_port, sink_port, 0, 0);
-		citem->setConnection(con);
-		source_port->setSourceOf(citem);
+		ConnectionItem *citem = new ConnectionItem(this, con);
+		/*source_port->setSourceOf(citem);
 		sink_port->setSinkOf(citem);
-		citem->updatePositions();
-		connection_items << citem;
-		addItem(citem);
+		citem->updatePositions();*/
+		add(citem);
 	}
 	plugins << gml.getPlugins();
 	python_modules << gml.getPythonModules();
@@ -210,8 +200,7 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 			return;
 		}
 
-		node_items << nitem;
-		this->connect(nitem, SIGNAL(changed(QUndoCommand*)), SLOT(nodeChanged(QUndoCommand*)));
+		add(nitem);
 		update();
 	} catch (PythonException e) {
 		QString type = QString::fromStdString(e.type);
@@ -240,8 +229,8 @@ void SimulationScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 	if (connection_start &&
 		isOutPort(connection_start) &&
 		!connection_start->isConnected()) {
-		current_connection = new ConnectionItem(connection_start, event->scenePos(), 0, this);
-		current_connection->setZValue(0);
+
+		current_connection = new ConnectionItem(this, connection_start->getNodeItem()->getId(), connection_start->getPortName());
 		views()[0]->setDragMode(QGraphicsView::NoDrag);
 		return;
 	}
@@ -264,7 +253,8 @@ void SimulationScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 void SimulationScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
 	current_mouse = event->scenePos();
 	if (connection_start) {
-		current_connection->setSecond(event->scenePos());
+		current_connection->setSink(event->scenePos());
+		update();
 	}
 	QGraphicsScene::mouseMoveEvent(event);
 }
@@ -273,14 +263,9 @@ void SimulationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 	PortItem *connection_end = (PortItem *) itemAt(event->scenePos());
 	views()[0]->setDragMode(QGraphicsView::RubberBandDrag);
 
-	if (connection_end &&
-		connection_start &&
-		isInPort(connection_end) &&
-		!connection_end->isConnected() &&
+	if (connection_end && connection_start &&
+		isInPort(connection_end) &&	!connection_end->isConnected() &&
 		connection_end != connection_start) {
-
-		connection_start->setSourceOf(current_connection);
-		connection_end->setSinkOf(current_connection);
 
 		Node *start = connection_start->getNodeItem()->getNode();
 		Node *end = connection_end->getNodeItem()->getNode();
@@ -290,8 +275,7 @@ void SimulationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 		NodeConnection *con = simulation->createConnection(start, out_port, end, in_port);
 		model->addConnection(con);
 		current_connection->setConnection(con);
-		current_connection->setSink(connection_end);
-		connection_items << current_connection;
+		add(current_connection);
 		connection_start = 0;
 		current_connection = 0;
 		update();
@@ -343,20 +327,27 @@ void SimulationScene::addPythonModule(QString pname) {
 	Q_EMIT(nodesRegistered());
 }
 
+void SimulationScene::add(ConnectionItem *item) {
+	connection_items << item;
+	connections_of_node.insert(item->getSourceId(), item);
+	connections_of_node.insert(item->getSinkId(), item);
+	addItem(item);
+}
+
+void SimulationScene::add(NodeItem *item) {
+	node_items[item->getId()] = item;
+	this->connect(item, SIGNAL(changed(QUndoCommand*)), SLOT(nodeChanged(QUndoCommand*)));
+	addItem(item);
+}
+
 void SimulationScene::remove(ConnectionItem *item) {
 	Q_EMIT(changed(new DeleteConnection(this, item)));
 }
 
 void SimulationScene::remove(NodeItem *item) {
-	Q_FOREACH(ConnectionItem *citem, connection_items) {
-		if (citem->source && citem->source->getNodeItem() == item) {
-			qDebug() << "removed a connection";
-			remove(citem);
-		}
-		if (citem->sink && citem->sink->getNodeItem() == item) {
-			qDebug() << "removed a connection";
-			remove(citem);
-		}
+	Q_FOREACH(ConnectionItem *citem, connections_of_node.values(item->getId())) {
+		qDebug() << "removed a connection";
+		remove(citem);
 	}
 	Q_EMIT(changed(new DeleteNode(this, item)));
 }
@@ -390,15 +381,13 @@ void SimulationScene::paste() {
 		string id  = this->getDefaultId(n);
 		model->addNode(id, n);
 		NodeItem *item = new NodeItem(n);
+		item->setPos(current_mouse.x() + cn.position.x(), current_mouse.y() + cn.position.y());
 		item->restoreParameters(cn.parameters);
 		SimulationParameters param = simulation->getSimulationParameters();
 		n->init(param.start, param.stop, param.dt);
 		item->updatePorts();
-		node_items << item;
 		item->setSelected(true);
-		this->addItem(item);
-		item->setPos(current_mouse.x() + cn.position.x(), current_mouse.y() + cn.position.y());
-		this->connect(item, SIGNAL(changed(QUndoCommand*)), SLOT(nodeChanged(QUndoCommand*)));
+		add(item);
 	}
 	if (copied_nodes.size() >  0) {
 		Q_EMIT(changed(0));
@@ -407,7 +396,7 @@ void SimulationScene::paste() {
 
 void SimulationScene::deleteSelectedItems() {
 	Q_FOREACH(QGraphicsItem *item, selectedItems()) {
-		if (node_items.contains((NodeItem*) item)) {
+		if (node_items.values().contains((NodeItem*) item)) {
 			remove((NodeItem*) item);
 		}
 	}
@@ -430,12 +419,7 @@ bool SimulationScene::setSimulationParameters(SimulationParameters &p) {
 }
 
 NodeItem *SimulationScene::findItem(QString node_id) const {
-	Q_FOREACH(NodeItem *item, node_items) {
-		if (item->getId() == node_id) {
-			return item;
-		}
-	}
-	return 0;
+	return node_items[node_id];
 }
 
 ConnectionItem *SimulationScene::findItem(QString source, QString source_port,
@@ -443,6 +427,7 @@ ConnectionItem *SimulationScene::findItem(QString source, QString source_port,
 
 	Q_FOREACH(ConnectionItem *item, connection_items) {
 		NodeConnection *con = item->getConnection();
+		Q_ASSERT(con);
 		if (con->source->getId() == source.toStdString() &&
 			con->source_port == source_port.toStdString() &&
 			con->sink->getId() == sink.toStdString() &&

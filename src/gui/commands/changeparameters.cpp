@@ -1,6 +1,7 @@
 #include "changeparameters.h"
 #include <simulationscene.h>
 #include <mapbasedmodel.h>
+#include <node.h>
 
 ChangeParameters::ChangeParameters(SimulationScene *scene,
 								   NodeItem *node,
@@ -20,7 +21,10 @@ void ChangeParameters::undo() {
 	Q_ASSERT(item != 0);
 	scene->model->renameNode(item->getNode(), id_before);
 	item->restoreParameters(before);
-	item->update();
+	SimulationParameters sp = scene->simulation->getSimulationParameters();
+	item->getNode()->init(sp.start, sp.stop, sp.dt);
+	item->updatePorts();
+	scene->update();
 }
 
 void ChangeParameters::redo() {
@@ -33,5 +37,8 @@ void ChangeParameters::redo() {
 	Q_ASSERT(item != 0);
 	scene->model->renameNode(item->getNode(), id_after);
 	item->restoreParameters(after);
-	item->update();
+	SimulationParameters sp = scene->simulation->getSimulationParameters();
+	item->getNode()->init(sp.start, sp.stop, sp.dt);
+	item->updatePorts();
+	scene->update();
 }

@@ -22,6 +22,7 @@ public:
 	virtual bool mergeWith(const QUndoCommand *other);
 
 private:
+	void updateConnections();
 	SimulationScene *scene;
 	QPointF old, _new;
 	QString node_id;

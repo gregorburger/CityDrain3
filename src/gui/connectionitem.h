@@ -6,16 +6,16 @@
 
 class PortItem;
 class NodeConnection;
+class SimulationScene;
 
 class ConnectionItem : public QObject, public QGraphicsItem
 {
 Q_OBJECT
 Q_INTERFACES(QGraphicsItem)
 public:
-	ConnectionItem(PortItem *source, QPointF second,
-				   QGraphicsItem *parent = 0, QGraphicsScene *scene = 0);
-	ConnectionItem(PortItem *source, PortItem *sink,
-				   QGraphicsItem *parent = 0, QGraphicsScene *scene = 0);
+	ConnectionItem(SimulationScene *scene, QString source, QString source_port_id);
+	ConnectionItem(SimulationScene *scene, NodeConnection *con);
+
 	virtual ~ConnectionItem();
 
 	QRectF boundingRect() const;
@@ -24,17 +24,27 @@ public:
 		return connection_path.united(handle_path);
 	}
 
-	void setSink(PortItem *sink);
-	void setSecond(QPointF second);
+	void setSink(const QPointF &sink);
 	void updatePositions();
+	void updatePaths();
 	void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
 	void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
-	void setConnection(NodeConnection *con) { this->connection = con; }
+	void setConnection(NodeConnection *con);
 	NodeConnection *getConnection() const { return connection; }
-	PortItem *source, *sink;
+
+	inline const QString &getSourceId() const {
+		return source_id;
+	}
+
+	inline const QString &getSinkId() const {
+		return sink_id;
+	}
+
 private:
+	SimulationScene *scene;
+	QString source_id, source_port_id, sink_id, sink_port_id;
+	QPointF source, sink;
 	QPainterPath connection_path, handle_path, united;
-	QPointF first, second;
 	NodeConnection *connection;
 	bool hovered;
 };
