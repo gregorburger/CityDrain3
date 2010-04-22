@@ -152,9 +152,6 @@ void SimulationScene::load(QString model_file_name) {
 
 	BOOST_FOREACH(NodeConnection *con, *model->getConnections()) {
 		ConnectionItem *citem = new ConnectionItem(this, con);
-		/*source_port->setSourceOf(citem);
-		sink_port->setSinkOf(citem);
-		citem->updatePositions();*/
 		add(citem);
 	}
 	plugins << gml.getPlugins();
@@ -334,7 +331,6 @@ void SimulationScene::add(ConnectionItem *item) {
 	connection_items << item;
 	connections_of_node.insert(item->getSourceId(), item);
 	connections_of_node.insert(item->getSinkId(), item);
-	//addItem(item);
 }
 
 void SimulationScene::add(NodeItem *item) {
@@ -457,4 +453,30 @@ ConnectionItem *SimulationScene::findItem(QString source, QString source_port,
 
 void SimulationScene::renameNodeItem(QString old_id, QString new_id) {
 	Q_EMIT(changed(new RenameNode(this, old_id, new_id)));
+}
+
+void SimulationScene::updateConnections(NodeItem *item) {
+	Q_FOREACH(ConnectionItem *citem, connections_of_node.values(item->getId())) {
+		citem->updatePositions();
+	}
+}
+
+QList<NodeItem *> SimulationScene::filterNodes(QList<QGraphicsItem*> items) {
+	QList<NodeItem *> filtered;
+	Q_FOREACH(QGraphicsItem *item, items) {
+		NodeItem *nitem = (NodeItem *) item;
+		if (node_items.values().contains(nitem))
+			filtered << nitem;
+	}
+	return filtered;
+}
+
+QList<ConnectionItem *> SimulationScene::filterConnections(QList<QGraphicsItem*> items) {
+	QList<ConnectionItem *> filtered;
+	Q_FOREACH(QGraphicsItem *item, items) {
+		ConnectionItem *citem = (ConnectionItem *) item;
+		if (connection_items.contains(citem))
+			filtered << citem;
+	}
+	return filtered;
 }

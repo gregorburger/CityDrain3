@@ -16,7 +16,7 @@ void NodeMove::undo() {
 	NodeItem *item = scene->findItem(node_id);
 	item->setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
 	item->setPos(old);
-	updateConnections(); //Work around
+	scene->updateConnections(item);
 	item->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 	scene->update();
 }
@@ -25,7 +25,7 @@ void NodeMove::redo() {
 	NodeItem *item = scene->findItem(node_id);
 	item->setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
 	item->setPos(_new);
-	updateConnections(); //Work around
+	scene->updateConnections(item);
 	item->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 	scene->update();
 }
@@ -37,10 +37,4 @@ bool NodeMove::mergeWith(const QUndoCommand *other) {
 		return true;
 	}
 	return false;
-}
-
-void NodeMove::updateConnections() {
-	Q_FOREACH(ConnectionItem *citem, scene->getConnectionsOf(node_id)) {
-		citem->updatePositions();
-	}
 }

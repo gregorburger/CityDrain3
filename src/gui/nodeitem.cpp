@@ -143,10 +143,7 @@ QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant &value) 
 		SimulationScene *parentScene = (SimulationScene*) scene();
 		if (!parentScene)
 			return QGraphicsItem::itemChange(change, value);
-		Q_FOREACH(ConnectionItem *con, parentScene->getConnectionsOf(this->getId())) {
-			con->updatePositions();
-			parentScene->update();
-		}
+		parentScene->updateConnections(this);
 		Q_EMIT(changed(new NodeMove(parentScene, this, old_pos, pos())));
 		return QVariant();
 	}
@@ -163,6 +160,9 @@ void NodeItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
 }
 
 bool NodeItem::changeParameters(bool _new) {
+	if (!node->getParameters().size())
+		return true;
+
 	SimulationScene *parentscene = (SimulationScene*) scene();
 	QMap<string, PortItem*> in_before = in_ports;
 	QMap<string, PortItem*> out_before = out_ports;

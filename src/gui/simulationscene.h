@@ -72,6 +72,10 @@ public:
 	ConnectionItem *findItem(QString source, QString source_port,
 							 QString sink, QString sink_port) const;
 	inline QStringList getNodeNames() const { return node_items.keys(); }
+
+	void updateConnections(NodeItem *item);
+	QList<NodeItem *> filterNodes(QList<QGraphicsItem*> items);
+	QList<ConnectionItem *> filterConnections(QList<QGraphicsItem*> items);
 public Q_SLOTS:
 	void _new();
 	void save(QString path);

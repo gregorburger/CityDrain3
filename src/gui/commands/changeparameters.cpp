@@ -24,6 +24,7 @@ void ChangeParameters::undo() {
 	item->getNode()->init(sp.start, sp.stop, sp.dt);
 	item->updatePorts();
 	scene->update();
+	scene->updateConnections(item);
 }
 
 void ChangeParameters::redo() {
@@ -39,4 +40,5 @@ void ChangeParameters::redo() {
 	item->getNode()->init(sp.start, sp.stop, sp.dt);
 	item->updatePorts();
 	scene->update();
+	scene->updateConnections(item);
 }
