@@ -9,6 +9,8 @@ public:
 	virtual ~AddNode() {}
 	void undo();
 	void redo();
+private:
+	bool first;
 };
 
 #endif // ADDNODE_H

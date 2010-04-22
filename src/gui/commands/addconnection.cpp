@@ -5,7 +5,7 @@
 #define fstd(qs) (QString::fromStdString(qs))
 
 AddConnection::AddConnection(SimulationScene *scene, ConnectionItem *item)
-	: DeleteConnection(scene, item) {
+	: DeleteConnection(scene, item), first(true) {
 
 }
 
@@ -14,7 +14,6 @@ void AddConnection::undo() {
 }
 
 void AddConnection::redo() {
-	static bool first = true;
 	if (first) {
 		first = false;
 		return;

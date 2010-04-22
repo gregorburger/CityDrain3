@@ -1,11 +1,10 @@
 #include "addnode.h"
 
 AddNode::AddNode(SimulationScene *scene, NodeItem *item)
-	: DeleteNode(scene, item) {
+	: DeleteNode(scene, item), first(true) {
 }
 
 void AddNode::redo() {
-	static bool first = true;
 	if (first) {
 		first = false;
 		return;

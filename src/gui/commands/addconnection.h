@@ -12,6 +12,8 @@ public:
 	virtual ~AddConnection() {}
 	void redo();
 	void undo();
+private:
+	bool first;
 };
 
 #endif // ADDCONNECTION_H
