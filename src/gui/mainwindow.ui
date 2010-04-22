@@ -112,6 +112,8 @@
     <addaction name="separator"/>
     <addaction name="actionHorizontal_center_align"/>
     <addaction name="actionAlign_vertically_center"/>
+    <addaction name="actionIncrease_distance"/>
+    <addaction name="actionDecrease_distance"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -439,6 +441,22 @@
    </property>
    <property name="shortcut">
     <string>F2</string>
+   </property>
+  </action>
+  <action name="actionIncrease_distance">
+   <property name="text">
+    <string>increase distance</string>
+   </property>
+   <property name="shortcut">
+    <string>+</string>
+   </property>
+  </action>
+  <action name="actionDecrease_distance">
+   <property name="text">
+    <string>decrease distance</string>
+   </property>
+   <property name="shortcut">
+    <string>-</string>
    </property>
   </action>
  </widget>

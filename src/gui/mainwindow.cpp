@@ -203,18 +203,6 @@ void MainWindow::on_actionAdd_Plugin_activated() {
 	pluginsAdded();
 }
 
-void MainWindow::keyPressEvent(QKeyEvent *e) {
-	if (e->key() == Qt::Key_Plus) {
-		zoomIn();
-		return;
-	}
-	if (e->key() == Qt::Key_Minus) {
-		zoomOut();
-		return;
-	}
-	QMainWindow::keyPressEvent(e);
-}
-
 void MainWindow::zoomIn(int times) {
 	ui->graphicsView->scale(times * 1.2, times * 1.2);
 }
@@ -527,15 +515,43 @@ void MainWindow::on_actionRedo_activated() {
 }
 
 void MainWindow::on_actionRename_activated() {
-	QList<NodeItem*> node_items = scene->getNodeItems();
-	Q_FOREACH(QGraphicsItem *item, scene->selectedItems()) {
+	Q_FOREACH(NodeItem *item, scene->filterNodes(scene->selectedItems())) {
 		NodeItem *nitem = (NodeItem *) item;
-		if (!node_items.contains(nitem)) {
-			continue;
-		}
 		RenameNodeDialog rn(nitem, scene->getNodeNames(), this);
 		if (rn.exec()) {
 			scene->renameNodeItem(nitem->getId(), rn.newId());
 		}
 	}
+}
+
+/*bool xLessThan(const NodeItem *g1, const NodeItem &g2) {
+	return g1.pos().x() < g2.pos().x();
+}*/
+
+bool yLessThan(NodeItem *g1, NodeItem *g2) {
+	return g1->pos().y() < g2->pos().y();
+}
+
+void MainWindow::incVerticalDistance(double inc) {
+	double ydist = 0.0;
+	QList<NodeItem *> items = scene->filterNodes(scene->selectedItems());
+	qSort(items.begin(), items.end(), yLessThan);
+	for (int i = 0; i < items.size() - 1; i++) {
+		ydist += items[i+1]->pos().y() - items[i]->pos().y();
+	}
+	ydist /= items.size() - 1;
+	ydist += inc;
+	for (int i = 1; i < items.size(); i++) {
+		QPointF pos = items[i-1]->pos();
+		pos.setY(pos.y() + ydist);
+		items[i]->setPos(pos);
+	}
+}
+
+void MainWindow::on_actionIncrease_distance_activated() {
+	incVerticalDistance(1);
+}
+
+void MainWindow::on_actionDecrease_distance_activated() {
+	incVerticalDistance(-1);
 }

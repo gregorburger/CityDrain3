@@ -32,7 +32,6 @@ public:
 
 protected:
 	void changeEvent(QEvent *e);
-	void keyPressEvent(QKeyEvent *e);
 	void closeEvent(QCloseEvent *);
 
 	void setupTimeControls();
@@ -48,6 +47,8 @@ private:
 	QUndoStack undo_stack;
 
 	void setupStateMachine();
+	void incVerticalDistance(double inc);
+	void incHorizontalDistance(double inc);
 
 public Q_SLOTS:
 	void on_actionAdd_Plugin_activated();
@@ -73,6 +74,8 @@ public Q_SLOTS:
 	void on_actionRedo_activated();
 	void on_actionUndo_activated();
 	void on_actionRename_activated();
+	void on_actionIncrease_distance_activated();
+	void on_actionDecrease_distance_activated();
 
 	//align stuff
 	void on_actionHorizontal_center_align_activated();
