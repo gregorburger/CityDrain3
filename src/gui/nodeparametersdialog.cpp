@@ -25,12 +25,7 @@ NodeParametersDialog::NodeParametersDialog(Node *node, QWidget *parent)
 	ui = new Ui::NodeParametersDialog();
 	ui->setupUi(this);
 
-	QLabel *label = new QLabel("Node ID:", this);
-	ui->gridLayout->addWidget(label, 0, 0, Qt::AlignRight);
-	nodeId = new QLineEdit(QString::fromStdString(node->getId()), this);
-	ui->gridLayout->addWidget(nodeId, 0, 1);
-
-	int row = 1;
+	int row = 0;
 
 	BOOST_FOREACH(ptype p, node->getParameters()) {
 		NodeParameter *param = p.second;
@@ -163,8 +158,4 @@ bool NodeParametersDialog::updateNodeParameters() {
 		Logger() << "cannot update node parameter " << p;
 	}
 	return true;
-}
-
-QString NodeParametersDialog::newId() {
-	return nodeId->text();
 }

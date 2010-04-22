@@ -33,6 +33,7 @@ Q_OBJECT
 	friend class DeleteNode;
 	friend class ChangeParameters;
 	friend class ChangeTime;
+	friend class RenameNode;
 public:
 	SimulationScene(QObject *parent = 0);
 	virtual ~SimulationScene();
@@ -70,6 +71,7 @@ public:
 	NodeItem *findItem(QString id) const;
 	ConnectionItem *findItem(QString source, QString source_port,
 							 QString sink, QString sink_port) const;
+	inline QStringList getNodeNames() const { return node_items.keys(); }
 public Q_SLOTS:
 	void _new();
 	void save(QString path);

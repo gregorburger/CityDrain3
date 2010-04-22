@@ -168,13 +168,11 @@ bool NodeItem::changeParameters(bool _new) {
 	QMap<string, PortItem*> out_before = out_ports;
 
 	SimulationParameters sp = parentscene->getSimulation()->getSimulationParameters();
-	MapBasedModel *model = parentscene->getModel();
 
 	SavedParameters saved;
 	if (!_new)
 		saved = saveParameters();
 
-	std::string id_before = node->getId();
 	while (true) {
 		NodeParametersDialog np(getNode());
 		if (!np.exec()) {
@@ -185,20 +183,11 @@ bool NodeItem::changeParameters(bool _new) {
 			getNode()->deinit();
 
 		np.updateNodeParameters();
-		if (!node->init(sp.start, sp.stop, sp.dt)) {
-			restoreParameters(saved);
-			continue; //parameters were not accepted by node
+		if (node->init(sp.start, sp.stop, sp.dt)) {
+			break;
 		}
-
-		if (!model->renameNode(node, np.newId().toStdString())) {
-			restoreParameters(saved);
-			continue; //node id alread used
-		}
-		break;
+		restoreParameters(saved);
 	}
-
-	if (!_new)
-		parentscene->renameNodeItem(QString::fromStdString(id_before), getId());
 
 	QMap<string, Flow*> in_after(*getNode()->const_in_ports);
 	QMap<string, Flow*> out_after(*getNode()->const_out_ports);
@@ -208,17 +197,16 @@ bool NodeItem::changeParameters(bool _new) {
 
 	Q_FOREACH(ConnectionItem *citem, parentscene->getConnectionsOf(getId())) {
 		NodeConnection *con = citem->getConnection();
+
 		if (in_removed.contains(con->sink_port) || out_removed.contains(con->source_port)) {
 			parentscene->remove(citem);
-			continue;
 		}
 	}
 
 	updatePorts();
 	parentscene->update();
 	if (!_new)
-		Q_EMIT(changed(new ChangeParameters(parentscene, this,
-											saved, id_before)));
+		Q_EMIT(changed(new ChangeParameters(parentscene, this, saved)));
 	return true;
 }
 

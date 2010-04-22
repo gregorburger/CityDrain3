@@ -11,6 +11,7 @@
 #include "simulationthread.h"
 #include "guilogsink.h"
 #include "ui_timecontrols.h"
+#include "renamenodedialog.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -88,6 +89,7 @@ void MainWindow::setupStateMachine() {
 	unloaded->assignProperty(ui->actionPaste, "enabled", false);
 	unloaded->assignProperty(ui->actionUndo, "enabled", false);
 	unloaded->assignProperty(ui->actionRedo, "enabled", false);
+	unloaded->assignProperty(ui->actionRename, "enabled", false);
 	unloaded->assignProperty(ui->graphicsView, "enabled", false);
 	//run buttons
 	unloaded->assignProperty(ui->runButton, "enabled", false);
@@ -110,6 +112,7 @@ void MainWindow::setupStateMachine() {
 	loaded->assignProperty(ui->graphicsView, "enabled", true);
 	loaded->assignProperty(ui->actionCopy, "enabled", true);
 	loaded->assignProperty(ui->actionPaste, "enabled", true);
+	loaded->assignProperty(ui->actionRename, "enabled", true);
 	/*loaded->assignProperty(ui->actionUndo, "enabled", true);
 	loaded->assignProperty(ui->actionRedo, "enabled", true);*/
 	//run buttons
@@ -468,7 +471,12 @@ void MainWindow::on_actionAlign_vertically_center_activated() {
 
 	int x = scene->selectedItems()[0]->pos().x();
 
+	QList<NodeItem*> items = scene->getNodeItems();
+
 	Q_FOREACH(QGraphicsItem *item, scene->selectedItems()) {
+		if (!items.contains((NodeItem*)item)) {
+			return;
+		}
 		int y = item->pos().y();
 		item->setPos(x, y);
 	}
@@ -516,4 +524,18 @@ void MainWindow::on_actionRedo_activated() {
 		return;
 	}
 	undo_stack.redo();
+}
+
+void MainWindow::on_actionRename_activated() {
+	QList<NodeItem*> node_items = scene->getNodeItems();
+	Q_FOREACH(QGraphicsItem *item, scene->selectedItems()) {
+		NodeItem *nitem = (NodeItem *) item;
+		if (!node_items.contains(nitem)) {
+			continue;
+		}
+		RenameNodeDialog rn(nitem, scene->getNodeNames(), this);
+		if (rn.exec()) {
+			scene->renameNodeItem(nitem->getId(), rn.newId());
+		}
+	}
 }

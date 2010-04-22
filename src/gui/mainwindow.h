@@ -72,6 +72,7 @@ public Q_SLOTS:
 	void on_action_delete_activated();
 	void on_actionRedo_activated();
 	void on_actionUndo_activated();
+	void on_actionRename_activated();
 
 	//align stuff
 	void on_actionHorizontal_center_align_activated();

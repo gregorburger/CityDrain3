@@ -29,6 +29,7 @@
 #include "commands/addconnection.h"
 #include "commands/addnode.h"
 #include "commands/changetime.h"
+#include "commands/renamenode.h"
 
 #include <nodeparametersdialog.h>
 #include <newsimulationdialog.h>
@@ -333,7 +334,7 @@ void SimulationScene::add(ConnectionItem *item) {
 	connection_items << item;
 	connections_of_node.insert(item->getSourceId(), item);
 	connections_of_node.insert(item->getSinkId(), item);
-	addItem(item);
+	//addItem(item);
 }
 
 void SimulationScene::add(NodeItem *item) {
@@ -362,15 +363,30 @@ void SimulationScene::copy() {
 	if (selectedItems().size() == 0)
 		return;
 
-	float x = selectedItems()[0]->pos().x();
-	float y = selectedItems()[0]->pos().y();
+	float x = 0.0;
+	float y = 0.0;
+	int count = 0;
 
 	Q_FOREACH(QGraphicsItem *item, selectedItems()) {
 		NodeItem *node_item = (NodeItem *) item;
+		if (!node_items.values().contains(node_item))
+			continue;
+		x += node_item->pos().x();
+		y += node_item->pos().y();
+		count++;
+	}
+
+	x /= count;
+	y /= count;
+
+	Q_FOREACH(QGraphicsItem *item, selectedItems()) {
+		NodeItem *node_item = (NodeItem *) item;
+		if (!node_items.values().contains(node_item))
+			continue;
 		CopyState cs;
 		cs._class = node_item->getClassName().toStdString();
 		cs.parameters = node_item->saveParameters();
-		cs.position = QPointF(x - node_item->pos().x(), y - node_item->pos().y());
+		cs.position = QPointF(node_item->pos().x() - x, node_item->pos().y() - y);
 		copied_nodes << cs;
 	}
 }
@@ -440,24 +456,5 @@ ConnectionItem *SimulationScene::findItem(QString source, QString source_port,
 }
 
 void SimulationScene::renameNodeItem(QString old_id, QString new_id) {
-	if (old_id == new_id) {
-		return;
-	}
-	NodeItem *item = node_items[old_id];
-	Q_ASSERT(item);
-	node_items.remove(old_id);
-	node_items[new_id] = item;
-
-	QList<ConnectionItem*> cons = connections_of_node.values(old_id);
-
-	connections_of_node.remove(old_id);
-	Q_FOREACH(ConnectionItem *citem, cons) {
-		if (citem->getSourceId() == old_id) {
-			citem->setSourceId(new_id);
-		}
-		if (citem->getSinkId() == old_id) {
-			citem->setSinkId(new_id);
-		}
-		connections_of_node.insert(new_id, citem);
-	}
+	Q_EMIT(changed(new RenameNode(this, old_id, new_id)));
 }

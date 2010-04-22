@@ -12,15 +12,14 @@ class ChangeParameters : public QUndoCommand
 public:
 	ChangeParameters(SimulationScene *scene,
 					 NodeItem *node,
-					 SavedParameters before,
-					 std::string d_before);
+					 SavedParameters before);
 	virtual ~ChangeParameters();
 	void redo();
 	void undo();
 private:
 	SimulationScene *scene;
 	SavedParameters before, after;
-	std::string id_before, id_after;
+	QString id;
 	bool first_redo;
 };
 

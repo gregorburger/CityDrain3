@@ -27,13 +27,13 @@ void DeleteConnection::redo() {
 }
 
 void DeleteConnection::undo() {
-	NodeItem *source_item = scene->findItem(QString::fromStdString(source));
-	NodeItem *sink_item = scene->findItem(QString::fromStdString(sink));
-	Q_ASSERT(source_item != 0 && sink_item != 0);
-
-	NodeConnection *con = scene->simulation->createConnection(source_item->getNode(),
+	Node *source = scene->getModel()->getNode(this->source);
+	Node *sink = scene->getModel()->getNode(this->sink);
+	Q_ASSERT(source);
+	Q_ASSERT(sink);
+	NodeConnection *con = scene->simulation->createConnection(source,
 															  source_port,
-															  sink_item->getNode(),
+															  sink,
 															  sink_port);
 	ConnectionItem *item = new ConnectionItem(scene, con);
 	scene->add(item);

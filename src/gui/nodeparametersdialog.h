@@ -21,14 +21,11 @@ public:
 
 	bool updateNodeParameters();
 
-	QString newId();
-
 private:
 	QWidget *widgetForParameter(NodeParameter *);
 	Ui::NodeParametersDialog *ui;
 	Node *node;
 	QMap<std::string, QWidget *> widgets;
-	QLineEdit *nodeId;
 };
 
 #endif // NODEPARAMETERSDIALOG_H
