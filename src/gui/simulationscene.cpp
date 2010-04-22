@@ -4,7 +4,6 @@
 #include <QWidget>
 #include <QTreeWidget>
 #include <QMenu>
-#include <QDebug>
 #include <QFileInfo>
 #include <QDir>
 #include <QGraphicsView>
@@ -29,6 +28,7 @@
 #include "commands/deletenode.h"
 #include "commands/addconnection.h"
 #include "commands/addnode.h"
+#include "commands/changetime.h"
 
 #include <nodeparametersdialog.h>
 #include <newsimulationdialog.h>
@@ -315,7 +315,7 @@ void SimulationScene::addPlugin(QString pname) {
 	node_reg->addNativePlugin(plugin_name);
 	sim_reg->addNativePlugin(plugin_name); //TODO do we need this?
 	plugins << pname;
-	Q_EMIT(changed(0));
+	Q_EMIT(changed(0));	//do we need undo here?
 	Q_EMIT(nodesRegistered());
 }
 
@@ -325,7 +325,7 @@ void SimulationScene::addPythonModule(QString pname) {
 	string module_name = module_file.baseName().toStdString();
 	PythonEnv::getInstance()->registerNodes(node_reg, module_name);
 	python_modules << pname;
-	Q_EMIT(changed(0));
+	Q_EMIT(changed(0));	//can't definitly do undo here!
 	Q_EMIT(nodesRegistered());
 }
 
@@ -348,7 +348,6 @@ void SimulationScene::remove(ConnectionItem *item) {
 
 void SimulationScene::remove(NodeItem *item) {
 	Q_FOREACH(ConnectionItem *citem, connections_of_node.values(item->getId())) {
-		qDebug() << "removed a connection";
 		remove(citem);
 	}
 	Q_EMIT(changed(new DeleteNode(this, item)));
@@ -413,8 +412,10 @@ bool SimulationScene::setSimulationParameters(SimulationParameters &p) {
 	if (getModel()->initNodes(p).size() > 0) { //TODO check for uninited nodes here
 		return false;
 	}
+	SimulationParameters before = simulation->getSimulationParameters();
 	getSimulation()->setSimulationParameters(p);
-	Q_EMIT(changed(0));
+	Q_EMIT(simulationParametersChanged());
+	Q_EMIT(changed(new ChangeTime(this, before, p)));
 	return true;
 }
 
@@ -436,4 +437,27 @@ ConnectionItem *SimulationScene::findItem(QString source, QString source_port,
 		}
 	}
 	return 0;
+}
+
+void SimulationScene::renameNodeItem(QString old_id, QString new_id) {
+	if (old_id == new_id) {
+		return;
+	}
+	NodeItem *item = node_items[old_id];
+	Q_ASSERT(item);
+	node_items.remove(old_id);
+	node_items[new_id] = item;
+
+	QList<ConnectionItem*> cons = connections_of_node.values(old_id);
+
+	connections_of_node.remove(old_id);
+	Q_FOREACH(ConnectionItem *citem, cons) {
+		if (citem->getSourceId() == old_id) {
+			citem->setSourceId(new_id);
+		}
+		if (citem->getSinkId() == old_id) {
+			citem->setSinkId(new_id);
+		}
+		connections_of_node.insert(new_id, citem);
+	}
 }

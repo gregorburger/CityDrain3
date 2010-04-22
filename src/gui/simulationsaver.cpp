@@ -10,7 +10,6 @@
 
 #include <QXmlStreamWriter>
 #include <QFile>
-#include <QDebug>
 #include <boost/foreach.hpp>
 #include <boost/unordered_set.hpp>
 #include <string>

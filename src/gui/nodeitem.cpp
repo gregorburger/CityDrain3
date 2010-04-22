@@ -7,7 +7,6 @@
 #include "commands/changeparameters.h"
 
 #include <QPainter>
-#include <QDebug>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsLinearLayout>
 #include <boost/foreach.hpp>
@@ -198,6 +197,9 @@ bool NodeItem::changeParameters(bool _new) {
 		break;
 	}
 
+	if (!_new)
+		parentscene->renameNodeItem(QString::fromStdString(id_before), getId());
+
 	QMap<string, Flow*> in_after(*getNode()->const_in_ports);
 	QMap<string, Flow*> out_after(*getNode()->const_out_ports);
 
@@ -232,7 +234,6 @@ SavedParameters NodeItem::saveParameters() {
 
 void NodeItem::restoreParameters(SavedParameters p) {
 	Q_FOREACH(std::string name, p.keys()) {
-		qDebug() << "setting parameter " << name.c_str() << " to " << p[name].c_str();
 		NodeParameter *param = node->getParameters()[name];
 		TypeConverter *con = TypeConverter::get(param->type);
 		con->setParameterExact(node, name, p[name]);

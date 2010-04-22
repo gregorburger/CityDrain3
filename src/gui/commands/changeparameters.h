@@ -21,6 +21,7 @@ private:
 	SimulationScene *scene;
 	SavedParameters before, after;
 	std::string id_before, id_after;
+	bool first_redo;
 };
 
 #endif // CHANGEPARAMETERS_H

@@ -13,7 +13,6 @@
 #include "ui_timecontrols.h"
 
 #include <QFileDialog>
-#include <QDebug>
 #include <QMessageBox>
 #include <QKeyEvent>
 #include <QDateTimeEdit>
@@ -50,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->logWidget->connect(log_updater, SIGNAL(newLogLine(QString)), SLOT(appendPlainText(QString)), Qt::QueuedConnection);
 	this->connect(scene, SIGNAL(nodesRegistered()), SLOT(pluginsAdded()));
 	this->connect(scene, SIGNAL(changed(QUndoCommand*)), SLOT(simulationChanged(QUndoCommand*)));
+	this->connect(scene, SIGNAL(simulationParametersChanged()), SLOT(updateTimeControls()));
 
 	ui->actionUndo->connect(&undo_stack, SIGNAL(canUndoChanged(bool)), SLOT(setEnabled(bool)));
 	ui->actionRedo->connect(&undo_stack, SIGNAL(canRedoChanged(bool)), SLOT(setEnabled(bool)));
@@ -168,9 +168,11 @@ void MainWindow::setupStateMachine() {
 
 	QState *time_changed = new QState(time_group);
 	time_changed->assignProperty(time_controls->apply_time_button, "enabled", true);
+
 	time_unchanged->addTransition(time_controls->start, SIGNAL(dateTimeChanged(QDateTime)), time_changed);
 	time_unchanged->addTransition(time_controls->stop, SIGNAL(dateTimeChanged(QDateTime)), time_changed);
 	time_unchanged->addTransition(time_controls->dt, SIGNAL(valueChanged(int)), time_changed);
+	time_changed->addTransition(scene, SIGNAL(simulationParametersChanged()), time_unchanged);
 	time_group->setInitialState(time_unchanged);
 
 	state_machine->addState(unloaded);
@@ -350,11 +352,11 @@ void MainWindow::start_stop_dateTimeChanged(const QDateTime &date) {
 	if (time_controls->stop->dateTime() == date) {
 		time_controls->start->setMaximumDateTime(time_controls->stop->dateTime().addSecs(-time_controls->dt->value()));
 	}
-	time_controls->apply_time_button->setEnabled(true);
+	//time_controls->apply_time_button->setEnabled(true);
 }
 
 void MainWindow::dt_valueChanged(int value) {
-	time_controls->apply_time_button->setEnabled(true);
+	//time_controls->apply_time_button->setEnabled(true);
 }
 
 void MainWindow::applyTime() {
@@ -368,7 +370,7 @@ void MainWindow::applyTime() {
 										"See log window for more informations!");
 		return;
 	}
-	time_controls->apply_time_button->setEnabled(false);
+	//time_controls->apply_time_button->setEnabled(false);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
@@ -390,7 +392,6 @@ void MainWindow::simulationSaved() {
 void MainWindow::simulationChanged(QUndoCommand *cmd) {
 	setWindowTitle(QString("%2 (%1) *").arg(scene->getModelFileName(), QApplication::applicationName()));
 	if (cmd) {
-		qDebug() << "pushing command";
 		undo_stack.push(cmd);
 	}
 }

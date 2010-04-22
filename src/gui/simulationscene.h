@@ -32,6 +32,7 @@ Q_OBJECT
 	friend class DeleteConnection;
 	friend class DeleteNode;
 	friend class ChangeParameters;
+	friend class ChangeTime;
 public:
 	SimulationScene(QObject *parent = 0);
 	virtual ~SimulationScene();
@@ -59,6 +60,8 @@ public:
 	void remove(ConnectionItem *item);
 	bool setSimulationParameters(SimulationParameters &p);
 
+	void renameNodeItem(QString old_id, QString new_id);
+
 	//time convinience
 	inline int getDt() const  { return simulation->getSimulationParameters().dt; }
 	inline QDateTime getStart() const { return pttoqt(simulation->getSimulationParameters().start); }
@@ -82,6 +85,7 @@ Q_SIGNALS:
 	void unloaded();
 	void saved();
 	void nodesRegistered();
+	void simulationParametersChanged();
 
 private Q_SLOTS:
 	void nodeChanged(QUndoCommand *cmd);

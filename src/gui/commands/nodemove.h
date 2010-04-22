@@ -3,7 +3,6 @@
 
 #include <QUndoCommand>
 #include <QPointF>
-#include <QDebug>
 
 class NodeItem;
 class SimulationScene;

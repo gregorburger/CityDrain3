@@ -5,7 +5,6 @@
 #include <cd3assert.h>
 
 #include <QLibrary>
-#include <QDebug>
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
 

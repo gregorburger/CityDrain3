@@ -1,7 +1,6 @@
 #include "connectionitem.h"
 #include "portitem.h"
 #include <QPainter>
-#include <QDebug>
 #include <simulationscene.h>
 #include <nodeconnection.h>
 #include <node.h>

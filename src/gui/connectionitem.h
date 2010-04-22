@@ -40,6 +40,14 @@ public:
 		return sink_id;
 	}
 
+	inline void setSourceId(const QString &new_source_id) {
+		this->source_id = new_source_id;
+	}
+
+	inline void setSinkId(const QString &new_sink_id) {
+		this->sink_id = new_sink_id;
+	}
+
 private:
 	SimulationScene *scene;
 	QString source_id, source_port_id, sink_id, sink_port_id;
