@@ -229,7 +229,10 @@ void MainWindow::on_actionZoom_out_activated() {
 }
 
 void MainWindow::on_actionZoom_reset_activated() {
-	ui->graphicsView->fitInView(ui->graphicsView->sceneRect(), Qt::KeepAspectRatio);
+	scene->update();
+	QRectF bounds = scene->itemsBoundingRect();
+	ui->graphicsView->setSceneRect(bounds);
+	ui->graphicsView->fitInView(bounds, Qt::KeepAspectRatio);
 }
 
 void MainWindow::pluginsAdded() {
