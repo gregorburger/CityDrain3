@@ -131,6 +131,7 @@
    <addaction name="actionRedo"/>
    <addaction name="separator"/>
    <addaction name="actionZoom_out"/>
+   <addaction name="actionZoom_in"/>
    <addaction name="actionZoom_reset"/>
    <addaction name="separator"/>
   </widget>
