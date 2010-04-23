@@ -27,6 +27,12 @@
       <property name="dragMode">
        <enum>QGraphicsView::RubberBandDrag</enum>
       </property>
+      <property name="cacheMode">
+       <set>QGraphicsView::CacheBackground</set>
+      </property>
+      <property name="viewportUpdateMode">
+       <enum>QGraphicsView::BoundingRectViewportUpdate</enum>
+      </property>
       <property name="rubberBandSelectionMode">
        <enum>Qt::IntersectsItemBoundingRect</enum>
       </property>
@@ -105,6 +111,7 @@
     <addaction name="actionCopy"/>
     <addaction name="actionPaste"/>
     <addaction name="action_delete"/>
+    <addaction name="actionSelect_all"/>
     <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
     <addaction name="actionFind_node"/>
@@ -457,6 +464,14 @@
    </property>
    <property name="shortcut">
     <string>-</string>
+   </property>
+  </action>
+  <action name="actionSelect_all">
+   <property name="text">
+    <string>select all</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
    </property>
   </action>
  </widget>

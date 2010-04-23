@@ -25,7 +25,7 @@ void DeleteNode::undo() {
 	nitem->updatePorts();
 	nitem->setPos(pos);
 	scene->add(nitem);
-	scene->update();
+	//scene->update();
 }
 
 void DeleteNode::redo() {

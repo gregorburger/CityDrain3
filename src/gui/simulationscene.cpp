@@ -101,6 +101,7 @@ void SimulationScene::_new() {
 void SimulationScene::unload() {
 	node_items.clear();
 	connection_items.clear();
+	connections_of_node.clear();
 	plugins.clear();
 	python_modules.clear();
 	model_file_name = "";
@@ -156,7 +157,7 @@ void SimulationScene::load(QString model_file_name) {
 	}
 	plugins << gml.getPlugins();
 	python_modules << gml.getPythonModules();
-	update();
+	////update();
 	Q_EMIT(loaded());
 	Q_EMIT(nodesRegistered());
 }
@@ -201,7 +202,7 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 		}
 
 		add(nitem);
-		update();
+		//update();
 		Q_EMIT(changed(new AddNode(this, nitem)));
 	} catch (PythonException e) {
 		QString type = QString::fromStdString(e.type);
@@ -254,7 +255,7 @@ void SimulationScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
 	current_mouse = event->scenePos();
 	if (connection_start) {
 		current_connection->setSink(event->scenePos());
-		update();
+		//update();
 	}
 	QGraphicsScene::mouseMoveEvent(event);
 }
@@ -277,7 +278,7 @@ void SimulationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 		current_connection->setConnection(con);
 		add(current_connection);
 		connection_start = 0;
-		update();
+		//update();
 		Q_EMIT(changed(new AddConnection(this, current_connection)));
 		current_connection = 0;
 		return;

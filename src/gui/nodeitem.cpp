@@ -59,7 +59,7 @@ void NodeItem::updatePorts() {
 
 	updateBoundingRect();
 	moveItems();
-	update();
+	//update();
 }
 
 QString NodeItem::getClassName() const {
@@ -204,7 +204,7 @@ bool NodeItem::changeParameters(bool _new) {
 	}
 
 	updatePorts();
-	parentscene->update();
+	//parentscene->update();
 	if (!_new)
 		Q_EMIT(changed(new ChangeParameters(parentscene, this, saved)));
 	return true;
@@ -227,5 +227,5 @@ void NodeItem::restoreParameters(SavedParameters p) {
 		con->setParameterExact(node, name, p[name]);
 	}
 	updatePorts();
-	update();
+	//update();
 }

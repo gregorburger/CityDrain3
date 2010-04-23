@@ -9,12 +9,12 @@ RenameNode::RenameNode(SimulationScene *scene, QString before, QString after)
 
 void RenameNode::undo() {
 	rename(after, before);
-	scene->update();
+	//scene->update();
 }
 
 void RenameNode::redo() {
 	rename(before, after);
-	scene->update();
+	//scene->update();
 }
 
 void RenameNode::rename(QString old_id, QString new_id) {

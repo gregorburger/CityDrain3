@@ -24,6 +24,7 @@
 #include <QPrinter>
 #include <QSettings>
 #include <QStateMachine>
+#include <QGLWidget>
 #include <boost/foreach.hpp>
 #include <boost/date_time.hpp>
 
@@ -54,6 +55,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	ui->actionUndo->connect(&undo_stack, SIGNAL(canUndoChanged(bool)), SLOT(setEnabled(bool)));
 	ui->actionRedo->connect(&undo_stack, SIGNAL(canRedoChanged(bool)), SLOT(setEnabled(bool)));
+	ui->graphicsView->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::AlphaChannel)));
 }
 
 MainWindow::~MainWindow() {
@@ -220,7 +222,7 @@ void MainWindow::on_actionZoom_out_activated() {
 }
 
 void MainWindow::on_actionZoom_reset_activated() {
-	scene->update();
+	//scene->update();
 	QRectF bounds = scene->itemsBoundingRect();
 	ui->graphicsView->setSceneRect(bounds);
 	ui->graphicsView->fitInView(bounds, Qt::KeepAspectRatio);
@@ -554,4 +556,10 @@ void MainWindow::on_actionIncrease_distance_activated() {
 
 void MainWindow::on_actionDecrease_distance_activated() {
 	incVerticalDistance(-1);
+}
+
+void MainWindow::on_actionSelect_all_activated() {
+	Q_FOREACH(QGraphicsItem *item, scene->items()) {
+		item->setSelected(true);
+	}
 }

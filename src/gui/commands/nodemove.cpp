@@ -18,7 +18,7 @@ void NodeMove::undo() {
 	item->setPos(old);
 	scene->updateConnections(item);
 	item->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
-	scene->update();
+	//scene->update();
 }
 
 void NodeMove::redo() {
@@ -27,7 +27,7 @@ void NodeMove::redo() {
 	item->setPos(_new);
 	scene->updateConnections(item);
 	item->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
-	scene->update();
+	//scene->update();
 }
 
 bool NodeMove::mergeWith(const QUndoCommand *other) {

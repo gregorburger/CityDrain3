@@ -23,7 +23,7 @@ void ChangeParameters::undo() {
 	SimulationParameters sp = scene->simulation->getSimulationParameters();
 	item->getNode()->init(sp.start, sp.stop, sp.dt);
 	item->updatePorts();
-	scene->update();
+	//scene->update();
 	scene->updateConnections(item);
 }
 
@@ -39,6 +39,6 @@ void ChangeParameters::redo() {
 	SimulationParameters sp = scene->simulation->getSimulationParameters();
 	item->getNode()->init(sp.start, sp.stop, sp.dt);
 	item->updatePorts();
-	scene->update();
+	//scene->update();
 	scene->updateConnections(item);
 }

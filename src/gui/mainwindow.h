@@ -65,6 +65,7 @@ public Q_SLOTS:
 	void on_actionZoom_out_activated();
 	void on_actionZoom_reset_activated();
 	void on_actionExport_to_pdf_activated();
+	void on_actionSelect_all_activated();
 
 	//edit stuff
 	void on_actionFind_node_activated();

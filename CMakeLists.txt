@@ -39,6 +39,7 @@ find_package(GTest QUIET)
 
 message(STATUS ${CMAKE_CXX_COMPILER_ID})
 set(QT_USE_QTXML true)
+set(QT_USE_QTOPENGL true)
 set(QT_NOTUSE_QTGUI true)
 add_definitions(-DQT_NO_KEYWORDS)
 INCLUDE(${QT_USE_FILE})
