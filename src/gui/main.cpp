@@ -1,10 +1,12 @@
 #include <QtGui/QApplication>
+#include <QGL>
 #include "mainwindow.h"
 #include <log.h>
 #include <logsink.h>
 #include <iostream>
 
 int main(int argc, char *argv[]) {
+	QGL::setPreferredPaintEngine(QPaintEngine::OpenGL);
 	QApplication a(argc, argv);
 	QApplication::setApplicationName("CityDrain3");
 	QApplication::setOrganizationName("University of Innsbruck - "
