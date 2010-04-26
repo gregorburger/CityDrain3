@@ -24,7 +24,6 @@
 #include <QPrinter>
 #include <QSettings>
 #include <QStateMachine>
-#include <QGLWidget>
 #include <boost/foreach.hpp>
 #include <boost/date_time.hpp>
 

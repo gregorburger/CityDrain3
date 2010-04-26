@@ -1,5 +1,4 @@
 #include <QtGui/QApplication>
-#include <QtOpenGL>
 #include "mainwindow.h"
 #include <log.h>
 #include <logsink.h>
