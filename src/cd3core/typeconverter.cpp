@@ -115,7 +115,7 @@ struct FlowTC : public TypeConverter {
 		vector<string> items;
 		split(items, s, algorithm::is_any_of(";"));
 		cd3assert(items.size() == Flow::size() * 2, "wrong string format of type Flow");
-		for (size_t i = 0; i < Flow::size(); i += 2) {
+		for (size_t i = 0; i < Flow::size()*2; i += 2) {
 			string name = items[i];
 			double value = lexical_cast<double>(items[i+1]);
 			f->setValue(name, value);
