@@ -40,13 +40,13 @@ int CSO::f(ptime time, int dt) {
 	(void) time;
 	Flow V_old = stored_volume;
 	//Vii=(u(1)-Qemax)*tstep+x(1);
-	double Vii = (in[0]-Q_Max)*dt + V_old[0];
+	double Vii = in[0] - Q_Max*dt + V_old[0];
 
 	if (Vii < 0) { //case 1
 		//	Vi=0;
 		stored_volume[0] = 0;
 		//	Qei=x(1)/tstep+u(1);
-		out[0] = V_old[0]/dt + in[0];
+		out[0] = V_old[0] + in[0];
 		//	Qwi=0;
 		overflow[0] = 0;
 	}
@@ -54,15 +54,15 @@ int CSO::f(ptime time, int dt) {
 		//Vi=Vmax;
 		stored_volume[0] = V_Max;
 		//Qei=Qemax;
-		out[0] = Q_Max;
+		out[0] = Q_Max*dt;
 		//Qwi=u(1)-Qemax-(Vmax-x(1))/tstep;
-		overflow[0] = in[0] - Q_Max - (V_Max - V_old[0]) / dt;
+		overflow[0] = in[0] - Q_Max*dt - (V_Max - V_old[0]);
 	}
 	if (Vii >= 0 && Vii <= V_Max) {//case 3
 		//Vi=(u(1)-Qemax)*tstep+x(1);
-		stored_volume[0] = (in[0]-Q_Max)*dt + V_old[0];
+		stored_volume[0] = in[0] - Q_Max * dt + V_old[0];
 		//Qei=Qemax;
-		out[0] = Q_Max;
+		out[0] = Q_Max * dt;
 		//Qwi=0;
 		overflow[0] = 0;
 	}

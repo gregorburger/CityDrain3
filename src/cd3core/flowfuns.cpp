@@ -108,8 +108,8 @@ Flow FlowFuns::route_sewer(const Flow inflow,
 						   int dt) {
 	double inqe = inflow[0];
 	double volqe = (*volume)[0];
-	double outqe = inqe * C_x + volqe * C_y;
-	double newvolqe = (inqe - outqe) * dt + volqe;
+	double outqe = (inqe / dt * C_x + volqe * C_y) * dt;
+	double newvolqe = (inqe - outqe) + volqe;
 
 	Flow out;
 	out[0] = outqe;
@@ -118,8 +118,8 @@ Flow FlowFuns::route_sewer(const Flow inflow,
 	newvolume[0] = newvolqe;
 
 	for (size_t i = 0; i < Flow::countUnits(Flow::concentration); i++) {
-		double c0 = 0.5 * outqe + newvolqe/dt;
-		double c1 = inqe * inflow[i+1] - (*volume)[i+1]*(0.5*outqe - volqe/dt);
+		double c0 = 0.5 * outqe/dt + newvolqe/dt;
+		double c1 = inqe/dt * inflow[i+1] - (*volume)[i+1]*(0.5*outqe/dt - volqe/dt);
 		newvolume[i+1] = std::max(0.0, c1/c0);
 		out[i+1] = (newvolume[i+1] + (*volume)[i+1]) * 0.5;
 	}
@@ -140,16 +140,16 @@ Flow FlowFuns::route_catchment(const Flow in,
 	Flow oldvolume = *_oldvolume;
 	Flow out;
 	rain[0] = rain[0] / N;
-	out[0] = (in[0] + rain[0]) * C_x + oldvolume[0] * C_y;
-	newvolume[0] = (in[0] - out[0] + rain[0]) * dt + oldvolume[0];
+	out[0] = ((in[0] / dt + rain[0]) * C_x + oldvolume[0] * C_y) * dt;
+	newvolume[0] = ((in[0] - out[0])/dt + rain[0]) * dt + oldvolume[0];
 
 	//QL = rain
 	//QI = in
 	for (size_t i = 1; i < Flow::size(); i++) {
 		//c0=0.5.*QE(1)+V(1)./tstep;
-		double c0 = 0.5 * out[0] + newvolume[0]/dt;
+		double c0 = 0.5 * out[0]/dt + newvolume[0]/dt;
 		//     c1 = QI(1).* QI(k+1)+  QL(1).* QL(k+1)* N - Vold(k+1) * (0.5.* QE(1)  - Vold(1)     ./tstep);
-		double c1 = in[0] * in[i] + rain[0] * rain[i] - oldvolume[i] * (0.5 * out[0] - oldvolume[0] / dt);
+		double c1 = in[0]/dt * in[i] + rain[0] * rain[i] - oldvolume[i] * (0.5 * out[0]/dt - oldvolume[0] / dt);
 		newvolume[i] = c0 <= 0 ? 0.0 :  c1/c0;
 		//newvolume[i] = std::max(0.0, c1/c0);
 		//QE(k+1)=( V(k+1) + Vold(k+1) )./2;
