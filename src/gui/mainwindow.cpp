@@ -276,6 +276,7 @@ void MainWindow::on_actionSave_as_activated() {
 }
 
 void MainWindow::on_actionAdd_Python_Module_activated() {
+#ifndef PYTHON_DISABLED
 	QString plugin;
 	plugin = QFileDialog::getOpenFileName(this,
 										  "select python module",
@@ -298,6 +299,9 @@ void MainWindow::on_actionAdd_Python_Module_activated() {
 	}
 
 	pluginsAdded();
+#else
+	QMessageBox::critical(0, "python disabled", "Python support is disabled for this build");
+#endif
 }
 
 void MainWindow::on_action_exit_activated() {
