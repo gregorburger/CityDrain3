@@ -28,7 +28,7 @@
        <enum>QGraphicsView::RubberBandDrag</enum>
       </property>
       <property name="cacheMode">
-       <set>QGraphicsView::CacheBackground</set>
+       <set>QGraphicsView::CacheNone</set>
       </property>
       <property name="viewportUpdateMode">
        <enum>QGraphicsView::BoundingRectViewportUpdate</enum>

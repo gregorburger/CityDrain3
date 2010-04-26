@@ -69,7 +69,7 @@ void ConnectionItem::updatePaths() {
 	handle_path = QPainterPath();
 	handle_path.addEllipse(mid(source.x(), sink.x()) - 5, mid(source.y(),sink.y()) - 5, 10, 10);
 	united = handle_path.united(connection_path);
-	//update();
+	update();
 }
 
 QRectF ConnectionItem::boundingRect() const {
@@ -91,10 +91,10 @@ void ConnectionItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 
 void ConnectionItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
 	hovered = true;
-	//update();
+	update();
 }
 
 void ConnectionItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
 	hovered = false;
-	//update();
+	update();
 }

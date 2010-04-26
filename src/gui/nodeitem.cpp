@@ -131,6 +131,7 @@ void NodeItem::updateBoundingRect() {
 
 	bounding = r.adjusted(-max(margin, max_inp_width), -max(margin,height),
 						  max(margin, max_outp_width), max(margin,height));
+	update();
 }
 
 QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant &value) {

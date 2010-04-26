@@ -41,4 +41,6 @@ void RenameNode::rename(QString old_id, QString new_id) {
 		}
 		scene->connections_of_node.insert(new_id, citem);
 	}
+	item->updatePorts();//does updateBoundingBox too
+	scene->updateConnections(item);
 }

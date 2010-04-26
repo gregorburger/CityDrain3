@@ -55,7 +55,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	ui->actionUndo->connect(&undo_stack, SIGNAL(canUndoChanged(bool)), SLOT(setEnabled(bool)));
 	ui->actionRedo->connect(&undo_stack, SIGNAL(canRedoChanged(bool)), SLOT(setEnabled(bool)));
-	ui->graphicsView->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::AlphaChannel)));
 }
 
 MainWindow::~MainWindow() {
