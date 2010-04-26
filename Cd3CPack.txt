@@ -36,10 +36,11 @@ IF(WIN32 AND NOT UNIX)
   #SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.my-project-home-page.org")
   #SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.my-personal-home-page.com")
   SET(CPACK_NSIS_CONTACT "gregor.burger@uibk.ac.at")
-  file(GLOB DLLS #C:/Users/gregor/Projekte/dlls/*.dll 
+  file(GLOB DLLS #C:/Users/gregor/Projekte/dlls/*.dll
 	${QT_BINARY_DIR}/QtCore4.dll
 	${QT_BINARY_DIR}/QtGui4.dll
 	${QT_BINARY_DIR}/QtXml4.dll
+	${QT_BINARY_DIR}/QtOpenGL4.dll
 	${Boost_LIBRARY_DIRS}/boost_signals-*-mt-1_*.dll
 	${Boost_LIBRARY_DIRS}/boost_thread-*-mt-1_*.dll
 	${Boost_LIBRARY_DIRS}/boost_python-*-mt-1_*.dll
@@ -51,9 +52,9 @@ IF(WIN32 AND NOT UNIX)
 
   file(GLOB RUMBA_FILES ${CMAKE_SOURCE_DIR}/data/rumba/*.txt)
   install(FILES ${RUMBA_FILES} DESTINATION data/rumba)
-  
+
   #set(CPACK_NSIS_MENU_LINKS "bin/cd3-gui.exe" "Run CityDrain3 GUI")
-  #SET(CPACK_NSIS_MODIFY_PATH ON) 
+  #SET(CPACK_NSIS_MODIFY_PATH ON)
   set(CPACK_PACKAGE_EXECUTABLES "cd3-gui;CityDrain3")
 ENDIF()
 INCLUDE(CPack)
