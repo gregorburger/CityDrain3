@@ -20,7 +20,9 @@ using namespace std;
 #include "node.h"
 #include <simulation.h>
 #include <flow.h>
+#ifndef PYTHON_DISABLED
 #include <module.h>
+#endif
 #include <typeconverter.h>
 
 struct SaxLoaderPriv {
@@ -122,11 +124,15 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		consumed = true;
 	}
 	if (lname == "pythonmodule") {
+#ifndef PYTHON_DISABLED
 		QFileInfo module_file(atts.value("module"));
 		PythonEnv::getInstance()->addPythonPath(module_file.dir().absolutePath().toStdString());
 		string module_name = module_file.baseName().toStdString();
 		PythonEnv::getInstance()->registerNodes(pd->node_registry, module_name);
 		consumed = true;
+#else
+		Logger(Error) << "python support is disabled";
+#endif
 	}
 	if (lname == "citydrain") {
 		consumed = true;
