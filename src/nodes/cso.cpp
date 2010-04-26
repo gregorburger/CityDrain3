@@ -23,7 +23,6 @@ CSO::CSO() {
 		.setUnit("m3/s");
 
 	addState(ADD_PARAMETERS(stored_volume));
-	stored_volume.clear();
 }
 
 CSO::~CSO() {
@@ -33,6 +32,7 @@ bool CSO::init(ptime start, ptime end, int dt) {
 	(void) end;
 	(void) dt;
 	(void) start;
+	stored_volume.clear();
 	return true;
 }
 
