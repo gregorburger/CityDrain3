@@ -446,7 +446,7 @@ void MainWindow::on_actionHorizontal_center_align_activated() {
 
 	int y = scene->selectedItems()[0]->pos().y();
 
-	Q_FOREACH(QGraphicsItem *item, scene->selectedItems()) {
+	Q_FOREACH(QGraphicsItem *item, scene->filterNodes(scene->selectedItems())) {
 		int x = item->pos().x();
 		item->setPos(x, y);
 	}
@@ -459,12 +459,7 @@ void MainWindow::on_actionAlign_vertically_center_activated() {
 
 	int x = scene->selectedItems()[0]->pos().x();
 
-	QList<NodeItem*> items = scene->getNodeItems();
-
-	Q_FOREACH(QGraphicsItem *item, scene->selectedItems()) {
-		if (!items.contains((NodeItem*)item)) {
-			return;
-		}
+	Q_FOREACH(QGraphicsItem *item, scene->filterNodes(scene->selectedItems())) {
 		int y = item->pos().y();
 		item->setPos(x, y);
 	}
