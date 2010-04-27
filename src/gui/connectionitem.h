@@ -36,8 +36,16 @@ public:
 		return source_id;
 	}
 
+	inline const QString &getSourcePortId() const {
+		return source_port_id;
+	}
+
 	inline const QString &getSinkId() const {
 		return sink_id;
+	}
+
+	inline const QString &getSinkPortId() const {
+		return sink_port_id;
 	}
 
 	inline void setSourceId(const QString &new_source_id) {

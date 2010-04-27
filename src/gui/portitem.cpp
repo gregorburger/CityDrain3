@@ -2,15 +2,19 @@
 #include "nodeitem.h"
 #include "simulationscene.h"
 #include "connectionitem.h"
+#include <nodeconnection.h>
+#include <node.h>
 
 #include <QFontMetrics>
 #include <QPainter>
 
 PortItem::PortItem(QString portName,
-				   NodeItem *parent)
-	: QGraphicsItem(parent), sink_of(0), source_of(0),
-	node_item(parent), portName(portName), hovering(false),
-	at_top(false), at_bottom(false)
+				   NodeItem *parent,
+				   Direction dir)
+	: QGraphicsItem(parent), node_item(parent),
+	  portName(portName), dir(dir),
+	  hovering(false),
+	  at_top(false), at_bottom(false)
 {
 	setAcceptHoverEvents(true);
 	setFlag(QGraphicsItem::ItemIsSelectable, false);
@@ -19,6 +23,20 @@ PortItem::PortItem(QString portName,
 
 PortItem::~PortItem() {
 
+}
+
+bool PortItem::isConnected() {
+	SimulationScene *parentScene = static_cast<SimulationScene*>(scene());
+	Q_FOREACH(ConnectionItem *item, parentScene->getConnectionsOf(node_item->getId())) {
+		if (dir == In && item->getSinkPortId() == portName) {
+			return true;
+		}
+		if (dir == Out && item->getSourcePortId() == portName) {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 QRectF PortItem::boundingRect() const {

@@ -47,13 +47,13 @@ void NodeItem::updatePorts() {
 
 	BOOST_FOREACH(port_pair item, *node->const_in_ports) {
 		QString pname = QString::fromStdString(item.first);
-		PortItem *pitem = new PortItem(pname, this);
+		PortItem *pitem = new PortItem(pname, this, PortItem::In);
 		in_ports[item.first] = pitem;
 	}
 
 	BOOST_FOREACH(port_pair item, *node->const_out_ports) {
 		QString pname = QString::fromStdString(item.first);
-		PortItem *pitem = new PortItem(pname, this);
+		PortItem *pitem = new PortItem(pname, this, PortItem::Out);
 		out_ports[item.first] = pitem;
 	}
 
