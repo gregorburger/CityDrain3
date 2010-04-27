@@ -21,8 +21,8 @@ void DeleteConnection::redo() {
 	scene->connection_items.removeAll(item);
 	scene->connections_of_node.remove(item->getSourceId(), item);
 	scene->connections_of_node.remove(item->getSinkId(), item);
-	scene->removeItem(item);
 	scene->model->removeConnection(item->getConnection());
+	delete item->getConnection();
 	delete item;
 }
 

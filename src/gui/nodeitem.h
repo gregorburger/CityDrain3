@@ -16,6 +16,7 @@ Q_OBJECT
 Q_INTERFACES(QGraphicsItem)
 public:
 	NodeItem(Node *node);
+	virtual ~NodeItem();
 	QRectF boundingRect() const;
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
 

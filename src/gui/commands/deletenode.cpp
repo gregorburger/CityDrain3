@@ -31,9 +31,9 @@ void DeleteNode::undo() {
 void DeleteNode::redo() {
 	NodeItem *item = scene->findItem(QString::fromStdString(node_id));
 	Q_ASSERT(item != 0);
-
+	scene->disconnect(item);
 	scene->node_items.remove(item->getId());
-	scene->model->removeNode(item->getNode());
-	scene->removeItem(item);
+	Node *n = item->getNode();
 	delete item;
+	scene->model->removeNode(n); //deletes n
 }

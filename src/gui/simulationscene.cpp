@@ -195,7 +195,6 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 		this->addItem(nitem);
 
 		if (!nitem->changeParameters(true)) {
-			this->removeItem(nitem);
 			delete nitem;
 			model->removeNode(node);
 			return;
@@ -329,12 +328,16 @@ void SimulationScene::addPythonModule(QString pname) {
 }
 
 void SimulationScene::add(ConnectionItem *item) {
+	Q_ASSERT(!connection_items.contains(item));
 	connection_items << item;
+	Q_ASSERT(!connections_of_node.values(item->getSourceId()).contains(item));
 	connections_of_node.insert(item->getSourceId(), item);
+	Q_ASSERT(!connections_of_node.values(item->getSinkId()).contains(item));
 	connections_of_node.insert(item->getSinkId(), item);
 }
 
 void SimulationScene::add(NodeItem *item) {
+	Q_ASSERT(!node_items.contains(item->getId()));
 	node_items[item->getId()] = item;
 	this->connect(item, SIGNAL(changed(QUndoCommand*)), SLOT(nodeChanged(QUndoCommand*)));
 	addItem(item);
@@ -345,7 +348,8 @@ void SimulationScene::remove(ConnectionItem *item) {
 }
 
 void SimulationScene::remove(NodeItem *item) {
-	Q_FOREACH(ConnectionItem *citem, connections_of_node.values(item->getId())) {
+	QList<ConnectionItem *> items = connections_of_node.values(item->getId());
+	Q_FOREACH(ConnectionItem *citem, items) {
 		remove(citem);
 	}
 	Q_EMIT(changed(new DeleteNode(this, item)));
@@ -407,13 +411,16 @@ void SimulationScene::paste() {
 }
 
 void SimulationScene::deleteSelectedItems() {
-	Q_FOREACH(QGraphicsItem *item, selectedItems()) {
+	QList<QGraphicsItem *> items = selectedItems();
+	Q_FOREACH(QGraphicsItem *item, items) {
 		if (node_items.values().contains((NodeItem*) item)) {
 			remove((NodeItem*) item);
 		}
 	}
 
-	Q_FOREACH(QGraphicsItem *item, selectedItems()) {
+	items = selectedItems();
+
+	Q_FOREACH(QGraphicsItem *item, items) {
 		if (connection_items.contains((ConnectionItem*) item)) {
 			remove((ConnectionItem*) item);
 		}

@@ -30,6 +30,13 @@ NodeItem::NodeItem(Node* node)
 	updatePorts();
 }
 
+NodeItem::~NodeItem() {
+	QList<PortItem*> items = in_ports.values() + out_ports.values();
+	Q_FOREACH(PortItem *i, items) {
+		delete i;
+	}
+}
+
 PortItem *NodeItem::getInPort(QString id) {
 	return in_ports[id.toStdString()];
 }
@@ -39,11 +46,14 @@ PortItem *NodeItem::getOutPort(QString id) {
 }
 
 void NodeItem::updatePorts() {
-	Q_FOREACH(PortItem *i, in_ports.values() + out_ports.values()) {
+	QList<PortItem*> items = in_ports.values() + out_ports.values();
+	Q_FOREACH(PortItem *i, items) {
 		delete i;
 	}
 	in_ports.clear();
 	out_ports.clear();
+
+	Q_ASSERT(childItems().size() == 0);
 
 	BOOST_FOREACH(port_pair item, *node->const_in_ports) {
 		QString pname = QString::fromStdString(item.first);
