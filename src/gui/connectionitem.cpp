@@ -20,16 +20,10 @@ ConnectionItem::ConnectionItem(SimulationScene *scene, QString source_id, QStrin
 }
 
 ConnectionItem::ConnectionItem(SimulationScene *scene, NodeConnection *con)
-	: QGraphicsItem(0, scene), scene(scene),
-	  source_id(QString::fromStdString(con->source->getId())),
-	  source_port_id(QString::fromStdString(con->source_port)),
-	  sink_id(QString::fromStdString(con->sink->getId())),
-	  sink_port_id(QString::fromStdString(con->sink_port)),
-	  connection(con), hovered(false) {
-
+	: QGraphicsItem(0, scene), scene(scene), hovered(false) {
 	setAcceptHoverEvents(true);
 	setFlag(QGraphicsItem::ItemIsSelectable, true);
-	updatePositions();
+	setConnection(con);
 }
 
 ConnectionItem::~ConnectionItem() {
