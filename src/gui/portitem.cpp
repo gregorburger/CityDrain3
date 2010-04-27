@@ -28,10 +28,14 @@ PortItem::~PortItem() {
 bool PortItem::isConnected() {
 	SimulationScene *parentScene = static_cast<SimulationScene*>(scene());
 	Q_FOREACH(ConnectionItem *item, parentScene->getConnectionsOf(node_item->getId())) {
-		if (dir == In && item->getSinkPortId() == portName) {
+		if (dir == In &&
+			item->getSinkId() == node_item->getId() &&
+			item->getSinkPortId() == portName) {
 			return true;
 		}
-		if (dir == Out && item->getSourcePortId() == portName) {
+		if (dir == Out &&
+			item->getSourceId() == node_item->getId() &&
+			item->getSourcePortId() == portName) {
 			return true;
 		}
 	}
