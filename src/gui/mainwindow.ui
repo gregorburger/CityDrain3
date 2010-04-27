@@ -31,7 +31,7 @@
        <set>QGraphicsView::CacheNone</set>
       </property>
       <property name="viewportUpdateMode">
-       <enum>QGraphicsView::BoundingRectViewportUpdate</enum>
+       <enum>QGraphicsView::FullViewportUpdate</enum>
       </property>
       <property name="rubberBandSelectionMode">
        <enum>Qt::IntersectsItemBoundingRect</enum>

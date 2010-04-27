@@ -255,7 +255,7 @@ void SimulationScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
 	current_mouse = event->scenePos();
 	if (connection_start) {
 		current_connection->setSink(event->scenePos());
-		//update();
+		update();
 	}
 	QGraphicsScene::mouseMoveEvent(event);
 }
@@ -278,9 +278,9 @@ void SimulationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 		current_connection->setConnection(con);
 		add(current_connection);
 		connection_start = 0;
-		//update();
 		Q_EMIT(changed(new AddConnection(this, current_connection)));
 		current_connection = 0;
+		update();
 		return;
 	}
 
