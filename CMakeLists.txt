@@ -10,18 +10,39 @@ if (${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
 	set(CMAKE_CXX_FLAGS "-g -Wall")
 endif()
 
-
-INCLUDE_DIRECTORIES(src/cd3core src/cd3core/qs src/python)
 find_package(Qt4 REQUIRED)
 
-find_package(Boost 1.38.0 COMPONENTS signals program_options thread python date_time filesystem REQUIRED)
-#set(Boost_USE_STATIC_LIBS ON)
+message(STATUS ${CMAKE_CXX_COMPILER_ID})
+set(QT_USE_QTXML true)
+set(QT_USE_QTGUI true)
+set(QT_USE_QTSVG true)
+add_definitions(-DQT_NO_KEYWORDS)
+INCLUDE(${QT_USE_FILE})
+set(LIBRARY_OUTPUT_PATH ${cd3_BINARY_DIR})
+set(EXECUTABLE_OUTPUT_PATH ${cd3_BINARY_DIR})
+
+
+find_package(PythonLibs)
+
+if (PYTHONLIBS_FOUND)
+	set(CD3_FRONTEND_LIBS cd3core pycd3) #CD3_FRONTEND_LIBS is use for app and cd3-gui
+	MESSAGE(STATUS "Python support enabled")
+	INCLUDE_DIRECTORIES(src/cd3core src/cd3core/qs src/python)
+	set(BOOST_COMPONENTS signals program_options thread python date_time filesystem)
+else()
+	MESSAGE(STATUS "Python support disabled")
+	add_definitions(-DPYTHON_DISABLED)
+	set(CD3_FRONTEND_LIBS cd3core)
+	INCLUDE_DIRECTORIES(src/cd3core src/cd3core/qs)
+	set(BOOST_COMPONENTS signals program_options thread date_time filesystem)
+endif()
+
+find_package(Boost 1.38.0 COMPONENTS ${BOOST_COMPONENTS} REQUIRED)
+set(Boost_USE_STATIC_LIBS ON)
 add_definitions(${Boost_LIB_DIAGNOSTIC_DEFINITIONS})
 set(Boost_USE_MULTITHREADED ON)
 include_directories(${Boost_INCLUDE_DIRS})
 link_directories(${Boost_LIBRARY_DIRS})
-
-find_package(PythonLibs REQUIRED)
 
 if (UNIX)
 	find_package(OpenMP REQUIRED)
@@ -37,20 +58,12 @@ endif()
 
 find_package(GTest QUIET)
 
-message(STATUS ${CMAKE_CXX_COMPILER_ID})
-set(QT_USE_QTXML true)
-set(QT_NOTUSE_QTGUI true)
-set(QT_NOTUSE_QTSVG true)
-add_definitions(-DQT_NO_KEYWORDS)
-INCLUDE(${QT_USE_FILE})
-set(LIBRARY_OUTPUT_PATH ${cd3_BINARY_DIR})
-set(EXECUTABLE_OUTPUT_PATH ${cd3_BINARY_DIR})
-
 add_subdirectory(src/cd3core)
 add_subdirectory(src/nodes)
 add_subdirectory(src/gui)
-#add_subdirectory(src/python-swig)
+if (PYTHONLIBS_FOUND)
 add_subdirectory(src/python)
+endif()
 add_subdirectory(src/app)
 #add_subdirectory(src/plugindoc)
 

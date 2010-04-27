@@ -15,7 +15,9 @@
 #include <simulation.h>
 #include <node.h>
 #include <nodeconnection.h>
+#ifndef PYTHON_DISABLED
 #include <module.h>
+#endif
 #include <nodeitem.h>
 #include <portitem.h>
 #include <connectionitem.h>
@@ -318,6 +320,7 @@ void SimulationScene::addPlugin(QString pname) {
 }
 
 void SimulationScene::addPythonModule(QString pname) {
+#ifndef PYTHON_DISABLED
 	QFileInfo module_file(pname);
 	PythonEnv::getInstance()->addPythonPath(module_file.dir().absolutePath().toStdString());
 	string module_name = module_file.baseName().toStdString();
@@ -325,6 +328,9 @@ void SimulationScene::addPythonModule(QString pname) {
 	python_modules << pname;
 	Q_EMIT(changed(0));	//can't definitly do undo here!
 	Q_EMIT(nodesRegistered());
+#else
+	QMessageBox::critical(0, "python disabled", "Python support is disabled for this build");
+#endif
 }
 
 void SimulationScene::add(ConnectionItem *item) {
