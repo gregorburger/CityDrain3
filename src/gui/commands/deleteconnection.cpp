@@ -35,6 +35,7 @@ void DeleteConnection::undo() {
 															  source_port,
 															  sink,
 															  sink_port);
+	scene->getModel()->addConnection(con);
 	ConnectionItem *item = new ConnectionItem(scene, con);
 	scene->add(item);
 }
