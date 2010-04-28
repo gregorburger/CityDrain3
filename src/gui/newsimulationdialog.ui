@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>373</width>
-    <height>289</height>
+    <height>293</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -37,7 +37,7 @@
       <enum>QDateTimeEdit::DaySection</enum>
      </property>
      <property name="displayFormat">
-      <string>d.M.yy h:mm:ss</string>
+      <string>d.M.yyyy h:mm:ss</string>
      </property>
      <property name="calendarPopup">
       <bool>true</bool>
@@ -67,7 +67,7 @@
       <enum>QDateTimeEdit::DaySection</enum>
      </property>
      <property name="displayFormat">
-      <string>d.M.yy h:mm:ss</string>
+      <string>d.M.yyyy h:mm:ss</string>
      </property>
      <property name="calendarPopup">
       <bool>true</bool>

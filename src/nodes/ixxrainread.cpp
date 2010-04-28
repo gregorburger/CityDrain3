@@ -32,10 +32,9 @@ IxxRainRead::~IxxRainRead() {
 bool IxxRainRead::init(ptime start, ptime end, int dt) {
 	(void) end;
 	(void) dt;
-	if (data->in.is_open()) {
-		Logger(Warning) << "closing open rain file in init";
-		data->in.close();
-	}
+	data->in.close();
+	data->in.clear();
+
 	data->in.open(rain_file.c_str());
 	if (!data->in.good()) {
 		Logger(Warning) << "it is not possible to read from the given rainfile";
@@ -76,6 +75,7 @@ bool IxxRainRead::init(ptime start, ptime end, int dt) {
 void IxxRainRead::deinit() {
 	data->rain_buf.clear();
 	data->in.close();
+	data->in.clear();
 }
 
 int IxxRainRead::f(ptime time, int dt) {
@@ -98,7 +98,6 @@ ixx_value IxxRainReadPrivate::parseLine() {
 	assert(!in.eof());
 	ptime date;
 	double value;
-	string line;
 	in >> date >> value;
 	return ixx_value(date, value);
 }

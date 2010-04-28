@@ -1,7 +1,8 @@
 #include "rainbuffer.h"
 #include <assert.h>
 
-RainBuffer::RainBuffer() : dt(0) {
+RainBuffer::RainBuffer() {
+	clear();
 }
 
 void RainBuffer::put(int dt, double value) {
@@ -15,6 +16,7 @@ int RainBuffer::available() const {
 }
 
 double RainBuffer::take(int dt) {
+	assert(dt > 0);
 	double rain = 0.0;
 	while (dt > 0) {
 		if (dt >= avail.front()) {
@@ -30,7 +32,7 @@ double RainBuffer::take(int dt) {
 		this->dt -= dt;
 		dt = 0;
 	}
-	assert(dt == 0);
+//	assert(dt == 0);
 	return rain;
 }
 
