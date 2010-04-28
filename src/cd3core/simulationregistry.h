@@ -17,7 +17,7 @@ public:
 	SimulationRegistry();
 	virtual ~SimulationRegistry();
 	void addSimulationFactory(const ISimulationFactory *factory);
-	void addNativePlugin(const std::string plugin_path);
+	void addNativePlugin(const std::string &plugin_path);
 	std::vector<std::string> getRegisteredNames() const;
 	bool contains(const std::string &name) const;
 	ISimulation *createSimulation(const std::string &name) const;

@@ -9,9 +9,8 @@
 using namespace boost;
 using namespace boost::signals;
 
-SimulationThread::SimulationThread() {
-	handler = new TimeStepHandler();
-	failed = false;
+SimulationThread::SimulationThread()
+	: handler(new TimeStepHandler()), simulation(0), failed(false) {
 }
 
 SimulationThread::~SimulationThread() {

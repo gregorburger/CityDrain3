@@ -18,7 +18,7 @@ namespace po = boost::program_options;
 using namespace boost::gregorian;
 
 struct PerStateHandler {
-	PerStateHandler(const std::string dir) {
+	PerStateHandler(const std::string &dir) {
 		state_dir = dir;
 	}
 	void operator()(ISimulation *s, ptime time) {

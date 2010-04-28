@@ -15,7 +15,7 @@ class CD3_PUBLIC FlowBuffer
 public:
 	FlowBuffer();
 	virtual ~FlowBuffer();
-	void put(const Flow f, int dt);
+	void put(const Flow &f, int dt);
 	Flow take(int dt);
 	int buffered() const;
 private:

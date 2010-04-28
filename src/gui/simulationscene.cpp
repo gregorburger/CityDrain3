@@ -111,8 +111,7 @@ void SimulationScene::unload() {
 	delete sim_reg;
 	delete node_reg;
 	delete model;
-	if (simulation)
-		delete simulation;
+	delete simulation;
 	sim_reg = 0;
 	node_reg = 0;
 	model = 0;
@@ -183,7 +182,7 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 		return QGraphicsScene::dropEvent(event);
 	}
 	event->accept();
-	QTreeWidget *treeWidget = (QTreeWidget*) event->source();
+	QTreeWidget *treeWidget = static_cast<QTreeWidget*>(event->source());
 	string klassName = treeWidget->selectedItems()[0]->text(0).toStdString();
 	QGraphicsScene::dragMoveEvent(event);
 
@@ -226,7 +225,7 @@ void SimulationScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event) {
 }
 
 void SimulationScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
-	connection_start = (PortItem *) itemAt(event->scenePos());
+	connection_start = static_cast<PortItem *>(itemAt(event->scenePos()));
 
 	if (connection_start &&
 		isOutPort(connection_start) &&
@@ -262,7 +261,7 @@ void SimulationScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
 }
 
 void SimulationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
-	PortItem *connection_end = (PortItem *) itemAt(event->scenePos());
+	PortItem *connection_end = static_cast<PortItem *>(itemAt(event->scenePos()));
 	views()[0]->setDragMode(QGraphicsView::RubberBandDrag);
 
 	if (connection_end && connection_start &&
@@ -285,8 +284,7 @@ void SimulationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 		return;
 	}
 
-	if (current_connection)
-		delete current_connection;
+	delete current_connection;
 	current_connection = 0;
 	connection_start = 0;
 	QGraphicsScene::mouseReleaseEvent(event);
@@ -294,7 +292,7 @@ void SimulationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 
 bool SimulationScene::isInPort(QGraphicsItem *item) const {
 	Q_FOREACH(NodeItem *node, node_items) {
-		if (node->in_ports.values().contains((PortItem*) item)) {
+		if (node->in_ports.values().contains(static_cast<PortItem*>(item))) {
 			return true;
 		}
 	}
@@ -303,7 +301,7 @@ bool SimulationScene::isInPort(QGraphicsItem *item) const {
 
 bool SimulationScene::isOutPort(QGraphicsItem *item) const {
 	Q_FOREACH(NodeItem *node, node_items) {
-		if (node->out_ports.values().contains((PortItem*) item)) {
+		if (node->out_ports.values().contains(static_cast<PortItem*>(item))) {
 			return true;
 		}
 	}
@@ -375,7 +373,7 @@ void SimulationScene::copy() {
 	int count = 0;
 
 	Q_FOREACH(QGraphicsItem *item, selectedItems()) {
-		NodeItem *node_item = (NodeItem *) item;
+		NodeItem *node_item = static_cast<NodeItem *>(item);
 		if (!node_items.values().contains(node_item))
 			continue;
 		x += node_item->pos().x();
@@ -387,7 +385,7 @@ void SimulationScene::copy() {
 	y /= count;
 
 	Q_FOREACH(QGraphicsItem *item, selectedItems()) {
-		NodeItem *node_item = (NodeItem *) item;
+		NodeItem *node_item = static_cast<NodeItem *>(item);
 		if (!node_items.values().contains(node_item))
 			continue;
 		CopyState cs;
@@ -417,19 +415,15 @@ void SimulationScene::paste() {
 }
 
 void SimulationScene::deleteSelectedItems() {
-	QList<QGraphicsItem *> items = selectedItems();
-	Q_FOREACH(QGraphicsItem *item, items) {
-		if (node_items.values().contains((NodeItem*) item)) {
-			remove((NodeItem*) item);
-		}
+	QList<NodeItem *> node_items = filterNodes(selectedItems());
+	Q_FOREACH(NodeItem *item, node_items) {
+		remove(item);
 	}
 
-	items = selectedItems();
+	QList<ConnectionItem *> con_items = filterConnections(selectedItems());
 
-	Q_FOREACH(QGraphicsItem *item, items) {
-		if (connection_items.contains((ConnectionItem*) item)) {
-			remove((ConnectionItem*) item);
-		}
+	Q_FOREACH(ConnectionItem *item, con_items) {
+		remove(item);
 	}
 }
 
@@ -478,7 +472,7 @@ void SimulationScene::updateConnections(NodeItem *item) {
 QList<NodeItem *> SimulationScene::filterNodes(QList<QGraphicsItem*> items) {
 	QList<NodeItem *> filtered;
 	Q_FOREACH(QGraphicsItem *item, items) {
-		NodeItem *nitem = (NodeItem *) item;
+		NodeItem *nitem = static_cast<NodeItem *>(item);
 		if (node_items.values().contains(nitem))
 			filtered << nitem;
 	}
@@ -488,7 +482,7 @@ QList<NodeItem *> SimulationScene::filterNodes(QList<QGraphicsItem*> items) {
 QList<ConnectionItem *> SimulationScene::filterConnections(QList<QGraphicsItem*> items) {
 	QList<ConnectionItem *> filtered;
 	Q_FOREACH(QGraphicsItem *item, items) {
-		ConnectionItem *citem = (ConnectionItem *) item;
+		ConnectionItem *citem = static_cast<ConnectionItem *>(item);
 		if (connection_items.contains(citem))
 			filtered << citem;
 	}

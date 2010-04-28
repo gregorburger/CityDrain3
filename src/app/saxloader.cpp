@@ -14,7 +14,6 @@ using namespace std;
 
 #include <noderegistry.h>
 #include <simulationregistry.h>
-#include <typeregistry.h>
 #include <imodel.h>
 #include <cd3assert.h>
 #include "node.h"
@@ -28,7 +27,6 @@ using namespace std;
 struct SaxLoaderPriv {
 	NodeRegistry *node_registry;
 	SimulationRegistry *sim_registry;
-	TypeRegistry type_registry;
 	Flow *f;
 	std::string param_name;
 	std::map<std::string, Flow::CalculationUnit> flow_definition;
@@ -209,7 +207,6 @@ ISimulation *SaxLoader::load(QFile &file) {
 bool SaxLoader::endElement(const QString &/*ns*/,
 						   const QString &lname,
 						   const QString &/*qname*/) {
-	bool consumed;
 	if (lname == "connection") {
 		cd3assert(!source_id.empty(), "source node not set");
 		cd3assert(!source_port.empty(), "source port not set");
@@ -228,16 +225,16 @@ bool SaxLoader::endElement(const QString &/*ns*/,
 					simulation->createConnection(source, source_port,
 													 sink, sink_port));
 		}
-		consumed = true;
+		return true;
 	}
 	if (lname == "nodelist") {
 		model->initNodes(simulation->getSimulationParameters());
-		consumed = true;
+		return true;
 	}
 	if (lname == "flowdefinition") {
 		Flow::undefine();
 		Flow::define(pd->flow_definition);
-		consumed = true;
+		return true;
 	}
 	return true;
 }

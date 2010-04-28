@@ -24,7 +24,6 @@
 
 #include <noderegistry.h>
 #include <nodefactory.h>
-#include <typeregistry.h>
 #include <simulationregistry.h>
 #include <simulationfactory.h>
 
@@ -51,10 +50,6 @@ extern "C" {
 		registry->addNodeFactory(new NodeFactory<WWTP>());
 		registry->addNodeFactory(new NodeFactory<SimplePump>());
 		registry->addNodeFactory(new NodeFactory<Impuls>());
-	}
-
-	void CD3_PUBLIC registerTypes(TypeRegistry *registry) {
-		(void) registry;
 	}
 
 	void CD3_PUBLIC registerSimulations(SimulationRegistry *registry) {

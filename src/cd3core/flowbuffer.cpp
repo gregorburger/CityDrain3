@@ -14,7 +14,7 @@ FlowBuffer::FlowBuffer() {
 FlowBuffer::~FlowBuffer() {
 }
 
-void FlowBuffer::put(const Flow f, int dt) {
+void FlowBuffer::put(const Flow &f, int dt) {
 	cd3assert(dt > 0, "cannot buffer negative dt flow");
 	//cd3assert(f, "cannot buffer null flow");
 	buffer.push(buf_item(f, dt));

@@ -27,6 +27,7 @@ SimulationSaver::SimulationSaver(SimulationScene *scene,
 }
 
 SimulationSaver::~SimulationSaver() {
+	delete writer;
 	delete out;
 }
 
@@ -102,7 +103,7 @@ void SimulationSaver::saveModel(IModel *model) {
 	writer->writeStartElement("nodelist");
 
 	const node_set_type *nset = model->getNodes();
-	for (node_set_type::const_iterator it = nset->begin(); it != nset->end(); it++) {
+	for (node_set_type::const_iterator it = nset->begin(); it != nset->end(); ++it) {
 		const Node *n = *it;
 		writer->writeStartElement("node");
 		writer->writeAttribute("id", tos(n->getId()));
@@ -115,7 +116,7 @@ void SimulationSaver::saveModel(IModel *model) {
 	writer->writeStartElement("connectionlist");
 	const con_set_type *cset = model->getConnections();
 	int con_count = 0;
-	for (con_set_type::const_iterator it = cset->begin(); it != cset->end(); it++) {
+	for (con_set_type::const_iterator it = cset->begin(); it != cset->end(); ++it) {
 		const NodeConnection *con = *it;
 		writer->writeStartElement("connection");
 		writer->writeAttribute("id", tos(con_count++));

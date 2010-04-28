@@ -45,7 +45,7 @@ Flow FlowFuns::mix(const std::vector<Flow> &inputs) {
 	return f;
 }
 
-std::pair<Flow, Flow> FlowFuns::split(const Flow f, float ratio) {
+std::pair<Flow, Flow> FlowFuns::split(const Flow &f, float ratio) {
 	cd3assert(ratio <= 1.0 && ratio >= 0.0, "ratio must me between 0 and 1");
 	Flow f1 = f;
 	Flow f2 = f;
@@ -57,7 +57,7 @@ std::pair<Flow, Flow> FlowFuns::split(const Flow f, float ratio) {
 	return std::pair<Flow, Flow>(f1, f2);
 }
 
-Flow FlowFuns::catchement_lossmodel(Flow in,
+Flow FlowFuns::catchement_lossmodel(const Flow &in,
 						  Flow *basin,
 						  double init_loss,
 						  double perma_loss,
@@ -83,7 +83,7 @@ Flow FlowFuns::catchement_lossmodel(Flow in,
 	return out;
 }
 
-Flow FlowFuns::catchment_flowmodel(Flow in,
+Flow FlowFuns::catchment_flowmodel(const Flow &in,
 								   int area,
 								   int dt,
 								   const std::vector<double> &cvalues) {
@@ -101,7 +101,7 @@ Flow FlowFuns::catchment_flowmodel(Flow in,
 	return out;
 }
 
-Flow FlowFuns::route_sewer(const Flow inflow,
+Flow FlowFuns::route_sewer(const Flow &inflow,
 						   Flow *volume,
 						   double C_x,
 						   double C_y,
@@ -127,7 +127,7 @@ Flow FlowFuns::route_sewer(const Flow inflow,
 	return out;
 }
 
-Flow FlowFuns::route_catchment(const Flow in,
+Flow FlowFuns::route_catchment(const Flow &in,
 							   Flow rain,
 							   Flow *_oldvolume,
 							   int N,

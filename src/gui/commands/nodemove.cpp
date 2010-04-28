@@ -31,7 +31,7 @@ void NodeMove::redo() {
 }
 
 bool NodeMove::mergeWith(const QUndoCommand *other) {
-	const NodeMove *other_move = (const NodeMove*) other;
+	const NodeMove *other_move = static_cast<const NodeMove*>(other);
 	if (other->id() == id() && other_move->node_id == node_id) {
 		this->_new = other_move->_new;
 		return true;

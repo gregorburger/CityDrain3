@@ -99,7 +99,7 @@ void ModelSerializer::deserialize(ptime time) {
 }
 
 Deserializer::Deserializer(IModel *m)
- :	model(m) {
+ :	model(m), current(0) {
 	mapper = IStateSerializer::standard;
 	in_state_node = false;
 	in_inport = false;

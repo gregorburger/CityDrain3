@@ -123,7 +123,7 @@ bool NodeParametersDialog::updateNodeParameters() {
 		}
 		if (param->type == cd3::TypeInfo(typeid(Flow))) {
 			vector<string> names = Flow::getNames();
-			QLineEdit *widget = (QLineEdit *) widgets[p];
+			QLineEdit *widget = static_cast<QLineEdit *>(widgets[p]);
 			QStringList values = widget->text().split(",");
 			if (values.size() != names.size()) {
 				qDebug() << "input format wrong";
@@ -146,7 +146,7 @@ bool NodeParametersDialog::updateNodeParameters() {
 		}
 		if (param->type == cd3::TypeInfo(typeid(vector<double>))) {
 			vector<double> v;
-			QLineEdit *line = (QLineEdit *) widgets[p];
+			QLineEdit *line = static_cast<QLineEdit *>(widgets[p]);
 			QStringList values = line->text().split(",", QString::SkipEmptyParts);
 			Q_FOREACH(QString value, values) {
 				bool ok;

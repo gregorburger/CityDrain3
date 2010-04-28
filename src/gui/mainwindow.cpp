@@ -57,8 +57,11 @@ MainWindow::MainWindow(QWidget *parent) :
 }
 
 MainWindow::~MainWindow() {
-	if (scene)
-		delete scene;
+	//delete log_updater;
+	delete state_machine;
+	delete tc_widget;
+	delete current_thread;
+	delete scene;
 	delete ui;
 	Log::shutDown();
 }
@@ -515,7 +518,7 @@ void MainWindow::on_actionRedo_activated() {
 
 void MainWindow::on_actionRename_activated() {
 	Q_FOREACH(NodeItem *item, scene->filterNodes(scene->selectedItems())) {
-		NodeItem *nitem = (NodeItem *) item;
+		NodeItem *nitem = static_cast<NodeItem *>(item);
 		RenameNodeDialog rn(nitem, scene->getNodeNames(), this);
 		if (rn.exec()) {
 			scene->renameNodeItem(nitem->getId(), rn.newId());

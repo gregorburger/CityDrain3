@@ -151,7 +151,7 @@ QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant &value) 
 		old_pos = pos();
 	}
 	if (change == ItemPositionHasChanged) {
-		SimulationScene *parentScene = (SimulationScene*) scene();
+		SimulationScene *parentScene = static_cast<SimulationScene*>(scene());
 		if (!parentScene)
 			return QGraphicsItem::itemChange(change, value);
 		parentScene->updateConnections(this);
@@ -174,7 +174,7 @@ bool NodeItem::changeParameters(bool _new) {
 	if (!node->getParameters().size())
 		return true;
 
-	SimulationScene *parentscene = (SimulationScene*) scene();
+	SimulationScene *parentscene = static_cast<SimulationScene*>(scene());
 	QMap<string, PortItem*> in_before = in_ports;
 	QMap<string, PortItem*> out_before = out_ports;
 

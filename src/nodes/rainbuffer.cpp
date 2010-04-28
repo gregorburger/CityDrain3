@@ -1,7 +1,7 @@
 #include "rainbuffer.h"
 #include <assert.h>
 
-RainBuffer::RainBuffer() {
+RainBuffer::RainBuffer() : dt(0) {
 }
 
 void RainBuffer::put(int dt, double value) {

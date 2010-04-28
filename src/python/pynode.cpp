@@ -13,7 +13,7 @@
 using namespace boost;
 using namespace boost::assign;
 
-NodeWrapper::NodeWrapper() {
+NodeWrapper::NodeWrapper() : class_name(0) {
 }
 
 NodeWrapper::~NodeWrapper() {
