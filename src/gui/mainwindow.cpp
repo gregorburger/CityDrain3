@@ -57,8 +57,7 @@ MainWindow::MainWindow(QWidget *parent) :
 }
 
 MainWindow::~MainWindow() {
-	if (scene)
-		delete scene;
+	delete scene;
 	delete ui;
 	Log::shutDown();
 }
@@ -91,6 +90,17 @@ void MainWindow::setupStateMachine() {
 	unloaded->assignProperty(ui->actionRedo, "enabled", false);
 	unloaded->assignProperty(ui->actionRename, "enabled", false);
 	unloaded->assignProperty(ui->graphicsView, "enabled", false);
+
+	unloaded->assignProperty(ui->actionFind_node, "enabled", false);
+	unloaded->assignProperty(ui->actionZoom_in, "enabled", false);
+	unloaded->assignProperty(ui->actionZoom_out, "enabled", false);
+	unloaded->assignProperty(ui->actionZoom_reset, "enabled", false);
+	unloaded->assignProperty(ui->actionSelect_all, "enabled", false);
+	unloaded->assignProperty(ui->actionAlign_vertically_center, "enabled", false);
+	unloaded->assignProperty(ui->actionHorizontal_center_align, "enabled", false);
+	unloaded->assignProperty(ui->actionIncrease_distance, "enabled", false);
+	unloaded->assignProperty(ui->actionDecrease_distance, "enabled", false);
+
 	//run buttons
 	unloaded->assignProperty(ui->runButton, "enabled", false);
 	unloaded->assignProperty(ui->stopButton, "enabled", false);
@@ -115,6 +125,15 @@ void MainWindow::setupStateMachine() {
 	loaded->assignProperty(ui->actionRename, "enabled", true);
 	/*loaded->assignProperty(ui->actionUndo, "enabled", true);
 	loaded->assignProperty(ui->actionRedo, "enabled", true);*/
+	loaded->assignProperty(ui->actionFind_node, "enabled", true);
+	loaded->assignProperty(ui->actionZoom_in, "enabled", true);
+	loaded->assignProperty(ui->actionZoom_out, "enabled", true);
+	loaded->assignProperty(ui->actionZoom_reset, "enabled", true);
+	loaded->assignProperty(ui->actionSelect_all, "enabled", true);
+	loaded->assignProperty(ui->actionAlign_vertically_center, "enabled", true);
+	loaded->assignProperty(ui->actionHorizontal_center_align, "enabled", true);
+	loaded->assignProperty(ui->actionIncrease_distance, "enabled", true);
+	loaded->assignProperty(ui->actionDecrease_distance, "enabled", true);
 	//run buttons
 	loaded->assignProperty(ui->runButton, "enabled", true);
 	loaded->assignProperty(ui->stopButton, "enabled", true);
