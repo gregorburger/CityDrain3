@@ -372,22 +372,16 @@ void SimulationScene::copy() {
 	float y = 0.0;
 	int count = 0;
 
-	Q_FOREACH(QGraphicsItem *item, selectedItems()) {
-		NodeItem *node_item = static_cast<NodeItem *>(item);
-		if (!node_items.values().contains(node_item))
-			continue;
-		x += node_item->pos().x();
-		y += node_item->pos().y();
+	Q_FOREACH(NodeItem *item, filterNodes(selectedItems())) {
+		x += item->pos().x();
+		y += item->pos().y();
 		count++;
 	}
 
 	x /= count;
 	y /= count;
 
-	Q_FOREACH(QGraphicsItem *item, selectedItems()) {
-		NodeItem *node_item = static_cast<NodeItem *>(item);
-		if (!node_items.values().contains(node_item))
-			continue;
+	Q_FOREACH(NodeItem *node_item, filterNodes(selectedItems())) {
 		CopyState cs;
 		cs._class = node_item->getClassName().toStdString();
 		cs.parameters = node_item->saveParameters();
