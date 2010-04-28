@@ -12,6 +12,7 @@
 #include "guilogsink.h"
 #include "ui_timecontrols.h"
 #include "renamenodedialog.h"
+#include "ui_aboutdialog.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -582,4 +583,11 @@ void MainWindow::on_actionSelect_all_activated() {
 	Q_FOREACH(QGraphicsItem *item, scene->items()) {
 		item->setSelected(true);
 	}
+}
+
+void MainWindow::on_action_About_activated() {
+	QDialog dialog(this);
+	Ui::AboutDialog d;
+	d.setupUi(&dialog);
+	dialog.exec();
 }

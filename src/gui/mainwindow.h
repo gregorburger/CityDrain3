@@ -82,6 +82,9 @@ public Q_SLOTS:
 	void on_actionHorizontal_center_align_activated();
 	void on_actionAlign_vertically_center_activated();
 
+	//help stuff
+	void on_action_About_activated();
+
 	void start_stop_dateTimeChanged(const QDateTime &date);
 	void dt_valueChanged(int value);
 	void applyTime();
