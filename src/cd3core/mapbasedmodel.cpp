@@ -142,6 +142,8 @@ void MapBasedModel::removeConnection(NodeConnection *con) {
 	}
 }
 
+typedef std::pair<std::string, Flow*> port;
+
 node_set_type MapBasedModel::initNodes(const SimulationParameters &sp) {
 	node_set_type::iterator it = all_nodes.begin();
 	node_set_type problem_nodes;
@@ -149,6 +151,11 @@ node_set_type MapBasedModel::initNodes(const SimulationParameters &sp) {
 		Node *n = *it;
 		if (!n->init(sp.start, sp.stop, sp.dt)) {
 			problem_nodes.insert(n);
+		}
+		//TODO remove workaround:
+		//when previously connected nodes have leftovers in their inports
+		BOOST_FOREACH(port in, *n->const_in_ports) {
+			in.second->clear();
 		}
 		it++;
 	}
