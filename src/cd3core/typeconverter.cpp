@@ -10,17 +10,15 @@
 #include <node.h>
 #include <flow.h>
 
-using namespace std;
 using namespace cd3;
-using namespace boost;
 
 template<class T>
 struct PrimTC : TC {
-	PrimTC(const string &type_name) : type_name(type_name) {}
+	PrimTC(const std::string &type_name) : type_name(type_name) {}
 	virtual ~PrimTC(){
 	}
 
-	string getTypeName() const {
+	std::string getTypeName() const {
 		return type_name;
 	}
 
@@ -28,21 +26,21 @@ struct PrimTC : TC {
 		return TypeInfo(typeid(T));
 	}
 
-	string toString(const void *value) const {
+	std::string toString(const void *value) const {
 		T *tvalue = (T *) value;
-		return lexical_cast<string>(*tvalue);
+		return lexical_cast<std::string>(*tvalue);
 	}
 
-	string toStringExact(const void *value) const {
+	std::string toStringExact(const void *value) const {
 		return toString(value);
 	}
 
-	void fromString(const string &s, void *dest) const {
+	void fromString(const std::string &s, void *dest) const {
 		T *ivalue = (T *) dest;
 		*ivalue = lexical_cast<T>(s);
 	}
 
-	void fromStringExact(const string &s, void *dest) const {
+	void fromStringExact(const std::string &s, void *dest) const {
 		fromString(s, dest);
 	}
 
@@ -62,24 +60,65 @@ struct PrimTC : TC {
 		n->setParameter<T>(pname, v);
 	}
 
-	string type_name;
+	std::string type_name;
 };
 
-template<>
-string PrimTC<double>::toStringExact(const void *value) const {
-	int exp;
-	double fract = frexp(*((double *) value), &exp);
-	return lexical_cast<string>(fract) + " " + lexical_cast<string>(exp);
-}
+template <>
+struct PrimTC <double> : TC {
+	PrimTC(const std::string &type_name) : type_name(type_name) {}
+	virtual ~PrimTC(){
+	}
 
-template<>
-void PrimTC<double>::fromStringExact(const string &s, void *dest) const {
-	istringstream ss(s);
-	double fract;
-	int exp;
-	ss >> fract >> exp;
-	*((double*) dest) = ldexp(fract, exp);
-}
+	std::string getTypeName() const {
+		return type_name;
+	}
+
+	TypeInfo getTypeInfo() const {
+		return TypeInfo(typeid(double));
+	}
+
+	std::string toString(const void *value) const {
+		const double *tvalue = static_cast<const double*>(value);
+		return lexical_cast<std::string>(*tvalue);
+	}
+
+	std::string toStringExact(const void *value) const {
+		int exp;
+		double fract = frexp(*((double *) value), &exp);
+		return lexical_cast<std::string>(fract) + " " + lexical_cast<std::string>(exp);
+	}
+
+	void fromString(const std::string &s, void *dest) const {
+		double *ivalue = static_cast<double*>(dest);
+		*ivalue = lexical_cast<double>(s);
+	}
+
+	void fromStringExact(const std::string &s, void *dest) const {
+		std::istringstream ss(s);
+		double fract;
+		int exp;
+		ss >> fract >> exp;
+		*((double*) dest) = ldexp(fract, exp);
+	}
+
+	void setParameter(Node *n,
+					  const std::string &pname,
+					  const std::string &pvalue) const {
+		double v;
+		fromString(pvalue, &v);
+		n->setParameter<double>(pname, v);
+	}
+
+	void setParameterExact(Node *n,
+						   const std::string &pname,
+						   const std::string &pvalue) const {
+		double v;
+		fromStringExact(pvalue, &v);
+		n->setParameter<double>(pname, v);
+	}
+
+	std::string type_name;
+};
 
 struct FlowTC : public TypeConverter {
 	~FlowTC() {}
@@ -92,9 +131,9 @@ struct FlowTC : public TypeConverter {
 
 	std::string toString(const void *value) const {
 		Flow *f = (Flow *) value;
-		string result;
-		BOOST_FOREACH(string name, Flow::getNames()) {
-			result += ";" + name + ";" + lexical_cast<string>(f->getValue(name));
+		std::string result;
+		BOOST_FOREACH(std::string name, Flow::getNames()) {
+			result += ";" + name + ";" + lexical_cast<std::string>(f->getValue(name));
 		}
 		return result.size() > 0 ? result.substr(1) : "";
 	}
@@ -102,8 +141,8 @@ struct FlowTC : public TypeConverter {
 	std::string toStringExact(const void *value) const {
 		PrimTC<double> double_con("");
 		Flow *f = (Flow *) value;
-		string result;
-		BOOST_FOREACH(string name, Flow::getNames()) {
+		std::string result;
+		BOOST_FOREACH(std::string name, Flow::getNames()) {
 			double dvalue = f->getValue(name);
 			result += ";" + name + ";" + double_con.toStringExact(&dvalue);
 		}
@@ -112,11 +151,11 @@ struct FlowTC : public TypeConverter {
 
 	void fromString(const std::string &s, void *dest) const {
 		Flow *f = (Flow *) dest;
-		vector<string> items;
+		std::vector<std::string> items;
 		split(items, s, algorithm::is_any_of(";"));
-		cd3assert(items.size() == Flow::size() * 2, "wrong string format of type Flow");
+		cd3assert(items.size() == Flow::size() * 2, "wrong std::string format of type Flow");
 		for (size_t i = 0; i < Flow::size()*2; i += 2) {
-			string name = items[i];
+			std::string name = items[i];
 			double value = lexical_cast<double>(items[i+1]);
 			f->setValue(name, value);
 		}
@@ -125,11 +164,11 @@ struct FlowTC : public TypeConverter {
 	void fromStringExact(const std::string &s, void *dest) const {
 		PrimTC<double> double_con("");
 		Flow *f = (Flow *) dest;
-		vector<string> items;
+		std::vector<std::string> items;
 		split(items, s, algorithm::is_any_of(";"));
-		cd3assert(items.size() == Flow::size() / 2, "wrong string format of type Flow");
+		cd3assert(items.size() == Flow::size() / 2, "wrong std::string format of type Flow");
 		for (size_t i = 0; i < Flow::size(); i++) {
-			string name = items[i*2];
+			std::string name = items[i*2];
 			double value;
 			double_con.fromStringExact(items[i*2+1], &value);
 			f->setValue(name, value);
@@ -155,7 +194,7 @@ struct FlowTC : public TypeConverter {
 
 template <class T>
 struct ArrayTC : public TypeConverter {
-	ArrayTC(string type_name) : type_name(type_name) {
+	ArrayTC(std::string type_name) : type_name(type_name) {
 	}
 
 	virtual ~ArrayTC() {
@@ -166,13 +205,13 @@ struct ArrayTC : public TypeConverter {
 	}
 
 	cd3::TypeInfo getTypeInfo() const {
-		return TypeInfo(typeid(vector<T>));
+		return TypeInfo(typeid(std::vector<T>));
 	}
 
 	std::string toString(const void *values) const {
 		TypeConverter *sub_con = TypeConverter::get(TypeInfo(typeid(T)));
-		string result;
-		BOOST_FOREACH(T value, (*(vector<T> *) values)) {
+		std::string result;
+		BOOST_FOREACH(T value, (*(std::vector<T> *) values)) {
 			result += ";" + sub_con->toString(&value);
 		}
 		return result.size() > 0 ? result.substr(1) : "";
@@ -180,8 +219,8 @@ struct ArrayTC : public TypeConverter {
 
 	std::string toStringExact(const void *values) const {
 		TypeConverter *sub_con = TypeConverter::get(TypeInfo(typeid(T)));
-		string result;
-		BOOST_FOREACH(T value, (*(vector<T> *) values)) {
+		std::string result;
+		BOOST_FOREACH(T value, (*(std::vector<T> *) values)) {
 			result += ";" + sub_con->toString(&value);
 		}
 		return result.size() > 0 ? result.substr(1) : "";
@@ -189,11 +228,11 @@ struct ArrayTC : public TypeConverter {
 
 	void fromString(const std::string &s, void *dest) const {
 		TypeConverter *sub_con = TypeConverter::get(TypeInfo(typeid(T)));
-		vector<T> *values = (vector<T> *) dest;
-		vector<string> items;
+		std::vector<T> *values = (std::vector<T> *) dest;
+		std::vector<std::string> items;
 		split(items, s, algorithm::is_any_of(";"));
 		values->clear();
-		BOOST_FOREACH(string item, items) {
+		BOOST_FOREACH(std::string item, items) {
 			T value;
 			try {
 				sub_con->fromString(item, &value);
@@ -205,11 +244,11 @@ struct ArrayTC : public TypeConverter {
 
 	void fromStringExact(const std::string &s, void *dest) const {
 		TypeConverter *sub_con = TypeConverter::get(TypeInfo(typeid(T)));
-		vector<T> *values = (vector<T> *) dest;
-		vector<string> items;
+		std::vector<T> *values = (std::vector<T> *) dest;
+		std::vector<std::string> items;
 		split(items, s, algorithm::is_any_of(";"));
 		values->clear();
-		BOOST_FOREACH(string item, items) {
+		BOOST_FOREACH(std::string item, items) {
 			T value;
 			try {
 				sub_con->fromString(item, &value);
@@ -222,7 +261,7 @@ struct ArrayTC : public TypeConverter {
 	void setParameter(Node *n,
 					  const std::string &pname,
 					  const std::string &pvalue) const {
-		vector<T> v;
+		std::vector<T> v;
 		fromString(pvalue, &v);
 		n->setParameter(pname, v);
 	}
@@ -230,15 +269,50 @@ struct ArrayTC : public TypeConverter {
 	void setParameterExact(Node *n,
 						   const std::string &pname,
 						   const std::string &pvalue) const {
-		vector<T> v;
+		std::vector<T> v;
 		fromStringExact(pvalue, &v);
 		n->setParameter(pname, v);
 	}
-	string type_name;
+	std::string type_name;
 };
 
 #define NEW_PRIMTC(type) (TypeConverter *) new PrimTC<type>(#type)
 #define NEW_ARRAYTC(type) (TypeConverter *) new ArrayTC<type>(#type)
+
+std::string TypeConverter::toStringExact(const void *value) const {
+	return toString(value);
+}
+
+void TypeConverter::fromStringExact(const std::string &s, void *dest) const {
+	return fromString(s, dest);
+}
+
+TypeConverter *TypeConverter::get(const cd3::TypeInfo &type) {
+	static bool once = true;
+	static std::map<TypeInfo, TypeConverter *> cmap;
+	if (once) {
+		once = false;
+		BOOST_FOREACH(TypeConverter *c, converters) {
+			cmap[c->getTypeInfo()] = c;
+		}
+	}
+	return cmap[type];
+}
+
+TypeConverter *TypeConverter::get(const std::string &name) {
+	static bool once = true;
+	static std::map<std::string, TypeConverter *> cmap;
+	if (once) {
+		once = false;
+		BOOST_FOREACH(TypeConverter *c, converters) {
+			cmap[c->getTypeName()] = c;
+		}
+
+	}
+	return cmap[name];
+}
+
+using namespace std;
 
 list<TypeConverter *> TypeConverter::converters = assign::list_of
 										  (NEW_PRIMTC(int))
@@ -251,37 +325,3 @@ list<TypeConverter *> TypeConverter::converters = assign::list_of
 										  (NEW_ARRAYTC(int))
 										  (NEW_ARRAYTC(string))
 										  ;
-
-string TypeConverter::toStringExact(const void *value) const {
-	return toString(value);
-}
-
-void TypeConverter::fromStringExact(const std::string &s, void *dest) const {
-	return fromString(s, dest);
-}
-
-TypeConverter *TypeConverter::get(const cd3::TypeInfo &type) {
-	static bool once = true;
-	static map<TypeInfo, TypeConverter *> cmap;
-	if (once) {
-		once = false;
-		BOOST_FOREACH(TypeConverter *c, converters) {
-			cmap[c->getTypeInfo()] = c;
-		}
-	}
-	return cmap[type];
-}
-
-TypeConverter *TypeConverter::get(const std::string &name) {
-	static bool once = true;
-	static map<string, TypeConverter *> cmap;
-	if (once) {
-		once = false;
-		BOOST_FOREACH(TypeConverter *c, converters) {
-			cmap[c->getTypeName()] = c;
-		}
-
-	}
-	return cmap[name];
-}
-
