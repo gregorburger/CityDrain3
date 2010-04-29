@@ -1,13 +1,13 @@
 #ifndef DESERIALIZIER_H
 #define DESERIALIZIER_H
 
+
 #include <QXmlDefaultHandler>
-#include <boost/shared_ptr.hpp>
-#include <boost/date_time.hpp>
-using namespace boost;
-using namespace boost::posix_time;
 #include <map>
 #include <cd3globals.h>
+#include <boost/shared_ptr.hpp>
+#include <boost/date_time.hpp>
+using namespace boost::posix_time;
 
 class IModel;
 

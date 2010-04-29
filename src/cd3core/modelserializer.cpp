@@ -4,7 +4,6 @@
 #include "node.h"
 #include <imodel.h>
 #include <fstream>
-#include <QDebug>
 
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
@@ -86,7 +85,7 @@ void ModelSerializer::serializeNode(std::ostream &os, std::string &node_name, No
 }
 
 void ModelSerializer::deserialize(ptime time) {
-	string path = pathForTimeStep(time);
+	std::string path = pathForTimeStep(time);
 	cd3assert(boost::filesystem::exists(path), "no such state file");
 	Deserializer deser(model);
 	QXmlSimpleReader reader;
@@ -142,7 +141,7 @@ bool Deserializer::startElement(const QString & namespaceURI,
 		in_outport = true;
 		return true;
 	}
-	qDebug() << "unknown node " << qName;
+	Logger(Error) << "unknown node " << qName;
 	return false;
 }
 
@@ -192,7 +191,7 @@ bool Deserializer::characters(const QString &ch) {
 }
 
 bool Deserializer::error(const QXmlParseException &exception) {
-	qWarning() << "Error on line" << exception.lineNumber()
+	Logger(Warning) << "Error on line" << exception.lineNumber()
 				<< ", column" << exception.columnNumber() << ":"
 				<< exception.message();
 
@@ -200,7 +199,7 @@ bool Deserializer::error(const QXmlParseException &exception) {
 }
 
 bool Deserializer::fatalError(const QXmlParseException &exception) {
-	qWarning() << "Fatal error on line" << exception.lineNumber()
+	Logger(Error) << "Fatal error on line" << exception.lineNumber()
 				<< ", column" << exception.columnNumber() << ":"
 				<< exception.message();
 
