@@ -44,9 +44,14 @@ set(Boost_USE_MULTITHREADED ON)
 include_directories(${Boost_INCLUDE_DIRS})
 link_directories(${Boost_LIBRARY_DIRS})
 
-if (UNIX)
-	find_package(OpenMP REQUIRED)
+find_package(OpenMP)
+
+if (OPENMP_FOUND)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+	MESSAGE(STATUS "OpenMP is enabled")
+else()
+	add_definitions(-DOPENMP_DISABLED)
+	MESSAGE(STATUS "OpenMP is disabled. Consider using a compiler that supports OpenMP")
 endif()
 
 if (CMAKE_BUILD_TYPE STREQUAL Debug)

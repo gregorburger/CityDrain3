@@ -3,7 +3,9 @@
 #include "mixer.h"
 #include "defaultsimulation.h"
 #include "vardtsimulation.h"
+#ifndef OPENMP_DISABLED
 #include "parallelsimulation.h"
+#endif
 #include "pipelinedsimulation.h"
 #include "orderedpipesimulation.h"
 #include "sewer.h"
@@ -56,7 +58,9 @@ extern "C" {
 		registry->addSimulationFactory(new SimulationFactory<DefaultSimulation>());
 		//registry->addSimulationFactory(new SimulationFactory<VarDTSimulation>());
 		registry->addSimulationFactory(new SimulationFactory<ParallelSimulation>());
+#ifndef OPENMP_DISABLED
 		registry->addSimulationFactory(new SimulationFactory<PipelinedSimulation>());
+#endif
 		registry->addSimulationFactory(new SimulationFactory<OrderedPipeSimulation>());
 	}
 }
