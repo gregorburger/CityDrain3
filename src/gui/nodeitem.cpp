@@ -17,7 +17,7 @@
 #include <mapbasedmodel.h>
 #include <typeconverter.h>
 
-typedef pair<std::string, Flow *> port_pair;
+typedef std::pair<std::string, Flow *> port_pair;
 
 NodeItem::NodeItem(Node* node)
 	: QGraphicsItem(), node(node), margin(30) {
@@ -128,19 +128,19 @@ void NodeItem::updateBoundingRect() {
 	qreal max_outp_width = 0;
 
 	Q_FOREACH(PortItem *out, out_ports) {
-		max_outp_width = max(max_outp_width, out->boundingRect().width());
+		max_outp_width = std::max(max_outp_width, out->boundingRect().width());
 	}
 
 	qreal max_inp_width = 0;
 	Q_FOREACH(PortItem *in, in_ports) {
-		max_inp_width = max(max_inp_width, in->boundingRect().width());
+		max_inp_width = std::max(max_inp_width, in->boundingRect().width());
 	}
 
 	qreal fh = fm.height() + 4;
-	qreal height = fh * max(in_ports.size(), out_ports.size()) / 2;
+	qreal height = fh * std::max(in_ports.size(), out_ports.size()) / 2;
 
 	bounding = r.adjusted(-max(margin, max_inp_width), -max(margin,height),
-						  max(margin, max_outp_width), max(margin,height));
+						  std::max(margin, max_outp_width), std::max(margin,height));
 	update();
 }
 
@@ -175,8 +175,8 @@ bool NodeItem::changeParameters(bool _new) {
 		return true;
 
 	SimulationScene *parentscene = static_cast<SimulationScene*>(scene());
-	QMap<string, PortItem*> in_before = in_ports;
-	QMap<string, PortItem*> out_before = out_ports;
+	QMap<std::string, PortItem*> in_before = in_ports;
+	QMap<std::string, PortItem*> out_before = out_ports;
 
 	SimulationParameters sp = parentscene->getSimulation()->getSimulationParameters();
 
@@ -200,11 +200,11 @@ bool NodeItem::changeParameters(bool _new) {
 		restoreParameters(saved);
 	}
 
-	QMap<string, Flow*> in_after(*getNode()->const_in_ports);
-	QMap<string, Flow*> out_after(*getNode()->const_out_ports);
+	QMap<std::string, Flow*> in_after(*getNode()->const_in_ports);
+	QMap<std::string, Flow*> out_after(*getNode()->const_out_ports);
 
-	QSet<string> in_removed = in_before.keys().toSet() - in_after.keys().toSet();
-	QSet<string> out_removed = out_before.keys().toSet() - out_after.keys().toSet();
+	QSet<std::string> in_removed = in_before.keys().toSet() - in_after.keys().toSet();
+	QSet<std::string> out_removed = out_before.keys().toSet() - out_after.keys().toSet();
 
 	Q_FOREACH(ConnectionItem *citem, parentscene->getConnectionsOf(getId())) {
 		NodeConnection *con = citem->getConnection();

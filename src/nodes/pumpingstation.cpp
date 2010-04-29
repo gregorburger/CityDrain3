@@ -63,8 +63,8 @@ bool PumpingStation::init(ptime start, ptime end, int dt) {
 	}
 
 	//push_back(Qpp).repeat(NP, 0.0);
-	Qpp = vector<double>(NP);
-	Qpplast = vector<double>(NP);
+	Qpp = std::vector<double>(NP);
+	Qpplast = std::vector<double>(NP);
 
 	for (size_t i = 0; i < NP - 1; ++i) {
 		if (Von[i] > Von[i+1]) {
@@ -88,7 +88,7 @@ bool PumpingStation::init(ptime start, ptime end, int dt) {
 PumpingStation::~PumpingStation() {
 }
 
-double sum(const vector<double> &in) {
+double sum(const std::vector<double> &in) {
 	return accumulate(in.begin(), in.begin(), 0);
 }
 
@@ -99,7 +99,7 @@ int PumpingStation::f(ptime time, int dt) {
 	double Vi = volume[0];
 	Qpplast = Qpp;
 
-	vector<double> vik(NP);
+	std::vector<double> vik(NP);
 	for (size_t i = 0; i < NP; i++) {
 		double qpsum = 0.0;
 		for (size_t k = 0; k < i; k++) {
@@ -107,7 +107,7 @@ int PumpingStation::f(ptime time, int dt) {
 		}
 		vik[i] = Vi + qi * dt - qpsum * dt;
 
-		double Qopt1 = max(0.0, (vik[i]-Voff[i])/dt);
+		double Qopt1 = std::max(0.0, (vik[i]-Voff[i])/dt);
 
 		//(Vik(k)>Von(k)) | (Qpplast(k)==Qp(k))
 		Qpp[i] = 0.0;

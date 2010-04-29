@@ -8,13 +8,13 @@ using namespace boost::python;
 
 struct PNodeFactoryPriv {
 	object klass;
-	string name;
+	std::string name;
 };
 
 PythonNodeFactory::PythonNodeFactory(object klass) {
 	priv = new PNodeFactoryPriv();
 	priv->klass = klass;
-	priv->name = extract<string>(priv->klass.attr("__name__"));
+	priv->name = extract<std::string>(priv->klass.attr("__name__"));
 }
 
 PythonNodeFactory::~PythonNodeFactory() {

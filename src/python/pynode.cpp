@@ -64,7 +64,7 @@ const char *NodeWrapper::getClassName() const {
 	return class_name;
 }
 
-void NodeWrapper::setClassName(string class_name) {
+void NodeWrapper::setClassName(std::string class_name) {
 	this->class_name = strdup(class_name.c_str());
 }
 
@@ -76,12 +76,12 @@ void NodeWrapper::addOutPort(const std::string &name, Flow *outflow) {
 	Node::addOutPort(name, outflow);
 }
 
-typedef pair<string, int> intp;
-typedef pair<string, string> stringp;
-typedef pair<string, float> floatp;
-typedef pair<string, double> doublep;
-typedef pair<string, bool> boolp;
-typedef pair<string, vector<double> > vecp;
+typedef std::pair<std::string, int> intp;
+typedef std::pair<std::string, std::string> stringp;
+typedef std::pair<std::string, float> floatp;
+typedef std::pair<std::string, double> doublep;
+typedef std::pair<std::string, bool> boolp;
+typedef std::pair<std::string, std::vector<double> > vecp;
 void NodeWrapper::updateParameters() {
 	python::dict self_dict = python::extract<python::dict>(self.attr("__dict__"));
 
@@ -119,7 +119,7 @@ void addParameters(python::object self) {
 
 	python::list keys = param.keys();
 	for (int i = 0; i < len(keys); i++) {
-		string key = python::extract<string>(keys[i]);
+		std::string key = python::extract<std::string>(keys[i]);
 
 		if (key == "self") {
 			continue;
@@ -133,10 +133,10 @@ void addParameters(python::object self) {
 			continue;
 		}
 
-		python::extract<string> sx(param[key]);
+		python::extract<std::string> sx(param[key]);
 		if (sx.check()) {
 			Logger(Debug) << node_wrapper << "adding string parameter " << key;
-			string value = sx;
+			std::string value = sx;
 			node_wrapper->string_params[key] = value;
 			node_wrapper->addParameter(key, &node_wrapper->string_params[key]);
 			continue;
@@ -180,9 +180,9 @@ void addParameters(python::object self) {
 
 		python::extract<python::list> lx(param[key]);
 		if (lx.check()) {
-			Logger(Debug) << node_wrapper << "adding vector<double> parameter " << key;
+			Logger(Debug) << node_wrapper << "adding std::vector<double> parameter " << key;
 			python::list value = lx;
-			vector<double> vec_value;
+			std::vector<double> vec_value;
 			for (int v = 0; v < python::len(value); v++) {
 				double dval = python::extract<double>(value[v]);
 				vec_value += dval;
@@ -196,7 +196,7 @@ void addParameters(python::object self) {
 	}
 }
 
-typedef pair<string, NodeParameter*> param_pair;
+typedef std::pair<std::string, NodeParameter*> param_pair;
 static python::list n_getParameterNames(Node &n) {
 	python::list l;
 	BOOST_FOREACH(param_pair p, n.getParameters()) {
@@ -224,9 +224,9 @@ struct INodeFactoryWrapper : public INodeFactory, python::wrapper<INodeFactory> 
 		return 0;
 	}
 
-	string getNodeName() {
+	std::string getNodeName() {
 		try {
-			return python::call_method<string>(self, "getNodeName");
+			return python::call_method<std::string>(self, "getNodeName");
 		} catch(...) {
 			Logger(Error) << __FILE__ << ":" << __LINE__;
 			handle_python_exception();
@@ -258,7 +258,7 @@ void wrap_node() {
 		.def("addParameters", addParameters)
 		.def("setIntParameter", &Node::setParameter<int>)
 		.def("setDoubleParameter", &Node::setParameter<double>)
-		.def("setStringParameter", &Node::setParameter<string>)
+		.def("setStringParameter", &Node::setParameter<std::string>)
 		.def("setBoolParameter", &Node::setParameter<bool>)
 		.def("setParameter", &Node::setParameter<Flow>)
 		;
@@ -271,7 +271,7 @@ void wrap_node() {
 		.def("getRegisteredNames", &NodeRegistry::getRegisteredNames)
 		;
 
-	python::class_<std::vector<string> >("StringVector")
-			.def(python::vector_indexing_suite<std::vector<string> >())
+	python::class_<std::vector<std::string> >("StringVector")
+			.def(python::vector_indexing_suite<std::vector<std::string> >())
 			;
 }

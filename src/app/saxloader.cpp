@@ -30,7 +30,7 @@ struct SaxLoaderPriv {
 	Flow *f;
 	std::string param_name;
 	std::map<std::string, Flow::CalculationUnit> flow_definition;
-	//stack<string> parent_nodes;
+	//stack<std::string> parent_nodes;
 };
 
 SaxLoader::SaxLoader(IModel *model) : delete_node_reg(true), delete_sim_reg(true) {
@@ -125,7 +125,7 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 #ifndef PYTHON_DISABLED
 		QFileInfo module_file(atts.value("module"));
 		PythonEnv::getInstance()->addPythonPath(module_file.dir().absolutePath().toStdString());
-		string module_name = module_file.baseName().toStdString();
+		std::string module_name = module_file.baseName().toStdString();
 		PythonEnv::getInstance()->registerNodes(pd->node_registry, module_name);
 		consumed = true;
 #else

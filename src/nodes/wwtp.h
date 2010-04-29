@@ -14,7 +14,7 @@ public:
 private:
 	Flow in, out;
 	double temperature;
-	string logfile, sysdata, parameter, odedata;
+	std::string logfile, sysdata, parameter, odedata;
 };
 
 #endif // WWTP_H

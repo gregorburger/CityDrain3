@@ -16,14 +16,12 @@
 #include <flow.h>
 #include "bufferednodeconnection.h"
 
-using namespace std;
-using namespace boost;
 
-typedef shared_ptr<tqueue<Node *> > sh_node_queue;
+typedef boost::shared_ptr<tqueue<Node *> > sh_node_queue;
 
 struct OPSPriv {
 	IModel *model;
-	vector<Node *> order;
+	std::vector<Node *> order;
 };
 
 struct OrderedWorker : public QRunnable {
@@ -97,7 +95,7 @@ vector<Node *> OrderedPipeSimulation::getOrder() {
 		sources.push(n);
 	}
 	con_count_type deps = pd->model->getBackwardCounts();
-	vector<Node *> order;
+	std::vector<Node *> order;
 	while (!sources.empty()) {
 		Node *n = sources.front();
 		sources.pop();
@@ -142,7 +140,7 @@ OrderedWorker::OrderedWorker(OrderedPipeSimulation *sim,
 	this->last = last;
 	this->time = _time;
 	this->dt = _dt;
-		out = auto_ptr<tqueue<Node *> >(new tqueue<Node *>());
+	out = std::auto_ptr<tqueue<Node *> >(new tqueue<Node *>());
 }
 
 void OrderedWorker::run() {

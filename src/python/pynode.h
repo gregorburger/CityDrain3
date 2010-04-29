@@ -15,20 +15,20 @@ struct NodeWrapper : Node, python::wrapper<Node> {
 	bool init(ptime start, ptime stop, int dt);
 	void deinit();
 	const char *getClassName() const;
-	void setClassName(string class_name);
+	void setClassName(std::string class_name);
 	void addInPort(const std::string &name, Flow *inflow);
 	void addOutPort(const std::string &name, Flow *outflow);
 	void updateParameters();
 
 	void setSelf(boost::python::object self);
 
-	map<string, int> int_params;
-	map<string, string> string_params;
-	map<string, double> double_params;
-	map<string, bool> bool_params;
-	map<string, float> float_params;
-	map<string, vector<double> > array_params;
-	map<string, Flow> flow_params;
+	std::map<std::string, int> int_params;
+	std::map<std::string, std::string> string_params;
+	std::map<std::string, double> double_params;
+	std::map<std::string, bool> bool_params;
+	std::map<std::string, float> float_params;
+	std::map<std::string, std::vector<double> > array_params;
+	std::map<std::string, Flow> flow_params;
 	char *class_name;
 	boost::python::object self;
 };

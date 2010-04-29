@@ -5,7 +5,7 @@
 #include <flow.h>
 #include <deque>
 
-typedef pair<int, vector<double> > dwf_entry;
+typedef std::pair<int, std::vector<double> > dwf_entry;
 
 CD3_DECLARE_NODE(DWF)
 public:
@@ -17,10 +17,10 @@ public:
 private:
 	bool load(int dt);
 	void setOut();
-	string dwf_definition_file;
+	std::string dwf_definition_file;
 	double q_scale;
 	Flow out;
-	deque<dwf_entry> dwf, dwf_work;
+	std::deque<dwf_entry> dwf, dwf_work;
 	int mdt;
 };
 

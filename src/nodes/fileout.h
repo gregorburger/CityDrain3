@@ -15,7 +15,7 @@ public:
 	void deinit();
 private:
 	Flow in;
-	string out_file_name;
+	std::string out_file_name;
 	QFile file;
 	QTextStream stream;
 	ptime start, stop;

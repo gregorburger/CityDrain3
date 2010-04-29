@@ -37,7 +37,7 @@ static void s_addHandlerBefore(ISimulation &sim, object o) {
 }
 
 void wrap_simulation() {
-	class_<NodeConnection>("NodeConnection", init<Node *, string, Node *, string>());
+	class_<NodeConnection>("NodeConnection", init<Node *, std::string, Node *, std::string>());
 
 	class_<ISimulation, noncopyable>("Simulation", no_init)
 		.def("start", &ISimulation::start)
@@ -53,7 +53,7 @@ void wrap_simulation() {
 		.def("createSimulation", &SimulationRegistry::createSimulation, return_value_policy<manage_new_object>())
 		.def("getRegisteredNames", &SimulationRegistry::getRegisteredNames)
 		;
-	class_<SimulationParameters>("SimulationParameters", init<string, string, string>())
+	class_<SimulationParameters>("SimulationParameters", init<std::string, std::string, std::string>())
 		.def_readwrite("start", &SimulationParameters::start)
 		.def_readwrite("stop", &SimulationParameters::stop)
 		.def_readwrite("dt", &SimulationParameters::dt)

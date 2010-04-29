@@ -4,8 +4,6 @@
 #include <QUndoCommand>
 #include <string>
 
-using namespace std;
-
 class SimulationScene;
 class ConnectionItem;
 class NodeItem;

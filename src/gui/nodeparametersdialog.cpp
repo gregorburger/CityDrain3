@@ -15,7 +15,7 @@
 #include <QCompleter>
 #include <QDebug>
 
-typedef pair<string, NodeParameter*> ptype;
+typedef std::pair<std::string, NodeParameter*> ptype;
 
 NodeParametersDialog::~NodeParametersDialog() {
 }
@@ -45,10 +45,10 @@ NodeParametersDialog::NodeParametersDialog(Node *node, QWidget *parent)
 }
 
 QWidget *NodeParametersDialog::widgetForParameter(NodeParameter *p) {
-	if (p->type == cd3::TypeInfo(typeid(vector<double>))) {
+	if (p->type == cd3::TypeInfo(typeid(std::vector<double>))) {
 		QLineEdit *param_widget = new QLineEdit(this);
 
-		vector<double> values = *((vector<double> *) p->value);
+		std::vector<double> values = *((std::vector<double> *) p->value);
 
 		QString s;
 		for (size_t i = 0; i < values.size(); i++) {
@@ -60,7 +60,7 @@ QWidget *NodeParametersDialog::widgetForParameter(NodeParameter *p) {
 
 	if (p->type == cd3::TypeInfo(typeid(int))) {
 		QSpinBox *widget = new QSpinBox();
-		widget->setRange(numeric_limits<int>::min(), numeric_limits<int>::max());
+		widget->setRange(std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
 		int *value = (int *) p->value;
 		widget->setValue(*value);
 		return widget;
@@ -68,22 +68,22 @@ QWidget *NodeParametersDialog::widgetForParameter(NodeParameter *p) {
 
 	if (p->type == cd3::TypeInfo(typeid(double))) {
 		QDoubleSpinBox *widget = new QDoubleSpinBox(this);
-		widget->setRange(-numeric_limits<double>::max(), numeric_limits<double>::max());
+		widget->setRange(-std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
 		widget->setDecimals(10);
 		double *value = (double *) p->value;
 		widget->setValue(*value);
 		return widget;
 	}
 
-	if (p->type == cd3::TypeInfo(typeid(string))) {
+	if (p->type == cd3::TypeInfo(typeid(std::string))) {
 		StringParameterEdit *widget = new StringParameterEdit(this);
-		string *value = (string *) p->value;
+		std::string *value = (std::string *) p->value;
 		widget->setValue(QString::fromStdString(*value));
 		return widget;
 	}
 	if (p->type == cd3::TypeInfo(typeid(Flow))) {
 		QLineEdit *widget = new QLineEdit(this);
-		vector<string> names = Flow::getNames();
+		std::vector<std::string> names = Flow::getNames();
 		QString text = QString::fromStdString(names[0]);
 		for (size_t i = 1; i < names.size(); i++)  {
 			text += ", " + QString::fromStdString(names[i]);
@@ -103,8 +103,8 @@ QWidget *NodeParametersDialog::widgetForParameter(NodeParameter *p) {
 }
 
 bool NodeParametersDialog::updateNodeParameters() {
-	map<string, NodeParameter *> params = node->getParameters();
-	Q_FOREACH(string p, widgets.keys()) {
+	std::map<std::string, NodeParameter *> params = node->getParameters();
+	Q_FOREACH(std::string p, widgets.keys()) {
 		NodeParameter *param = params[p];
 		if (param->type == cd3::TypeInfo(typeid(int))) {
 			QSpinBox *widget = (QSpinBox *) widgets[p];
@@ -116,13 +116,13 @@ bool NodeParametersDialog::updateNodeParameters() {
 			node->setParameter(p, widget->value());
 			continue;
 		}
-		if (param->type == cd3::TypeInfo(typeid(string))) {
+		if (param->type == cd3::TypeInfo(typeid(std::string))) {
 			StringParameterEdit *widget = (StringParameterEdit *) widgets[p];
 			node->setParameter(p, widget->value().toStdString());
 			continue;
 		}
 		if (param->type == cd3::TypeInfo(typeid(Flow))) {
-			vector<string> names = Flow::getNames();
+			std::vector<std::string> names = Flow::getNames();
 			QLineEdit *widget = static_cast<QLineEdit *>(widgets[p]);
 			QStringList values = widget->text().split(",");
 			if (values.size() != names.size()) {
@@ -144,8 +144,8 @@ bool NodeParametersDialog::updateNodeParameters() {
 			node->setParameter(p, f);
 			continue;
 		}
-		if (param->type == cd3::TypeInfo(typeid(vector<double>))) {
-			vector<double> v;
+		if (param->type == cd3::TypeInfo(typeid(std::vector<double>))) {
+			std::vector<double> v;
 			QLineEdit *line = static_cast<QLineEdit *>(widgets[p]);
 			QStringList values = line->text().split(",", QString::SkipEmptyParts);
 			Q_FOREACH(QString value, values) {

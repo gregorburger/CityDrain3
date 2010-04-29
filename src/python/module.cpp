@@ -123,7 +123,7 @@ void PythonEnv::registerNodes(NodeRegistry *registry, const string &module) {
 		object clss = priv->main_namespace["clss"];
 		int numn = 0;
 		for (int i = 0; i < len(clss); i++) {
-			string name = extract<string>(clss[i].attr("__name__"));
+			std::string name = extract<std::string>(clss[i].attr("__name__"));
 			if (registry->contains(name))
 				continue;
 			registry->addNodeFactory(new PythonNodeFactory(clss[i]));
@@ -145,7 +145,7 @@ void handle_python_exception() {
 		python::handle<> ty(type), v(value), tr(traceback);
 		python::str format("%s|%s|%s");//fucking dirty hack because python error handling sucks soooo much
 		python::object ret = format % python::make_tuple(ty, v, tr);
-		string error = python::extract<string>(ret);
+		std::string error = python::extract<std::string>(ret);
 		//Logger(Error) error;
 		throw PythonException(error);
 	}

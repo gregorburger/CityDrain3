@@ -1,6 +1,5 @@
 #include "cyclenodestart.h"
 #include <iostream>
-using namespace std;
 
 CD3_DECLARE_NODE_NAME(CycleNodeStart)
 

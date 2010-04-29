@@ -46,8 +46,6 @@
 using namespace boost::gregorian;
 using namespace boost::posix_time;
 
-using namespace std;
-
 SimulationScene::SimulationScene(QObject *parent)
 	: QGraphicsScene(parent), node_reg(0), sim_reg(0), simulation(0), model(0) {
 
@@ -164,12 +162,12 @@ void SimulationScene::load(QString model_file_name) {
 }
 
 //default id is klassname_+counter
-string SimulationScene::getDefaultId(Node *node) const {
+std::string SimulationScene::getDefaultId(Node *node) const {
 	name_node_map nodes = model->getNamesAndNodes();
 	int count = 0;
-	string id;
+	std::string id;
 	while (true) {
-		id = node->getClassName() +  string("_") + lexical_cast<string>(count++);
+		id = node->getClassName() +  std::string("_") + lexical_cast<std::string>(count++);
 		if (nodes.find(id) == nodes.end()) {
 			break; //found an id
 		}
@@ -183,12 +181,12 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 	}
 	event->accept();
 	QTreeWidget *treeWidget = static_cast<QTreeWidget*>(event->source());
-	string klassName = treeWidget->selectedItems()[0]->text(0).toStdString();
+	std::string klassName = treeWidget->selectedItems()[0]->text(0).toStdString();
 	QGraphicsScene::dragMoveEvent(event);
 
 	try {
 		Node *node = node_reg->createNode(klassName);
-		string id = getDefaultId(node);
+		std::string id = getDefaultId(node);
 		model->addNode(id, node);
 
 		NodeItem *nitem = new NodeItem(node);
@@ -270,8 +268,8 @@ void SimulationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 
 		Node *start = connection_start->getNodeItem()->getNode();
 		Node *end = connection_end->getNodeItem()->getNode();
-		string out_port = connection_start->getPortName().toStdString();
-		string in_port = connection_end->getPortName().toStdString();
+		std::string out_port = connection_start->getPortName().toStdString();
+		std::string in_port = connection_end->getPortName().toStdString();
 
 		NodeConnection *con = simulation->createConnection(start, out_port, end, in_port);
 		model->addConnection(con);
@@ -309,7 +307,7 @@ bool SimulationScene::isOutPort(QGraphicsItem *item) const {
 }
 
 void SimulationScene::addPlugin(QString pname) {
-	string plugin_name = pname.toStdString();
+	std::string plugin_name = pname.toStdString();
 	node_reg->addNativePlugin(plugin_name);
 	sim_reg->addNativePlugin(plugin_name); //TODO do we need this?
 	plugins << pname;
@@ -321,7 +319,7 @@ void SimulationScene::addPythonModule(QString pname) {
 #ifndef PYTHON_DISABLED
 	QFileInfo module_file(pname);
 	PythonEnv::getInstance()->addPythonPath(module_file.dir().absolutePath().toStdString());
-	string module_name = module_file.baseName().toStdString();
+	std::string module_name = module_file.baseName().toStdString();
 	PythonEnv::getInstance()->registerNodes(node_reg, module_name);
 	python_modules << pname;
 	Q_EMIT(changed(0));	//can't definitly do undo here!
@@ -394,7 +392,7 @@ void SimulationScene::paste() {
 	clearSelection();
 	Q_FOREACH(CopyState cn, copied_nodes) {
 		Node *n = node_reg->createNode(cn._class);
-		string id  = this->getDefaultId(n);
+		std::string id  = this->getDefaultId(n);
 		model->addNode(id, n);
 		NodeItem *item = new NodeItem(n);
 		item->setPos(current_mouse.x() + cn.position.x(), current_mouse.y() + cn.position.y());

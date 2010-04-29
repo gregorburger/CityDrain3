@@ -155,9 +155,9 @@ bool Flow::hasName(const std::string &name) {
 void Flow::dump() const {
 	cd3assert(fd.defined, "flow not defined");
 	for (size_t i = 0; i < fd.size; i++) {
-		cout << f[i] << "\t\t";
+		std::cout << f[i] << "\t\t";
 	}
-	cout << endl;
+	std::cout << std::endl;
 }
 
 size_t Flow::countUnits(Flow::CalculationUnit unit) {
@@ -193,7 +193,7 @@ size_t Flow::size() {
 	return fd.size;
 }
 
-string cu2string(Flow::CalculationUnit c) {
+std::string cu2string(Flow::CalculationUnit c) {
 	switch (c) {
 		case Flow::flow: return "Flow";
 		case Flow::concentration: return "Concentration";
@@ -203,7 +203,7 @@ string cu2string(Flow::CalculationUnit c) {
 	}
 }
 
-Flow::CalculationUnit string2cu(string s) {
+Flow::CalculationUnit string2cu(std::string s) {
 	if (s == "Flow")
 		return Flow::flow;
 

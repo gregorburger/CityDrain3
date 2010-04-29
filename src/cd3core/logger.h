@@ -7,8 +7,6 @@
 #include <boost/shared_ptr.hpp>
 using namespace boost;
 
-using namespace std;
-
 class QString;
 class LogSink;
 
@@ -25,11 +23,11 @@ public:
 	Logger &operator<< (const long i);
 	Logger &operator<< (const double f);
 	Logger &operator<< (const float f);
-	Logger &operator<< (const string &i);
+	Logger &operator<< (const std::string &i);
 	Logger &operator<< (const QString &s);
 private:
-	string logLevel() const;
-	string date() const;
+	std::string logLevel() const;
+	std::string date() const;
 	LogSink &sink;
 	LogLevel level, max;
 	bool dirty;

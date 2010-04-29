@@ -87,7 +87,7 @@ void DWF::deinit() {
 }
 
 void DWF::setOut() {
-	vector<double> current_dwf = dwf_work.front().second;
+	std::vector<double> current_dwf = dwf_work.front().second;
 	for (size_t i = 0; i < Flow::size(); i++) {
 		out[i] = current_dwf[i];
 	}

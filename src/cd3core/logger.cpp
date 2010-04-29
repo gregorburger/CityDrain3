@@ -98,7 +98,7 @@ Logger &Logger::operator<< (const float f) {
 	return *this;
 }
 
-Logger &Logger::operator<< (const string &s) {
+Logger &Logger::operator<< (const std::string &s) {
 	if (level < max) {
 		return *this;
 	}
@@ -117,7 +117,7 @@ Logger &Logger::operator<< (const QString &s) {
 }
 
 
-string Logger::logLevel() const {
+std::string Logger::logLevel() const {
 	switch (level) {
 		case Debug:
 			return "DEBUG";
@@ -131,6 +131,6 @@ string Logger::logLevel() const {
 	return "UNKNOWN";
 }
 
-string Logger::date() const {
+std::string Logger::date() const {
 	return QDateTime::currentDateTime().toString().toStdString();
 }

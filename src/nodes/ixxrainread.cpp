@@ -3,10 +3,10 @@
 #include "rainbuffer.h"
 #include <fstream>
 
-typedef pair<ptime, double> ixx_value;
+typedef std::pair<ptime, double> ixx_value;
 
 struct IxxRainReadPrivate {
-	ifstream in;
+	std::ifstream in;
 	ixx_value parseLine();
 	int getDt();
 	time_input_facet *in_facet;
@@ -22,7 +22,7 @@ IxxRainRead::IxxRainRead() {
 	addOutPort(ADD_PARAMETERS(out));
 	data->in_facet = new boost::posix_time::time_input_facet();
 	data->in_facet->format("%d.%m.%Y %H:%M:%S");
-	data->in.imbue(locale(data->in.getloc(), data->in_facet));
+	data->in.imbue(std::locale(data->in.getloc(), data->in_facet));
 }
 
 IxxRainRead::~IxxRainRead() {
@@ -44,7 +44,7 @@ bool IxxRainRead::init(ptime start, ptime end, int dt) {
 	ptime first_time;
 	data->in >> first_time;
 	data->current_time = first_time - seconds(raindt);
-	data->in.seekg(0, ios::beg);
+	data->in.seekg(0, std::ios::beg);
 
 	if (first_time < start) {
 		while (data->current_time < start) {

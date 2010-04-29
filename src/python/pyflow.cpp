@@ -20,7 +20,7 @@ void flow_setitem(Flow &f, int i, double v) {
 
 void test_flow(Flow *f) {
 	assert(f);
-	BOOST_FOREACH(string n, f->getNames()) {
+	BOOST_FOREACH(std::string n, f->getNames()) {
 		cout << "test_flow " << n << endl;
 	}
 }
@@ -57,7 +57,7 @@ void wrap_flow() {
 			.value("concentration", Flow::concentration)
 			;
 
-	class_<std::map<string, Flow::CalculationUnit> >("FlowDefinition")
-			.def(map_indexing_suite<std::map<string, Flow::CalculationUnit> >())
+	class_<std::map<std::string, Flow::CalculationUnit> >("FlowDefinition")
+			.def(map_indexing_suite<std::map<std::string, Flow::CalculationUnit> >())
 			;
 }

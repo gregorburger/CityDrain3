@@ -58,7 +58,7 @@ int main(int argc, char **argv) {
 	desc.add_options()
 		("help,h", "produce help message")
 		("state-dir,d", po::value<std::string>(), "used to store and locate restart data")
-		("restart,r", po::value<string>(), "specifiy the time where to restart (e.g. 2004-Jan-01 00:00:00.00)")
+		("restart,r", po::value<std::string>(), "specifiy the time where to restart (e.g. 2004-Jan-01 00:00:00.00)")
 		("log,l", po::value<std::string>(), "write log to specified file")
 		("maxlog,v", po::value<int>(), "secifiy the max loglevel\n0 all debug\n1 all standard\n2 all warnings\n3 only errors")
 		("model,m", po::value<std::string>(), "the model to run the simulation");
@@ -138,7 +138,7 @@ int main(int argc, char **argv) {
 			std::cerr << desc << std::endl;
 			return -1;
 		}
-		starttime = time_from_string(vm["restart"].as<string>());
+		starttime = time_from_string(vm["restart"].as<std::string>());
 		Logger(Standard) << "restarting from" << to_simple_string(starttime)
 				<< "using state dir:" << vm["state-dir"].as<std::string>();
 		s->deserialize(vm["state-dir"].as<std::string>(), starttime);

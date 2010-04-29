@@ -5,7 +5,6 @@
 #include <flow.h>
 
 #include <vector>
-using namespace std;
 
 CD3_DECLARE_NODE(ArrayParamTest)
 public:
@@ -17,7 +16,7 @@ public:
 private:
 	Flow out;
 	double Qe;
-	vector<double> C;
+	std::vector<double> C;
 };
 
 #endif // ARRAYPARAMTEST_H

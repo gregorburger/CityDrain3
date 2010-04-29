@@ -34,7 +34,7 @@ int SimplePump::f(ptime time, int dt) {
 	(void) time;
 
 	//volume[0] += in[0] * dt;
-	vector<Flow> tomix;
+	std::vector<Flow> tomix;
 	tomix += volume, in;
 	volume = FlowFuns::mix(tomix);
 	if (volume[0] > Von || on) {
@@ -43,10 +43,10 @@ int SimplePump::f(ptime time, int dt) {
 	out_p = volume; //assign concentrations
 	out_w = volume;
 	if (on) {
-		double volume_after_pump = max(Voff, volume[0] - Qpp);
+		double volume_after_pump = std::max(Voff, volume[0] - Qpp);
 		out_p[0] = (volume[0] - volume_after_pump);
 		volume[0] = volume_after_pump;
-		out_w[0] = max(0.0, volume[0] - Vmax);
+		out_w[0] = std::max(0.0, volume[0] - Vmax);
 		volume[0] -= out_w[0];
 	} else {
 		out_p[0] = 0.0;

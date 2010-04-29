@@ -10,7 +10,7 @@
 
 using namespace boost;
 
-typedef pair<string, Node *> nodes_pair_type;
+typedef std::pair<std::string, Node *> nodes_pair_type;
 
 MapBasedModel::MapBasedModel() {
 }
@@ -33,12 +33,12 @@ const con_set_type *MapBasedModel::getConnections() const {
 	return &all_connections;
 }
 
-Node *MapBasedModel::getNode(const string &name) const {
+Node *MapBasedModel::getNode(const std::string &name) const {
 	cd3assert(names_nodes.count(name), str(format("no node with such name (%1%) registered") % name));
 	return names_nodes.find(name)->second;
 }
 
-void MapBasedModel::addNode(const string &id, Node *node) {
+void MapBasedModel::addNode(const std::string &id, Node *node) {
 	cd3assert(id != "", "node has no id");
 	cd3assert(node, "cannot add null node");
 	cd3assert(names_nodes.find(id) == names_nodes.end(), "node name already defined");
@@ -49,8 +49,8 @@ void MapBasedModel::addNode(const string &id, Node *node) {
 	sink_nodes.insert(node);
 	source_nodes.insert(node);
 	uncon_nodes.insert(node);
-	fwd_connections[node] = vector<NodeConnection *>();
-	bwd_connections[node] = vector<NodeConnection *>();
+	fwd_connections[node] = std::vector<NodeConnection *>();
+	bwd_connections[node] = std::vector<NodeConnection *>();
 }
 
 void MapBasedModel::removeNode(Node *node) {
@@ -102,7 +102,7 @@ void MapBasedModel::removeConnection(NodeConnection *con) {
 
 	all_connections.erase(con);
 
-	vector<NodeConnection*>::iterator it = find(bwd_connections[sink].begin(),
+	std::vector<NodeConnection*>::iterator it = find(bwd_connections[sink].begin(),
 												bwd_connections[sink].end(),
 												con);
 	if (it != bwd_connections[sink].end()) {
@@ -190,7 +190,7 @@ vector<NodeConnection *> MapBasedModel::forwardConnection(Node *n) {
 	return fwd_connections[n];
 }
 
-const vector<NodeConnection *> MapBasedModel::forwardConnection(Node *n) const {
+const std::vector<NodeConnection *> MapBasedModel::forwardConnection(Node *n) const {
 	cd3assert(n, "Node null");
 	cd3assert(all_nodes.count(n), "node not in model");
 	cd3assert(fwd_connections.count(n), "no forward connection for node");
@@ -215,7 +215,7 @@ bool MapBasedModel::connected() const {
 	return uncon_nodes.empty();
 }
 
-typedef pair<string, Flow*> port_type;
+typedef std::pair<std::string, Flow*> port_type;
 void MapBasedModel::checkModel() const {
 		BOOST_FOREACH(Node *node, all_nodes) {
 		BOOST_FOREACH(port_type port, *node->const_in_ports) {
@@ -295,7 +295,7 @@ bool MapBasedModel::cycleFree() const {
 	return cycleNodes().empty();
 }
 
-bool MapBasedModel::renameNode(Node *node, const string &new_id) {
+bool MapBasedModel::renameNode(Node *node, const std::string &new_id) {
 	if (names_nodes[new_id] != 0 && names_nodes[new_id] != node) {
 		Logger(Warning) << "can not rename, new id already in use";
 		return false;

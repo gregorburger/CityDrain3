@@ -6,7 +6,7 @@
 #include <set>
 #include <cd3globals.h>
 
-typedef unordered_map<Node *, vector<NodeConnection *> > connection_type;
+typedef unordered_map<Node *, std::vector<NodeConnection *> > connection_type;
 
 class CD3_PUBLIC MapBasedModel : public IModel
 {
@@ -14,19 +14,19 @@ public:
 	MapBasedModel();
 	~MapBasedModel();
 
-	string serialize() { //TODO implement
+	std::string serialize() { //TODO implement
 		return "";
 	}
 
-	void deserialize(const string &serialid) { //TODO implement
+	void deserialize(const std::string &serialid) { //TODO implement
 		(void) serialid;
 	}
 
 	bool empty() const { return all_nodes.size() == 0; }
 
-	void addNode(const string &id, Node *node);
+	void addNode(const std::string &id, Node *node);
 	void removeNode(Node *node);
-	bool renameNode(Node *node, const string &new_id);
+	bool renameNode(Node *node, const std::string &new_id);
 	void addConnection(NodeConnection *con);
 	void removeConnection(NodeConnection *con);
 
@@ -39,16 +39,16 @@ public:
 	const node_set_type getSourceNodes() const;
 	node_set_type getSinkNodes();
 
-	vector<NodeConnection *> forwardConnection(Node *n);
-	const vector<NodeConnection *> forwardConnection(Node *n) const;
-	vector<NodeConnection *> backwardConnection(Node *n);
+	std::vector<NodeConnection *> forwardConnection(Node *n);
+	const std::vector<NodeConnection *> forwardConnection(Node *n) const;
+	std::vector<NodeConnection *> backwardConnection(Node *n);
 
 	const node_set_type *getNodes() const;
 	const con_set_type *getConnections() const;
 
 	name_node_map getNamesAndNodes() const;
 
-	Node *getNode(const string &name) const;
+	Node *getNode(const std::string &name) const;
 	con_count_type getForwardCounts() const;
 	con_count_type getBackwardCounts() const;
 

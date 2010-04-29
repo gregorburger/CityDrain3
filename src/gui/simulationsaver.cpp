@@ -13,7 +13,6 @@
 #include <boost/foreach.hpp>
 #include <boost/unordered_set.hpp>
 #include <string>
-using namespace std;
 
 SimulationSaver::SimulationSaver(SimulationScene *scene,
 								 QString path,
@@ -66,7 +65,7 @@ QString tos(ptime t) {
 }
 
 inline
-QString tos(string s) {
+QString tos(std::string s) {
 	return QString::fromStdString(s);
 }
 void SimulationSaver::saveSimulation(ISimulation *sim) {
@@ -87,7 +86,7 @@ void SimulationSaver::saveSimulation(ISimulation *sim) {
 
 void SimulationSaver::saveFlowDefinition() {
 	writer->writeStartElement("flowdefinition");
-	BOOST_FOREACH(string name, Flow::getNames()) {
+	BOOST_FOREACH(std::string name, Flow::getNames()) {
 		QString qname = QString::fromStdString(name);
 		QString qunit = QString::fromStdString(cu2string(Flow::getUnit(name)));
 		qunit = qunit.toLower();
@@ -136,7 +135,7 @@ void SimulationSaver::saveModel(IModel *model) {
 	writer->writeEndElement();//model
 }
 
-typedef pair<string, NodeParameter*> ppair;
+typedef std::pair<std::string, NodeParameter*> ppair;
 void SimulationSaver::saveNodeParameters(const Node *n) {
 	BOOST_FOREACH(ppair item, n->getParameters()) {
 		NodeParameter *p = item.second;
@@ -157,7 +156,7 @@ void SimulationSaver::saveFlowParameter(NodeParameter *p) {
 	writer->writeStartElement("flow");
 
 
-	BOOST_FOREACH(string name, Flow::getNames()) {
+	BOOST_FOREACH(std::string name, Flow::getNames()) {
 		writer->writeEmptyElement("unit");
 		writer->writeAttribute("name", QString::fromStdString(name));
 		writer->writeAttribute("value", QString("%1").arg(f->getValue(name)));

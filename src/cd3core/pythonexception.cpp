@@ -6,7 +6,7 @@
 using namespace boost;
 
 PythonException::PythonException(std::string error) {
-	std::vector<string> values;
+	std::vector<std::string> values;
 	algorithm::split(values, error, algorithm::is_any_of("|"));
 	assert(values.size() == 3);
 	type = values[0];
