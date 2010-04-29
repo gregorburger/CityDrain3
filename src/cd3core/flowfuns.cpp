@@ -97,7 +97,7 @@ Flow FlowFuns::catchment_flowmodel(const Flow &in,
 		out[i+1] = cvalues[i];
 	}
 
-	out[0] = rain/1000/dt*area;
+	out[0] = rain/1000*area;
 	return out;
 }
 
@@ -140,8 +140,8 @@ Flow FlowFuns::route_catchment(const Flow &in,
 	Flow oldvolume = *_oldvolume;
 	Flow out;
 	rain[0] = rain[0] / N;
-	out[0] = ((in[0] / dt + rain[0]) * C_x + oldvolume[0] * C_y) * dt;
-	newvolume[0] = ((in[0] - out[0])/dt + rain[0]) * dt + oldvolume[0];
+	out[0] = ((in[0] + rain[0]) / dt * C_x + oldvolume[0] * C_y) * dt;
+	newvolume[0] = in[0] - out[0] + rain[0] + oldvolume[0];
 
 	//QL = rain
 	//QI = in
