@@ -124,11 +124,11 @@ public:
 	T *getParameter(const std::string &name) const {
 		cd3assert(parameters.find(name) != parameters.end(),
 				  str(format("no parameter with name %1%") % name));
-		ltvp p = parameters[name];
-		cd3assert(p.first == cd3::TypeInfo(typeid(T)),
+		NodeParameter *p = parameters.at(name);
+		cd3assert(p->type == cd3::TypeInfo(typeid(T)),
 				  str(format("wrong type for parameter %1%") % name));
 		Logger(Debug) << this << "getParameter(" << name << ")";
-		return static_cast<T*>(p.second);
+		return static_cast<T*>(p->value);
 	}
 
 	template<class T>
