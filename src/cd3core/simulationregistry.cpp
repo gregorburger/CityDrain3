@@ -1,14 +1,12 @@
+#include <QLibrary> //on top here because clang complains about ambiguous QList::iterator
 #include "simulationregistry.h"
 
 #include <simulationfactory.h>
 #include <simulation.h>
 #include <cd3assert.h>
 
-#include <QLibrary>
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
-
-using namespace boost;
 
 SimulationRegistry::SimulationRegistry() {
 }
