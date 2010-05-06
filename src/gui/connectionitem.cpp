@@ -1,6 +1,7 @@
 #include "connectionitem.h"
 #include "portitem.h"
 #include <QPainter>
+#include <QGraphicsDropShadowEffect>
 #include <simulationscene.h>
 #include <nodeconnection.h>
 #include <node.h>
@@ -14,6 +15,8 @@ ConnectionItem::ConnectionItem(SimulationScene *scene, QString source_id, QStrin
 	: QGraphicsItem(0, scene), scene(scene),
 	  source_id(source_id), source_port_id(source_port_id),
 	  hovered(false) {
+	QGraphicsDropShadowEffect *ds = new QGraphicsDropShadowEffect(this);
+	this->setGraphicsEffect(ds);
 	source = center(scene->findItem(source_id)->getOutPort(source_port_id));
 	setAcceptHoverEvents(true);
 	setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -21,6 +24,8 @@ ConnectionItem::ConnectionItem(SimulationScene *scene, QString source_id, QStrin
 
 ConnectionItem::ConnectionItem(SimulationScene *scene, NodeConnection *con)
 	: QGraphicsItem(0, scene), scene(scene), hovered(false) {
+	QGraphicsDropShadowEffect *ds = new QGraphicsDropShadowEffect(this);
+	this->setGraphicsEffect(ds);
 	setAcceptHoverEvents(true);
 	setFlag(QGraphicsItem::ItemIsSelectable, true);
 	setConnection(con);

@@ -8,7 +8,7 @@
 
 #include <QPainter>
 #include <QGraphicsSceneMouseEvent>
-#include <QGraphicsLinearLayout>
+#include <QGraphicsDropShadowEffect>
 #include <boost/foreach.hpp>
 
 #include <node.h>
@@ -21,6 +21,9 @@ typedef std::pair<std::string, Flow *> port_pair;
 
 NodeItem::NodeItem(Node* node)
 	: QGraphicsItem(), node(node), margin(30) {
+	QGraphicsDropShadowEffect *ds = new QGraphicsDropShadowEffect(this);
+	ds->setBlurRadius(3);
+	this->setGraphicsEffect(ds);
 	setFlag(ItemIsMovable, true);
 	setFlag(ItemIsSelectable, true);
 #if QT_VERSION >= QT_VERSION_CHECK(4,6,0)

@@ -245,7 +245,16 @@ void MainWindow::on_actionZoom_out_activated() {
 
 void MainWindow::on_actionZoom_reset_activated() {
 	//scene->update();
-	QRectF bounds = scene->itemsBoundingRect();
+	QRectF bounds;
+	if (scene->selectedItems().size() == 0) {
+		bounds = scene->itemsBoundingRect();
+	} else {
+		QList<NodeItem *> items = scene->filterNodes(scene->selectedItems());
+		Q_FOREACH(NodeItem *item, items) {
+			bounds = bounds.united(item->mapRectToScene(item->boundingRect()));
+		}
+	}
+
 	ui->graphicsView->setSceneRect(bounds);
 	ui->graphicsView->fitInView(bounds, Qt::KeepAspectRatio);
 }
