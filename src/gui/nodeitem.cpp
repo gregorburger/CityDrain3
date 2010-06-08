@@ -9,6 +9,7 @@
 #include <QPainter>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsDropShadowEffect>
+#include <QTextStream>
 #include <boost/foreach.hpp>
 
 #include <node.h>
@@ -118,7 +119,9 @@ void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 		painter->fillPath(path, Qt::white);
 	}
 	painter->strokePath(path, painter->pen());
-	QString text = getId() + "\n" + node->getClassName();
+	QString text;
+	QTextStream ts(&text);
+	ts << getId() << endl << node->getClassName();
 	QFont f;
 	QFontMetrics fm(f);
 	painter->drawText(QRectF(fm.boundingRect(text)), Qt::AlignCenter, text);
