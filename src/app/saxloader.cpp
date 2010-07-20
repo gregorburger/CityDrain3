@@ -30,7 +30,6 @@ struct SaxLoaderPriv {
 	Flow *f;
 	std::string param_name;
 	std::map<std::string, Flow::CalculationUnit> flow_definition;
-	//stack<std::string> parent_nodes;
 };
 
 SaxLoader::SaxLoader(IModel *model) : delete_node_reg(true), delete_sim_reg(true) {
@@ -201,6 +200,8 @@ ISimulation *SaxLoader::load(QFile &file) {
 	QXmlInputSource source(&file);
 	r.parse(&source);
 	cd3assert(simulation, "could not load simulation");
+	bool cwd = QDir::setCurrent(QFileInfo(file).absoluteDir().path());
+	cd3assert(cwd, "could not change cwd");
 	return simulation;
 }
 

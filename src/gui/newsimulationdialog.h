@@ -10,6 +10,7 @@ namespace Ui {
 class SimulationRegistry;
 class ISimulation;
 class QDateTime;
+class QPushButton;
 
 class NewSimulationDialog : public QDialog
 {
@@ -24,10 +25,12 @@ public:
 	Ui::NewSimulationDialog *ui;
 
 private Q_SLOTS:
+	void on_projectRootLineEdit_textEdited(QString );
+	void on_chooser_clicked();
 	void on_start_dateTimeChanged(const QDateTime &date);
 private:
 	void defineFlow();
-
+	QPushButton *ok;
 };
 
 boost::posix_time::ptime qttopt(const QDateTime &dt);

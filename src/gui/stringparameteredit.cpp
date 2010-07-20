@@ -19,7 +19,7 @@ void StringParameterEdit::on_fileButton_clicked() {
 												"Choose File or FileName",
 												path);
 	if (name != "") {
-		ui->value->setText(name);
+		ui->value->setText(QDir::current().relativeFilePath(name));
 	}
 }
 

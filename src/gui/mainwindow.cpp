@@ -13,6 +13,7 @@
 #include "ui_timecontrols.h"
 #include "renamenodedialog.h"
 #include "ui_aboutdialog.h"
+#include "saveasdialog.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -128,6 +129,7 @@ void MainWindow::setupStateMachine() {
 	loaded->assignProperty(ui->actionCopy, "enabled", true);
 	loaded->assignProperty(ui->actionPaste, "enabled", true);
 	loaded->assignProperty(ui->actionRename, "enabled", true);
+	loaded->assignProperty(ui->actionSave_as, "enabled", true);
 	/*loaded->assignProperty(ui->actionUndo, "enabled", true);
 	loaded->assignProperty(ui->actionRedo, "enabled", true);*/
 	loaded->assignProperty(ui->actionFind_node, "enabled", true);
@@ -154,12 +156,10 @@ void MainWindow::setupStateMachine() {
 	QState *save_group = new QState(loaded);
 	QState *saved = new QState(save_group);
 	saved->assignProperty(this, "unsaved_changes", false);
-	saved->assignProperty(ui->actionSave_as, "enabled", false);
 	saved->assignProperty(ui->actionSave_Simulation, "enabled", false);
 
 	QState *unsaved = new QState(save_group);
 	unsaved->assignProperty(this, "unsaved_changes", true);
-	unsaved->assignProperty(ui->actionSave_as, "enabled", true);
 	unsaved->assignProperty(ui->actionSave_Simulation, "enabled", true);
 
 	saved->addTransition(scene, SIGNAL(changed(QUndoCommand*)), unsaved);
@@ -306,7 +306,7 @@ void MainWindow::on_actionSave_Simulation_activated() {
 }
 
 void MainWindow::on_actionSave_as_activated() {
-	QString fileName = QFileDialog::getSaveFileName(this, "Save Model File", ".", "XML Files (*.xml)");
+	QString fileName = SaveAsDialog::getSaveFileName();
 	if (fileName == "")
 		return;
 	if (!fileName.endsWith(".xml", Qt::CaseInsensitive)) {

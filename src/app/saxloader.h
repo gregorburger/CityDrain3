@@ -3,8 +3,6 @@
 
 #include <QXmlDefaultHandler>
 #include <cd3globals.h>
-#include <boost/shared_ptr.hpp>
-using namespace boost;
 
 struct SaxLoaderPriv;
 class IModel;

@@ -82,6 +82,7 @@ void SimulationScene::_new() {
 	sim_reg = new SimulationRegistry();
 	NewSimulationDialog ns(sim_reg);
 	if (ns.exec()) {
+		QDir::setCurrent(ns.ui->projectRootLineEdit->text());
 		model = new MapBasedModel();
 		node_reg = new NodeRegistry();
 		simulation = ns.createSimulation();

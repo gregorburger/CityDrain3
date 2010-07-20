@@ -170,9 +170,6 @@
        <attribute name="headerVisible">
         <bool>false</bool>
        </attribute>
-       <attribute name="headerVisible">
-        <bool>false</bool>
-       </attribute>
        <column>
         <property name="text">
          <string notr="true">1</string>
@@ -357,7 +354,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../data/resources/cd3-gui.qrc">
-     <normaloff>:/icons/edit-find.svg</normaloff>:/icons/edit-find.svg</iconset>
+     <normaloff>:/icons/edit-find.png</normaloff>:/icons/edit-find.png</iconset>
    </property>
    <property name="text">
     <string>find node</string>
@@ -422,7 +419,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../data/resources/cd3-gui.qrc">
-     <normaloff>:/icons/edit-undo.svg</normaloff>:/icons/edit-undo.svg</iconset>
+     <normaloff>:/icons/edit-undo.png</normaloff>:/icons/edit-undo.png</iconset>
    </property>
    <property name="text">
     <string>undo</string>
@@ -437,7 +434,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../data/resources/cd3-gui.qrc">
-     <normaloff>:/icons/edit-redo.svg</normaloff>:/icons/edit-redo.svg</iconset>
+     <normaloff>:/icons/edit-redo.png</normaloff>:/icons/edit-redo.png</iconset>
    </property>
    <property name="text">
     <string>redo</string>

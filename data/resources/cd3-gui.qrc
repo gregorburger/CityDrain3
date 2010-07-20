@@ -15,10 +15,10 @@
         <file>logo.png</file>
         <file>logo2.svg</file>
         <file>process-stop.png</file>
-        <file>edit-find.svg</file>
         <file>stock_graphics-align-top.png</file>
         <file>stock_graphics-align-left.png</file>
-        <file>edit-redo.svg</file>
-        <file>edit-undo.svg</file>
+        <file>edit-find.png</file>
+        <file>edit-undo.png</file>
+        <file>edit-redo.png</file>
     </qresource>
 </RCC>

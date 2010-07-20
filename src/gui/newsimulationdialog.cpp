@@ -8,6 +8,8 @@
 
 #include <QFile>
 #include <QString>
+#include <QFileDialog>
+#include <QPushButton>
 #include <boost/foreach.hpp>
 
 NewSimulationDialog::NewSimulationDialog(SimulationRegistry *registry,
@@ -15,6 +17,8 @@ NewSimulationDialog::NewSimulationDialog(SimulationRegistry *registry,
 										 Qt::WindowFlags f)
 	: QDialog(parent, f), registry(registry), ui(new Ui::NewSimulationDialog()) {
 	ui->setupUi(this);
+	ok = ui->buttonBox->button(QDialogButtonBox::Ok);
+	ok->setEnabled(false);
 	QStringList list;
 
 	registry->addNativePlugin("nodes");
@@ -51,4 +55,18 @@ ISimulation *NewSimulationDialog::createSimulation() {
 
 void NewSimulationDialog::on_start_dateTimeChanged(const QDateTime &date) {
 	ui->stop->setMinimumDateTime(date.addSecs(ui->dt->value()));
+}
+
+void NewSimulationDialog::on_chooser_clicked() {
+	QString dir = QFileDialog::getExistingDirectory(this, "choose working directory");
+	if (dir == "") {
+		return;
+	}
+	ui->projectRootLineEdit->setText(dir);;
+	ok->setEnabled(true);
+}
+
+void NewSimulationDialog::on_projectRootLineEdit_textEdited(QString s) {
+	QDir d;
+	ok->setEnabled(d.exists(s));
 }
