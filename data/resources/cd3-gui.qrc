@@ -20,5 +20,6 @@
         <file>edit-find.png</file>
         <file>edit-undo.png</file>
         <file>edit-redo.png</file>
+        <file>logo3.png</file>
     </qresource>
 </RCC>

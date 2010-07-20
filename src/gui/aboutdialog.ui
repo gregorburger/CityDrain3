@@ -20,13 +20,13 @@
       <widget class="QLabel" name="label">
        <property name="minimumSize">
         <size>
-         <width>160</width>
+         <width>200</width>
          <height>120</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>160</width>
+         <width>200</width>
          <height>120</height>
         </size>
        </property>
@@ -34,7 +34,7 @@
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap resource="../../data/resources/cd3-gui.qrc">:/icons/logo2.svg</pixmap>
+        <pixmap resource="../../data/resources/cd3-gui.qrc">:/icons/logo3.png</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
