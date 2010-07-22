@@ -14,6 +14,7 @@
 #include "renamenodedialog.h"
 #include "ui_aboutdialog.h"
 #include "saveasdialog.h"
+#include "autolayout.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -96,6 +97,7 @@ void MainWindow::setupStateMachine() {
 	unloaded->assignProperty(ui->actionRedo, "enabled", false);
 	unloaded->assignProperty(ui->actionRename, "enabled", false);
 	unloaded->assignProperty(ui->graphicsView, "enabled", false);
+	unloaded->assignProperty(ui->actionAuto_layout, "enabled", false);
 
 	unloaded->assignProperty(ui->actionFind_node, "enabled", false);
 	unloaded->assignProperty(ui->actionZoom_in, "enabled", false);
@@ -141,6 +143,9 @@ void MainWindow::setupStateMachine() {
 	loaded->assignProperty(ui->actionHorizontal_center_align, "enabled", true);
 	loaded->assignProperty(ui->actionIncrease_distance, "enabled", true);
 	loaded->assignProperty(ui->actionDecrease_distance, "enabled", true);
+
+	loaded->assignProperty(ui->actionAuto_layout, "enabled", true);
+
 	//run buttons
 	loaded->assignProperty(ui->runButton, "enabled", true);
 	loaded->assignProperty(ui->stopButton, "enabled", true);
@@ -599,4 +604,10 @@ void MainWindow::on_action_About_activated() {
 	Ui::AboutDialog d;
 	d.setupUi(&dialog);
 	dialog.exec();
+}
+
+void MainWindow::on_actionAuto_layout_activated() {
+	AutoLayout a(scene);
+	a.layout();
+	on_actionZoom_reset_activated();
 }

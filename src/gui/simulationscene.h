@@ -48,7 +48,7 @@ public:
 	inline SimulationRegistry *getSimulationRegistry() const { return sim_reg; }
 	inline ISimulation *getSimulation() const { return simulation; }
 	inline MapBasedModel *getModel() const { return model; }
-	inline QList<NodeItem*> getNodeItems() const { return node_items.values(); }
+	inline QMap<QString, NodeItem*> getNodeItems() const { return node_items; }
 	inline QList<ConnectionItem*> getConnectionsOf(QString node_id) { return connections_of_node.values(node_id); }
 
 	inline QString getModelFileName() const { return model_file_name; }

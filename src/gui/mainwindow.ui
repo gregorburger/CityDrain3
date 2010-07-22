@@ -121,6 +121,7 @@
     <addaction name="actionAlign_vertically_center"/>
     <addaction name="actionIncrease_distance"/>
     <addaction name="actionDecrease_distance"/>
+    <addaction name="actionAuto_layout"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -481,6 +482,14 @@
   <action name="action_About">
    <property name="text">
     <string>&amp;About</string>
+   </property>
+  </action>
+  <action name="actionAuto_layout">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>auto layout</string>
    </property>
   </action>
  </widget>

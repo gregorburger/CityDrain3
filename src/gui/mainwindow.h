@@ -77,6 +77,7 @@ public Q_SLOTS:
 	void on_actionRename_activated();
 	void on_actionIncrease_distance_activated();
 	void on_actionDecrease_distance_activated();
+	void on_actionAuto_layout_activated();
 
 	//align stuff
 	void on_actionHorizontal_center_align_activated();

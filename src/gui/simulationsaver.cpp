@@ -47,7 +47,7 @@ void SimulationSaver::save() {
 
 	saveSimulation(scene->getSimulation());
 	saveModel(scene->getSimulation()->getModel());
-	saveNodePositions(scene->getNodeItems());
+	saveNodePositions(scene->getNodeItems().values());
 
 	writer->writeEndElement();
 	writer->writeEndDocument();
