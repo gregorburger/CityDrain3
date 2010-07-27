@@ -224,7 +224,7 @@ struct INodeFactoryWrapper : public INodeFactory, python::wrapper<INodeFactory> 
 		return 0;
 	}
 
-	std::string getNodeName() {
+	std::string getNodeName() const {
 		try {
 			return python::call_method<std::string>(self, "getNodeName");
 		} catch(...) {
@@ -233,6 +233,17 @@ struct INodeFactoryWrapper : public INodeFactory, python::wrapper<INodeFactory> 
 		}
 		return "";
 	}
+
+	std::string getSource() const {
+		try {
+			return python::call_method<std::string>(self, "getSource");
+		} catch(...) {
+			Logger(Error) << __FILE__ << ":" << __LINE__;
+			handle_python_exception();
+		}
+		return "";
+	}
+
 	PyObject *self;
 };
 
@@ -246,6 +257,7 @@ void wrap_node() {
 	python::class_<INodeFactory, auto_ptr<INodeFactoryWrapper>, boost::noncopyable>("NodeFactory")
 		.def("createNode", pure_virtual(&INodeFactoryWrapper::createNode), python::return_value_policy<python::manage_new_object>())
 		.def("getNodeName", pure_virtual(&INodeFactoryWrapper::getNodeName))
+		.def("getSource", pure_virtual(&INodeFactoryWrapper::getSource))
 		;
 	python::implicitly_convertible<auto_ptr<INodeFactoryWrapper>, auto_ptr<INodeFactory> >();
 	python::class_<NodeWrapper, auto_ptr<NodeWrapper>, boost::noncopyable>("Node")

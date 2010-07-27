@@ -126,7 +126,7 @@ void PythonEnv::registerNodes(NodeRegistry *registry, const string &module) {
 			std::string name = extract<std::string>(clss[i].attr("__name__"));
 			if (registry->contains(name))
 				continue;
-			registry->addNodeFactory(new PythonNodeFactory(clss[i]));
+			registry->addNodeFactory(new PythonNodeFactory(module, clss[i]));
 			numn++;
 		}
 		Logger(Debug) << "found" << numn << "Nodes in module" << module;

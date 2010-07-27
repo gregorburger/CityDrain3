@@ -32,26 +32,28 @@
 #include <typefactory.h>
 #include <cd3globals.h>
 
+static const char *SOURCE = "Default Nodes";
+
 extern "C" {
 	void CD3_PUBLIC registerNodes(NodeRegistry *registry) {
-		registry->addNodeFactory(new NodeFactory<ConstSource>());
-		registry->addNodeFactory(new NodeFactory<FileOut>());
-		registry->addNodeFactory(new NodeFactory<Mixer>());
-		registry->addNodeFactory(new NodeFactory<Sewer>());
-		registry->addNodeFactory(new NodeFactory<TestNode>());
-		registry->addNodeFactory(new NodeFactory<CSO>());
-		registry->addNodeFactory(new NodeFactory<Splitter>());
-		registry->addNodeFactory(new NodeFactory<CatchmentCSS>());
-		registry->addNodeFactory(new NodeFactory<Null>());
-		registry->addNodeFactory(new NodeFactory<CycleNodeEnd>());
-		registry->addNodeFactory(new NodeFactory<CycleNodeStart>());
-		registry->addNodeFactory(new NodeFactory<ArrayParamTest>());
-		registry->addNodeFactory(new NodeFactory<IxxRainRead>());
-		registry->addNodeFactory(new NodeFactory<PumpingStation>());
-		registry->addNodeFactory(new NodeFactory<DWF>());
-		registry->addNodeFactory(new NodeFactory<WWTP>());
-		registry->addNodeFactory(new NodeFactory<SimplePump>());
-		registry->addNodeFactory(new NodeFactory<Impuls>());
+		registry->addNodeFactory(new NodeFactory<ConstSource>(SOURCE));
+		registry->addNodeFactory(new NodeFactory<FileOut>(SOURCE));
+		registry->addNodeFactory(new NodeFactory<Mixer>(SOURCE));
+		registry->addNodeFactory(new NodeFactory<Sewer>(SOURCE));
+		registry->addNodeFactory(new NodeFactory<TestNode>(SOURCE));
+		registry->addNodeFactory(new NodeFactory<CSO>(SOURCE));
+		registry->addNodeFactory(new NodeFactory<Splitter>(SOURCE));
+		registry->addNodeFactory(new NodeFactory<CatchmentCSS>(SOURCE));
+		registry->addNodeFactory(new NodeFactory<Null>(SOURCE));
+		registry->addNodeFactory(new NodeFactory<CycleNodeEnd>(SOURCE));
+		registry->addNodeFactory(new NodeFactory<CycleNodeStart>(SOURCE));
+		registry->addNodeFactory(new NodeFactory<ArrayParamTest>(SOURCE));
+		registry->addNodeFactory(new NodeFactory<IxxRainRead>(SOURCE));
+		registry->addNodeFactory(new NodeFactory<PumpingStation>(SOURCE));
+		registry->addNodeFactory(new NodeFactory<DWF>(SOURCE));
+		registry->addNodeFactory(new NodeFactory<WWTP>(SOURCE));
+		registry->addNodeFactory(new NodeFactory<SimplePump>(SOURCE));
+		registry->addNodeFactory(new NodeFactory<Impuls>(SOURCE));
 	}
 
 	void CD3_PUBLIC registerSimulations(SimulationRegistry *registry) {

@@ -51,6 +51,16 @@ std::vector<std::string> NodeRegistry::getRegisteredNames() const {
 	return names;
 }
 
+typedef std::map<std::string, std::vector<std::string> > names_and_sources;
+names_and_sources
+NodeRegistry::getRegisteredNamesAndSources() const {
+	names_and_sources n_and_s;
+	BOOST_FOREACH(snf item, registered_nodes) {
+		n_and_s[item.second->getSource()].push_back(item.first);
+	}
+	return n_and_s;
+}
+
 Node *NodeRegistry::createNode(const std::string &name) const {
 	cd3assert(contains(name),
 			  str(format("no such node class registered: %1%") % name));

@@ -264,20 +264,26 @@ void MainWindow::on_actionZoom_reset_activated() {
 	ui->graphicsView->fitInView(bounds, Qt::KeepAspectRatio);
 }
 
+typedef std::pair<std::string, std::vector<std::string> > names_and_sources_pair;
+
 void MainWindow::pluginsAdded() {
 	ui->treeWidget->clear();
-	QTreeWidgetItem *nodes = new QTreeWidgetItem(QStringList("nodes"));
 
-	BOOST_FOREACH(std::string node_name, scene->getNodeRegistry()->getRegisteredNames()) {
-		QString qnode_name = QString::fromStdString(node_name);
-		if (qnode_name.startsWith("CycleNode"))
-			continue;
-		QTreeWidgetItem *item = new QTreeWidgetItem(nodes);
-		item->setText(0, qnode_name);
+	BOOST_FOREACH(names_and_sources_pair p, scene->getNodeRegistry()->getRegisteredNamesAndSources()) {
+		QString sourceName = QString::fromStdString(p.first);
+		QTreeWidgetItem *parent = new QTreeWidgetItem(QStringList(sourceName));
+
+
+		BOOST_FOREACH(std::string node_name, p.second) {
+			QString qnode_name = QString::fromStdString(node_name);
+			if (qnode_name.startsWith("CycleNode"))
+				continue;
+			QTreeWidgetItem *item = new QTreeWidgetItem(parent);
+			item->setText(0, qnode_name);
+		}
+		ui->treeWidget->insertTopLevelItem(0, parent);
+		parent->setExpanded(true);
 	}
-	ui->treeWidget->insertTopLevelItem(0, nodes);
-
-	nodes->setExpanded(true);
 }
 
 void MainWindow::on_runButton_clicked() {

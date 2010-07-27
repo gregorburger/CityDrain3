@@ -9,12 +9,14 @@ using namespace boost::python;
 struct PNodeFactoryPriv {
 	object klass;
 	std::string name;
+	std::string module;
 };
 
-PythonNodeFactory::PythonNodeFactory(object klass) {
+PythonNodeFactory::PythonNodeFactory(string module, object klass) {
 	priv = new PNodeFactoryPriv();
 	priv->klass = klass;
 	priv->name = extract<std::string>(priv->klass.attr("__name__"));
+	priv->module = module;
 }
 
 PythonNodeFactory::~PythonNodeFactory() {
@@ -35,7 +37,11 @@ Node *PythonNodeFactory::createNode() const {
 	return 0;
 }
 
-std::string PythonNodeFactory::getNodeName() {
+std::string PythonNodeFactory::getNodeName() const {
 	return priv->name;
+}
+
+std::string PythonNodeFactory::getSource() const {
+	return priv->module + " (Python)";
 }
 

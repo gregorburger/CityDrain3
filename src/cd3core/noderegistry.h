@@ -23,6 +23,10 @@ public:
 	void addNativePlugin(const std::string &plugin_path);
 
 	std::vector<std::string> getRegisteredNames() const;
+
+	std::map<std::string, std::vector<std::string> >
+	getRegisteredNamesAndSources() const;
+
 	Node *createNode(const std::string &name) const;
 	bool contains(const std::string &name) const;
 
