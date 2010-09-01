@@ -149,7 +149,7 @@ int main(int argc, char **argv) {
 
 	s->start(starttime);
 	Logger(Debug) << "shutting down";
-	Log::shutDown();
+	//Log::shutDown();
 	delete s;
 	return 0;
 }
