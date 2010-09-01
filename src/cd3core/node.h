@@ -20,13 +20,13 @@ class Flow;
 #define CD3_DECLARE_NODE(node)  \
 class CD3_PUBLIC node : public Node { \
 public: \
-	static const char *name; \
+	static const char *class_name; \
 	const char *getClassName() const; \
 private:
 
 #define CD3_DECLARE_NODE_NAME(nodename) \
-const char *nodename::name = #nodename; \
-const char *nodename::getClassName() const { return nodename::name; }
+const char *nodename::class_name = #nodename; \
+const char *nodename::getClassName() const { return nodename::class_name; }
 
 using namespace boost;
 

@@ -41,7 +41,7 @@ Node *NodeFactory<T>::createNode() const {
 
 template <typename T>
 std::string NodeFactory<T>::getNodeName() const {
-	return T::name;
+	return T::class_name;
 }
 
 template <typename T>
