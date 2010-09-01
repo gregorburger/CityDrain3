@@ -4,9 +4,14 @@
 #include <vector>
 
 #include <simulation.h>
+#include <boost/shared_ptr.hpp>
+#include <tqueue.h>
 
-struct OPSPriv;
 struct NodeConnection;
+class Model;
+class Node;
+
+typedef boost::shared_ptr<tqueue<Node *> > sh_node_queue;
 
 CD3_DECLARE_SIMULATION(OrderedPipeSimulation)
 public:
@@ -19,8 +24,8 @@ public:
 									 Node *, const std::string &) const;
 private:
 	std::vector<Node *> getOrder();
-	void updatePorts(Node *sink);
-	OPSPriv *pd;
+	IModel *model;
+	std::vector<Node *> order;
 };
 
 #endif // ORDEREDPIPESIMULATION_H
