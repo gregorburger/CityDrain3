@@ -19,12 +19,10 @@ public:
 	~OrderedPipeSimulation();
 	void start(ptime time);
 	int run(ptime time, int dt);
-	void setModel(IModel *model);
 	NodeConnection *createConnection(Node *, const std::string &,
 									 Node *, const std::string &) const;
 private:
 	std::vector<Node *> getOrder();
-	IModel *model;
 	std::vector<Node *> order;
 };
 

@@ -94,14 +94,6 @@ vector<Node *> OrderedPipeSimulation::getOrder() {
 	return order;
 }
 
-void OrderedPipeSimulation::setModel(IModel *model) {
-	cd3assert(model, "model null");
-	cd3assert(model->cycleFree(),
-			  "The OrderedPipeSimulation does not support cyclic models");
-	ISimulation::setModel(model);
-	model = model;
-}
-
 NodeConnection *OrderedPipeSimulation::createConnection(Node *source,
 														const std::string &srcp,
 														Node *sink,
