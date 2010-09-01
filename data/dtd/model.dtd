@@ -13,7 +13,6 @@
 <!ELEMENT connection (source, sink) >
 <!ELEMENT source EMPTY >
 <!ELEMENT sink EMPTY >
-<!ELEMENT flow (unit*) >
 <!ELEMENT unit EMPTY >
 <!ELEMENT controller EMPTY >
 
@@ -47,8 +46,7 @@
 
 <!ATTLIST parameter 
 	name CDATA #REQUIRED
-	type (string|bool|float|double|int|Flow) #REQUIRED
-	kind (simple|complex) "simple"
+	type (string|bool|float|double|int|flow) #REQUIRED
 	value CDATA #IMPLIED >
 	
 <!ATTLIST connection
