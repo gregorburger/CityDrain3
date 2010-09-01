@@ -5,7 +5,7 @@
 
 	<pluginpath path="nodes" />
 	<simulation class="ParallelSimulation">
-		<time start="0" stop="72000" dt="300" />
+		<time start="2000-Jan-01 00:00:00" stop="2000-Jan-03 00:00:00" dt="300" />
         <flowdefinition>
 		    <flow name="Q"/>
 		    <concentration name="C0"/>
@@ -1738,7 +1738,7 @@
 
 
 			<node id="FileOut-52" class="FileOut">
-				<parameter name="out_file_name" type="string" value="tmp/river-out-RÜB_Neu_Götzner_Str.txt" />
+				<parameter name="out_file_name" type="string" value="tmp/river-out-RUEB_Neu_Goetzner_Str.txt" />
 			</node>
 
 
