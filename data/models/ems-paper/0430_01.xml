@@ -1,0 +1,953 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<citydrain version="1.0">
+    <pluginpath path="nodes"/>
+    <simulation class="DefaultSimulation">
+        <time start="2000-Jan-01 00:00:00" stop="2000-Jan-02 00:00:00" dt="300">
+            <flowdefinition>
+                <flow name="Q"/>
+				<concentration name="COD"/>
+				<concentration name="Ntot"/>
+            </flowdefinition>
+        </time>
+    </simulation>
+    <model>
+        <nodelist>
+            <node id="CSO_1" class="CSO">
+                <parameter name="Q_Max" type="double" value="0.90000000000000002"/>
+                <parameter name="V_Max" type="double" value="0"/>
+            </node>
+            <node id="CatchmentCSS_3" class="CatchmentCSS">
+                <parameter name="K" type="double" value="300"/>
+                <parameter name="N" type="int" value="6"/>
+                <parameter name="X" type="double" value="0"/>
+                <parameter name="area" type="int" value="380"/>
+                <parameter name="initial_loss" type="double" value="1"/>
+                <parameter name="permanent_loss" type="double" value="1.25"/>
+                <parameter name="rain_concentration" type="array[double]" value=""/>
+                <parameter name="run_off_coeff" type="double" value="0.17999999999999999"/>
+            </node>
+            <node id="CSO_9" class="CSO">
+                <parameter name="Q_Max" type="double" value="1.1000000000000001"/>
+                <parameter name="V_Max" type="double" value="0"/>
+            </node>
+            <node id="FileOut_26" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qeo12.txt"/>
+            </node>
+            <node id="Mixer_3" class="Mixer">
+                <parameter name="num_inputs" type="int" value="2"/>
+            </node>
+            <node id="CSO_8" class="CSO">
+                <parameter name="Q_Max" type="double" value="0.52000000000000002"/>
+                <parameter name="V_Max" type="double" value="3500"/>
+            </node>
+            <node id="FileOut_40" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qwo10.txt"/>
+            </node>
+            <node id="Mixer_11" class="Mixer">
+                <parameter name="num_inputs" type="int" value="2"/>
+            </node>
+            <node id="CatchmentCSS_7" class="CatchmentCSS">
+                <parameter name="K" type="double" value="300"/>
+                <parameter name="N" type="int" value="5"/>
+                <parameter name="X" type="double" value="0"/>
+                <parameter name="area" type="int" value="101"/>
+                <parameter name="initial_loss" type="double" value="1"/>
+                <parameter name="permanent_loss" type="double" value="1.25"/>
+                <parameter name="rain_concentration" type="array[double]" value=""/>
+                <parameter name="run_off_coeff" type="double" value="0.59999999999999998"/>
+            </node>
+            <node id="FileOut_35" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qc9.txt"/>
+            </node>
+            <node id="FileOut_7" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qwo3.txt"/>
+            </node>
+            <node id="FileOut_32" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qwo13.txt"/>
+            </node>
+            <node id="Sewer_1" class="Sewer">
+                <parameter name="K" type="int" value="300"/>
+                <parameter name="N" type="int" value="2"/>
+                <parameter name="X" type="double" value="0.10000000000000001"/>
+            </node>
+            <node id="CatchmentCSS_0" class="CatchmentCSS">
+                <parameter name="K" type="double" value="300"/>
+                <parameter name="N" type="int" value="6"/>
+                <parameter name="X" type="double" value="0"/>
+                <parameter name="area" type="int" value="238"/>
+                <parameter name="initial_loss" type="double" value="1"/>
+                <parameter name="permanent_loss" type="double" value="1.25"/>
+                <parameter name="rain_concentration" type="array[double]" value=""/>
+                <parameter name="run_off_coeff" type="double" value="0.25"/>
+            </node>
+            <node id="Sewer_10" class="Sewer">
+                <parameter name="K" type="int" value="300"/>
+                <parameter name="N" type="int" value="10"/>
+                <parameter name="X" type="double" value="0.10000000000000001"/>
+            </node>
+            <node id="Sewer_5" class="Sewer">
+                <parameter name="K" type="int" value="300"/>
+                <parameter name="N" type="int" value="11"/>
+                <parameter name="X" type="double" value="0.10000000000000001"/>
+            </node>
+            <node id="Sewer_2" class="Sewer">
+                <parameter name="K" type="int" value="300"/>
+                <parameter name="N" type="int" value="11"/>
+                <parameter name="X" type="double" value="0.10000000000000001"/>
+            </node>
+            <node id="CatchmentCSS_12" class="CatchmentCSS">
+                <parameter name="K" type="double" value="300"/>
+                <parameter name="N" type="int" value="6"/>
+                <parameter name="X" type="double" value="0"/>
+                <parameter name="area" type="int" value="332"/>
+                <parameter name="initial_loss" type="double" value="1"/>
+                <parameter name="permanent_loss" type="double" value="1.25"/>
+                <parameter name="rain_concentration" type="array[double]" value=""/>
+                <parameter name="run_off_coeff" type="double" value="0.28999999999999998"/>
+            </node>
+            <node id="FileOut_30" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qwo8.txt"/>
+            </node>
+            <node id="CatchmentCSS_2" class="CatchmentCSS">
+                <parameter name="K" type="double" value="300"/>
+                <parameter name="N" type="int" value="1"/>
+                <parameter name="X" type="double" value="0"/>
+                <parameter name="area" type="int" value="54"/>
+                <parameter name="initial_loss" type="double" value="1"/>
+                <parameter name="permanent_loss" type="double" value="1.25"/>
+                <parameter name="rain_concentration" type="array[double]" value=""/>
+                <parameter name="run_off_coeff" type="double" value="0.46000000000000002"/>
+            </node>
+            <node id="CSO_2" class="CSO">
+                <parameter name="Q_Max" type="double" value="0.17999999999999999"/>
+                <parameter name="V_Max" type="double" value="250"/>
+            </node>
+            <node id="Mixer_0" class="Mixer">
+                <parameter name="num_inputs" type="int" value="2"/>
+            </node>
+            <node id="Mixer_10" class="Mixer">
+                <parameter name="num_inputs" type="int" value="2"/>
+            </node>
+            <node id="CSO_5" class="CSO">
+                <parameter name="Q_Max" type="double" value="0.22"/>
+                <parameter name="V_Max" type="double" value="2235"/>
+            </node>
+            <node id="CSO_12" class="CSO">
+                <parameter name="Q_Max" type="double" value="3.7999999999999998"/>
+                <parameter name="V_Max" type="double" value="4700"/>
+            </node>
+            <node id="IxxRainRead_0" class="IxxRainRead">
+                <parameter name="rain_file" type="string" value="ibk_00_Tag.ixx"/>
+            </node>
+            <node id="IxxRainRead_11" class="IxxRainRead">
+                <parameter name="rain_file" type="string" value="ibk_00_Tag.ixx"/>
+            </node>
+            <node id="IxxRainRead_9" class="IxxRainRead">
+                <parameter name="rain_file" type="string" value="ibk_00_Tag.ixx"/>
+            </node>
+            <node id="FileOut_4" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qc2.txt"/>
+            </node>
+            <node id="FileOut_31" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qeo8.txt"/>
+            </node>
+            <node id="FileOut_25" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qwo12.txt"/>
+            </node>
+            <node id="Sewer_6" class="Sewer">
+                <parameter name="K" type="int" value="300"/>
+                <parameter name="N" type="int" value="10"/>
+                <parameter name="X" type="double" value="0.10000000000000001"/>
+            </node>
+            <node id="Mixer_5" class="Mixer">
+                <parameter name="num_inputs" type="int" value="2"/>
+            </node>
+            <node id="CSO_11" class="CSO">
+                <parameter name="Q_Max" type="double" value="2.4199999999999999"/>
+                <parameter name="V_Max" type="double" value="5000"/>
+            </node>
+            <node id="Mixer_7" class="Mixer">
+                <parameter name="num_inputs" type="int" value="2"/>
+            </node>
+            <node id="CatchmentCSS_1" class="CatchmentCSS">
+                <parameter name="K" type="double" value="300"/>
+                <parameter name="N" type="int" value="6"/>
+                <parameter name="X" type="double" value="0"/>
+                <parameter name="area" type="int" value="226"/>
+                <parameter name="initial_loss" type="double" value="1"/>
+                <parameter name="permanent_loss" type="double" value="1.25"/>
+                <parameter name="rain_concentration" type="array[double]" value=""/>
+                <parameter name="run_off_coeff" type="double" value="0.22"/>
+            </node>
+            <node id="Sewer_9" class="Sewer">
+                <parameter name="K" type="int" value="300"/>
+                <parameter name="N" type="int" value="3"/>
+                <parameter name="X" type="double" value="0.10000000000000001"/>
+            </node>
+            <node id="Mixer_9" class="Mixer">
+                <parameter name="num_inputs" type="int" value="2"/>
+            </node>
+            <node id="Sewer_4" class="Sewer">
+                <parameter name="K" type="int" value="300"/>
+                <parameter name="N" type="int" value="2"/>
+                <parameter name="X" type="double" value="0.10000000000000001"/>
+            </node>
+            <node id="Mixer_4" class="Mixer">
+                <parameter name="num_inputs" type="int" value="2"/>
+            </node>
+            <node id="CatchmentCSS_6" class="CatchmentCSS">
+                <parameter name="K" type="double" value="300"/>
+                <parameter name="N" type="int" value="5"/>
+                <parameter name="X" type="double" value="0"/>
+                <parameter name="area" type="int" value="122"/>
+                <parameter name="initial_loss" type="double" value="1"/>
+                <parameter name="permanent_loss" type="double" value="1.25"/>
+                <parameter name="rain_concentration" type="array[double]" value=""/>
+                <parameter name="run_off_coeff" type="double" value="0.59999999999999998"/>
+            </node>
+            <node id="FileOut_29" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qc8.txt"/>
+            </node>
+            <node id="FileOut_36" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qwo9.txt"/>
+            </node>
+            <node id="CatchmentCSS_8" class="CatchmentCSS">
+                <parameter name="K" type="double" value="300"/>
+                <parameter name="N" type="int" value="10"/>
+                <parameter name="X" type="double" value="0"/>
+                <parameter name="area" type="int" value="23"/>
+                <parameter name="initial_loss" type="double" value="1"/>
+                <parameter name="permanent_loss" type="double" value="1.25"/>
+                <parameter name="rain_concentration" type="array[double]" value=""/>
+                <parameter name="run_off_coeff" type="double" value="0.20000000000000001"/>
+            </node>
+            <node id="Sewer_0" class="Sewer">
+                <parameter name="K" type="int" value="300"/>
+                <parameter name="N" type="int" value="9"/>
+                <parameter name="X" type="double" value="0.10000000000000001"/>
+            </node>
+            <node id="FileOut_14" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qc4.txt"/>
+            </node>
+            <node id="Sewer_11" class="Sewer">
+                <parameter name="K" type="int" value="300"/>
+                <parameter name="N" type="int" value="7"/>
+                <parameter name="X" type="double" value="0.10000000000000001"/>
+            </node>
+            <node id="FileOut_27" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qwo7.txt"/>
+            </node>
+            <node id="Sewer_3" class="Sewer">
+                <parameter name="K" type="int" value="300"/>
+                <parameter name="N" type="int" value="7"/>
+                <parameter name="X" type="double" value="0.10000000000000001"/>
+            </node>
+            <node id="FileOut_24" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qc7.txt"/>
+            </node>
+            <node id="FileOut_5" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qeo2.txt"/>
+            </node>
+            <node id="CSO_0" class="CSO">
+                <parameter name="Q_Max" type="double" value="0.40000000000000002"/>
+                <parameter name="V_Max" type="double" value="400"/>
+            </node>
+            <node id="Mixer_1" class="Mixer">
+                <parameter name="num_inputs" type="int" value="2"/>
+            </node>
+            <node id="IxxRainRead_10" class="IxxRainRead">
+                <parameter name="rain_file" type="string" value="ibk_00_Tag.ixx"/>
+            </node>
+            <node id="FileOut_11" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qeo4.txt"/>
+            </node>
+            <node id="CSO_3" class="CSO">
+                <parameter name="Q_Max" type="double" value="1.3700000000000001"/>
+                <parameter name="V_Max" type="double" value="1000"/>
+            </node>
+            <node id="FileOut_8" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qeo3.txt"/>
+            </node>
+            <node id="CSO_6" class="CSO">
+                <parameter name="Q_Max" type="double" value="0.57999999999999996"/>
+                <parameter name="V_Max" type="double" value="3300"/>
+            </node>
+            <node id="FileOut_33" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qeo13.txt"/>
+            </node>
+            <node id="IxxRainRead_8" class="IxxRainRead">
+                <parameter name="rain_file" type="string" value="ibk_00_Tag.ixx"/>
+            </node>
+            <node id="Mixer_6" class="Mixer">
+                <parameter name="num_inputs" type="int" value="2"/>
+            </node>
+            <node id="FileOut_28" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qeo7.txt"/>
+            </node>
+            <node id="IxxRainRead_7" class="IxxRainRead">
+                <parameter name="rain_file" type="string" value="ibk_00_Tag.ixx"/>
+            </node>
+            <node id="Sewer_7" class="Sewer">
+                <parameter name="K" type="int" value="300"/>
+                <parameter name="N" type="int" value="9"/>
+                <parameter name="X" type="double" value="0.10000000000000001"/>
+            </node>
+            <node id="FileOut_34" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qex13.txt"/>
+            </node>
+            <node id="FileOut_22" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qwo6.txt"/>
+            </node>
+            <node id="IxxRainRead_6" class="IxxRainRead">
+                <parameter name="rain_file" type="string" value="ibk_00_Tag.ixx"/>
+            </node>
+            <node id="IxxRainRead_5" class="IxxRainRead">
+                <parameter name="rain_file" type="string" value="ibk_00_Tag.ixx"/>
+            </node>
+            <node id="CatchmentCSS_11" class="CatchmentCSS">
+                <parameter name="K" type="double" value="300"/>
+                <parameter name="N" type="int" value="10"/>
+                <parameter name="X" type="double" value="0"/>
+                <parameter name="area" type="int" value="252"/>
+                <parameter name="initial_loss" type="double" value="1"/>
+                <parameter name="permanent_loss" type="double" value="1.25"/>
+                <parameter name="rain_concentration" type="array[double]" value=""/>
+                <parameter name="run_off_coeff" type="double" value="0.47999999999999998"/>
+            </node>
+            <node id="IxxRainRead_4" class="IxxRainRead">
+                <parameter name="rain_file" type="string" value="ibk_00_Tag.ixx"/>
+            </node>
+            <node id="FileOut_20" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qex11.txt"/>
+            </node>
+            <node id="IxxRainRead_12" class="IxxRainRead">
+                <parameter name="rain_file" type="string" value="ibk_00_Tag.ixx"/>
+            </node>
+            <node id="FileOut_38" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qc10.txt"/>
+            </node>
+            <node id="CatchmentCSS_9" class="CatchmentCSS">
+                <parameter name="K" type="double" value="300"/>
+                <parameter name="N" type="int" value="7"/>
+                <parameter name="X" type="double" value="0"/>
+                <parameter name="area" type="int" value="215"/>
+                <parameter name="initial_loss" type="double" value="1"/>
+                <parameter name="permanent_loss" type="double" value="1.25"/>
+                <parameter name="rain_concentration" type="array[double]" value=""/>
+                <parameter name="run_off_coeff" type="double" value="0.40000000000000002"/>
+            </node>
+            <node id="IxxRainRead_3" class="IxxRainRead">
+                <parameter name="rain_file" type="string" value="ibk_00_Tag.ixx"/>
+            </node>
+            <node id="IxxRainRead_2" class="IxxRainRead">
+                <parameter name="rain_file" type="string" value="ibk_00_Tag.ixx"/>
+            </node>
+            <node id="FileOut_37" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qeo9.txt"/>
+            </node>
+            <node id="FileOut_39" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qzo10.txt"/>
+            </node>
+            <node id="FileOut_0" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qwo1.txt"/>
+            </node>
+            <node id="IxxRainRead_1" class="IxxRainRead">
+                <parameter name="rain_file" type="string" value="ibk_00_Tag.ixx"/>
+            </node>
+            <node id="CatchmentCSS_5" class="CatchmentCSS">
+                <parameter name="K" type="double" value="300"/>
+                <parameter name="N" type="int" value="10"/>
+                <parameter name="X" type="double" value="0"/>
+                <parameter name="area" type="int" value="208"/>
+                <parameter name="initial_loss" type="double" value="1"/>
+                <parameter name="permanent_loss" type="double" value="1.25"/>
+                <parameter name="rain_concentration" type="array[double]" value=""/>
+                <parameter name="run_off_coeff" type="double" value="0.20000000000000001"/>
+            </node>
+            <node id="FileOut_3" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qeo1.txt"/>
+            </node>
+            <node id="FileOut_18" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qwo11.txt"/>
+            </node>
+            <node id="CatchmentCSS_4" class="CatchmentCSS">
+                <parameter name="K" type="double" value="300"/>
+                <parameter name="N" type="int" value="4"/>
+                <parameter name="X" type="double" value="0"/>
+                <parameter name="area" type="int" value="203"/>
+                <parameter name="initial_loss" type="double" value="1"/>
+                <parameter name="permanent_loss" type="double" value="1.25"/>
+                <parameter name="rain_concentration" type="array[double]" value=""/>
+                <parameter name="run_off_coeff" type="double" value="0.25"/>
+            </node>
+            <node id="CSO_7" class="CSO">
+                <parameter name="Q_Max" type="double" value="0.12"/>
+                <parameter name="V_Max" type="double" value="0"/>
+            </node>
+            <node id="CSO_4" class="CSO">
+                <parameter name="Q_Max" type="double" value="1.8"/>
+                <parameter name="V_Max" type="double" value="6300"/>
+            </node>
+            <node id="CSO_10" class="CSO">
+                <parameter name="Q_Max" type="double" value="0.28000000000000003"/>
+                <parameter name="V_Max" type="double" value="700"/>
+            </node>
+            <node id="Mixer_2" class="Mixer">
+                <parameter name="num_inputs" type="int" value="2"/>
+            </node>
+            <node id="Mixer_8" class="Mixer">
+                <parameter name="num_inputs" type="int" value="2"/>
+            </node>
+            <node id="FileOut_41" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qew.txt"/>
+            </node>
+            <node id="FileOut_17" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_q_nord.txt"/>
+            </node>
+            <node id="FileOut_10" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qwo4.txt"/>
+            </node>
+            <node id="FileOut_12" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qc5.txt"/>
+            </node>
+            <node id="FileOut_6" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qwo2.txt"/>
+            </node>
+            <node id="CatchmentCSS_10" class="CatchmentCSS">
+                <parameter name="K" type="double" value="300"/>
+                <parameter name="N" type="int" value="13"/>
+                <parameter name="X" type="double" value="0"/>
+                <parameter name="area" type="int" value="51"/>
+                <parameter name="initial_loss" type="double" value="1"/>
+                <parameter name="permanent_loss" type="double" value="1.25"/>
+                <parameter name="rain_concentration" type="array[double]" value=""/>
+                <parameter name="run_off_coeff" type="double" value="0.14999999999999999"/>
+            </node>
+            <node id="Sewer_8" class="Sewer">
+                <parameter name="K" type="int" value="300"/>
+                <parameter name="N" type="int" value="12"/>
+                <parameter name="X" type="double" value="0.10000000000000001"/>
+            </node>
+            <node id="FileOut_23" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qeo6.txt"/>
+            </node>
+            <node id="FileOut_16" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qeo5.txt"/>
+            </node>
+            <node id="FileOut_21" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qc6.txt"/>
+            </node>
+            <node id="FileOut_19" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qeo11.txt"/>
+            </node>
+            <node id="FileOut_15" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out/0430_01_qwo5.txt"/>
+            </node>
+        </nodelist>
+        <connectionlist>
+            <connection id="0">
+                <source node="CSO_0" port="out"/>
+                <sink node="FileOut_3" port="in"/>
+            </connection>
+            <connection id="1">
+                <source node="CatchmentCSS_6" port="out"/>
+                <sink node="FileOut_21" port="in"/>
+            </connection>
+            <connection id="2">
+                <source node="FileOut_33" port="out"/>
+                <sink node="Sewer_10" port="in"/>
+            </connection>
+            <connection id="3">
+                <source node="IxxRainRead_0" port="out"/>
+                <sink node="CatchmentCSS_0" port="rain_in"/>
+            </connection>
+            <connection id="4">
+                <source node="FileOut_35" port="out"/>
+                <sink node="Mixer_9" port="in_1"/>
+            </connection>
+            <connection id="5">
+                <source node="FileOut_26" port="out"/>
+                <sink node="Sewer_7" port="in"/>
+            </connection>
+            <connection id="6">
+                <source node="CatchmentCSS_12" port="out"/>
+                <sink node="FileOut_38" port="in"/>
+            </connection>
+            <connection id="7">
+                <source node="CSO_11" port="overflow"/>
+                <sink node="FileOut_36" port="in"/>
+            </connection>
+            <connection id="8">
+                <source node="IxxRainRead_4" port="out"/>
+                <sink node="CatchmentCSS_4" port="rain_in"/>
+            </connection>
+            <connection id="9">
+                <source node="CatchmentCSS_3" port="out"/>
+                <sink node="FileOut_12" port="in"/>
+            </connection>
+            <connection id="10">
+                <source node="CatchmentCSS_4" port="out"/>
+                <sink node="FileOut_14" port="in"/>
+            </connection>
+            <connection id="11">
+                <source node="FileOut_17" port="out"/>
+                <sink node="Mixer_10" port="in_0"/>
+            </connection>
+            <connection id="12">
+                <source node="CSO_9" port="out"/>
+                <sink node="FileOut_31" port="in"/>
+            </connection>
+            <connection id="13">
+                <source node="FileOut_31" port="out"/>
+                <sink node="Sewer_9" port="in"/>
+            </connection>
+            <connection id="14">
+                <source node="FileOut_23" port="out"/>
+                <sink node="Sewer_6" port="in"/>
+            </connection>
+            <connection id="15">
+                <source node="IxxRainRead_9" port="out"/>
+                <sink node="CatchmentCSS_9" port="rain_in"/>
+            </connection>
+            <connection id="16">
+                <source node="CatchmentCSS_5" port="out"/>
+                <sink node="CSO_5" port="in"/>
+            </connection>
+            <connection id="17">
+                <source node="FileOut_39" port="out"/>
+                <sink node="CSO_12" port="in"/>
+            </connection>
+            <connection id="18">
+                <source node="Mixer_1" port="out"/>
+                <sink node="Sewer_3" port="in"/>
+            </connection>
+            <connection id="19">
+                <source node="FileOut_28" port="out"/>
+                <sink node="Sewer_8" port="in"/>
+            </connection>
+            <connection id="20">
+                <source node="IxxRainRead_11" port="out"/>
+                <sink node="CatchmentCSS_11" port="rain_in"/>
+            </connection>
+            <connection id="21">
+                <source node="CSO_1" port="out"/>
+                <sink node="FileOut_5" port="in"/>
+            </connection>
+            <connection id="22">
+                <source node="FileOut_4" port="out"/>
+                <sink node="Mixer_0" port="in_0"/>
+            </connection>
+            <connection id="23">
+                <source node="FileOut_19" port="out"/>
+                <sink node="Sewer_5" port="in"/>
+            </connection>
+            <connection id="24">
+                <source node="CSO_2" port="overflow"/>
+                <sink node="FileOut_7" port="in"/>
+            </connection>
+            <connection id="25">
+                <source node="Mixer_8" port="out"/>
+                <sink node="Mixer_9" port="in_0"/>
+            </connection>
+            <connection id="26">
+                <source node="CSO_9" port="overflow"/>
+                <sink node="FileOut_30" port="in"/>
+            </connection>
+            <connection id="27">
+                <source node="CSO_10" port="out"/>
+                <sink node="FileOut_33" port="in"/>
+            </connection>
+            <connection id="28">
+                <source node="FileOut_34" port="out"/>
+                <sink node="Mixer_8" port="in_1"/>
+            </connection>
+            <connection id="29">
+                <source node="CSO_10" port="overflow"/>
+                <sink node="FileOut_32" port="in"/>
+            </connection>
+            <connection id="30">
+                <source node="Mixer_10" port="out"/>
+                <sink node="Mixer_11" port="in_0"/>
+            </connection>
+            <connection id="31">
+                <source node="FileOut_20" port="out"/>
+                <sink node="Mixer_4" port="in_0"/>
+            </connection>
+            <connection id="32">
+                <source node="CSO_11" port="out"/>
+                <sink node="FileOut_37" port="in"/>
+            </connection>
+            <connection id="33">
+                <source node="Sewer_8" port="out"/>
+                <sink node="Mixer_6" port="in_1"/>
+            </connection>
+            <connection id="34">
+                <source node="Sewer_11" port="out"/>
+                <sink node="Mixer_10" port="in_1"/>
+            </connection>
+            <connection id="35">
+                <source node="CatchmentCSS_0" port="out"/>
+                <sink node="FileOut_4" port="in"/>
+            </connection>
+            <connection id="36">
+                <source node="CSO_3" port="out"/>
+                <sink node="FileOut_11" port="in"/>
+            </connection>
+            <connection id="37">
+                <source node="Mixer_2" port="out"/>
+                <sink node="CSO_4" port="in"/>
+            </connection>
+            <connection id="38">
+                <source node="Sewer_9" port="out"/>
+                <sink node="Mixer_8" port="in_0"/>
+            </connection>
+            <connection id="39">
+                <source node="FileOut_38" port="out"/>
+                <sink node="Mixer_11" port="in_1"/>
+            </connection>
+            <connection id="40">
+                <source node="Mixer_5" port="out"/>
+                <sink node="CSO_8" port="in"/>
+            </connection>
+            <connection id="41">
+                <source node="Mixer_7" port="out"/>
+                <sink node="CSO_9" port="in"/>
+            </connection>
+            <connection id="42">
+                <source node="CSO_1" port="overflow"/>
+                <sink node="FileOut_6" port="in"/>
+            </connection>
+            <connection id="43">
+                <source node="FileOut_11" port="out"/>
+                <sink node="Sewer_2" port="in"/>
+            </connection>
+            <connection id="44">
+                <source node="CSO_0" port="overflow"/>
+                <sink node="FileOut_0" port="in"/>
+            </connection>
+            <connection id="45">
+                <source node="FileOut_14" port="out"/>
+                <sink node="Mixer_3" port="in_0"/>
+            </connection>
+            <connection id="46">
+                <source node="CSO_2" port="out"/>
+                <sink node="FileOut_8" port="in"/>
+            </connection>
+            <connection id="47">
+                <source node="CatchmentCSS_10" port="out"/>
+                <sink node="CSO_10" port="in"/>
+            </connection>
+            <connection id="48">
+                <source node="CSO_7" port="out"/>
+                <sink node="FileOut_26" port="in"/>
+            </connection>
+            <connection id="49">
+                <source node="CSO_6" port="overflow"/>
+                <sink node="FileOut_22" port="in"/>
+            </connection>
+            <connection id="50">
+                <source node="Mixer_11" port="out"/>
+                <sink node="FileOut_39" port="in"/>
+            </connection>
+            <connection id="51">
+                <source node="FileOut_29" port="out"/>
+                <sink node="Mixer_7" port="in_1"/>
+            </connection>
+            <connection id="52">
+                <source node="Sewer_7" port="out"/>
+                <sink node="Mixer_5" port="in_1"/>
+            </connection>
+            <connection id="53">
+                <source node="FileOut_21" port="out"/>
+                <sink node="Mixer_4" port="in_1"/>
+            </connection>
+            <connection id="54">
+                <source node="Sewer_5" port="out"/>
+                <sink node="FileOut_20" port="in"/>
+            </connection>
+            <connection id="55">
+                <source node="Mixer_0" port="out"/>
+                <sink node="CSO_1" port="in"/>
+            </connection>
+            <connection id="56">
+                <source node="CatchmentCSS_11" port="out"/>
+                <sink node="FileOut_35" port="in"/>
+            </connection>
+            <connection id="57">
+                <source node="Sewer_2" port="out"/>
+                <sink node="Mixer_2" port="in_1"/>
+            </connection>
+            <connection id="58">
+                <source node="FileOut_12" port="out"/>
+                <sink node="Mixer_2" port="in_0"/>
+            </connection>
+            <connection id="59">
+                <source node="CSO_12" port="overflow"/>
+                <sink node="FileOut_40" port="in"/>
+            </connection>
+            <connection id="60">
+                <source node="CSO_8" port="out"/>
+                <sink node="FileOut_28" port="in"/>
+            </connection>
+            <connection id="61">
+                <source node="CatchmentCSS_2" port="out"/>
+                <sink node="CSO_2" port="in"/>
+            </connection>
+            <connection id="62">
+                <source node="Sewer_0" port="out"/>
+                <sink node="Mixer_0" port="in_1"/>
+            </connection>
+            <connection id="63">
+                <source node="FileOut_24" port="out"/>
+                <sink node="Mixer_5" port="in_0"/>
+            </connection>
+            <connection id="64">
+                <source node="IxxRainRead_2" port="out"/>
+                <sink node="CatchmentCSS_2" port="rain_in"/>
+            </connection>
+            <connection id="65">
+                <source node="CSO_5" port="overflow"/>
+                <sink node="FileOut_18" port="in"/>
+            </connection>
+            <connection id="66">
+                <source node="Sewer_6" port="out"/>
+                <sink node="Mixer_6" port="in_0"/>
+            </connection>
+            <connection id="67">
+                <source node="Mixer_6" port="out"/>
+                <sink node="Mixer_7" port="in_0"/>
+            </connection>
+            <connection id="68">
+                <source node="FileOut_8" port="out"/>
+                <sink node="Mixer_1" port="in_0"/>
+            </connection>
+            <connection id="69">
+                <source node="FileOut_16" port="out"/>
+                <sink node="Sewer_4" port="in"/>
+            </connection>
+            <connection id="70">
+                <source node="IxxRainRead_6" port="out"/>
+                <sink node="CatchmentCSS_6" port="rain_in"/>
+            </connection>
+            <connection id="71">
+                <source node="IxxRainRead_1" port="out"/>
+                <sink node="CatchmentCSS_1" port="rain_in"/>
+            </connection>
+            <connection id="72">
+                <source node="IxxRainRead_10" port="out"/>
+                <sink node="CatchmentCSS_10" port="rain_in"/>
+            </connection>
+            <connection id="73">
+                <source node="FileOut_37" port="out"/>
+                <sink node="Sewer_11" port="in"/>
+            </connection>
+            <connection id="74">
+                <source node="FileOut_3" port="out"/>
+                <sink node="Sewer_0" port="in"/>
+            </connection>
+            <connection id="75">
+                <source node="CSO_5" port="out"/>
+                <sink node="FileOut_19" port="in"/>
+            </connection>
+            <connection id="76">
+                <source node="IxxRainRead_8" port="out"/>
+                <sink node="CatchmentCSS_8" port="rain_in"/>
+            </connection>
+            <connection id="77">
+                <source node="CSO_6" port="out"/>
+                <sink node="FileOut_23" port="in"/>
+            </connection>
+            <connection id="78">
+                <source node="Mixer_9" port="out"/>
+                <sink node="CSO_11" port="in"/>
+            </connection>
+            <connection id="79">
+                <source node="IxxRainRead_3" port="out"/>
+                <sink node="CatchmentCSS_3" port="rain_in"/>
+            </connection>
+            <connection id="80">
+                <source node="CatchmentCSS_7" port="out"/>
+                <sink node="FileOut_24" port="in"/>
+            </connection>
+            <connection id="81">
+                <source node="CSO_4" port="out"/>
+                <sink node="FileOut_16" port="in"/>
+            </connection>
+            <connection id="82">
+                <source node="CSO_7" port="overflow"/>
+                <sink node="FileOut_25" port="in"/>
+            </connection>
+            <connection id="83">
+                <source node="Sewer_10" port="out"/>
+                <sink node="FileOut_34" port="in"/>
+            </connection>
+            <connection id="84">
+                <source node="Sewer_4" port="out"/>
+                <sink node="FileOut_17" port="in"/>
+            </connection>
+            <connection id="85">
+                <source node="CSO_8" port="overflow"/>
+                <sink node="FileOut_27" port="in"/>
+            </connection>
+            <connection id="86">
+                <source node="CSO_12" port="out"/>
+                <sink node="FileOut_41" port="in"/>
+            </connection>
+            <connection id="87">
+                <source node="CatchmentCSS_9" port="out"/>
+                <sink node="FileOut_29" port="in"/>
+            </connection>
+            <connection id="88">
+                <source node="IxxRainRead_12" port="out"/>
+                <sink node="CatchmentCSS_12" port="rain_in"/>
+            </connection>
+            <connection id="89">
+                <source node="CatchmentCSS_8" port="out"/>
+                <sink node="CSO_7" port="in"/>
+            </connection>
+            <connection id="90">
+                <source node="IxxRainRead_5" port="out"/>
+                <sink node="CatchmentCSS_5" port="rain_in"/>
+            </connection>
+            <connection id="91">
+                <source node="CSO_3" port="overflow"/>
+                <sink node="FileOut_10" port="in"/>
+            </connection>
+            <connection id="92">
+                <source node="CatchmentCSS_1" port="out"/>
+                <sink node="CSO_0" port="in"/>
+            </connection>
+            <connection id="93">
+                <source node="CSO_4" port="overflow"/>
+                <sink node="FileOut_15" port="in"/>
+            </connection>
+            <connection id="94">
+                <source node="Sewer_3" port="out"/>
+                <sink node="Mixer_3" port="in_1"/>
+            </connection>
+            <connection id="95">
+                <source node="Sewer_1" port="out"/>
+                <sink node="Mixer_1" port="in_1"/>
+            </connection>
+            <connection id="96">
+                <source node="Mixer_3" port="out"/>
+                <sink node="CSO_3" port="in"/>
+            </connection>
+            <connection id="97">
+                <source node="Mixer_4" port="out"/>
+                <sink node="CSO_6" port="in"/>
+            </connection>
+            <connection id="98">
+                <source node="FileOut_5" port="out"/>
+                <sink node="Sewer_1" port="in"/>
+            </connection>
+            <connection id="99">
+                <source node="IxxRainRead_7" port="out"/>
+                <sink node="CatchmentCSS_7" port="rain_in"/>
+            </connection>
+        </connectionlist>
+    </model>
+    <gui>
+        <nodeposition id="CSO_1" x="1307.32" y="-237.427"/>
+        <nodeposition id="CatchmentCSS_3" x="3170.74" y="-485.247"/>
+        <nodeposition id="CSO_9" x="3026.04" y="114.93"/>
+        <nodeposition id="FileOut_26" x="750.93" y="346.734"/>
+        <nodeposition id="Mixer_3" x="2712.45" y="-298.645"/>
+        <nodeposition id="CSO_8" x="1564.88" y="214.846"/>
+        <nodeposition id="FileOut_40" x="5889.51" y="-6.76442"/>
+        <nodeposition id="Mixer_11" x="5264.12" y="-71.3025"/>
+        <nodeposition id="CatchmentCSS_7" x="701.37" y="218.86"/>
+        <nodeposition id="FileOut_35" x="3786.23" y="303.618"/>
+        <nodeposition id="FileOut_7" x="1889.52" y="-341.776"/>
+        <nodeposition id="FileOut_32" x="3025.55" y="462.033"/>
+        <nodeposition id="Sewer_1" x="1899.22" y="-235.725"/>
+        <nodeposition id="CatchmentCSS_0" x="392.953" y="-465.725"/>
+        <nodeposition id="Sewer_10" x="3280.23" y="250.734"/>
+        <nodeposition id="Sewer_5" x="775.753" y="-22.4065"/>
+        <nodeposition id="Sewer_2" x="3470.57" y="-348.659"/>
+        <nodeposition id="CatchmentCSS_12" x="4709.28" y="364.8"/>
+        <nodeposition id="FileOut_30" x="3267.55" y="167.888"/>
+        <nodeposition id="CatchmentCSS_2" x="1200.32" y="-482.294"/>
+        <nodeposition id="CSO_2" x="1573.92" y="-416.384"/>
+        <nodeposition id="Mixer_0" x="1000.72" y="-259.557"/>
+        <nodeposition id="Mixer_10" x="5029.61" y="-55.5548"/>
+        <nodeposition id="CSO_5" x="115.589" y="-36.1682"/>
+        <nodeposition id="CSO_12" x="5632.2" y="-79.5962"/>
+        <nodeposition id="IxxRainRead_0" x="76" y="-427"/>
+        <nodeposition id="IxxRainRead_11" x="3216.15" y="472.781"/>
+        <nodeposition id="IxxRainRead_9" x="1839.28" y="333.85"/>
+        <nodeposition id="FileOut_4" x="744.117" y="-410.988"/>
+        <nodeposition id="FileOut_31" x="3268.67" y="85.7617"/>
+        <nodeposition id="FileOut_25" x="745.93" y="463.566"/>
+        <nodeposition id="Sewer_6" x="2228.59" y="-3.0841"/>
+        <nodeposition id="Mixer_5" x="1303.57" y="258.664"/>
+        <nodeposition id="CSO_11" x="4228.18" y="212.039"/>
+        <nodeposition id="Mixer_7" x="2774.66" y="117.916"/>
+        <nodeposition id="CatchmentCSS_1" x="-214.395" y="-273.013"/>
+        <nodeposition id="Sewer_9" x="3523.39" y="146.439"/>
+        <nodeposition id="Mixer_9" x="4032.51" y="224.039"/>
+        <nodeposition id="Sewer_4" x="4454.62" y="-331.896"/>
+        <nodeposition id="Mixer_4" x="1306.45" y="19.7337"/>
+        <nodeposition id="CatchmentCSS_6" x="698.005" y="78.9019"/>
+        <nodeposition id="FileOut_29" x="2499.26" y="173.364"/>
+        <nodeposition id="FileOut_36" x="4481.63" y="275.997"/>
+        <nodeposition id="CatchmentCSS_8" x="73.6825" y="398.65"/>
+        <nodeposition id="Sewer_0" x="773.544" y="-251.466"/>
+        <nodeposition id="FileOut_14" x="2406.52" y="-533.389"/>
+        <nodeposition id="Sewer_11" x="4709.17" y="107.842"/>
+        <nodeposition id="FileOut_27" x="1859.1" y="225.028"/>
+        <nodeposition id="Sewer_3" x="2430.03" y="-287.729"/>
+        <nodeposition id="FileOut_24" x="991.019" y="206.664"/>
+        <nodeposition id="FileOut_5" x="1570.53" y="-273.121"/>
+        <nodeposition id="CSO_0" x="104.695" y="-277.639"/>
+        <nodeposition id="Mixer_1" x="2140.66" y="-309.617"/>
+        <nodeposition id="IxxRainRead_10" x="2152.4" y="487.296"/>
+        <nodeposition id="FileOut_11" x="3200.27" y="-347.561"/>
+        <nodeposition id="CSO_3" x="2918.98" y="-300.603"/>
+        <nodeposition id="FileOut_8" x="1881.74" y="-464.815"/>
+        <nodeposition id="CSO_6" x="1553.88" y="11.7617"/>
+        <nodeposition id="FileOut_33" x="3023.88" y="346.566"/>
+        <nodeposition id="IxxRainRead_8" x="-228.096" y="441.677"/>
+        <nodeposition id="Mixer_6" x="2505.28" y="53.2243"/>
+        <nodeposition id="FileOut_28" x="1871.1" y="140.028"/>
+        <nodeposition id="IxxRainRead_7" x="362.88" y="261.274"/>
+        <nodeposition id="Sewer_7" x="1001.41" y="307.916"/>
+        <nodeposition id="FileOut_34" x="3522.64" y="247.537"/>
+        <nodeposition id="FileOut_22" x="1869.01" y="38.8739"/>
+        <nodeposition id="IxxRainRead_6" x="371.174" y="116.122"/>
+        <nodeposition id="IxxRainRead_5" x="-514.253" y="8.2944"/>
+        <nodeposition id="CatchmentCSS_11" x="3488.5" y="426.692"/>
+        <nodeposition id="IxxRainRead_4" x="1530.32" y="-646.963"/>
+        <nodeposition id="FileOut_20" x="1003.3" y="-22.2943"/>
+        <nodeposition id="IxxRainRead_12" x="4408.47" y="429.235"/>
+        <nodeposition id="FileOut_38" x="5011.65" y="349.324"/>
+        <nodeposition id="CatchmentCSS_9" x="2178.46" y="230.519"/>
+        <nodeposition id="IxxRainRead_3" x="2867.79" y="-439.603"/>
+        <nodeposition id="IxxRainRead_2" x="933.12" y="-441.677"/>
+        <nodeposition id="FileOut_37" x="4453.79" y="112.277"/>
+        <nodeposition id="FileOut_39" x="5439.82" y="-75.2885"/>
+        <nodeposition id="FileOut_0" x="409.862" y="-218.959"/>
+        <nodeposition id="IxxRainRead_1" x="-507.253" y="-217.949"/>
+        <nodeposition id="CatchmentCSS_5" x="-203.71" y="-36.4766"/>
+        <nodeposition id="FileOut_3" x="419.208" y="-321.897"/>
+        <nodeposition id="FileOut_18" x="395.874" y="5.87386"/>
+        <nodeposition id="CatchmentCSS_4" x="1856.71" y="-696.272"/>
+        <nodeposition id="CSO_7" x="418.828" y="395.65"/>
+        <nodeposition id="CSO_4" x="3955.88" y="-367.368"/>
+        <nodeposition id="CSO_10" x="2764.56" y="440.355"/>
+        <nodeposition id="Mixer_2" x="3740.96" y="-373.617"/>
+        <nodeposition id="Mixer_8" x="3799.24" y="196.31"/>
+        <nodeposition id="FileOut_41" x="5888.13" y="-143.866"/>
+        <nodeposition id="FileOut_17" x="4706.17" y="-211.078"/>
+        <nodeposition id="FileOut_10" x="3205.52" y="-243.505"/>
+        <nodeposition id="FileOut_12" x="3454.3" y="-494.454"/>
+        <nodeposition id="FileOut_6" x="1569.53" y="-174.121"/>
+        <nodeposition id="CatchmentCSS_10" x="2451.15" y="429.674"/>
+        <nodeposition id="Sewer_8" x="2216.1" y="111.21"/>
+        <nodeposition id="FileOut_23" x="1872.01" y="-54.1261"/>
+        <nodeposition id="FileOut_16" x="4191.19" y="-406.148"/>
+        <nodeposition id="FileOut_21" x="1003.3" y="66.7057"/>
+        <nodeposition id="FileOut_19" x="391.959" y="-94.0981"/>
+        <nodeposition id="FileOut_15" x="4192.19" y="-314.148"/>
+    </gui>
+</citydrain>
