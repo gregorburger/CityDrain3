@@ -4,7 +4,7 @@
 #include <QRunnable>
 #include "orderedpipesimulation.h"
 
-struct OrderedWorker : public QRunnable {
+struct CD3_PUBLIC OrderedWorker : public QRunnable {
 	OrderedWorker(OrderedPipeSimulation *sim,
 				  Node *last,
 				  ptime time, int dt);
