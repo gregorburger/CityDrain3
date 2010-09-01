@@ -11,10 +11,10 @@ public:
 	DefaultSimulation();
 	virtual ~DefaultSimulation();
 
-	virtual int run(ptime time, int dt);
+	int run(ptime time, int dt);
 
-	virtual void run(Node *n, ptime time, con_count_type &deps);
-	virtual void setModel(IModel *model);
+	void run(Node *n, ptime time, con_count_type &deps);
+	void setModel(IModel *model);
 
 private: //data member
 	SimPriv *sp;
