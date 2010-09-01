@@ -175,12 +175,16 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 }
 
 bool SaxLoader::error(const QXmlParseException &exception) {
-	Logger(Error) << exception.message();
+	int line = exception.lineNumber();
+	int col = exception.columnNumber();
+	Logger(Error) << "XmlException: " << line << ":" << col << exception.message();
 	return true;
 }
 
 bool SaxLoader::fatalError(const QXmlParseException &exception) {
-	Logger(Error) << exception.message();
+	int line = exception.lineNumber();
+	int col = exception.columnNumber();
+	Logger(Error) << "XmlException: " << line << ":" << col << exception.message();
 	return true;
 }
 
