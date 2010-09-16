@@ -5,9 +5,9 @@
 #include "vardtsimulation.h"
 #ifndef OPENMP_DISABLED
 #include "parallelsimulation.h"
-#endif
 #include "pipelinedsimulation.h"
 #include "orderedpipesimulation.h"
+#endif
 #include "sewer.h"
 #include "testnode.h"
 #include "cso.h"
@@ -61,10 +61,10 @@ extern "C" {
 	void CD3_PUBLIC registerSimulations(SimulationRegistry *registry) {
 		registry->addSimulationFactory(new SimulationFactory<DefaultSimulation>());
 		//registry->addSimulationFactory(new SimulationFactory<VarDTSimulation>());
-		registry->addSimulationFactory(new SimulationFactory<ParallelSimulation>());
 #ifndef OPENMP_DISABLED
+                registry->addSimulationFactory(new SimulationFactory<ParallelSimulation>());
 		registry->addSimulationFactory(new SimulationFactory<PipelinedSimulation>());
+                registry->addSimulationFactory(new SimulationFactory<OrderedPipeSimulation>());
 #endif
-		registry->addSimulationFactory(new SimulationFactory<OrderedPipeSimulation>());
 	}
 }
