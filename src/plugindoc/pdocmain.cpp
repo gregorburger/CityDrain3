@@ -39,10 +39,6 @@ int main(int argc, char **argv) {
 			cout << "- parameter: " << p->name << endl;
 		}
 
-		BOOST_FOREACH(par_type par, *node->const_array_parameters) {
-			cout << "- array parameter: " << par.first << endl;
-		}
-
 		cout << endl << "**States**" << endl << endl;
 
 		BOOST_FOREACH(par_type state, *node->const_states) {
