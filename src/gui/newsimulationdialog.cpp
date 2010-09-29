@@ -27,6 +27,8 @@ NewSimulationDialog::NewSimulationDialog(SimulationRegistry *registry,
 		list << QString::fromStdString(name);
 	}
 	ui->simulationComboBox->addItems(list);
+	ui->projectRootLineEdit->setText(QDir::currentPath());
+	on_projectRootLineEdit_textEdited(QDir::currentPath());
 }
 
 

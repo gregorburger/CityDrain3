@@ -6,6 +6,7 @@
 #include <vector>
 #include <cd3globals.h>
 #include <boost/shared_ptr.hpp>
+#include <flowdefinition.h>
 using namespace boost;
 
 class INodeFactory;
@@ -21,6 +22,9 @@ public:
 
 	bool addNodeFactory(INodeFactory *factory);
 	void addNativePlugin(const std::string &plugin_path);
+#ifndef PYTHON_DISABLED
+	void addPythonPlugin(const std::string &script);
+#endif
 
 	std::vector<std::string> getRegisteredNames() const;
 

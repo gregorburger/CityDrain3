@@ -122,13 +122,13 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 	}
 	if (lname == "pythonmodule") {
 #ifndef PYTHON_DISABLED
-		QFileInfo module_file(atts.value("module"));
-		PythonEnv::getInstance()->addPythonPath(module_file.dir().absolutePath().toStdString());
-		std::string module_name = module_file.baseName().toStdString();
-		PythonEnv::getInstance()->registerNodes(pd->node_registry, module_name);
+		std::string script = atts.value("module").toStdString();
+		//QFileInfo module_file(atts.value("module"));
+		pd->node_registry->addPythonPlugin(script);
 		consumed = true;
 #else
 		Logger(Error) << "python support is disabled";
+		consumed = true;
 #endif
 	}
 	if (lname == "citydrain") {

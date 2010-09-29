@@ -1,3 +1,8 @@
+#ifndef PYTHON_DISABLED
+#include <Python.h>
+#include <swigruntime.h>
+#endif
+
 #include "noderegistry.h"
 
 #include <boost/foreach.hpp>
@@ -39,6 +44,51 @@ void NodeRegistry::addNativePlugin(const std::string &plugin_path) {
 		Logger(Warning) << plugin_path << " has no node register hook";
 	}
 }
+#ifndef PYTHON_DISABLED
+void NodeRegistry::addPythonPlugin(const std::string &script) {
+	if (!Py_IsInitialized())
+		Py_Initialize();
+	PyObject *main = PyImport_ImportModule("__main__");
+	PyObject *main_namespace = PyModule_GetDict(main);
+
+	FILE *test_py = fopen(script.c_str(), "r");
+	PyRun_File(test_py, script.c_str(), Py_file_input, main_namespace, 0);
+
+	if (PyErr_Occurred())
+		PyErr_Print();
+
+	PyObject *register_cb_name = PyString_FromString("register");
+	if (PyDict_Contains(main_namespace, register_cb_name)) {
+		//cout << "contains a register cb"  << endl;
+		PyObject *register_cb = PyDict_GetItem(main_namespace, register_cb_name);
+
+		cd3assert(SWIG_TypeQuery, "can not call swig runtime api");
+
+		swig_type_info *node_reg = SWIG_TypeQuery("NodeRegistry *");
+		cd3assert(node_reg, "could not query swig typeinfo for NodeRegistry");
+		PyObject *py_this = SWIG_NewPointerObj(this, node_reg, 0);
+
+		PyObject *args = Py_BuildValue("(O)", py_this);
+
+		PyObject *res = PyObject_Call(register_cb, args, Py_None);
+		if (res == 0) {
+			PyErr_Print();
+		} else {
+			//Py_DECREF(res);
+		}
+
+		Py_DECREF(py_this);
+		Py_DECREF(args);
+
+		if (PyErr_Occurred())
+			PyErr_Print();
+	} else {
+		Logger(Error) << "script has no register callback";
+	}
+	Py_DECREF(register_cb_name);
+	Py_DECREF(main);
+}
+#endif
 
 typedef std::pair<std::string, INodeFactory *> snf;
 std::vector<std::string> NodeRegistry::getRegisteredNames() const {
