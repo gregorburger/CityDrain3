@@ -1,15 +1,21 @@
+#include <Python.h>
 #include "pythonexception.h"
-#include <logger.h>
-#include <boost/algorithm/string.hpp>
-#include <vector>
 
-using namespace boost;
+std::string to_string(PyObject *o) {
+	PyObject *pystr = PyObject_Str(o);
+	char *cstr = PyString_AsString(pystr);
+	Py_DECREF(pystr);
+	return cstr;
+}
 
-PythonException::PythonException(std::string error) {
-	std::vector<std::string> values;
-	algorithm::split(values, error, algorithm::is_any_of("|"));
-	assert(values.size() == 3);
-	type = values[0];
-	value = values[1];
-	traceback = values[2];
+PythonException::PythonException() {
+	if (!Py_IsInitialized() || !PyErr_Occurred()) {
+		return;
+	}
+	PyObject *type, *value, *traceback;
+	PyErr_Fetch(&type, &value, &traceback);
+
+	this->type = to_string(type);
+	this->value = to_string(value);
+	this->traceback = to_string(traceback);
 }

@@ -6,8 +6,7 @@
 
 class CD3_PUBLIC PythonException {
 public:
-	PythonException() {}
-	PythonException(std::string error);
+	PythonException();
 	std::string type;
 	std::string value;
 	std::string traceback;

@@ -2,7 +2,9 @@ file(GLOB_RECURSE CPP_FILES ./ *.cpp)
 
 message(STATUS ${CMAKE_BINARY_DIR})
 include_directories(${PYTHON_INCLUDE_DIR} ${CMAKE_BINARY_DIR})
-add_library(cd3core SHARED ${CPP_FILES})
+add_library(cd3core SHARED ${CPP_FILES} ${CMAKE_BINARY_DIR}/src/python-swig/pycd3WRAP.cpp)
+
+add_dependencies(cd3core pycd3gen)
 
 TARGET_LINK_LIBRARIES(cd3core ${QT_LIBRARIES} ${Boost_SYSTEM_LIBRARY} ${Boost_SIGNALS_LIBRARY} ${Boost_DATE_TIME_LIBRARY} ${Boost_FILESYSTEM_LIBRARY})
 

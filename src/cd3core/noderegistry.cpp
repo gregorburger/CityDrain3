@@ -44,10 +44,17 @@ void NodeRegistry::addNativePlugin(const std::string &plugin_path) {
 		Logger(Warning) << plugin_path << " has no node register hook";
 	}
 }
+
 #ifndef PYTHON_DISABLED
+extern "C" {
+void init_pycd3(void);
+}
+
 void NodeRegistry::addPythonPlugin(const std::string &script) {
-	if (!Py_IsInitialized())
+	if (!Py_IsInitialized()) {
 		Py_Initialize();
+		init_pycd3();
+	}
 	PyObject *main = PyImport_ImportModule("__main__");
 	PyObject *main_namespace = PyModule_GetDict(main);
 
@@ -61,8 +68,6 @@ void NodeRegistry::addPythonPlugin(const std::string &script) {
 	if (PyDict_Contains(main_namespace, register_cb_name)) {
 		//cout << "contains a register cb"  << endl;
 		PyObject *register_cb = PyDict_GetItem(main_namespace, register_cb_name);
-
-		cd3assert(SWIG_TypeQuery, "can not call swig runtime api");
 
 		swig_type_info *node_reg = SWIG_TypeQuery("NodeRegistry *");
 		cd3assert(node_reg, "could not query swig typeinfo for NodeRegistry");
