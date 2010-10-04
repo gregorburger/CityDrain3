@@ -21,6 +21,7 @@ using namespace std;
 #include <flow.h>
 #ifndef PYTHON_DISABLED
 #include <module.h>
+#include <pythonexception.h>
 #endif
 #include <typeconverter.h>
 
@@ -122,13 +123,19 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 	}
 	if (lname == "pythonmodule") {
 #ifndef PYTHON_DISABLED
-		QFileInfo module_file(atts.value("module"));
-		PythonEnv::getInstance()->addPythonPath(module_file.dir().absolutePath().toStdString());
-		std::string module_name = module_file.baseName().toStdString();
-		PythonEnv::getInstance()->registerNodes(pd->node_registry, module_name);
+		try {
+			QFileInfo module_file(atts.value("module"));
+			std::string path = module_file.dir().absolutePath().toStdString();
+			std::string module_name = module_file.baseName().toStdString();
+			PythonEnv::getInstance()->registerNodes(pd->node_registry, path, module_name);
+		} catch (PythonException e) {
+			Logger(Error) << "python exception: " << e.value << e.type << e.traceback;
+			return false;
+		}
 		consumed = true;
 #else
 		Logger(Error) << "python support is disabled";
+		consumed = true;
 #endif
 	}
 	if (lname == "citydrain") {
@@ -195,6 +202,7 @@ bool SaxLoader::warning(const QXmlParseException &exception) {
 
 ISimulation *SaxLoader::load(QFile &file) {
 	cd3assert(file.exists(), "no such file or directory");
+	bool cwd = QDir::setCurrent(QFileInfo(file).absoluteDir().path());
 	bool opened = file.open(QIODevice::ReadOnly);
 	cd3assert(opened, "could not open model");
 	QXmlSimpleReader r;
@@ -204,7 +212,6 @@ ISimulation *SaxLoader::load(QFile &file) {
 	QXmlInputSource source(&file);
 	r.parse(&source);
 	cd3assert(simulation, "could not load simulation");
-	bool cwd = QDir::setCurrent(QFileInfo(file).absoluteDir().path());
 	cd3assert(cwd, "could not change cwd");
 	return simulation;
 }

@@ -98,23 +98,17 @@ void PythonEnv::freeInstance() {
 	Py_Finalize();
 }
 
-void PythonEnv::addPythonPath(std::string path) {
-	format fmt("import sys\n"
-			   "sys.path.append('%1%')\n");
-	fmt % path;
-	object result = exec(fmt.str().c_str(),
-						 priv->main_namespace,
-						 priv->main_namespace);
-}
-
-void PythonEnv::registerNodes(NodeRegistry *registry, const string &module) {
+void PythonEnv::registerNodes(NodeRegistry *registry, std::string path, const string &module) {
 	format fmt("import sys\n"
 	"import pycd3\n"
 	"sys.path.append('./data/scripts/')\n"
+	"sys.path.append('.')\n"
+	"sys.path.append('%2%')\n"
+	"print sys.path\n"
 	"__import__('%1%', None, None, [], 1)\n"
 	"clss = pycd3.Node.__subclasses__()\n");
 
-	fmt % module;
+	fmt % module % path;
 
 	try {
 		object result = exec(fmt.str().c_str(),
