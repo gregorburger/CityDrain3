@@ -6,6 +6,7 @@
 #include <node.h>
 #include <flow.h>
 #include <iostream>
+#include <string>
 #include <pythonexception.h>
 %}
 %include std_vector.i
@@ -68,15 +69,29 @@ public:
 	virtual bool init(ptime start, ptime stop, int dt);
 	virtual void deinit();
 	virtual const char *getClassName() const = 0;
+
+	%pythoncode %{
+	def getClassName(self):
+		return self.__class__.__name__
+	%}
 protected:
 	void addInPort(std::string name, Flow *f);
 	void addOutPort(std::string name, Flow *f);
 };
 
 %extend Node {
-	const char *getClassName() const {
-		return "";
+	void addParameter(std::string name, std::string value) {
+		//std::string *p_value = new std:string(value);
+		$self->addParameter(name, new std::string(value));
 	}
+
+	void addParameter(std::string name, int value) {
+		int *p_value = new int(value);
+		//int_parameters[name] = p_value
+		$self->addParameter(name, p_value);
+	}
+
+
 }
 
 class INodeFactory {
@@ -102,3 +117,21 @@ public:
 	Node *createNode(const std::string &name) const;
 	bool contains(const std::string &name) const;
 };
+
+%pythoncode %{
+class NodeFactory(INodeFactory):
+	def __init__(self, node):
+		INodeFactory.__init__(self)
+		self.node = node
+
+	def getNodeName(self):
+		return self.node.__name__
+
+	def createNode(self):
+		n = self.node()
+		n.__disown__()
+		return n
+
+	def getSource(self):
+		return "testnodes.py"
+%}
