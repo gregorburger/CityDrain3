@@ -67,7 +67,7 @@ endif()
 
 include_directories(src/cd3core)
 add_subdirectory(src/cd3core)
-#add_subdirectory(src/nodes)
+add_subdirectory(src/nodes)
 
 if (WITH_PYTHON)
 		add_subdirectory(src/python-swig)
