@@ -15,9 +15,6 @@
 #include <simulation.h>
 #include <node.h>
 #include <nodeconnection.h>
-#ifndef PYTHON_DISABLED
-#include <module.h>
-#endif
 #include <nodeitem.h>
 #include <portitem.h>
 #include <connectionitem.h>
