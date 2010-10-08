@@ -21,6 +21,7 @@ void DeleteNode::undo() {
 
 	nitem->restoreParameters(parameters);
 	SimulationParameters sp = scene->simulation->getSimulationParameters();
+	node->updateParameters();
 	node->init(sp.start, sp.stop, sp.dt);
 	nitem->updatePorts();
 	nitem->setPos(pos);

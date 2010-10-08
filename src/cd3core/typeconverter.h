@@ -1,12 +1,15 @@
 #ifndef TYPECONVERTER_H
 #define TYPECONVERTER_H
-
+#ifndef PYTHON_DISABLED
+#include <Python.h>
+#endif
 #include <cd3typeinfo.h>
 #include <cd3globals.h>
 #include <string>
 #include <list>
 
 class Node;
+struct NodeParameter;
 
 class CD3_PUBLIC TypeConverter {
 public:
@@ -29,6 +32,12 @@ public:
 	virtual void setParameterExact(Node *n,
 								   const std::string &pname,
 								   const std::string &pvalue) const = 0;
+#ifndef PYTHON_DISABLED
+	virtual void updatePythonParameter(PyObject *self,
+									   NodeParameter *p) const = 0;
+
+	virtual PyObject *toPython(void *) const = 0;
+#endif
 	static std::list<TypeConverter *> converters;
 };
 

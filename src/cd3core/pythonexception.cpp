@@ -18,4 +18,5 @@ PythonException::PythonException() {
 	this->type = to_string(type);
 	this->value = to_string(value);
 	this->traceback = to_string(traceback);
+	//PyErr_Print();
 }

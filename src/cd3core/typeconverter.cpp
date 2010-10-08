@@ -9,6 +9,9 @@
 #include <cmath>
 #include <node.h>
 #include <flow.h>
+#ifndef PYTHON_DISABLED
+#include <pythonexception.h>
+#endif
 
 using namespace cd3;
 
@@ -59,66 +62,70 @@ struct PrimTC : TC {
 		fromStringExact(pvalue, &v);
 		n->setParameter<T>(pname, v);
 	}
+#ifndef PYTHON_DISABLED
+	void updatePythonParameter(PyObject *self, NodeParameter *p) const {
+		PyObject *pvalue = toPython(p->value);
+		PyObject *__dict__ = PyObject_GetAttrString(self, "__dict__");
+
+		PyDict_SetItemString(__dict__, p->name.c_str(), pvalue);
+
+		if (PyErr_Occurred()) {
+			Py_DECREF(__dict__);
+			Py_DECREF(pvalue);
+			throw PythonException();
+		}
+
+		Py_DECREF(__dict__);
+		Py_DECREF(pvalue);
+	}
+
+	PyObject *toPython(void *) const {
+		return Py_None;
+	}
+#endif
 
 	std::string type_name;
 };
 
 template <>
-struct PrimTC <double> : TC {
-	PrimTC(const std::string &type_name) : type_name(type_name) {}
-	virtual ~PrimTC(){
-	}
+void PrimTC<double>::fromStringExact(const std::string &s, void *dest) const {
+	std::istringstream ss(s);
+	double fract;
+	int exp;
+	ss >> fract >> exp;
+	*((double*) dest) = ldexp(fract, exp);
+}
 
-	std::string getTypeName() const {
-		return type_name;
-	}
+template <>
+std::string PrimTC<double>:: toStringExact(const void *value) const {
+	int exp;
+	double fract = frexp(*((double *) value), &exp);
+	return lexical_cast<std::string>(fract) + " " + lexical_cast<std::string>(exp);
+}
 
-	TypeInfo getTypeInfo() const {
-		return TypeInfo(typeid(double));
-	}
+#ifndef PYTHON_DISABLED
+template <>
+PyObject *PrimTC<double>::toPython(void *p) const {
+	return PyFloat_FromDouble(*((double*) p));
+}
 
-	std::string toString(const void *value) const {
-		const double *tvalue = static_cast<const double*>(value);
-		return lexical_cast<std::string>(*tvalue);
-	}
+template <>
+PyObject *PrimTC<int>::toPython(void *p) const {
+	return PyInt_FromLong(*((int*) p));
+}
 
-	std::string toStringExact(const void *value) const {
-		int exp;
-		double fract = frexp(*((double *) value), &exp);
-		return lexical_cast<std::string>(fract) + " " + lexical_cast<std::string>(exp);
-	}
+template <>
+PyObject *PrimTC<bool>::toPython(void *p) const {
+	bool b = *(bool*) p;
+	return PyBool_FromLong(b);
+}
 
-	void fromString(const std::string &s, void *dest) const {
-		double *ivalue = static_cast<double*>(dest);
-		*ivalue = lexical_cast<double>(s);
-	}
-
-	void fromStringExact(const std::string &s, void *dest) const {
-		std::istringstream ss(s);
-		double fract;
-		int exp;
-		ss >> fract >> exp;
-		*((double*) dest) = ldexp(fract, exp);
-	}
-
-	void setParameter(Node *n,
-					  const std::string &pname,
-					  const std::string &pvalue) const {
-		double v;
-		fromString(pvalue, &v);
-		n->setParameter<double>(pname, v);
-	}
-
-	void setParameterExact(Node *n,
-						   const std::string &pname,
-						   const std::string &pvalue) const {
-		double v;
-		fromStringExact(pvalue, &v);
-		n->setParameter<double>(pname, v);
-	}
-
-	std::string type_name;
-};
+template <>
+PyObject *PrimTC<std::string>::toPython(void *p) const {
+	std::string s = *((std::string*) p);
+	return PyString_FromString(s.c_str());
+}
+#endif
 
 struct FlowTC : public TypeConverter {
 	~FlowTC() {}
@@ -190,6 +197,15 @@ struct FlowTC : public TypeConverter {
 		fromStringExact(pvalue, &f);
 		n->setParameter(pname, f);
 	}
+#ifndef PYTHON_DISABLED
+	PyObject* toPython(void *np) const {
+		return Py_None;
+	}
+
+	void updatePythonParameter(PyObject *, NodeParameter *) const {
+
+	}
+#endif
 };
 
 template <class T>
@@ -273,6 +289,34 @@ struct ArrayTC : public TypeConverter {
 		fromStringExact(pvalue, &v);
 		n->setParameter(pname, v);
 	}
+
+#ifndef PYTHON_DISABLED
+	void updatePythonParameter(PyObject *self, NodeParameter *p) const {
+		PyObject *pvalue = toPython(p->value);
+		PyObject *__dict__ = PyObject_GetAttrString(self, "__dict__");
+
+		PyDict_SetItemString(__dict__, p->name.c_str(), pvalue);
+
+		if (PyErr_Occurred()) {
+			Py_DECREF(__dict__);
+			Py_DECREF(pvalue);
+			throw PythonException();
+		}
+
+		Py_DECREF(__dict__);
+		Py_DECREF(pvalue);
+	}
+
+	PyObject* toPython(void *np) const {
+		TypeConverter *sub_con = TypeConverter::get(TypeInfo(typeid(T)));
+		std::vector<T> v = *((std::vector<T>*) np);
+		PyObject *list = PyList_New(0);
+		BOOST_FOREACH(T t, v) {
+			PyList_Append(list, sub_con->toPython(&t));
+		}
+		return list;
+	}
+#endif
 	std::string type_name;
 };
 

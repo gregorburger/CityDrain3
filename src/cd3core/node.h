@@ -93,6 +93,10 @@ public:
 	//gets called after states have been loaded
 	virtual void pushInStates(){}
 
+	//move parameter values from C++ to Python
+	//called before init
+	virtual void updateParameters(){}
+
 	void setInPort(const std::string &, const Flow *in);
 	void setOutPort(const std::string &, const Flow *in);
 	const Flow *getOutPort(const std::string &) const;

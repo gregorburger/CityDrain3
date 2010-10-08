@@ -8,6 +8,8 @@
 #include <iostream>
 #include <string>
 #include <pythonexception.h>
+#include <boost/foreach.hpp>
+#include <typeconverter.h>
 %}
 %include std_vector.i
 %include std_string.i
@@ -69,10 +71,15 @@ public:
 	virtual bool init(ptime start, ptime stop, int dt);
 	virtual void deinit();
 	virtual const char *getClassName() const = 0;
+	virtual void updateParameters();
 
 	%pythoncode %{
 	def getClassName(self):
 		return self.__class__.__name__
+
+	def updateParameters(self):
+		log("fuck")
+		self.python_updateParameters(self)
 	%}
 protected:
 	void addInPort(std::string name, Flow *f);
@@ -81,18 +88,41 @@ protected:
 
 %extend Node {
 	void addParameter(std::string name, std::string value) {
-		//std::string *p_value = new std:string(value);
 		$self->addParameter(name, new std::string(value));
 	}
 
 	void addParameter(std::string name, int value) {
-		int *p_value = new int(value);
-		//int_parameters[name] = p_value
-		$self->addParameter(name, p_value);
+		$self->addParameter(name, new int(value));
 	}
 
+	void addParameter(std::string name, std::vector<double> v) {
+		$self->addParameter(name, new std::vector<double>(v));
+	}
 
+	void addParameter(std::string name, double value) {
+		$self->addParameter(name, new double(value));
+	}
+
+	void python_updateParameters(PyObject *pself) {
+		typedef std::pair<std::string, NodeParameter*> ppair;
+		BOOST_FOREACH(ppair item, $self->getParameters()) {
+			NodeParameter *p = item.second;
+			TypeConverter *con = TypeConverter::get(p->type);
+			if (!con) {
+				Logger(Error) << "can not save value of parameter " << p->name;
+				continue;
+			}
+			Logger(Debug) << "updating parameter" << p->name;
+			con->updatePythonParameter(pself, p);
+		}
+	}
 }
+
+%inline %{
+void log(std::string s) {
+	Logger(Debug) << s;
+}
+%}
 
 class INodeFactory {
 public:

@@ -19,9 +19,6 @@ using namespace std;
 #include "node.h"
 #include <simulation.h>
 #include <flow.h>
-#ifndef PYTHON_DISABLED
-#include <module.h>
-#endif
 #include <typeconverter.h>
 
 struct SaxLoaderPriv {

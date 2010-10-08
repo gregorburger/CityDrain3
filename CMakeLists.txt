@@ -24,13 +24,16 @@ set(EXECUTABLE_OUTPUT_PATH ${cd3_BINARY_DIR})
 set(CD3_FRONTEND_LIBS cd3core)
 set(BOOST_COMPONENTS system signals program_options thread date_time filesystem)
 
+
+include_directories(src/cd3core)
+
 #include python scripting capabilites
 option(WITH_PYTHON "Include Python scripting capabilites" ON)
 find_package(PythonLibs)
 find_package(SWIG)
 if (WITH_PYTHON AND PYTHONLIBS_FOUND AND SWIG_FOUND)
 	message(STATUS "Python support enabled")
-	include_directories(src/python)
+	include_directories(${PYTHON_INCLUDE_DIRS})
 else()
 	add_definitions(-DPYTHON_DISABLED)
 	message(STATUS "Python support disabled")
@@ -64,8 +67,6 @@ endif()
 
 
 ##'NOF CHECKING... BUILDING##
-
-include_directories(src/cd3core)
 add_subdirectory(src/cd3core)
 add_subdirectory(src/nodes)
 
