@@ -29,8 +29,10 @@ include_directories(src/cd3core)
 
 #include python scripting capabilites
 option(WITH_PYTHON "Include Python scripting capabilites" ON)
-find_package(PythonLibs)
-find_package(SWIG)
+if (WITH_PYTHON)
+	find_package(PythonLibs REQUIRED)
+	find_package(SWIG REQUIRED)
+endif (WITH_PYTHON)
 if (WITH_PYTHON AND PYTHONLIBS_FOUND AND SWIG_FOUND)
 	message(STATUS "Python support enabled")
 	include_directories(${PYTHON_INCLUDE_DIRS})
