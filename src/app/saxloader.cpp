@@ -1,3 +1,4 @@
+#include <typeconverter.h>
 #include "saxloader.h"
 
 #include <QLibrary>
@@ -19,7 +20,6 @@ using namespace std;
 #include "node.h"
 #include <simulation.h>
 #include <flow.h>
-#include <typeconverter.h>
 
 struct SaxLoaderPriv {
 	NodeRegistry *node_registry;

@@ -1,3 +1,4 @@
+#include <typeconverter.h>
 #include "nodeitem.h"
 #include "portitem.h"
 #include "connectionitem.h"
@@ -16,7 +17,6 @@
 #include <nodeconnection.h>
 #include <simulation.h>
 #include <mapbasedmodel.h>
-#include <typeconverter.h>
 
 typedef std::pair<std::string, Flow *> port_pair;
 
