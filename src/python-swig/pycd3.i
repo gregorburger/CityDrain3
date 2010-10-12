@@ -173,6 +173,10 @@ protected:
 		return $self->addParameter(name, new std::vector<double>(v));
 	}
 
+	NodeParameter &addParameter(std::string name, Flow *v) {
+		return $self->addParameter(name, v);
+	}
+
 	NodeParameter &addParameter(std::string name, double value) {
 		return $self->addParameter(name, new double(value));
 	}
@@ -195,6 +199,11 @@ protected:
 %inline %{
 void log(std::string s) {
 	Logger(Debug) << s;
+}
+void assign(Flow *target, Flow *source) {
+	for (size_t i = 0; i < Flow::size(); i++) {
+		*target = *source;
+	}
 }
 %}
 
