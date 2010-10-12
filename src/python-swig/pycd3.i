@@ -49,19 +49,50 @@ public:
 		null
 	};
 
+	Flow(const Flow&);
 	Flow();
 	static size_t size();
 	static std::vector<std::string> getNames();
+	static size_t countUnits(CalculationUnit unit);
+	%pythoncode %{
+	def __iter__(self):
+		for i in xrange(self.size()):
+			yield self[i]
+	%}
 };
 
 %extend Flow {
 	double __getitem__(int i) const {
 		return (*self)[i];
 	}
+
+	PyObject* __getitem__(PyObject *slice) const {
+		Py_ssize_t length, start, stop, step;
+		if (!PySlice_Check(slice)) {
+			return Py_None;
+		}
+		length = Flow::size();
+		PySlice_GetIndices((PySliceObject*)slice, length, &start, &stop, &step);
+		PyObject *list = PyList_New(0);
+		for (int i = start; i < stop; i+= step) {
+			PyObject *number = PyFloat_FromDouble((*self)[i]);
+			PyList_Append(list, number);
+		}
+		return list;
+	}
+
 	void __setitem__(int i, double d) {
 		(*self)[i] = d;
 	}
+	int __len__() {
+		return self->size();
+	}
 }
+%nodefaultctor NodeParameter;
+struct NodeParameter {
+	NodeParameter &setDescription(std::string newdesc);
+	NodeParameter &setUnit(std::string newunit);
+};
 
 class Node {
 public:
@@ -87,20 +118,20 @@ protected:
 };
 
 %extend Node {
-	void addParameter(std::string name, std::string value) {
-		$self->addParameter(name, new std::string(value));
+	NodeParameter &addParameter(std::string name, std::string value) {
+		return $self->addParameter(name, new std::string(value));
 	}
 
-	void addParameter(std::string name, int value) {
-		$self->addParameter(name, new int(value));
+	NodeParameter &addParameter(std::string name, int value) {
+		return $self->addParameter(name, new int(value));
 	}
 
-	void addParameter(std::string name, std::vector<double> v) {
-		$self->addParameter(name, new std::vector<double>(v));
+	NodeParameter &addParameter(std::string name, std::vector<double> v) {
+		return $self->addParameter(name, new std::vector<double>(v));
 	}
 
-	void addParameter(std::string name, double value) {
-		$self->addParameter(name, new double(value));
+	NodeParameter &addParameter(std::string name, double value) {
+		return $self->addParameter(name, new double(value));
 	}
 
 	void python_updateParameters(PyObject *pself) {
