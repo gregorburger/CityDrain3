@@ -5,6 +5,9 @@
 #include <logger.h>
 #include <logsink.h>
 #include "saxloader.h"
+#ifndef PYTHON_DISABLED
+#include <pythonexception.h>
+#endif
 
 #include <iostream>
 #include <fstream>
@@ -118,7 +121,9 @@ int main(int argc, char **argv) {
 	QFile f(QString::fromStdString(vm["model"].as<std::string>()));
 
 	MapBasedModel m;
-
+#ifndef PYTHON_DISABLED
+	try {
+#endif
 	SaxLoader loader(&m);
 
 	ISimulation *s = loader.load(f);
@@ -147,9 +152,18 @@ int main(int argc, char **argv) {
 	if (max <= Standard) //don't even call the progress handler
 		s->timestep_before.connect(ProgressHandler(s));
 
+
 	s->start(starttime);
+
 	Logger(Debug) << "shutting down";
 	//Log::shutDown();
 	delete s;
+#ifndef PYTHON_DISABLED
+	}
+	catch (PythonException e) {
+		Logger(Error) << e.type;
+		Logger(Error) << e.value;
+	}
+#endif
 	return 0;
 }
