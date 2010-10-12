@@ -14,7 +14,10 @@ using namespace boost;
 #include "nodefactory.h"
 #include <cd3assert.h>
 
-std::vector<std::string> NodeRegistry::python_paths;
+std::vector<std::string> NodeRegistry::python_paths = std::vector<std::string>();
+void NodeRegistry::addToPythonPath(std::string p) {
+	NodeRegistry::python_paths.push_back(p);
+}
 
 NodeRegistry::NodeRegistry() {
 }

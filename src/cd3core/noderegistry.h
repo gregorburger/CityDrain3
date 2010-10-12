@@ -25,9 +25,7 @@ public:
 
 #ifndef PYTHON_DISABLED
 	void addPythonPlugin(const std::string &script);
-	static void addToPythonPath(std::string p) {
-		python_paths.push_back(p);
-	}
+	static void addToPythonPath(std::string p);
 #endif
 
 	std::vector<std::string> getRegisteredNames() const;
