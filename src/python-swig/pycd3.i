@@ -10,6 +10,7 @@
 #include <pythonexception.h>
 #include <boost/foreach.hpp>
 #include <typeconverter.h>
+#include <boost/date_time.hpp>
 %}
 %include std_vector.i
 %include std_string.i
@@ -38,6 +39,42 @@ namespace std {
 %typemap(out) ptime {
 	$result = to_simple_string($1);
 }
+
+%nodefaultctor;
+
+namespace boost {
+	namespace posix_time {
+		class ptime {
+		public:
+			boost::gregorian::date date() const;
+			boost::posix_time::time_duration time_of_day() const;
+			%pythoncode %{
+				def to_datetime(self):
+					from datetime import datetime
+					d = self.date()
+					t = self.time_of_day()
+					return datetime(d.year(), d.month(), d.day(), t.hours(), t.minutes(), t.seconds())
+			%}
+		};
+
+		class time_duration {
+		public:
+			int hours() const;
+			int minutes() const;
+			int seconds() const;
+		};
+	}
+	namespace gregorian {
+		class date {
+		public:
+			int year() const;
+			int month() const;
+			int day() const;
+		};
+	}
+}
+
+%clearnodefaultctor;
 
 class Flow {
 public:
@@ -98,8 +135,8 @@ class Node {
 public:
 	Node();
 	virtual ~Node();
-	virtual int f(ptime current, int dt) = 0;
-	virtual bool init(ptime start, ptime stop, int dt);
+	virtual int f(boost::posix_time::ptime current, int dt) = 0;
+	virtual bool init(boost::posix_time::ptime start, boost::posix_time::ptime stop, int dt);
 	virtual void deinit();
 	virtual const char *getClassName() const = 0;
 	virtual void updateParameters();
@@ -109,8 +146,14 @@ public:
 		return self.__class__.__name__
 
 	def updateParameters(self):
-		log("fuck")
 		self.python_updateParameters(self)
+
+	def addParameters(self):
+		ignores = ["this"]
+		for k in self.__dict__:
+			if k in ignores:
+				continue
+			self.addParameter(k, self.__dict__[k])
 	%}
 protected:
 	void addInPort(std::string name, Flow *f);
