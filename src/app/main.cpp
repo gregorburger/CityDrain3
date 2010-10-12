@@ -7,6 +7,8 @@
 #include "saxloader.h"
 #ifndef PYTHON_DISABLED
 #include <pythonexception.h>
+#include <noderegistry.h>
+#include <QDir>
 #endif
 
 #include <iostream>
@@ -122,6 +124,8 @@ int main(int argc, char **argv) {
 
 	MapBasedModel m;
 #ifndef PYTHON_DISABLED
+	QFileInfo me(argv[0]);
+	NodeRegistry::addToPythonPath(me.dir().path().toStdString());
 	try {
 #endif
 	SaxLoader loader(&m);

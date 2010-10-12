@@ -120,7 +120,8 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 	if (lname == "pythonmodule") {
 #ifndef PYTHON_DISABLED
 		std::string script = atts.value("module").toStdString();
-		//QFileInfo module_file(atts.value("module"));
+		QFileInfo module_file(atts.value("module"));
+		NodeRegistry::addToPythonPath(module_file.dir().path().toStdString());
 		pd->node_registry->addPythonPlugin(script);
 		consumed = true;
 #else
@@ -199,9 +200,12 @@ ISimulation *SaxLoader::load(QFile &file) {
 	r.setErrorHandler(this);
 	r.setLexicalHandler(this);
 	QXmlInputSource source(&file);
+	bool cwd = QDir::setCurrent(QFileInfo(file).absoluteDir().path());
+#ifndef PYTHON_DISABLED
+	NodeRegistry::addToPythonPath(QFileInfo(file).absoluteDir().path().toStdString());
+#endif
 	r.parse(&source);
 	cd3assert(simulation, "could not load simulation");
-	bool cwd = QDir::setCurrent(QFileInfo(file).absoluteDir().path());
 	cd3assert(cwd, "could not change cwd");
 	return simulation;
 }

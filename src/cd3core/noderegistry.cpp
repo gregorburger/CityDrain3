@@ -14,6 +14,8 @@ using namespace boost;
 #include "nodefactory.h"
 #include <cd3assert.h>
 
+std::vector<std::string> NodeRegistry::python_paths;
+
 NodeRegistry::NodeRegistry() {
 }
 
@@ -57,6 +59,13 @@ void NodeRegistry::addPythonPlugin(const std::string &script) {
 	}
 	PyObject *main = PyImport_ImportModule("__main__");
 	PyObject *main_namespace = PyModule_GetDict(main);
+
+	PyRun_String("import sys\nsys.path.append('.')\n", Py_file_input, main_namespace, 0);
+
+	BOOST_FOREACH(std::string path, python_paths) {
+		std::string app_pp_cmd = "sys.path.append('"+path+"')\n";
+		PyRun_String(app_pp_cmd.c_str(), Py_file_input, main_namespace, 0);
+	}
 
 	FILE *test_py = fopen(script.c_str(), "r");
 	PyRun_File(test_py, script.c_str(), Py_file_input, main_namespace, 0);

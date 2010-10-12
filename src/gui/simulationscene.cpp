@@ -315,6 +315,8 @@ void SimulationScene::addPlugin(QString pname) {
 
 void SimulationScene::addPythonModule(QString pname) {
 #ifndef PYTHON_DISABLED
+	std::string dir_name = QFileInfo(pname).dir().path().toStdString();
+	NodeRegistry::addToPythonPath(dir_name);
 	node_reg->addPythonPlugin(pname.toStdString());
 	python_modules << pname;
 	Q_EMIT(changed(0));	//can't definitly do undo here!

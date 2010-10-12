@@ -2,9 +2,9 @@ file(GLOB_RECURSE CPP_FILES ./ *.cpp)
 
 message(STATUS ${CMAKE_BINARY_DIR})
 include_directories(${PYTHON_INCLUDE_DIR} ${CMAKE_BINARY_DIR})
-set_source_files_properties(${CMAKE_BINARY_DIR}/src/python-swig/pycd3WRAP.cpp PROPERTIES GENERATED 1)
+set_source_files_properties(${CMAKE_BINARY_DIR}/pycd3WRAP.cpp PROPERTIES GENERATED 1)
 if (WITH_PYTHON)
-	set(CPP_FILES ${CPP_FILES} ${CMAKE_BINARY_DIR}/src/python-swig/pycd3WRAP.cpp)
+	set(CPP_FILES ${CPP_FILES} ${CMAKE_BINARY_DIR}/pycd3WRAP.cpp)
 endif (WITH_PYTHON)
 add_library(cd3core SHARED ${CPP_FILES})
 

@@ -1,7 +1,7 @@
 from pycd3 import *
 import random as r
 
-CU = CalculationUnit
+#CU = CalculationUnit
 
 class PyMixer(Node):
     def __init__(self):
@@ -102,8 +102,14 @@ class RandomCatchment(Node):
         pass
         
     def f(self, time, dt):
-        print "f in time: %s" % time.to_datetime()
+#        print "f in time: %s" % time.to_datetime()
         self.out[0] = r.random()*30
         for i in range(len(self.out)):
             self.out[i] = r.random()
         return dt  
+        
+def register(nr):
+	for c in Node.__subclasses__():
+		nf = NodeFactory(c)
+		nf.__disown__()
+		nr.addNodeFactory(nf)
