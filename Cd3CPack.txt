@@ -50,6 +50,7 @@ IF(WIN32 AND NOT UNIX)
 	${Boost_LIBRARY_DIRS}/boost_system-*-mt-1_*.dll
 	${Boost_LIBRARY_DIRS}/boost_filesystem-*-mt-1_*.dll)
   install(FILES ${DLLS} DESTINATION bin)
+  install(FILES ${CMAKE_BINARY_DIR}/pycd3.py bin)
 
   file(GLOB RUMBA_FILES ${CMAKE_SOURCE_DIR}/data/rumba/*.txt)
   install(FILES ${RUMBA_FILES} DESTINATION data/rumba)
