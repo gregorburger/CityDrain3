@@ -1,6 +1,7 @@
 #ifndef PYTHON_DISABLED
 #include <Python.h>
 #include <swigruntime.h>
+#include <pythonexception.h>
 #endif
 
 #include "noderegistry.h"
@@ -59,9 +60,10 @@ void NodeRegistry::addPythonPlugin(const std::string &script) {
 	if (!Py_IsInitialized()) {
 		Py_Initialize();
 		init_pycd3();
+		PyObject *main = PyImport_ImportModule("__main__");
+		main_namespace = PyModule_GetDict(main);
+		Py_DECREF(main);
 	}
-	PyObject *main = PyImport_ImportModule("__main__");
-	PyObject *main_namespace = PyModule_GetDict(main);
 
 	PyRun_String("import sys\nsys.path.append('.')\n", Py_file_input, main_namespace, 0);
 
@@ -76,35 +78,44 @@ void NodeRegistry::addPythonPlugin(const std::string &script) {
 	if (PyErr_Occurred())
 		PyErr_Print();
 
+	PyObject *callback = 0;
 	PyObject *register_cb_name = PyString_FromString("register");
+
+	//check for a 'register' callback in script or else call 'pycd3.registerAllNodes'
 	if (PyDict_Contains(main_namespace, register_cb_name)) {
-		//cout << "contains a register cb"  << endl;
-		PyObject *register_cb = PyDict_GetItem(main_namespace, register_cb_name);
-
-		swig_type_info *node_reg = SWIG_TypeQuery("NodeRegistry *");
-		cd3assert(node_reg, "could not query swig typeinfo for NodeRegistry");
-		PyObject *py_this = SWIG_NewPointerObj(this, node_reg, 0);
-
-		PyObject *args = Py_BuildValue("(O)", py_this);
-
-		PyObject *res = PyObject_Call(register_cb, args, Py_None);
-		if (res == 0) {
-			PyErr_Print();
-		} else {
-			//Py_DECREF(res);
-		}
-
-		Py_DECREF(py_this);
-		Py_DECREF(args);
-
-		if (PyErr_Occurred())
-			PyErr_Print();
+		callback = PyDict_GetItemString(main_namespace, "register");
+		Logger(Debug) << "calling register in script";
 	} else {
-		Logger(Error) << "script has no register callback";
+		//load pycd3 module an get 'registerAllCallback'
+		PyObject *pycd3_module = PyImport_ImportModule("pycd3");
+		if (PyErr_Occurred()) {
+			PyErr_Print();
+			return;
+		}
+		PyObject *pycd3_dict = PyModule_GetDict(pycd3_module);
+		Py_XDECREF(pycd3_module);
+		callback = PyDict_GetItemString(pycd3_dict, "registerAllNodes");
+		Logger(Debug) << "calling internal registerAllNodes";
 	}
-	Py_DECREF(register_cb_name);
-	Py_DECREF(main);
+	Py_XDECREF(register_cb_name);
+
+	//prepare args and call 'callback'
+	swig_type_info *node_reg = SWIG_TypeQuery("NodeRegistry *");
+	cd3assert(node_reg, "could not query swig typeinfo for NodeRegistry");
+	PyObject *py_this = SWIG_NewPointerObj(this, node_reg, 0);
+
+	PyObject *args = Py_BuildValue("(O)", py_this);
+
+	PyObject *res = PyObject_Call(callback, args, Py_None);
+	Py_XDECREF(res);
+	Py_XDECREF(py_this);
+	Py_XDECREF(args);
+	if (PyErr_Occurred()) {
+		Logger(Error) << "error in python register function";
+		throw new PythonException();
+	}
 }
+
 #endif
 
 typedef std::pair<std::string, INodeFactory *> snf;

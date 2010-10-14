@@ -1,5 +1,6 @@
 #ifndef NODEREGISTRY_H
 #define NODEREGISTRY_H
+#include <Python.h>
 
 #include <map>
 #include <string>
@@ -40,6 +41,7 @@ private:
 	reg_node_type registered_nodes;
 #ifndef PYTHON_DISABLED
 	static std::vector<std::string> python_paths;
+	PyObject *main_namespace;
 #endif
 };
 

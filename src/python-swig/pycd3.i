@@ -16,6 +16,8 @@
 %include std_string.i
 %include std_map.i
 
+%feature("autodoc", "docstring");
+
 %feature("director:except") {
 	if ($error != NULL) {
 		throw PythonException();
@@ -241,10 +243,17 @@ class NodeFactory(INodeFactory):
 		return self.node.__name__
 
 	def createNode(self):
+		print "creating python node instance %s" % self.node.__name__
 		n = self.node()
 		n.__disown__()
 		return n
 
 	def getSource(self):
 		return "testnodes.py"
+
+def registerAllNodes(nr):
+	for c in Node.__subclasses__():
+		nf = NodeFactory(c)
+		log("adding python node %s" % nf.getNodeName())
+		nr.addNodeFactory(nf.__disown__())
 %}
