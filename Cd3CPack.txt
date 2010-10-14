@@ -30,7 +30,7 @@ IF(WIN32 AND NOT UNIX)
   # There is a bug in NSI that does not handle full unix paths properly. Make
   # sure there is at least one set of four (4) backlasshes.
   SET(CPACK_GENERATOR "NSIS")
-  SET(CPACK_PACKAGE_ICON "${PROJECT_SOURCE_DIR}/data/resources/logo3.png")
+  #SET(CPACK_PACKAGE_ICON "${PROJECT_SOURCE_DIR}/data/resources/logo3.png")
   #SET(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\MyExecutable.exe")
   SET(CPACK_NSIS_DISPLAY_NAME "CityDrain3")
   #SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.my-project-home-page.org")
