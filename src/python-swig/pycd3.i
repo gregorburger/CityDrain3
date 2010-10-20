@@ -133,6 +133,43 @@ struct NodeParameter {
 	NodeParameter &setUnit(std::string newunit);
 };
 
+
+%inline %{
+class WrappedPrimitive {
+public:
+	WrappedPrimitive(){}
+	~WrappedPrimitive(){}
+};
+
+class WrappedDouble : public WrappedPrimitive {
+public:
+	explicit WrappedDouble(double value) : value(value) {
+	}
+	double value;
+};
+
+class WrappedInteger : public WrappedPrimitive {
+public:
+	explicit WrappedInteger(int value) : value(value) {
+	}
+
+	int value;
+};
+
+class WrappedString : public WrappedPrimitive {
+public:
+	explicit WrappedString(std::string value) : value(value) {
+	}
+	std::string value;
+};
+%}
+
+%feature("pythonappend") Node::Node() %{
+	self.prim_types = {float: WrappedDouble, int: WrappedInteger, str: WrappedString}
+	self.wrapped = []
+	self.added = []
+%}
+
 class Node {
 public:
 	Node();
@@ -141,21 +178,55 @@ public:
 	virtual bool init(boost::posix_time::ptime start, boost::posix_time::ptime stop, int dt);
 	virtual void deinit();
 	virtual const char *getClassName() const = 0;
-	virtual void updateParameters();
 
 	%pythoncode %{
 	def getClassName(self):
 		return self.__class__.__name__
 
-	def updateParameters(self):
-		self.python_updateParameters(self)
+	def addParameter(self, p):
+		for k in self.__dict__:
+			if p == self.__dict__[k]:
+				name = k
+				if issubclass(self.__dict__[k].__class__, WrappedPrimitive):
+					name = name[2:]
+				return self.intern_addParameter(name, self.__dict__[k])
 
 	def addParameters(self):
 		ignores = ["this"]
 		for k in self.__dict__:
 			if k in ignores:
 				continue
+
 			self.addParameter(k, self.__dict__[k])
+
+	def __setattr__(self, name, value):
+		if name in ["this", "prim_types", "wrapped", "added"]:
+			self.__dict__[name] = value
+			return
+
+		if name not in self.wrapped and type(value) in self.prim_types.keys():
+			self.__dict__["__"+name] = self.prim_types[type(value)](value)
+			self.wrapped.append(name)
+			return
+		if name in self.wrapped:
+			self.__dict__["__"+name].value = value
+			return
+		self.__dict__[name] = value
+
+	def __getattr__(self, name):
+
+		if name == "this":
+			return self.__dict__[name]
+
+		if "__"+name not in self.__dict__:
+			raise AttributeError
+
+		if name in self.wrapped and name not in self.added:
+			self.added.append(name)
+			return self.__dict__["__"+name]
+		else:
+			return self.__dict__["__"+name].value
+		raise AttributeError
 	%}
 protected:
 	void addInPort(std::string name, Flow *f);
@@ -163,38 +234,24 @@ protected:
 };
 
 %extend Node {
-	NodeParameter &addParameter(std::string name, std::string value) {
-		return $self->addParameter(name, new std::string(value));
-	}
-
-	NodeParameter &addParameter(std::string name, int value) {
-		return $self->addParameter(name, new int(value));
-	}
-
-	NodeParameter &addParameter(std::string name, std::vector<double> v) {
+	NodeParameter &intern_addParameter(std::string name, std::vector<double> v) {
 		return $self->addParameter(name, new std::vector<double>(v));
 	}
 
-	NodeParameter &addParameter(std::string name, Flow *v) {
+	NodeParameter &intern_addParameter(std::string name, Flow *v) {
 		return $self->addParameter(name, v);
 	}
 
-	NodeParameter &addParameter(std::string name, double value) {
-		return $self->addParameter(name, new double(value));
+	NodeParameter &intern_addParameter(std::string name, WrappedDouble *value) {
+		return $self->addParameter(name, &value->value);
 	}
 
-	void python_updateParameters(PyObject *pself) {
-		typedef std::pair<std::string, NodeParameter*> ppair;
-		BOOST_FOREACH(ppair item, $self->getParameters()) {
-			NodeParameter *p = item.second;
-			TypeConverter *con = TypeConverter::get(p->type);
-			if (!con) {
-				Logger(Error) << "can not save value of parameter " << p->name;
-				continue;
-			}
-			Logger(Debug) << "updating parameter" << p->name;
-			con->updatePythonParameter(pself, p);
-		}
+	NodeParameter &intern_addParameter(std::string name, WrappedInteger *value) {
+		return $self->addParameter(name, &value->value);
+	}
+
+	NodeParameter &intern_addParameter(std::string name, WrappedString *value) {
+		return $self->addParameter(name, &value->value);
 	}
 }
 
@@ -217,8 +274,7 @@ public:
 	virtual std::string getSource() const = 0;
 };
 
-class NodeRegistry
-{
+class NodeRegistry {
 public:
 	NodeRegistry();
 	~NodeRegistry();
@@ -243,7 +299,6 @@ class NodeFactory(INodeFactory):
 		return self.node.__name__
 
 	def createNode(self):
-		print "creating python node instance %s" % self.node.__name__
 		n = self.node()
 		n.__disown__()
 		return n
