@@ -130,7 +130,12 @@ int main(int argc, char **argv) {
 #endif
 	SaxLoader loader(&m);
 
-	ISimulation *s = loader.load(f);
+	if (!loader.load(f)) {
+		Logger(Error) << "error loading model file";
+		return -1;
+	}
+
+	ISimulation *s = loader.getSimulation();
 	cd3assert(s, "simulation loading failed");
 
 	if (vm.count("state-dir")) {

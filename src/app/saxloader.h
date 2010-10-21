@@ -27,7 +27,13 @@ public:
 	bool error(const QXmlParseException &exception);
 	bool fatalError(const QXmlParseException &exception);
 	bool warning(const QXmlParseException &exception);
-	ISimulation *load(QFile &f);
+	bool load(QFile &f);
+	ISimulation *getSimulation() const {
+		return simulation;
+	}
+	IModel *getModel() const {
+		return model;
+	}
 protected:
 	IModel *model;
 	ISimulation *simulation;

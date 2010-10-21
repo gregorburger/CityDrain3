@@ -137,7 +137,11 @@ void SimulationScene::load(QString model_file_name) {
 	Q_ASSERT(model_file_name != "");
 	QFile xmlModelFile(model_file_name);
 	GuiModelLoader gml(model, node_reg, sim_reg);
-	simulation = gml.load(xmlModelFile);
+	if (!gml.load(xmlModelFile)) {
+		QMessageBox::critical(0, "failed to load model file", "Error while loading model file. Refer to Log for more information!");
+		return;
+	}
+	simulation = gml.getSimulation();
 	simulation->setModel(model);
 	BOOST_FOREACH(Node *node, *model->getNodes()) {
 		NodeItem *item = new NodeItem(node);

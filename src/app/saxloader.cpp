@@ -121,6 +121,10 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 #ifndef PYTHON_DISABLED
 		std::string script = atts.value("module").toStdString();
 		QFileInfo module_file(atts.value("module"));
+		if (!module_file.exists()) {
+			Logger(Error) << "can't find specified python module" << script;
+			return false;
+		}
 		NodeRegistry::addToPythonPath(module_file.dir().path().toStdString());
 		pd->node_registry->addPythonPlugin(script);
 		consumed = true;
@@ -176,14 +180,14 @@ bool SaxLoader::error(const QXmlParseException &exception) {
 	int line = exception.lineNumber();
 	int col = exception.columnNumber();
 	Logger(Error) << "XmlException: " << line << ":" << col << exception.message();
-	return true;
+	return false;
 }
 
 bool SaxLoader::fatalError(const QXmlParseException &exception) {
 	int line = exception.lineNumber();
 	int col = exception.columnNumber();
 	Logger(Error) << "XmlException: " << line << ":" << col << exception.message();
-	return true;
+	return false;
 }
 
 bool SaxLoader::warning(const QXmlParseException &exception) {
@@ -191,7 +195,7 @@ bool SaxLoader::warning(const QXmlParseException &exception) {
 	return true;
 }
 
-ISimulation *SaxLoader::load(QFile &file) {
+bool SaxLoader::load(QFile &file) {
 	cd3assert(file.exists(), "no such file or directory");
 	bool opened = file.open(QIODevice::ReadOnly);
 	cd3assert(opened, "could not open model");
@@ -204,10 +208,7 @@ ISimulation *SaxLoader::load(QFile &file) {
 #ifndef PYTHON_DISABLED
 	NodeRegistry::addToPythonPath(QFileInfo(file).absoluteDir().path().toStdString());
 #endif
-	r.parse(&source);
-	cd3assert(simulation, "could not load simulation");
-	cd3assert(cwd, "could not change cwd");
-	return simulation;
+	return r.parse(&source);
 }
 
 bool SaxLoader::endElement(const QString &/*ns*/,
