@@ -11,6 +11,14 @@
 #include <boost/foreach.hpp>
 #include <typeconverter.h>
 #include <boost/date_time.hpp>
+
+class WrappedPrimitive {
+protected:
+	WrappedPrimitive(){}
+public:
+	~WrappedPrimitive(){}
+};
+
 %}
 %include std_vector.i
 %include std_string.i
@@ -20,6 +28,7 @@
 
 %feature("director:except") {
 	if ($error != NULL) {
+		//PyErr_Print();
 		throw PythonException();
 	}
 }
@@ -133,14 +142,97 @@ struct NodeParameter {
 	NodeParameter &setUnit(std::string newunit);
 };
 
-
-%inline %{
 class WrappedPrimitive {
+private:
+	WrappedPrimitive();
 public:
-	WrappedPrimitive(){}
-	~WrappedPrimitive(){}
+	~WrappedPrimitive();
+	%pythoncode %{
+
+	def __lt__(self, other):
+		return self.value < other
+	def __le__(self, other):
+		return self.value <= other
+	def __eq__(self, other):
+		return self.value == other
+	def __ne__(self, other):
+		return self.value != other
+	def __gt__(self, other):
+		return self.value > other
+	def __ge__(self, other):
+		return self.value >= other
+
+	def __div__(self, other):
+		return self.value / other
+	def __add__(self, other):
+		return self.value + other
+	def __sub__(self, other):
+		return self.value - other
+	def __mul__(self, other):
+		return self.value * other
+	def __floordiv__(self, other):
+		return self.value // other
+	def __mod__(self, other):
+			return self.value % other
+	def __divmod__(self, other):
+		return divmod(self.value, other)
+	def __pow__(self, other, modulo = None):
+		if (modulo == None):
+			return self.value ** other
+		else:
+			return pow(self.value, other, modulo)
+	def __lshift__(self, other):
+		return self.value << other
+	def __rshift__(self, other):
+		return self.value >> other
+	def __and__(self, other):
+		return self.value & other
+	def __xor__(self, other):
+		return self.value ^ other
+	def __or__(self, other):
+		return self.value | other
+
+	def __radd__(self, other):
+		return other + self.value
+	def __rsub__(self, other):
+		return other - self.value
+	def __rmul__(self, other):
+		return other * self.value
+	def __rdiv__(self, other):
+		return other / self.value
+
+	def __rfloordiv__(self, other):
+		return other // self.value
+	def __rmod__(self, other):
+		return other % self.value
+	def __rdivmod__(self, other):
+		return divmod(other, self.value)
+	def __rpow__(self, other):
+		return other ** self.value
+	def __rlshift__(self, other):
+		return other << self.value
+	def __rrshift__(self, other):
+		return other >> self.value
+	def __rand__(self, other):
+		return other & self.value
+	def __rxor__(self, other):
+		return other ^ self.value
+	def __ror__(self, other):
+		return other | self.value
+
+	def __rdiv__(self, left):
+		return left / self.value
+
+	def __req__(self, left):
+		return left == self.value
+	%}
 };
 
+%rename (Double) WrappedDouble;
+%rename (Integer) WrappedInteger;
+%rename (String) WrappedString;
+
+%inline %{
 class WrappedDouble : public WrappedPrimitive {
 public:
 	explicit WrappedDouble(double value) : value(value) {
@@ -152,7 +244,6 @@ class WrappedInteger : public WrappedPrimitive {
 public:
 	explicit WrappedInteger(int value) : value(value) {
 	}
-
 	int value;
 };
 
@@ -162,12 +253,6 @@ public:
 	}
 	std::string value;
 };
-%}
-
-%feature("pythonappend") Node::Node() %{
-	self.prim_types = {float: WrappedDouble, int: WrappedInteger, str: WrappedString}
-	self.wrapped = []
-	self.added = []
 %}
 
 class Node {
@@ -183,13 +268,19 @@ public:
 	def getClassName(self):
 		return self.__class__.__name__
 
-	def addParameter(self, p):
-		for k in self.__dict__:
-			if p == self.__dict__[k]:
-				name = k
-				if issubclass(self.__dict__[k].__class__, WrappedPrimitive):
-					name = name[2:]
-				return self.intern_addParameter(name, self.__dict__[k])
+	def addParameter(self, *args):
+		if len(args) > 2:
+			raise TypeError("either addParameter(name, parameter) or addParameter(parameter)")
+		if len(args) == 2:
+			name = args[0]
+			p = args[1]
+		else:
+			name = p.__name__
+			p = args[0]
+		types = [Integer, Double, String, Flow, list]
+		if p.__class__ not in types:
+			raise TypeError("parameters can only have type Integer(), Double(), String(), list or Flow")
+		return self.intern_addParameter(name, p)
 
 	def addParameters(self):
 		ignores = ["this"]
@@ -198,35 +289,6 @@ public:
 				continue
 
 			self.addParameter(k, self.__dict__[k])
-
-	def __setattr__(self, name, value):
-		if name in ["this", "prim_types", "wrapped", "added"]:
-			self.__dict__[name] = value
-			return
-
-		if name not in self.wrapped and type(value) in self.prim_types.keys():
-			self.__dict__["__"+name] = self.prim_types[type(value)](value)
-			self.wrapped.append(name)
-			return
-		if name in self.wrapped:
-			self.__dict__["__"+name].value = value
-			return
-		self.__dict__[name] = value
-
-	def __getattr__(self, name):
-
-		if name == "this":
-			return self.__dict__[name]
-
-		if "__"+name not in self.__dict__:
-			raise AttributeError
-
-		if name in self.wrapped and name not in self.added:
-			self.added.append(name)
-			return self.__dict__["__"+name]
-		else:
-			return self.__dict__["__"+name].value
-		raise AttributeError
 	%}
 protected:
 	void addInPort(std::string name, Flow *f);

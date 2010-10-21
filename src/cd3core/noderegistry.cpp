@@ -114,6 +114,7 @@ void NodeRegistry::addPythonPlugin(const std::string &script) {
 		Logger(Error) << "error in python register function";
 		throw new PythonException();
 	}
+	Logger(Debug) << "successfully loaded python script" << script;
 }
 
 #endif

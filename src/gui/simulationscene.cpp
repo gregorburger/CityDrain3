@@ -395,7 +395,6 @@ void SimulationScene::paste() {
 		item->setPos(current_mouse.x() + cn.position.x(), current_mouse.y() + cn.position.y());
 		item->restoreParameters(cn.parameters);
 		SimulationParameters param = simulation->getSimulationParameters();
-		n->updateParameters();
 		n->init(param.start, param.stop, param.dt);
 		item->updatePorts();
 		item->setSelected(true);

@@ -200,7 +200,6 @@ bool NodeItem::changeParameters(bool _new) {
 			getNode()->deinit();
 
 		np.updateNodeParameters();
-		node->updateParameters();
 		if (node->init(sp.start, sp.stop, sp.dt)) {
 			break;
 		}
