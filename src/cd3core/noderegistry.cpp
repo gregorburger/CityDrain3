@@ -69,14 +69,17 @@ void NodeRegistry::addPythonPlugin(const std::string &script) {
 
 	BOOST_FOREACH(std::string path, python_paths) {
 		std::string app_pp_cmd = "sys.path.append('"+path+"')\n";
+		Logger(Debug) << "adding" << path << "to pyhton sys.path";
 		PyRun_String(app_pp_cmd.c_str(), Py_file_input, main_namespace, 0);
 	}
 
 	FILE *test_py = fopen(script.c_str(), "r");
 	PyRun_File(test_py, script.c_str(), Py_file_input, main_namespace, 0);
 
-	if (PyErr_Occurred())
-		PyErr_Print();
+	if (PyErr_Occurred()) {
+		Logger(Error) << "error loading python script" << script;
+		throw PythonException();
+	}
 
 	PyObject *callback = 0;
 	PyObject *register_cb_name = PyString_FromString("register");
@@ -89,7 +92,8 @@ void NodeRegistry::addPythonPlugin(const std::string &script) {
 		//load pycd3 module an get 'registerAllCallback'
 		PyObject *pycd3_module = PyImport_ImportModule("pycd3");
 		if (PyErr_Occurred()) {
-			PyErr_Print();
+			Logger(Error) << "error importint pycd3 module";
+			throw PythonException();
 			return;
 		}
 		PyObject *pycd3_dict = PyModule_GetDict(pycd3_module);
@@ -112,7 +116,7 @@ void NodeRegistry::addPythonPlugin(const std::string &script) {
 	Py_XDECREF(args);
 	if (PyErr_Occurred()) {
 		Logger(Error) << "error in python register function";
-		throw new PythonException();
+		throw PythonException();
 	}
 	Logger(Debug) << "successfully loaded python script" << script;
 }
