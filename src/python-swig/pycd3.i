@@ -34,8 +34,9 @@ public:
 }
 
 namespace std {
-	%template(vectors) vector<std::string>;
-	%template(vectord) vector<double>;
+	%template(StringVector) vector<std::string>;
+	%template(DoubleVector) vector<double>;
+	%template(IntegerVector) vector<int>;
 };
 
 %exception {
@@ -272,14 +273,19 @@ public:
 		if len(args) > 2:
 			raise TypeError("either addParameter(name, parameter) or addParameter(parameter)")
 		if len(args) == 2:
-			name = args[0]
 			p = args[1]
+			name = args[0]
 		else:
-			name = p.__name__
 			p = args[0]
-		types = [Integer, Double, String, Flow, list]
-		if p.__class__ not in types:
+			for k in self.__dict__:
+				if self.__dict__[k] == p:
+					name = k
+					break
+
+		if p.__class__ not in [Integer, Double, String, Flow, DoubleVector, IntegerVector, StringVector]:
 			raise TypeError("parameters can only have type Integer(), Double(), String(), list or Flow")
+
+		log("adding p for type %s" % p.__class__)
 		return self.intern_addParameter(name, p)
 
 	def addParameters(self):
@@ -296,8 +302,8 @@ protected:
 };
 
 %extend Node {
-	NodeParameter &intern_addParameter(std::string name, std::vector<double> v) {
-		return $self->addParameter(name, new std::vector<double>(v));
+	NodeParameter &intern_addParameter(std::string name, std::vector<double> *v) {
+		return $self->addParameter(name, v);
 	}
 
 	NodeParameter &intern_addParameter(std::string name, Flow *v) {
