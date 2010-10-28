@@ -88,55 +88,6 @@ namespace boost {
 
 %clearnodefaultctor;
 
-class Flow {
-public:
-	enum CalculationUnit {
-		flow,
-		concentration,
-		rain,
-		volume,
-		null
-	};
-
-	Flow(const Flow&);
-	Flow();
-	static size_t size();
-	static std::vector<std::string> getNames();
-	static size_t countUnits(CalculationUnit unit);
-	%pythoncode %{
-	def __iter__(self):
-		for i in xrange(self.size()):
-			yield self[i]
-	%}
-};
-
-%extend Flow {
-	double __getitem__(int i) const {
-		return (*self)[i];
-	}
-
-	PyObject* __getitem__(PyObject *slice) const {
-		Py_ssize_t length, start, stop, step;
-		if (!PySlice_Check(slice)) {
-			return Py_None;
-		}
-		length = Flow::size();
-		PySlice_GetIndices((PySliceObject*)slice, length, &start, &stop, &step);
-		PyObject *list = PyList_New(0);
-		for (int i = start; i < stop; i+= step) {
-			PyObject *number = PyFloat_FromDouble((*self)[i]);
-			PyList_Append(list, number);
-		}
-		return list;
-	}
-
-	void __setitem__(int i, double d) {
-		(*self)[i] = d;
-	}
-	int __len__() {
-		return self->size();
-	}
-}
 %nodefaultctor NodeParameter;
 struct NodeParameter {
 	NodeParameter &setDescription(std::string newdesc);
@@ -255,6 +206,62 @@ public:
 	std::string value;
 };
 %}
+
+class Flow {
+public:
+	enum CalculationUnit {
+		flow,
+		concentration,
+		rain,
+		volume,
+		null
+	};
+
+	Flow(const Flow&);
+	Flow();
+	static size_t size();
+	static std::vector<std::string> getNames();
+	static size_t countUnits(CalculationUnit unit);
+	%pythoncode %{
+	def __iter__(self):
+		for i in xrange(self.size()):
+			yield self[i]
+	%}
+};
+
+%extend Flow {
+	double __getitem__(int i) const {
+		return (*self)[i];
+	}
+
+	PyObject* __getitem__(PyObject *slice) const {
+		Py_ssize_t length, start, stop, step;
+		if (!PySlice_Check(slice)) {
+			return Py_None;
+		}
+		length = Flow::size();
+		PySlice_GetIndices((PySliceObject*)slice, length, &start, &stop, &step);
+		PyObject *list = PyList_New(0);
+		for (int i = start; i < stop; i+= step) {
+			PyObject *number = PyFloat_FromDouble((*self)[i]);
+			PyList_Append(list, number);
+		}
+		return list;
+	}
+
+	void __setitem__(int i, WrappedDouble d) {
+		(*self)[i] = d.value;
+	}
+
+
+	void __setitem__(int i, double d) {
+		(*self)[i] = d;
+	}
+
+	int __len__() {
+		return self->size();
+	}
+}
 
 class Node {
 public:
