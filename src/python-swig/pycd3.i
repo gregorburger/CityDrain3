@@ -177,6 +177,18 @@ public:
 
 	def __req__(self, left):
 		return left == self.value
+
+	def __str__(self):
+		return str(self.value)
+
+	def __float(self):
+		return float(self.value)
+
+	def __int__(self):
+		return int(self.value)
+
+	def __long__(self):
+		return long(self.value)
 	%}
 };
 
@@ -263,6 +275,10 @@ public:
 	}
 }
 
+%pythonprepend Node::Node %{
+	self.parameters = {}
+%}
+
 class Node {
 public:
 	Node();
@@ -293,6 +309,7 @@ public:
 			raise TypeError("parameters can only have type Integer(), Double(), String(), list or Flow")
 
 		log("adding p for type %s" % p.__class__)
+		self.parameters[name] = p
 		return self.intern_addParameter(name, p)
 
 	def addParameters(self):
@@ -302,6 +319,16 @@ public:
 				continue
 
 			self.addParameter(k, self.__dict__[k])
+
+	def __setattr__(self, name, value):
+		if "parameters" in self.__dict__ and name in self.parameters:
+			self.__dict__[name].value = value
+			log("setattr: setting parameter %s" % name)
+			return
+
+		self.__dict__[name] = value
+		log("setattr: standard")
+
 	%}
 protected:
 	void addInPort(std::string name, Flow *f);
