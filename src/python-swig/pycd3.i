@@ -276,7 +276,7 @@ public:
 }
 
 %pythonprepend Node::Node %{
-	self.parameters = {}
+	self.wrapped_values = {}
 %}
 
 class Node {
@@ -308,9 +308,22 @@ public:
 		if p.__class__ not in [Integer, Double, String, Flow, DoubleVector, IntegerVector, StringVector]:
 			raise TypeError("parameters can only have type Integer(), Double(), String(), list or Flow")
 
-		log("adding p for type %s" % p.__class__)
-		self.parameters[name] = p
+		log("adding parameter %s with type %s" % (name, p.__class__))
+		self.wrapped_values[name] = p
 		return self.intern_addParameter(name, p)
+
+	def addState(self, state):
+		if state.__class__ not in [Integer, Double, String, Flow, DoubleVector, IntegerVector, StringVector]:
+			raise TypeError("states can only have type Integer(), Double(), String(), list or Flow")
+		name = None
+		for k in self.__dict__:
+			if self.__dict__[k] == state:
+				name = k
+				break
+		log("adding parameter %s with type %s" % (name, state.__class__))
+		self.wrapped_values[name] = state
+		self.intern_addState(name, state)
+
 
 	def addParameters(self):
 		ignores = ["this"]
@@ -321,9 +334,9 @@ public:
 			self.addParameter(k, self.__dict__[k])
 
 	def __setattr__(self, name, value):
-		if "parameters" in self.__dict__ and name in self.parameters:
+		if "wrapped_values" in self.__dict__ and name in self.wrapped_values:
 			self.__dict__[name].value = value
-			log("setattr: setting parameter %s" % name)
+			log("setattr: setting wrapped value %s" % name)
 			return
 
 		self.__dict__[name] = value
@@ -354,6 +367,26 @@ protected:
 
 	NodeParameter &intern_addParameter(std::string name, WrappedString *value) {
 		return $self->addParameter(name, &value->value);
+	}
+
+	void intern_addState(std::string name, std::vector<double> *v) {
+		$self->addState(name, v);
+	}
+
+	void intern_addState(std::string name, Flow *v) {
+		$self->addState(name, v);
+	}
+
+	void intern_addState(std::string name, WrappedDouble *value) {
+		$self->addState(name, &value->value);
+	}
+
+	void intern_addState(std::string name, WrappedInteger *value) {
+		$self->addState(name, &value->value);
+	}
+
+	void intern_addState(std::string name, WrappedString *value) {
+		$self->addState(name, &value->value);
 	}
 }
 
