@@ -6,6 +6,7 @@
 #include <QTextStream>
 #include <QFileInfo>
 #include <QDir>
+#include <QDateTime>
 #include <boost/foreach.hpp>
 
 CD3_DECLARE_NODE_NAME(FileOut)
@@ -47,6 +48,15 @@ bool FileOut::init(ptime start, ptime stop, int dt) {
 void FileOut::deinit() {
 }
 
+QDateTime pttoqt(const boost::posix_time::ptime &pt) {
+	boost::gregorian::date gd = pt.date();
+	boost::posix_time::time_duration gt = pt.time_of_day();
+	QDate qdate(gd.year(), gd.month(), gd.day());
+	QTime qtime(gt.hours(), gt.minutes(), gt.seconds());
+
+	return QDateTime(qdate, qtime);
+}
+
 int FileOut::f(ptime time, int dt) {
 	if (time == start) {
 		file.open(QFile::Truncate | QFile::WriteOnly);
@@ -63,7 +73,9 @@ int FileOut::f(ptime time, int dt) {
 		}
 		stream << "\n";
 	}
-	stream << to_simple_string(time).c_str();
+
+	QDateTime d(pttoqt(time));
+	stream << d.toString("dd.MM.yyyy hh:mm:ss");
 
 	BOOST_FOREACH(std::string name, Flow::getNames()) {
 			stream << "\t" << in.getValue(name);
