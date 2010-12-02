@@ -336,11 +336,9 @@ public:
 	def __setattr__(self, name, value):
 		if "wrapped_values" in self.__dict__ and name in self.wrapped_values:
 			self.__dict__[name].value = value
-			log("setattr: setting wrapped value %s" % name)
 			return
 
 		self.__dict__[name] = value
-		log("setattr: standard")
 
 	%}
 protected:

@@ -20,6 +20,7 @@ using namespace std;
 #include "node.h"
 #include <simulation.h>
 #include <flow.h>
+#include <boost/foreach.hpp>
 
 struct SaxLoaderPriv {
 	NodeRegistry *node_registry;
@@ -235,7 +236,14 @@ bool SaxLoader::endElement(const QString &/*ns*/,
 		return true;
 	}
 	if (lname == "nodelist") {
-		model->initNodes(simulation->getSimulationParameters());
+		node_set_type not_inited = model->initNodes(simulation->getSimulationParameters());
+		if (!not_inited.empty()) {
+			Logger(Error) << "some nodes failed to init";
+			BOOST_FOREACH(Node *n, not_inited) {
+				Logger(Error) << "node" << n->getId() << "of type" << n->getClassName() << "failed to init";
+			}
+			return false;
+		}
 		return true;
 	}
 	if (lname == "flowdefinition") {
