@@ -1,6 +1,9 @@
 #ifndef NODEREGISTRY_H
 #define NODEREGISTRY_H
+
+#ifndef PYTHON_DISABLED
 #include <Python.h>
+#endif
 
 #include <map>
 #include <string>

@@ -15,11 +15,12 @@ using namespace boost;
 #include "nodefactory.h"
 #include <cd3assert.h>
 
+#ifndef PYTHON_DISABLED
 std::vector<std::string> NodeRegistry::python_paths = std::vector<std::string>();
 void NodeRegistry::addToPythonPath(std::string p) {
 	NodeRegistry::python_paths.push_back(p);
 }
-
+#endif
 NodeRegistry::NodeRegistry() {
 }
 
