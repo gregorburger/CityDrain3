@@ -1,4 +1,6 @@
+#ifndef PYTHON_DISABLED
 #include <Python.h>
+#endif
 #include "pythonexception.h"
 
 #ifndef PYTHON_DISABLED
