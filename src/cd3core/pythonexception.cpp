@@ -1,6 +1,8 @@
-#include "pythonexception.h"
 #ifndef PYTHON_DISABLED
 #include <Python.h>
+#endif
+#include "pythonexception.h"
+
 
 std::string to_string(PyObject *o) {
 	PyObject *pystr = PyObject_Str(o);

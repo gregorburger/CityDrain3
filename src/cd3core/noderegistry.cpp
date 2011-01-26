@@ -21,6 +21,7 @@ void NodeRegistry::addToPythonPath(std::string p) {
 	NodeRegistry::python_paths.push_back(p);
 }
 #endif
+
 NodeRegistry::NodeRegistry() {
 }
 
