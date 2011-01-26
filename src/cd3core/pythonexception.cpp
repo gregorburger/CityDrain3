@@ -3,7 +3,7 @@
 #endif
 #include "pythonexception.h"
 
-
+#ifndef PYTHON_DISABLED
 std::string to_string(PyObject *o) {
 	PyObject *pystr = PyObject_Str(o);
 	char *cstr = PyString_AsString(pystr);
