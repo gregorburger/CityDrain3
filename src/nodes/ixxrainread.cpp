@@ -2,6 +2,7 @@
 #include "cd3assert.h"
 #include "rainbuffer.h"
 #include <fstream>
+#include <boost/filesystem.hpp>
 
 typedef std::pair<ptime, double> ixx_value;
 
@@ -35,8 +36,13 @@ bool IxxRainRead::init(ptime start, ptime end, int dt) {
 	data->in.close();
 	data->in.clear();
 
+	if (!boost::filesystem::exists(rain_file)) {
+		Logger(Error) << "can not open rainfile" << rain_file;
+		return false;
+	}
+
 	data->in.open(rain_file.c_str());
-	if (!data->in.good()) {
+	if (!data->in.is_open()) {
 		Logger(Warning) << "it is not possible to read from the given rainfile";
 		return false;
 	}
