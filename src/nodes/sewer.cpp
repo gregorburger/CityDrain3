@@ -26,7 +26,9 @@ Sewer::~Sewer() {
 
 void Sewer::deinit() {
 	for (int i = 0; i < N; i++) {
+		Flow *f = &getState<Flow>(str(format("V[%1%]") % i));
 		removeState(str(format("V[%1%]") % i));
+		delete f;
 	}
 	V.clear();
 }
@@ -34,8 +36,8 @@ void Sewer::deinit() {
 bool Sewer::init(ptime start, ptime end, int dt) {
 	(void) end;
 	for (int i = 0; i < N; i++) {
-		V.push_back(Flow());
-		addState(str(format("V[%1%]") % i), &V[i]);
+		V.push_back(new Flow());
+		addState(str(format("V[%1%]") % i), V[i]);
 	}
 
 	addMuskParam(dt);
@@ -51,7 +53,7 @@ int Sewer::f(ptime time, int dt) {
 	Flow tmp = in;
 
 	for (int i = 0; i < N; i++) {
-		tmp = FlowFuns::route_sewer(tmp, &V[i], C_x, C_y, dt);
+		tmp = FlowFuns::route_sewer(tmp, V[i], C_x, C_y, dt);
 	}
 	out = tmp;
 
