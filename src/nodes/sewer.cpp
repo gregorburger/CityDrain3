@@ -26,7 +26,7 @@ Sewer::~Sewer() {
 
 void Sewer::deinit() {
 	for (int i = 0; i < N; i++) {
-		Flow *f = &getState<Flow>(str(format("V[%1%]") % i));
+		Flow *f = getState<Flow>(str(format("V[%1%]") % i));
 		removeState(str(format("V[%1%]") % i));
 		delete f;
 	}
