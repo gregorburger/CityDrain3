@@ -21,7 +21,7 @@ private:
 
 	Flow loss_basin; //states
 	std::vector<Flow *> V;
-	int area;
+	double area;
 	double run_off_coeff;
 	double initial_loss;
 	double permanent_loss;
