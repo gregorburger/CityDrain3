@@ -5,9 +5,10 @@
 #include <QStringList>
 #include <logger.h>
 
-Reactor::Reactor(Flow &volume) : volume(volume) {
+Reactor::Reactor(Flow &volume, bool use_outer_volume)
+    : volume(volume), use_outer_volume(use_outer_volume) {
    size_t nc = Flow::countUnits(Flow::concentration);   
-   
+
    reactor_volume = 1.0;     // default Volume of reactor stretch
    nstep = 10;               // default internal timesteps for calculation
    init_v.resize(nc);
@@ -80,6 +81,9 @@ void Reactor::react(Flow &in, int dt) {
     int nc = Flow::countUnits(Flow::concentration);
     Flow oldvol, dvol1, dvol2, errvol, scalvol;
     
+    if (use_outer_volume)
+        reactor_volume = volume[0];
+
     double thyd = in[0]/reactor_volume/dt;          // Hydraulische Aufenthaltszeit
     
     if (nstep!=0){

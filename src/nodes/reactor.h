@@ -12,7 +12,7 @@ namespace mu {
 class Reactor
 {
 public:
-    Reactor(Flow &volume);
+    Reactor(Flow &volume, bool use_outer_volume = false);
     virtual ~Reactor();
     bool init(int dt, 
               std::string constants, 
@@ -26,6 +26,7 @@ private:
     Flow &volume;
     double acc;
     std::vector<mu::Parser *> parsers;
+    bool use_outer_volume;
 };
 
 #endif // REACT_H

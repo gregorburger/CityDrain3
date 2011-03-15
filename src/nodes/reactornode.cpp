@@ -16,7 +16,6 @@ ReactorNode::ReactorNode() {
     conc_formula.resize(nc);
     formula_name.resize(nc);
     
-
     reactor = new Reactor(volume);
     
     addParameter(ADD_PARAMETERS(constants));
@@ -37,8 +36,6 @@ ReactorNode::ReactorNode() {
 ReactorNode::~ReactorNode() {
     delete reactor;
 }
-
-
 
 bool ReactorNode::init(ptime start, ptime end, int dt) {
     return reactor->init(dt, constants, conc_formula);
