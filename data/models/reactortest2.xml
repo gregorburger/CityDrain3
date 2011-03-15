@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<citydrain version="1.0">
+    <pluginpath path="nodes"/>
+    <simulation class="DefaultSimulation">
+        <time start="2000-Jan-01 00:00:00" stop="2010-Jan-03 00:00:00" dt="300">
+            <flowdefinition>
+                <flow name="Q"/>
+                <concentration name="SS"/>
+                <concentration name="XH"/>
+            </flowdefinition>
+        </time>
+    </simulation>
+    <model>
+        <nodelist>
+            <node id="FileOut_1" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out.txt"/>
+            </node>
+            <node id="FileOut_0" class="FileOut">
+                <parameter name="out_file_name" type="string" value="in.txt"/>
+            </node>
+            <node id="Reactor_0" class="Reactor">
+                <parameter name="SS_formula" type="string" value="-SS/(SS+0.1)*XH*0.001"/>
+                <parameter name="XH_formula" type="string" value="SS/(SS+0.1)*XH*0.001"/>
+                <parameter name="constants" type="string" value=""/>
+                <parameter name="init_v" type="array[double]" value="100;1"/>
+                <parameter name="nstep" type="int" value="0"/>
+                <parameter name="reactor_volume" type="double" value="10"/>
+            </node>
+            <node id="ConstSource_0" class="ConstSource">
+                <parameter name="const_flow" type="flow" value="Q;0.001;SS;10;XH;1"/>
+            </node>
+        </nodelist>
+        <connectionlist>
+            <connection id="0">
+                <source node="Reactor_0" port="out"/>
+                <sink node="FileOut_1" port="in"/>
+            </connection>
+            <connection id="1">
+                <source node="FileOut_0" port="out"/>
+                <sink node="Reactor_0" port="in"/>
+            </connection>
+            <connection id="2">
+                <source node="ConstSource_0" port="out"/>
+                <sink node="FileOut_0" port="in"/>
+            </connection>
+        </connectionlist>
+    </model>
+    <gui>
+        <nodeposition id="ConstSource_0" x="-1217" y="-140"/>
+        <nodeposition id="FileOut_0" x="-928" y="-48"/>
+        <nodeposition id="FileOut_1" x="-404" y="-60"/>
+        <nodeposition id="Reactor_0" x="-679" y="-176"/>
+    </gui>
+</citydrain>

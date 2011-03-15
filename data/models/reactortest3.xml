@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<citydrain version="1.0">
+    <pluginpath path="nodes"/>
+    <simulation class="DefaultSimulation">
+        <time start="2000-Jan-01 00:00:00" stop="2000-Jan-03 00:00:00" dt="300">
+            <flowdefinition>
+                <flow name="Q"/>
+                <concentration name="SS"/>
+                <concentration name="XH"/>
+            </flowdefinition>
+        </time>
+    </simulation>
+    <model>
+        <nodelist>
+            <node id="Reactor_2" class="Reactor">
+                <parameter name="SS_formula" type="string" value="-SS/(SS+0.1)*XH*0.001"/>
+                <parameter name="XH_formula" type="string" value="SS/(SS+0.1)*XH*0.001"/>
+                <parameter name="constants" type="string" value=""/>
+                <parameter name="nstep" type="int" value="10"/>
+                <parameter name="reactor_volume" type="double" value="10"/>
+            </node>
+            <node id="Reactor_0" class="Reactor">
+                <parameter name="SS_formula" type="string" value="-SS/(SS+0.1)*XH*0.001"/>
+                <parameter name="XH_formula" type="string" value="SS/(SS+0.1)*XH*0.001"/>
+                <parameter name="constants" type="string" value=""/>
+                <parameter name="nstep" type="int" value="10"/>
+                <parameter name="reactor_volume" type="double" value="10"/>
+            </node>
+            <node id="Reactor_1" class="Reactor">
+                <parameter name="SS_formula" type="string" value="-SS/(SS+0.1)*XH*0.001"/>
+                <parameter name="XH_formula" type="string" value="SS/(SS+0.1)*XH*0.001"/>
+                <parameter name="constants" type="string" value=""/>
+                <parameter name="nstep" type="int" value="10"/>
+                <parameter name="reactor_volume" type="double" value="10"/>
+            </node>
+            <node id="FileOut_1" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out.txt"/>
+            </node>
+            <node id="FileOut_0" class="FileOut">
+                <parameter name="out_file_name" type="string" value="in.txt"/>
+            </node>
+            <node id="ConstSource_0" class="ConstSource">
+                <parameter name="const_flow" type="flow" value="Q;0.001;SS;100;XH;1"/>
+            </node>
+            <node id="FileOut_2" class="FileOut">
+                <parameter name="out_file_name" type="string" value="out0.txt"/>
+            </node>
+        </nodelist>
+        <connectionlist>
+            <connection id="0">
+                <source node="Reactor_1" port="out"/>
+                <sink node="Reactor_2" port="in"/>
+            </connection>
+            <connection id="1">
+                <source node="Reactor_2" port="out"/>
+                <sink node="FileOut_1" port="in"/>
+            </connection>
+            <connection id="2">
+                <source node="ConstSource_0" port="out"/>
+                <sink node="FileOut_0" port="in"/>
+            </connection>
+            <connection id="3">
+                <source node="Reactor_0" port="out"/>
+                <sink node="FileOut_2" port="in"/>
+            </connection>
+            <connection id="4">
+                <source node="FileOut_2" port="out"/>
+                <sink node="Reactor_1" port="in"/>
+            </connection>
+            <connection id="5">
+                <source node="FileOut_0" port="out"/>
+                <sink node="Reactor_0" port="in"/>
+            </connection>
+        </connectionlist>
+    </model>
+    <gui>
+        <nodeposition id="ConstSource_0" x="-1257" y="-197"/>
+        <nodeposition id="FileOut_0" x="-1198" y="-77"/>
+        <nodeposition id="FileOut_1" x="-392" y="-38"/>
+        <nodeposition id="FileOut_2" x="-676" y="-211"/>
+        <nodeposition id="Reactor_0" x="-928" y="-207"/>
+        <nodeposition id="Reactor_1" x="-891" y="-36"/>
+        <nodeposition id="Reactor_2" x="-613" y="-63"/>
+    </gui>
+</citydrain>
