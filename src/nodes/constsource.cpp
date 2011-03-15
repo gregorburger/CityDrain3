@@ -6,7 +6,7 @@ CD3_DECLARE_NODE_NAME(ConstSource)
 
 ConstSource::ConstSource() {
 	addParameter(ADD_PARAMETERS(const_flow))
-		.setUnit("m^3/s");
+                .setUnit("m^3/s, g/m^3");
 	addOutPort(ADD_PARAMETERS(out));
 }
 
