@@ -1,29 +1,30 @@
-#ifndef REACTOR_H
-#define REACTOR_H
+#ifndef REACT_H
+#define REACT_H
 
-#include <node.h>
-#include <flow.h>
 #include <string>
-#include <map>
-#include <muParser.h>
+#include <vector>
+#include <flow.h>
 
-CD3_DECLARE_NODE(Reactor)
+namespace mu {
+   class Parser;
+}
+
+class Reactor
+{
 public:
-    Reactor();
-    virtual ~Reactor();
-    bool init(ptime start, ptime end, int dt);
-    int f(ptime time, int dt);
-
-private:
-    Flow in, out, volume;
-    std::vector<std::string> conc_formula, formula_name;
-    std::vector<mu::Parser *> parsers;
-    std::string constants;
+    Reactor(Flow &volume);
+    bool init(int dt, 
+              std::string constants, 
+              std::vector<std::string> conc_formula);
+    void react(Flow &in, int dt);
+    
     std::vector<double> init_v;
-    double dt, k, reactor_volume;
+    double k, reactor_volume;
     int nstep;
+private:
+    Flow &volume;
     double acc;
-
+    std::vector<mu::Parser *> parsers;
 };
 
-#endif // RIVER_H
+#endif // REACT_H
