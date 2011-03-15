@@ -6,23 +6,29 @@
 #include <logger.h>
 
 Reactor::Reactor(Flow &volume) : volume(volume) {
-   int nc = Flow::countUnits(Flow::concentration);   
+   size_t nc = Flow::countUnits(Flow::concentration);   
    
    reactor_volume = 1.0;     // default Volume of reactor stretch
    nstep = 10;               // default internal timesteps for calculation
    init_v.resize(nc);
    parsers.resize(nc);
    
-   for (int c = 0; c < nc; ++c) {
+   for (size_t c = 0; c < nc; ++c) {
       parsers[c] = new mu::Parser();
       parsers[c]->EnableOptimizer();
       parsers[c]->EnableByteCode();
-      for (int cvars = 0; cvars < nc; ++cvars) {
+      for (size_t cvars = 0; cvars < nc; ++cvars) {
           std::string ccname = Flow::getUnitNames(Flow::concentration)[cvars];
           parsers[c]->DefineVar(ccname, &volume[cvars+1]);
           Logger(Debug) << "defining var:" << ccname;
       }
    }
+}
+
+Reactor::~Reactor() {
+    for (size_t c = 0; c < Flow::countUnits(Flow::concentration); ++c) {
+       delete parsers[c];
+    }
 }
 
 typedef std::pair<std::string, double> kvpair;

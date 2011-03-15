@@ -35,7 +35,7 @@ ReactorNode::ReactorNode() {
 
 
 ReactorNode::~ReactorNode() {
-
+    delete reactor;
 }
 
 

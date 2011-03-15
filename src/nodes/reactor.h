@@ -13,6 +13,7 @@ class Reactor
 {
 public:
     Reactor(Flow &volume);
+    virtual ~Reactor();
     bool init(int dt, 
               std::string constants, 
               std::vector<std::string> conc_formula);
