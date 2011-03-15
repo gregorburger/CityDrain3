@@ -25,6 +25,7 @@
 #include "impuls.h"
 #include "simplemixer.h"
 #include "reactornode.h"
+#include "river.h"
 
 #include <noderegistry.h>
 #include <nodefactory.h>
@@ -58,6 +59,7 @@ extern "C" {
 		registry->addNodeFactory(new NodeFactory<Impuls>(SOURCE));
 		registry->addNodeFactory(new NodeFactory<SimpleMixer>(SOURCE));
 		registry->addNodeFactory(new NodeFactory<ReactorNode>(SOURCE));
+		registry->addNodeFactory(new NodeFactory<River>(SOURCE));
 	}
 
 	void CD3_PUBLIC registerSimulations(SimulationRegistry *registry) {
