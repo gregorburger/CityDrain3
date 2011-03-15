@@ -84,7 +84,7 @@ Flow FlowFuns::catchement_lossmodel(const Flow &in,
 }
 
 Flow FlowFuns::catchment_flowmodel(const Flow &in,
-								   int area,
+								   double area,
 								   int dt,
 								   const std::vector<double> &cvalues) {
 

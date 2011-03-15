@@ -17,7 +17,7 @@ static std::pair<Flow, Flow> split(const Flow &f,
 								   float ratio);
 
 static Flow catchment_flowmodel(const Flow &f,
-								int area,
+								double area,
 								int dt,
 								const std::vector<double> &cvalues);
 
