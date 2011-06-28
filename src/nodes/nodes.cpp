@@ -27,6 +27,7 @@
 #include "reactornode.h"
 #include "river.h"
 #include "ixxqread.h"
+#include "seasonqread.h"
 
 #include <noderegistry.h>
 #include <nodefactory.h>
@@ -62,6 +63,7 @@ extern "C" {
 		registry->addNodeFactory(new NodeFactory<ReactorNode>(SOURCE));
 		registry->addNodeFactory(new NodeFactory<River>(SOURCE));
 		registry->addNodeFactory(new NodeFactory<IxxQRead>(SOURCE));
+		registry->addNodeFactory(new NodeFactory<SeasonQRead>(SOURCE));
 	}
 
 	void CD3_PUBLIC registerSimulations(SimulationRegistry *registry) {
