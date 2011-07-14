@@ -21,7 +21,7 @@ void ChangeParameters::undo() {
 	item->getNode()->deinit();
 	item->restoreParameters(before);
 	SimulationParameters sp = scene->simulation->getSimulationParameters();
-	item->getNode()->init(sp.start, sp.stop, sp.dt);
+	item->getNode()->init(sp.start + seconds(sp.dt), sp.stop, sp.dt);
 	item->updatePorts();
 	//scene->update();
 	scene->updateConnections(item);
@@ -37,7 +37,7 @@ void ChangeParameters::redo() {
 	item->getNode()->deinit();
 	item->restoreParameters(after);
 	SimulationParameters sp = scene->simulation->getSimulationParameters();
-	item->getNode()->init(sp.start, sp.stop, sp.dt);
+	item->getNode()->init(sp.start + seconds(sp.dt), sp.stop, sp.dt);
 	item->updatePorts();
 	//scene->update();
 	scene->updateConnections(item);

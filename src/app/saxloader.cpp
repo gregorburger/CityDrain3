@@ -101,7 +101,7 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 				"dt:" << atts.value("dt");
 		p.dt = lexical_cast<int>(atts.value("dt").toStdString());
 		Logger(Debug) << "parsing posix time " << atts.value("start").toStdString();
-		p.start = time_from_string(atts.value("start").toStdString()) + seconds(p.dt);
+		p.start = time_from_string(atts.value("start").toStdString());
 		Logger(Debug) << "parsing posix time " << atts.value("stat").toStdString();
 		p.stop = time_from_string(atts.value("stop").toStdString());
 		simulation->setSimulationParameters(p);

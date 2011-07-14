@@ -55,7 +55,7 @@ void ISimulation::start(ptime time) {
 	}
 
 	QTime ts_before = QTime::currentTime();
-	current_time = sim_param.start;
+	current_time = sim_param.start + seconds(sim_param.dt);
 	int dt;
 	while (running && current_time <= sim_param.stop) {
 		timestep_before(this, current_time);

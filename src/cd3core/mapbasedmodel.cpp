@@ -149,7 +149,7 @@ node_set_type MapBasedModel::initNodes(const SimulationParameters &sp) {
 	node_set_type problem_nodes;
 	while (it != all_nodes.end()) {
 		Node *n = *it;
-		if (!n->init(sp.start, sp.stop, sp.dt)) {
+		if (!n->init(sp.start + seconds(sp.dt), sp.stop, sp.dt)) {
 			problem_nodes.insert(n);
 		}
 		//TODO remove workaround:

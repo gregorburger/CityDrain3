@@ -21,7 +21,7 @@ DefaultSimulation::~DefaultSimulation() {
 }
 
 int DefaultSimulation::run(ptime time, int dt) {
-	if (time == sim_param.start) {
+	if (time == sim_param.start + seconds(sim_param.dt)) {
 		sp->sources = model->getSourceNodes();
 	}
 	sp->done.clear();
