@@ -5,6 +5,7 @@
 #include "nodeconnection.h"
 #include "log.h"
 #include "logger.h"
+#include "node.h"
 
 #include <QTime>
 #include <boost/foreach.hpp>
@@ -49,14 +50,22 @@ void ISimulation::start(ptime time) {
 	cd3assert(model->cycleFree(), "use \"cycle_break\" attribute in connection (xml) to split up cycles");
 	model->checkModel();
 
+	BOOST_FOREACH(Node *n, *model->getNodes()) {
+		n->start();
+	}
+
 	QTime ts_before = QTime::currentTime();
 	current_time = sim_param.start;
 	int dt;
-	while (running && current_time < sim_param.stop) {
+	while (running && current_time <= sim_param.stop) {
 		timestep_before(this, current_time);
 		dt = run(current_time, sim_param.dt);
 		timestep_after(this, current_time);
 		current_time = current_time + seconds(dt);
+	}
+
+	BOOST_FOREACH(Node *n, *model->getNodes()) {
+		n->stop();
 	}
 
 	QTime ts_after = QTime::currentTime();

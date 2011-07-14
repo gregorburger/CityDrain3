@@ -57,6 +57,10 @@ void PipelinedSimulation::start(ptime time) {
 	}
 	Logger(Standard) << "thread count: " << pool->maxThreadCount();
 
+	BOOST_FOREACH(Node *n, *model->getNodes()) {
+		n->start();
+	}
+
 	BOOST_FOREACH(Node *n, pd->nodes) {
 		pd->state[n] = time;
 	}
@@ -68,6 +72,11 @@ void PipelinedSimulation::start(ptime time) {
 		pool->start(worker);
 	}
 	pool->waitForDone();
+
+	BOOST_FOREACH(Node *n, *model->getNodes()) {
+		n->stop();
+	}
+
 	QTime ts_after = QTime::currentTime();
 	int duration = ts_before.msecsTo(ts_after);
 	Logger(Standard) << "simulation took:" << duration << "ms";

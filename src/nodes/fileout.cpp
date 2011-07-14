@@ -40,8 +40,6 @@ bool FileOut::init(ptime start, ptime stop, int dt) {
 	file.setFileName(q_out_file_name);
 	Logger() << this << "using fileout:" << out_file_name;
 	stream.setRealNumberPrecision(10);
-	this->stop = stop;
-	this->start = start;
 	return true;
 }
 
@@ -57,23 +55,23 @@ QDateTime pttoqt(const boost::posix_time::ptime &pt) {
 	return QDateTime(qdate, qtime);
 }
 
-int FileOut::f(ptime time, int dt) {
-	if (time == start) {
-		file.open(QFile::Truncate | QFile::WriteOnly);
-		//file.reset();
-		stream.reset();
-		stream.setDevice(&file);
-		Logger(Debug) << this << "opening file";
-		stream << qSetFieldWidth(15);
-		stream << qSetRealNumberPrecision(15);
-		stream << fixed;
-		stream << "time";
-		BOOST_FOREACH(std::string name, Flow::getNames()) {
-			stream << "\t" << QString::fromStdString(name);
-		}
-		stream << "\n";
+void FileOut::start() {
+	file.open(QFile::Truncate | QFile::WriteOnly);
+	//file.reset();
+	stream.reset();
+	stream.setDevice(&file);
+	Logger(Debug) << this << "opening file";
+	stream << qSetFieldWidth(15);
+	stream << qSetRealNumberPrecision(15);
+	stream << fixed;
+	stream << "time";
+	BOOST_FOREACH(std::string name, Flow::getNames()) {
+		stream << "\t" << QString::fromStdString(name);
 	}
+	stream << "\n";
+}
 
+int FileOut::f(ptime time, int dt) {
 	QDateTime d(pttoqt(time));
 	stream << d.toString("dd.MM.yyyy hh:mm:ss");
 
@@ -81,10 +79,12 @@ int FileOut::f(ptime time, int dt) {
 			stream << "\t" << in.getValue(name);
 	}
 	stream << "\n";
-	if (time == stop) {
-		stream.flush();
-		file.close();
-		Logger(Debug) << this << "closing file";
-	}
+
 	return dt;
+}
+
+void FileOut::stop() {
+	stream.flush();
+	file.close();
+	Logger(Debug) << this << "closing file";
 }

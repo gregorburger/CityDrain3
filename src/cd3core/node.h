@@ -79,12 +79,44 @@ public:
 	std::string getId() const;
 
 	virtual const char *getClassName() const = 0;
+
+	/**
+	  * init is called after parameters were set. Also
+	  * if any kind of time parameter for the simulation
+	  * has changed.
+	  *
+	  * init is used to acquire all ressources necessary for
+	  * the given parameter set.
+	  *
+	  * allows to initialize dynamic parameters (e.g. given a mixer
+	  * with dynamic input sizes to allow multiple in ports)
+	  */
 	virtual bool init(ptime start, ptime end, int dt);
-	/*
-	  called before delete, ressources acquired in init
-	  should be deallocated in deinit.
+
+	/**
+	  * called before delete, ressources acquired in init
+	  * should be deallocated in deinit.
+	  *
+	  * Also called when parameters changed so the node can restart into
+	  * a clean state for the next init run.
 	  */
 	virtual void deinit();
+
+	/**
+	  * called at the beginning of each simulation run.
+	  * When started from GUI start/stop may get called many
+	  * times.
+	  *
+	  * used for opening files etc.
+	  */
+	virtual void start();
+
+	/**
+	  * called after each simulation run.
+	  *
+	  * used for closing files etc.
+	  */
+	virtual void stop();
 
 	//pull out states from a script
 	//gets called before saving states

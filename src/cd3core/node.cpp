@@ -21,6 +21,12 @@ bool Node::init(ptime start, ptime end, int dt) {
 void Node::deinit() {
 }
 
+void Node::start() {
+}
+
+void Node::stop() {
+}
+
 void Node::setId(const std::string &id) {
 	this->id = id;
 }

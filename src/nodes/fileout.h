@@ -13,12 +13,14 @@ public:
 	bool init(ptime start, ptime end, int dt);
 	int f(ptime time, int dt);
 	void deinit();
+
+	void start();
+	void stop();
 private:
 	Flow in;
 	std::string out_file_name;
 	QFile file;
 	QTextStream stream;
-	ptime start, stop;
 };
 
 #endif // FILEOUT_H
