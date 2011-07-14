@@ -1,4 +1,4 @@
-file(GLOB_RECURSE CPP_FILES ./ *.cpp)
+file(GLOB_RECURSE CPP_FILES ./ *.cpp *.h)
 set(CPP_FILES ${CPP_FILES} rumba01dll.c)
 
 
