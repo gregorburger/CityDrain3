@@ -55,7 +55,7 @@ void ISimulation::start(ptime time) {
 	}
 
 	QTime ts_before = QTime::currentTime();
-	current_time = sim_param.start + seconds(sim_param.dt);
+	current_time = time + seconds(sim_param.dt);
 	int dt;
 	while (running && current_time <= sim_param.stop) {
 		timestep_before(this, current_time);
@@ -84,7 +84,7 @@ void ISimulation::serialize(const std::string &dir) const {
 }
 
 void ISimulation::deserialize(const std::string &dir, ptime time) const {
-	Logger(Debug) << "serializing timestep" << to_simple_string(time) << "into" << dir;
+	Logger(Debug) << "deserializing timestep" << to_simple_string(time) << "from" << dir;
 	ModelSerializer ms(model, dir);
 	ms.deserialize(time);
 }

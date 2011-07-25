@@ -65,8 +65,8 @@ void PipelinedSimulation::start(ptime time) {
 		pd->state[n] = time;
 	}
 	QTime ts_before = QTime::currentTime();
-	for (current_time = time;
-		 current_time < sim_param.stop;
+	for (current_time = time + seconds(sim_param.dt);
+		 current_time <= sim_param.stop;
 		 current_time = current_time + seconds(sim_param.dt)) {
 		StateWorker *worker = new StateWorker(pd, current_time, sim_param.dt);
 		pool->start(worker);
