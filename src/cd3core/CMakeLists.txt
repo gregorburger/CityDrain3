@@ -1,4 +1,4 @@
-file(GLOB_RECURSE CPP_FILES ./ *.cpp)
+file(GLOB_RECURSE CPP_FILES ./ *.cpp *.h)
 
 message(STATUS ${CMAKE_BINARY_DIR})
 include_directories(${PYTHON_INCLUDE_DIR} ${CMAKE_BINARY_DIR})
