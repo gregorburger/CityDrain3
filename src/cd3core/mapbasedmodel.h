@@ -49,6 +49,8 @@ public:
 	name_node_map getNamesAndNodes() const;
 
 	Node *getNode(const std::string &name) const;
+        bool containsNode(const string &name) const;
+
 	con_count_type getForwardCounts() const;
 	con_count_type getBackwardCounts() const;
 
