@@ -71,6 +71,7 @@ endif()
 ##'NOF CHECKING... BUILDING##
 add_subdirectory(src/cd3core)
 add_subdirectory(src/nodes)
+add_subdirectory(src/dance4water)
 
 if (WITH_PYTHON)
 		add_subdirectory(src/python-swig)
