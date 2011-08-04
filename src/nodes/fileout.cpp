@@ -76,7 +76,7 @@ int FileOut::f(ptime time, int dt) {
 	stream << d.toString("dd.MM.yyyy hh:mm:ss");
 
 	BOOST_FOREACH(std::string name, Flow::getNames()) {
-			stream << "\t" << in.getValue(name);
+		stream << "\t" << in.getValue(name);
 	}
 	stream << "\n";
 
