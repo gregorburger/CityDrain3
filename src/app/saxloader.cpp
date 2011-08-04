@@ -90,7 +90,7 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		cd3assert(simulation == 0, "Simulation already set");
 		std::string klass = atts.value("class").toStdString();
 		Logger(Debug) << "loading simulation" << klass;
-		this->simulation =pd->sim_registry->createSimulation(klass);
+		this->simulation = pd->sim_registry->createSimulation(klass);
 		consumed = true;
 	}
 	if (lname == "time") {
@@ -158,6 +158,20 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		std::string name = atts.value("name").toStdString();
 		cd3assert(name.length() > 0, "concentration name must not be empty");
 		pd->flow_definition[name] = Flow::concentration;
+		consumed = true;
+	}
+	if (lname == "climatic") {
+		cd3assert(atts.index("name") >= 0, "climatic must define a name");
+		std::string name = atts.value("name").toStdString();
+		cd3assert(name.length() > 0, "climatic name must not be empty");
+		pd->flow_definition[name] = Flow::climatic;
+		consumed = true;
+	}
+	if (lname == "temperature") {
+		cd3assert(atts.index("name") >= 0, "temperature must define a name");
+		std::string name = atts.value("name").toStdString();
+		cd3assert(name.length() > 0, "temperature name must not be empty");
+		pd->flow_definition[name] = Flow::temperature;
 		consumed = true;
 	}
 	if (lname == "flowdefinition") {

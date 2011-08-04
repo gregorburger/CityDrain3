@@ -20,7 +20,9 @@ public:
 		concentration,
 		rain,
 		volume,
-		null
+		climatic,
+		temperature,
+		null,
 	};
 
 	Flow();

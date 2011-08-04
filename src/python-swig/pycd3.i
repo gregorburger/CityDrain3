@@ -226,6 +226,8 @@ public:
 		concentration,
 		rain,
 		volume,
+		climatic,
+		temperature,
 		null
 	};
 

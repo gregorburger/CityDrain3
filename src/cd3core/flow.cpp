@@ -57,7 +57,7 @@ void Flow::define(std::map<std::string, CalculationUnit> definition) {
 	}
 	cd3assert(qfound, "at least one flow must be set");
 	BOOST_FOREACH(fdpair item, definition) {
-		if (item.second != concentration)
+		if (item.second == flow)
 			continue;
 		addUnit(item.first, item.second);
 	}
@@ -199,6 +199,8 @@ std::string cu2string(Flow::CalculationUnit c) {
 		case Flow::concentration: return "Concentration";
 		case Flow::rain: return "Rain";
 		case Flow::volume: return "Volume";
+		case Flow::climatic: return "Climatic";
+		case Flow::temperature: return "Temperature";
 		default : return "Null";
 	}
 }
@@ -215,6 +217,12 @@ Flow::CalculationUnit string2cu(std::string s) {
 
 	if (s == "Volume")
 		return Flow::volume;
+
+	if (s == "Climatic")
+		return Flow::climatic;
+
+	if (s == "Temperature")
+		return Flow::temperature;
 
 	return Flow::null;
 }

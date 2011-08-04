@@ -39,6 +39,12 @@ void NewSimulationDialog::defineFlow() {
 	Q_FOREACH(QString c, ui->concentrationNames->text().split(' ', QString::SkipEmptyParts)) {
 		definition[c.trimmed().toStdString()] = Flow::concentration;
 	}
+	Q_FOREACH(QString c, ui->climaticNames->text().split(' ', QString::SkipEmptyParts)) {
+		definition[c.trimmed().toStdString()] = Flow::climatic;
+	}
+	Q_FOREACH(QString c, ui->temperatureNames->text().split(' ', QString::SkipEmptyParts)) {
+		definition[c.trimmed().toStdString()] = Flow::temperature;
+	}
 	Flow::undefine();
 	Flow::define(definition);
 }
