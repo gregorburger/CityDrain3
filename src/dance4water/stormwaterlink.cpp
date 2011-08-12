@@ -4,7 +4,6 @@
 CD3_DECLARE_NODE_NAME(StormwaterLink)
 
 StormwaterLink::StormwaterLink() {
-    this->state = new double;
 
     addOutPort(ADD_PARAMETERS(out));
     addInPort(ADD_PARAMETERS(in));
