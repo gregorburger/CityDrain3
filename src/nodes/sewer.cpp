@@ -10,6 +10,7 @@ using namespace boost;
 CD3_DECLARE_NODE_NAME(Sewer)
 
 Sewer::Sewer() {
+     this->state = new double;
 	addInPort(ADD_PARAMETERS(in));
 	addOutPort(ADD_PARAMETERS(out));
 	addParameter(ADD_PARAMETERS(K))
@@ -19,6 +20,11 @@ Sewer::Sewer() {
 	K = 300;
 	X = 0.1;
 	N = 11;
+
+
+
+        addState("QFlow",state);
+
 }
 
 Sewer::~Sewer() {
@@ -31,6 +37,7 @@ void Sewer::deinit() {
 		delete f;
 	}
 	V.clear();
+        //delete QFlow;
 }
 
 bool Sewer::init(ptime start, ptime end, int dt) {
@@ -55,7 +62,10 @@ int Sewer::f(ptime time, int dt) {
 	for (int i = 0; i < N; i++) {
 		tmp = FlowFuns::route_sewer(tmp, V[i], C_x, C_y, dt);
 	}
+
+        *state = 10;
 	out = tmp;
+
 
 	return dt;
 }
