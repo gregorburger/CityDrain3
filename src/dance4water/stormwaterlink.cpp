@@ -19,11 +19,4 @@ int StormwaterLink::f(ptime time, int dt) {
     return dt;
 }
 
-bool StormwaterLink::init(ptime start, ptime end, int dt) {
-
-    (void) start;
-    (void) end;
-    out[0] = 0;
-    return true;
-}
 

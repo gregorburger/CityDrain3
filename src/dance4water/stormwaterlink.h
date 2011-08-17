@@ -12,7 +12,7 @@ public:
     StormwaterLink();
     ~StormwaterLink();
 
-    bool init(ptime start, ptime end, int dt);
+
     int f(ptime time, int dt);
 private:
     Flow out;
