@@ -63,7 +63,7 @@ int Sewer::f(ptime time, int dt) {
 		tmp = FlowFuns::route_sewer(tmp, V[i], C_x, C_y, dt);
 	}
 
-        *state = 10;
+        *state = tmp[0];
 	out = tmp;
 
 

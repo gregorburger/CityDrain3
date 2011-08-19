@@ -11,8 +11,10 @@ public:
         virtual ~VIBeSplitter();
 	int f(ptime time, int dt);
 private:
-        Flow in;
-        Flow out[2000];
+        Flow * in;
+        std::vector<Flow*> out;
+        int outports;
+
 };
 
 #endif // SPLITTER_H

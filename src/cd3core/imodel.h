@@ -62,7 +62,6 @@ public:
 	virtual const con_set_type *getConnections() const = 0;
 	virtual name_node_map getNamesAndNodes() const = 0;
 	virtual Node *getNode(const string &name) const = 0;
-        virtual bool containsNode(const string &name) const = 0;
 
 	virtual bool connected() const = 0;
 	virtual void checkModel() const = 0;

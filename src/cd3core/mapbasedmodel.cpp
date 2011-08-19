@@ -38,12 +38,6 @@ Node *MapBasedModel::getNode(const std::string &name) const {
 	return names_nodes.find(name)->second;
 }
 
-bool MapBasedModel::containsNode(const string &name) const {
-    if (names_nodes.find(name) != names_nodes.end())
-        return true;
-    return false;
-
-}
 void MapBasedModel::addNode(const std::string &id, Node *node) {
 	cd3assert(id != "", "node has no id");
 	cd3assert(node, "cannot add null node");
@@ -176,7 +170,12 @@ void MapBasedModel::deinitNodes() {
 		it++;
 	}
 }
+bool MapBasedModel::containsNode(const string &name) const {
+    if (names_nodes.find(name) != names_nodes.end())
+        return true;
+    return false;
 
+}
 node_set_type MapBasedModel::getSinkNodes() {
 	return sink_nodes;
 }

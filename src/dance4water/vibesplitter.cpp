@@ -5,29 +5,31 @@
 CD3_DECLARE_NODE_NAME(VIBeSplitter)
 
 VIBeSplitter::VIBeSplitter() {
-    /*for (int i = 0; i < 2000; i++) {
-        out[i] = new Flow();
-    }*/
-
-    addInPort(ADD_PARAMETERS(in));
-    for (int i = 0; i < 2000; i++) {
+    outports = 300;
+    for (int i = 0; i < outports; i++) {
+        out.push_back( new Flow);
+    }
+    in = new Flow;
+    addInPort(ADD_PARAMETERS_P(in));
+    for (int i = 0; i < outports; i++) {
         std::stringstream ss;
         ss << "out" << i;
-        addOutPort(ss.str(), &out[i]);
+        addOutPort(ss.str(), out[i]);
     }
 
 }
 
 VIBeSplitter::~VIBeSplitter() {
-
+for (int i = 0; i < outports; i++) {
+    delete out[i];
+}
 }
 
 
 int VIBeSplitter::f(ptime time, int dt) {
     (void) time;
-    std::cout << "Run splitter" << std::endl;
-    for (int i = 0; i < 2000; i++) {
-        out[i] = in;
+    for (int i = 0; i < outports; i++) {
+        *(out[i]) = *in;
     }
     return dt;
 }

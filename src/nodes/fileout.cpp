@@ -73,14 +73,16 @@ void FileOut::start() {
 
 int FileOut::f(ptime time, int dt) {
 	QDateTime d(pttoqt(time));
-	stream << d.toString("dd.MM.yyyy hh:mm:ss");
 
+	stream << d.toString("dd.MM.yyyy hh:mm:ss");
+        //std::cout << time << std::endl;
 	BOOST_FOREACH(std::string name, Flow::getNames()) {
 			stream << "\t" << in.getValue(name);
 	}
 	stream << "\n";
-
-	return dt;
+        //stream.flush();
+        //std::cout << dt << std::endl;
+        return dt;
 }
 
 void FileOut::stop() {

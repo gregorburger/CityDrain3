@@ -41,6 +41,7 @@ void DefaultSimulation::run(Node *n, ptime time, con_count_type &depends) {
 		return;
 	}
 	n->f(time, sim_param.dt);
+        //std::cout << n->getId() << std::endl;
 	sp->done.insert(n);
 	BOOST_FOREACH(NodeConnection *con, model->forwardConnection(n)) {
 		con->push(0);
@@ -48,7 +49,7 @@ void DefaultSimulation::run(Node *n, ptime time, con_count_type &depends) {
 	}
 	BOOST_FOREACH(NodeConnection *con, model->forwardConnection(n)) {
 		if (depends[con->sink] > 0) {
-			return;
+                        continue;
 		}
 		run(con->sink, time, depends);
 	}

@@ -4,6 +4,7 @@
 #include "vibemixer.h"
 #include "vibesplitter.h"
 #include "vibedefaultsimulation.h"
+#include "vibesewer.h"
 #include <noderegistry.h>
 #include <nodefactory.h>
 #include <simulationregistry.h>
@@ -21,6 +22,7 @@ extern "C" {
                 registry->addNodeFactory(new NodeFactory<StormwaterLink>(SOURCE));
                 registry->addNodeFactory(new NodeFactory<VIBeMixer>(SOURCE));
                 registry->addNodeFactory(new NodeFactory<VIBeSplitter>(SOURCE));
+                registry->addNodeFactory(new NodeFactory<VIBeSewer>(SOURCE));
 
 	}
         void CD3_PUBLIC registerSimulations(SimulationRegistry *registry) {

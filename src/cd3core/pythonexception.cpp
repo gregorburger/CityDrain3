@@ -2,7 +2,7 @@
 #include <Python.h>
 #endif
 #include "pythonexception.h"
-
+#include <iostream>
 #ifndef PYTHON_DISABLED
 std::string to_string(PyObject *o) {
 	PyObject *pystr = PyObject_Str(o);
@@ -23,6 +23,8 @@ PythonException::PythonException() {
 	this->type = to_string(type);
 	this->value = to_string(value);
 	this->traceback = to_string(traceback);
-	//PyErr_Print();
+        std::cout << this->type << "/n" << this->value <<"/n" << this->traceback << std::endl;
+
+        PyErr_Print();
 #endif
 }

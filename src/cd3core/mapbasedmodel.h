@@ -49,8 +49,6 @@ public:
 	name_node_map getNamesAndNodes() const;
 
 	Node *getNode(const std::string &name) const;
-        bool containsNode(const string &name) const;
-
 	con_count_type getForwardCounts() const;
 	con_count_type getBackwardCounts() const;
 
@@ -58,6 +56,7 @@ public:
 	void checkModel() const;
 	bool cycleFree() const;
 	node_set_type cycleNodes() const;
+        bool containsNode(const string &name) const;
 
 private:
 	bool cycleNodesHelper(Node *n, node_set_type) const;

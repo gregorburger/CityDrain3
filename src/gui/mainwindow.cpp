@@ -225,7 +225,7 @@ void MainWindow::changeEvent(QEvent *e) {
 }
 
 void MainWindow::on_actionAdd_Plugin_activated() {
-        QString plugin = QFileDialog::getOpenFileName(this, "select plugin", ".", "*.so *.dll");
+	QString plugin = QFileDialog::getOpenFileName(this, "select plugin", ".", "*.so, *.dll");
 	if (plugin == "")
 		return;
 	scene->addPlugin(plugin);
