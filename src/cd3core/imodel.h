@@ -30,7 +30,7 @@ using namespace std;
 typedef unordered_map<string, Node *> name_node_map;
 typedef unordered_set<Node *> node_set_type;
 typedef pair<Node *, string> end_point_type;
-typedef tuple<string, Node *, string> next_node_type;
+typedef boost::tuple<string, Node *, string> next_node_type;
 typedef unordered_map<Node *, int> con_count_type;
 typedef unordered_set<NodeConnection *> con_set_type;
 
