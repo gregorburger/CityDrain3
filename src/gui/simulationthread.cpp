@@ -26,7 +26,7 @@ void SimulationThread::run() {
 	try {
 		simulation->getModel()->deinitNodes();
 		simulation->getModel()->initNodes(sp);//TODO check for uninited nodes here
-		simulation->start(sp.start + seconds(sp.dt));
+		simulation->start(sp.start);
 	} catch (PythonException e) {
 		exception = e;
 		failed = true;
