@@ -5,7 +5,7 @@
 CD3_DECLARE_NODE_NAME(VIBeSplitter)
 
 VIBeSplitter::VIBeSplitter() {
-    outports = 300;
+    outports = 400;
     for (int i = 0; i < outports; i++) {
         out.push_back( new Flow);
     }
