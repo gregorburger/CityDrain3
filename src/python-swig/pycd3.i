@@ -34,9 +34,10 @@ public:
 }
 
 namespace std {
-	%template(StringVector) vector<std::string>;
 	%template(DoubleVector) vector<double>;
 	%template(IntegerVector) vector<int>;
+	%template(StringVector) vector<std::string>;
+	%template(FlowVector) vector<Flow *>;
 };
 
 %exception {
@@ -314,18 +315,25 @@ public:
 		self.wrapped_values[name] = p
 		return self.intern_addParameter(name, p)
 
-	def addState(self, state):
-		if state.__class__ not in [Integer, Double, String, Flow, DoubleVector, IntegerVector, StringVector]:
-			raise TypeError("states can only have type Integer(), Double(), String(), list or Flow")
-		name = None
-		for k in self.__dict__:
-			if self.__dict__[k] == state:
-				name = k
-				break
+	def addState(self, *args):
+		if len(args) > 2:
+			raise TypeError("either addState(name, parameter) or addState(parameter)")
+		if len(args) == 2:
+			state = args[1]
+			name = args[0]
+		else:
+			state = args[0]
+			for k in self.__dict__:
+				if self.__dict__[k] == state:
+					name = k
+					break
+		nt = [Integer, Double, String, Flow]
+		if state.__class__ not in nt:
+			raise TypeError("states can only have type Integer(), Double(), String(), Flow, DoubleVector(), IntegerVector(), StringVector(), FlowVector() ")
+
 		log("adding parameter %s with type %s" % (name, state.__class__))
 		self.wrapped_values[name] = state
 		self.intern_addState(name, state)
-
 
 	def addParameters(self):
 		ignores = ["this"]
@@ -368,11 +376,24 @@ protected:
 	NodeParameter &intern_addParameter(std::string name, WrappedString *value) {
 		return $self->addParameter(name, &value->value);
 	}
+/*
+// no serializers for vectors for now
+	void intern_addState(std::string name, std::vector<Flow *> *v) {
+		$self->addState(name, v);
+	}
 
 	void intern_addState(std::string name, std::vector<double> *v) {
 		$self->addState(name, v);
 	}
 
+	void intern_addState(std::string name, std::vector<int> *v) {
+		$self->addState(name, v);
+	}
+
+	void intern_addState(std::string name, std::vector<std::string> *v) {
+		$self->addState(name, v);
+	}
+*/
 	void intern_addState(std::string name, Flow *v) {
 		$self->addState(name, v);
 	}
