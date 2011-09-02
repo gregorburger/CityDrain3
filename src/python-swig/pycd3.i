@@ -465,6 +465,8 @@ class NodeFactory(INodeFactory):
 def registerAllNodes(nr):
 	for c in Node.__subclasses__():
 		nf = NodeFactory(c)
+		if nr.contains(nf.getNodeName()):
+			continue
 		log("adding python node %s" % nf.getNodeName())
 		nr.addNodeFactory(nf.__disown__())
 %}
