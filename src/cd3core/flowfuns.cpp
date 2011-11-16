@@ -147,9 +147,9 @@ Flow FlowFuns::route_catchment(const Flow &in,
 	//QI = in
 	for (size_t i = 1; i < Flow::size(); i++) {
 		//c0=0.5.*QE(1)+V(1)./tstep;
-		double c0 = 0.5 * out[0]/dt + newvolume[0]/dt;
+		double c0 = 0.5 * out[0] + newvolume[0];
 		//     c1 = QI(1).* QI(k+1)+  QL(1).* QL(k+1)* N - Vold(k+1) * (0.5.* QE(1)  - Vold(1)     ./tstep);
-		double c1 = in[0]/dt * in[i] + rain[0] * rain[i] - oldvolume[i] * (0.5 * out[0]/dt - oldvolume[0] / dt);
+		double c1 = in[0] * in[i] + rain[0] * rain[i] - oldvolume[i] * (0.5 * out[0] - oldvolume[0]);
 		newvolume[i] = c0 <= 0 ? 0.0 :  c1/c0;
 		//newvolume[i] = std::max(0.0, c1/c0);
 		//QE(k+1)=( V(k+1) + Vold(k+1) )./2;
