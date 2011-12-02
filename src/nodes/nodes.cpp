@@ -26,9 +26,12 @@
 #include "simplemixer.h"
 #include "reactornode.h"
 #include "river.h"
-#include "ixxqread.h"
 #include "seasonqread.h"
 #include "ixxrainread_v2.h"
+#include "catchmentbwmcss.h"
+#include "raingen.h"
+#include "mcso.h"
+#include "flowread.h"
 
 #include <noderegistry.h>
 #include <nodefactory.h>
@@ -63,9 +66,12 @@ extern "C" {
 		registry->addNodeFactory(new NodeFactory<SimpleMixer>(SOURCE));
 		registry->addNodeFactory(new NodeFactory<ReactorNode>(SOURCE));
 		registry->addNodeFactory(new NodeFactory<River>(SOURCE));
-		registry->addNodeFactory(new NodeFactory<IxxQRead>(SOURCE));
 		registry->addNodeFactory(new NodeFactory<SeasonQRead>(SOURCE));
 		registry->addNodeFactory(new NodeFactory<IxxRainRead_v2>(SOURCE));
+		registry->addNodeFactory(new NodeFactory<CatchmentBWMCSS>(SOURCE));
+		registry->addNodeFactory(new NodeFactory<RainGen>(SOURCE));
+		registry->addNodeFactory(new NodeFactory<mCSO>(SOURCE));
+		registry->addNodeFactory(new NodeFactory<FlowRead>(SOURCE));
 	}
 
 	void CD3_PUBLIC registerSimulations(SimulationRegistry *registry) {
