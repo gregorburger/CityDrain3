@@ -12,7 +12,7 @@
 
 template <class T>
 struct BasicSer : public IStateSerializer {
-		std::string serialize(const std::string &name, Node *node) {
+	std::string serialize(const std::string &name, Node *node) {
 		return boost::lexical_cast<std::string, T>(*node->getState<T>(name));
 	}
 
@@ -36,19 +36,19 @@ struct FlowSer : public IStateSerializer {
 };
 
 struct StringSer : public IStateSerializer {
-		std::string serialize(const std::string &name, Node *node) {
+	std::string serialize(const std::string &name, Node *node) {
 		return *node->getState<std::string>(name);
 	}
 
 	void deserialize(const std::string &invalue,
-										 const std::string &name,  Node *node) {
+					 const std::string &name,  Node *node) {
 		std::string value = invalue;
 		node->setState<std::string>(name, value);
 	}
 };
 
 struct FPSer : public IStateSerializer {
-		std::string serialize(const std::string &name, Node *node) {
+	std::string serialize(const std::string &name, Node *node) {
 		std::ostringstream stream;
 		int exp;
 		double r = *node->getState<double>(name);
@@ -57,13 +57,39 @@ struct FPSer : public IStateSerializer {
 		return stream.str();
 	}
 	void deserialize(const std::string &invalue,
-					 const std::string &name,  Node *node) {
+			 const std::string &name,  Node *node) {
 		std::istringstream stream(invalue);
 		double fract;
 		int exp;
 		stream >> fract >> exp;
 		double r = ldexp(fract, exp);
 		node->setState<double>(name, r);
+	}
+};
+
+template <class T>
+struct DASer : public IStateSerializer {
+	std::string serialize(const std::string &name, Node *node) {
+		std::ostringstream stream;
+
+		std::vector<T> *r = node->getState<std::vector<T> >(name);
+		BOOST_FOREACH(T v, *r) {
+			stream << v << " ";
+		}
+		return stream.str();
+	}
+
+	void deserialize(const std::string &invalue,
+			 const std::string &name,  Node *node) {
+		std::istringstream stream(invalue);
+		T v;
+		std::vector<T> dv;
+		while (!stream.eof()) {
+			stream >> v;
+			dv.push_back(v);
+		}
+		std::cout << "deserialized " << dv.size() << " double values" << std::endl;
+		node->setState<std::vector<T> >(name, dv);
 	}
 };
 
@@ -76,7 +102,9 @@ type_ser_map IStateSerializer::standard = boost::assign::map_list_of
 	(cd3::TypeInfo(typeid(double)), bspss(new FPSer()))
 	(cd3::TypeInfo(typeid(float)),bspss(new BasicSer<float>()))
 	(cd3::TypeInfo(typeid(Flow)), bspss(new FlowSer()))
-	(cd3::TypeInfo(typeid(std::string)), bspss(new StringSer()));
+	(cd3::TypeInfo(typeid(std::string)), bspss(new StringSer()))
+	(cd3::TypeInfo(typeid(std::vector<double>)), bspss(new DASer<double>()))
+	(cd3::TypeInfo(typeid(std::vector<int>)), bspss(new DASer<int>()));
 
 std::string FlowSerializer::toString(Flow f) {
 	std::ostringstream ss;

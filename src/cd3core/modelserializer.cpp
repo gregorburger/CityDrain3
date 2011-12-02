@@ -86,7 +86,7 @@ void ModelSerializer::serializeNode(std::ostream &os, std::string &node_name, No
 
 void ModelSerializer::deserialize(ptime time) {
 	std::string path = pathForTimeStep(time);
-	cd3assert(boost::filesystem::exists(path), "no such state file");
+	cd3assert(boost::filesystem::exists(path), boost::str(boost::format("no such state file %1%") % path));
 	Deserializer deser(model);
 	QXmlSimpleReader reader;
 	QFile f(QString::fromStdString(path));
@@ -99,10 +99,10 @@ void ModelSerializer::deserialize(ptime time) {
 
 Deserializer::Deserializer(IModel *m)
  :	model(m), current(0) {
-	mapper = IStateSerializer::standard;
-	in_state_node = false;
-	in_inport = false;
-	in_outport = false;
+    mapper = IStateSerializer::standard;
+    in_state_node = false;
+    in_inport = false;
+    in_outport = false;
 }
 
 Deserializer::~Deserializer() {

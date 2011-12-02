@@ -327,7 +327,7 @@ public:
 				if self.__dict__[k] == state:
 					name = k
 					break
-		nt = [Integer, Double, String, Flow]
+		nt = [Integer, Double, String, Flow, DoubleVector]
 		if state.__class__ not in nt:
 			raise TypeError("states can only have type Integer(), Double(), String(), Flow, DoubleVector(), IntegerVector(), StringVector(), FlowVector() ")
 
@@ -346,7 +346,10 @@ public:
 	def __setattr__(self, name, value):
 		if "wrapped_values" in self.__dict__ and name in self.wrapped_values:
 			self.__dict__[name].value = value
-			return
+
+		#call copy constructor of flow class
+		if name in self.__dict__ and value.__class__ == Flow and self.__dict__[name].__class__ == Flow:
+			assign(self.__dict__[name], value)
 
 		self.__dict__[name] = value
 
@@ -376,15 +379,16 @@ protected:
 	NodeParameter &intern_addParameter(std::string name, WrappedString *value) {
 		return $self->addParameter(name, &value->value);
 	}
+
+	void intern_addState(std::string name, std::vector<double> *v) {
+		$self->addState(name, v);
+	}
 /*
 // no serializers for vectors for now
 	void intern_addState(std::string name, std::vector<Flow *> *v) {
 		$self->addState(name, v);
 	}
 
-	void intern_addState(std::string name, std::vector<double> *v) {
-		$self->addState(name, v);
-	}
 
 	void intern_addState(std::string name, std::vector<int> *v) {
 		$self->addState(name, v);
