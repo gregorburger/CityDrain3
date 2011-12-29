@@ -8,7 +8,9 @@
 #include <QDateTime>
 #include <nodeitem.h> //for PortType
 #include <boost/date_time/posix_time/posix_time.hpp>
+#ifndef Q_MOC_RUN
 #include <simulation.h>
+#endif
 
 class NodeRegistry;
 class SimulationRegistry;
