@@ -5,7 +5,7 @@
   |  Y Y  \|  |  /|    |     / __ \_|  | \/\___ \ \  ___/ |  | \/
   |__|_|  /|____/ |____|    (____  /|__|  /____  > \___  >|__|   
         \/                       \/            \/      \/        
-  Copyright (C) 2010 Ingo Berg
+  Copyright (C) 2011 Ingo Berg
 
   Permission is hereby granted, free of charge, to any person obtaining a copy of this 
   software and associated documentation files (the "Software"), to deal in the Software
@@ -38,8 +38,7 @@ using namespace std;
 /** \brief Namespace for mathematical applications. */
 namespace mu
 {
-
-value_type ParserInt::Abs(value_type v)  { return (value_type)Round(fabs(v)); }
+value_type ParserInt::Abs(value_type v)  { return (value_type)Round(fabs((double)v)); }
 value_type ParserInt::Sign(value_type v) { return (Round(v)<0) ? -1 : (Round(v)>0) ? 1 : 0; }
 value_type ParserInt::Ite(value_type v1, 
                           value_type v2, 
@@ -62,7 +61,11 @@ value_type ParserInt::GreaterEq(value_type v1, value_type v2) { return Round(v1)
 value_type ParserInt::Equal(value_type v1, value_type v2)     { return Round(v1) == Round(v2); }
 value_type ParserInt::NotEqual(value_type v1, value_type v2)  { return Round(v1) != Round(v2); }
 value_type ParserInt::Not(value_type v) { return !Round(v); }
-value_type ParserInt::Pow(value_type v1, value_type v2) { return std::pow((value_type)Round(v1), (int)Round(v2)); }
+
+value_type ParserInt::Pow(value_type v1, value_type v2) 
+{ 
+  return std::pow((double)Round(v1), (double)Round(v2)); 
+}
 
 //---------------------------------------------------------------------------
 // Unary operator Callbacks: Infix operators
@@ -116,6 +119,7 @@ int ParserInt::IsVal(const char_type *a_szExpr, int *a_iPos, value_type *a_fVal)
 {
   string_type buf(a_szExpr);
   std::size_t pos = buf.find_first_not_of(_T("0123456789"));
+
   if (pos==std::string::npos)
     return 0;
 
@@ -123,7 +127,12 @@ int ParserInt::IsVal(const char_type *a_szExpr, int *a_iPos, value_type *a_fVal)
   int iVal(0);
 
   stream >> iVal;
+  if (stream.fail())
+    return 0;
+      
   stringstream_type::pos_type iEnd = stream.tellg();   // Position after reading
+  if (stream.fail())
+    iEnd = stream.str().length();  
 
   if (iEnd==(stringstream_type::pos_type)-1)
     return 0;
@@ -197,9 +206,9 @@ int ParserInt::IsBinVal(const char_type *a_szExpr, int *a_iPos, value_type *a_fV
 ParserInt::ParserInt()
   :ParserBase()
 {
-  AddValIdent(IsHexVal);
+  AddValIdent(IsVal);    // lowest priority
   AddValIdent(IsBinVal);
-  AddValIdent(IsVal);
+  AddValIdent(IsHexVal); // highest priority
 
   InitCharSets();
   InitFun();

@@ -5,7 +5,7 @@
   |  Y Y  \|  |  /|    |     / __ \_|  | \/\___ \ \  ___/ |  | \/
   |__|_|  /|____/ |____|    (____  /|__|  /____  > \___  >|__|   
         \/                       \/            \/      \/        
-  Copyright (C) 2010 Ingo Berg
+  Copyright (C) 2012 Ingo Berg
 
   Permission is hereby granted, free of charge, to any person obtaining a copy of this 
   software and associated documentation files (the "Software"), to deal in the Software
@@ -36,7 +36,8 @@
     \brief This file contains standard definitions used by the parser.
 */
 
-#define MUP_VERSION _T("1.34")
+#define MUP_VERSION _T("2.2.2")
+#define MUP_VERSION_DATE _T("20120218; SF")
 
 #define MUP_CHARS _T("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
@@ -46,16 +47,15 @@
 /** \brief Define the base datatype for values.
 
   This datatype must be a built in value type. You can not use custom classes.
-  It has been tested with float, double and long double types, int should
-  work as well.
+  It should be working with all types except "int"!
 */
 #define MUP_BASETYPE double
 
-/** \brief Definition of the basic bytecode datatype.
+/** \brief Activate this option in order to compile with OpenMP support. 
 
-  This defines the smalles entity used in the bytecode.
+  OpenMP is used only in the bulk mode it may increase the performance a bit. 
 */
-#define MUP_BYTECODE_TYPE long
+//#define MUP_USE_OPENMP
 
 #if defined(_UNICODE)
   /** \brief Definition of the basic parser string type. */
@@ -76,9 +76,11 @@
 #if defined(_DEBUG)
   /** \brief Debug macro to force an abortion of the programm with a certain message.
   */
-  #define MUP_FAIL(MSG)    \
-          bool MSG=false;  \
-          assert(MSG);
+  #define MUP_FAIL(MSG)     \
+          {                 \
+            bool MSG=false; \
+            assert(MSG);    \
+          }
 
     /** \brief An assertion that does not kill the program.
 
@@ -98,16 +100,6 @@
   #define MUP_FAIL(MSG)
   #define MUP_ASSERT(COND)
 #endif
-
-//------------------------------------------------------------------------------
-//
-// do not change anything beyond this point...
-//
-// !!! This section is devoted to macros that are used for debugging
-// !!! or for features that are not fully implemented yet.
-//
-//#define MUP_DUMP_STACK
-//#define MUP_DUMP_CMDCODE
 
 
 namespace mu
@@ -170,23 +162,35 @@ namespace mu
     cmMUL           = 8,   ///< Operator item:  multiply
     cmDIV           = 9,   ///< Operator item:  division
     cmPOW           = 10,  ///< Operator item:  y to the power of ...
-    cmAND           = 11,  ///< Operator item:  logical and
-    cmOR            = 12,  ///< Operator item:  logical or
-    cmXOR           = 13,  ///< Operator item:  logical xor
-    cmASSIGN        = 14,  ///< Operator item:  Assignment operator
-    cmBO            = 15,  ///< Operator item:  opening bracket
-    cmBC            = 16,  ///< Operator item:  closing bracket
-    cmARG_SEP,             ///< function argument separator
-    cmVAR,                 ///< variable item
-    cmVAL,                 ///< value item
-    cmFUNC,                ///< Code for a function item
+    cmLAND          = 11,
+    cmLOR           = 12,
+    cmASSIGN        = 13,  ///< Operator item:  Assignment operator
+    cmBO            = 14,  ///< Operator item:  opening bracket
+    cmBC            = 15,  ///< Operator item:  closing bracket
+    cmIF            = 16,  ///< For use in the ternary if-then-else operator
+    cmELSE          = 17,  ///< For use in the ternary if-then-else operator
+    cmENDIF         = 18,  ///< For use in the ternary if-then-else operator
+    cmARG_SEP       = 19,  ///< function argument separator
+    cmVAR           = 20,  ///< variable item
+    cmVAL           = 21,  ///< value item
+
+    // For optimization purposes
+    cmVARPOW2,
+    cmVARPOW3,
+    cmVARPOW4,
+    cmVARMUL,
+    cmPOW2,
+
+    // operators and functions
+    cmFUNC,                ///< Code for a generic function item
     cmFUNC_STR,            ///< Code for a function with a string parameter
+    cmFUNC_BULK,           ///< Special callbacks for Bulk mode with an additional parameter for the bulk index 
     cmSTRING,              ///< Code for a string token
     cmOPRT_BIN,            ///< user defined binary operator
     cmOPRT_POSTFIX,        ///< code for postfix operators
     cmOPRT_INFIX,          ///< code for infix operators
     cmEND,                 ///< end of formula
-    cmUNKNOWN,             ///< uninitialized item
+    cmUNKNOWN              ///< uninitialized item
   };
 
   //------------------------------------------------------------------------------
@@ -197,6 +201,13 @@ namespace mu
     tpSTR  = 0,     ///< String type (Function arguments and constants only, no string variables)
     tpDBL  = 1,     ///< Floating point variables
     tpVOID = 2      ///< Undefined type.
+  };
+
+  //------------------------------------------------------------------------------
+  enum EParserVersionInfo
+  {
+    pviBRIEF,
+    pviFULL
   };
 
   //------------------------------------------------------------------------------
@@ -213,15 +224,17 @@ namespace mu
   enum EOprtPrecedence
   {
     // binary operators
-    prLOGIC    = 1,  ///< logic operators
-    prCMP      = 2,  ///< comparsion operators
-    prADD_SUB  = 3,  ///< addition
-    prMUL_DIV  = 4,  ///< multiplication/division
-    prPOW      = 5,  ///< power operator priority (highest)
+    prLOR     = 1,
+    prLAND    = 2,
+    prLOGIC   = 3,  ///< logic operators
+    prCMP     = 4,  ///< comparsion operators
+    prADD_SUB = 5,  ///< addition
+    prMUL_DIV = 6,  ///< multiplication/division
+    prPOW     = 7,  ///< power operator priority (highest)
 
     // infix operators
-    prINFIX    = 4, ///< Signs have a higher priority than ADD_SUB, but lower than power operator
-    prPOSTFIX  = 4  ///< Postfix operator priority (currently unused)
+    prINFIX   = 6, ///< Signs have a higher priority than ADD_SUB, but lower than power operator
+    prPOSTFIX = 6  ///< Postfix operator priority (currently unused)
   };
 
   //------------------------------------------------------------------------------
@@ -238,12 +251,6 @@ namespace mu
     Depends on wether UNICODE is used or not.
   */
   typedef MUP_STRING_TYPE string_type;
-
-  /** \brief The bytecode type used by the parser. 
-  
-    The bytecode type depends on the value_type.
-  */
-  typedef MUP_BYTECODE_TYPE bytecode_type;
 
   /** \brief The character type used by the parser. 
   
@@ -270,6 +277,9 @@ namespace mu
   // Parser callbacks
   
   /** \brief Callback type used for functions without arguments. */
+  typedef value_type (*generic_fun_type)();
+
+  /** \brief Callback type used for functions without arguments. */
   typedef value_type (*fun_type0)();
 
   /** \brief Callback type used for functions with a single arguments. */
@@ -286,6 +296,54 @@ namespace mu
 
   /** \brief Callback type used for functions with five arguments. */
   typedef value_type (*fun_type5)(value_type, value_type, value_type, value_type, value_type);
+
+  /** \brief Callback type used for functions with five arguments. */
+  typedef value_type (*fun_type6)(value_type, value_type, value_type, value_type, value_type, value_type);
+
+  /** \brief Callback type used for functions with five arguments. */
+  typedef value_type (*fun_type7)(value_type, value_type, value_type, value_type, value_type, value_type, value_type);
+
+  /** \brief Callback type used for functions with five arguments. */
+  typedef value_type (*fun_type8)(value_type, value_type, value_type, value_type, value_type, value_type, value_type, value_type);
+
+  /** \brief Callback type used for functions with five arguments. */
+  typedef value_type (*fun_type9)(value_type, value_type, value_type, value_type, value_type, value_type, value_type, value_type, value_type);
+
+  /** \brief Callback type used for functions with five arguments. */
+  typedef value_type (*fun_type10)(value_type, value_type, value_type, value_type, value_type, value_type, value_type, value_type, value_type, value_type);
+
+  /** \brief Callback type used for functions without arguments. */
+  typedef value_type (*bulkfun_type0)(int, int);
+
+  /** \brief Callback type used for functions with a single arguments. */
+  typedef value_type (*bulkfun_type1)(int, int, value_type);
+
+  /** \brief Callback type used for functions with two arguments. */
+  typedef value_type (*bulkfun_type2)(int, int, value_type, value_type);
+
+  /** \brief Callback type used for functions with three arguments. */
+  typedef value_type (*bulkfun_type3)(int, int, value_type, value_type, value_type);
+
+  /** \brief Callback type used for functions with four arguments. */
+  typedef value_type (*bulkfun_type4)(int, int, value_type, value_type, value_type, value_type);
+
+  /** \brief Callback type used for functions with five arguments. */
+  typedef value_type (*bulkfun_type5)(int, int, value_type, value_type, value_type, value_type, value_type);
+
+  /** \brief Callback type used for functions with five arguments. */
+  typedef value_type (*bulkfun_type6)(int, int, value_type, value_type, value_type, value_type, value_type, value_type);
+
+  /** \brief Callback type used for functions with five arguments. */
+  typedef value_type (*bulkfun_type7)(int, int, value_type, value_type, value_type, value_type, value_type, value_type, value_type);
+
+  /** \brief Callback type used for functions with five arguments. */
+  typedef value_type (*bulkfun_type8)(int, int, value_type, value_type, value_type, value_type, value_type, value_type, value_type, value_type);
+
+  /** \brief Callback type used for functions with five arguments. */
+  typedef value_type (*bulkfun_type9)(int, int, value_type, value_type, value_type, value_type, value_type, value_type, value_type, value_type, value_type);
+
+  /** \brief Callback type used for functions with five arguments. */
+  typedef value_type (*bulkfun_type10)(int, int, value_type, value_type, value_type, value_type, value_type, value_type, value_type, value_type, value_type, value_type);
 
   /** \brief Callback type used for functions with a variable argument list. */
   typedef value_type (*multfun_type)(const value_type*, int);
@@ -304,24 +362,7 @@ namespace mu
 
   /** \brief Callback used for variable creation factory functions. */
   typedef value_type* (*facfun_type)(const char_type*, void*);
-
-  //------------------------------------------------------------------------------
-  /** \brief Static type checks
-    
-     I took the static assert from boost, but did not want to 
-     add boost as a dependency to this project. For the original go to:
-  
-     http://www.boost.org/doc/html/boost_staticassert.html
-  */
-  template <bool> struct STATIC_ASSERTION_FAILURE;
-  template <> struct STATIC_ASSERTION_FAILURE<true> {};
-
-  /** \brief This is a static typecheck.
-      
-      If you get a compiler error here you tried to use an unsigned bytecode map type!
-  */
-  typedef char MAP_TYPE_CANT_BE_UNSIGNED[ sizeof( STATIC_ASSERTION_FAILURE< bytecode_type(-1)<0 >) ];
-} // end fo namespace
+} // end of namespace
 
 #endif
 

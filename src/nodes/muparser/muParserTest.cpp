@@ -5,7 +5,7 @@
   |  Y Y  \|  |  /|    |     / __ \_|  | \/\___ \ \  ___/ |  | \/
   |__|_|  /|____/ |____|    (____  /|__|  /____  > \___  >|__|   
         \/                       \/            \/      \/        
-  Copyright (C) 2010 Ingo Berg
+  Copyright (C) 2012 Ingo Berg
 
   Permission is hereby granted, free of charge, to any person obtaining a copy of this 
   software and associated documentation files (the "Software"), to deal in the Software
@@ -28,6 +28,7 @@
 #include <cstdio>
 #include <cmath>
 #include <iostream>
+#include <limits>
 
 #define PARSER_CONST_PI  3.141592653589793238462643
 #define PARSER_CONST_E   2.718281828459045235360287
@@ -38,14 +39,13 @@ using namespace std;
     \brief This file contains the implementation of parser test cases.
 */
 
-
 namespace mu
 {
   namespace Test
   {
     int ParserTester::c_iCount = 0;
 
-    //---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------------------
     ParserTester::ParserTester()
       :m_vTestFun()
     {
@@ -54,9 +54,9 @@ namespace mu
       AddTest(&ParserTester::TestPostFix);
       AddTest(&ParserTester::TestInfixOprt);
       AddTest(&ParserTester::TestVarConst);
-      AddTest(&ParserTester::TestVolatile);
       AddTest(&ParserTester::TestMultiArg);
       AddTest(&ParserTester::TestExpression);
+      AddTest(&ParserTester::TestIfThenElse);
       AddTest(&ParserTester::TestInterface);
       AddTest(&ParserTester::TestBinOprt);
       AddTest(&ParserTester::TestException);
@@ -65,7 +65,29 @@ namespace mu
       ParserTester::c_iCount = 0;
     }
 
-    //---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------------------
+    int ParserTester::IsHexVal(const char_type *a_szExpr, int *a_iPos, value_type *a_fVal)
+    {
+      if (a_szExpr[1]==0 || (a_szExpr[0]!='0' || a_szExpr[1]!='x') ) 
+        return 0;
+
+      unsigned iVal(0);
+
+      // New code based on streams for UNICODE compliance:
+      stringstream_type::pos_type nPos(0);
+      stringstream_type ss(a_szExpr + 2);
+      ss >> std::hex >> iVal;
+      nPos = ss.tellg();
+
+      if (nPos==(stringstream_type::pos_type)0)
+        return 1;
+
+      *a_iPos += (int)(2 + nPos);
+      *a_fVal = (value_type)iVal;
+      return 1;
+    }
+
+    //---------------------------------------------------------------------------------------------
     int ParserTester::TestInterface()
     {
       int iStat = 0;
@@ -107,7 +129,7 @@ namespace mu
       return iStat;
     }
 
-    //---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------------------
     int ParserTester::TestStrArg()
     {
       int iStat = 0;
@@ -132,7 +154,7 @@ namespace mu
       return iStat;
     }
 
-    //---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------------------
     int ParserTester::TestBinOprt()
     {
       int iStat = 0;
@@ -140,16 +162,16 @@ namespace mu
    
       // built in operators
       // xor operator
-      iStat += EqnTest(_T("1 xor 2"), 3, true); 
-      iStat += EqnTest(_T("a xor b"), 3, true);            // with a=1 and b=2
-      iStat += EqnTest(_T("1 xor 2 xor 3"), 0, true); 
-      iStat += EqnTest(_T("a xor b xor 3"), 0, true);      // with a=1 and b=2
-      iStat += EqnTest(_T("a xor b xor c"), 0, true);      // with a=1 and b=2
-      iStat += EqnTest(_T("(1 xor 2) xor 3"), 0, true); 
-      iStat += EqnTest(_T("(a xor b) xor c"), 0, true);    // with a=1 and b=2
-      iStat += EqnTest(_T("(a) xor (b) xor c"), 0, true);  // with a=1 and b=2
-      iStat += EqnTest(_T("1 or 2"), 3, true); 
-      iStat += EqnTest(_T("a or b"), 3, true);             // with a=1 and b=2
+      //iStat += EqnTest(_T("1 xor 2"), 3, true); 
+      //iStat += EqnTest(_T("a xor b"), 3, true);            // with a=1 and b=2
+      //iStat += EqnTest(_T("1 xor 2 xor 3"), 0, true); 
+      //iStat += EqnTest(_T("a xor b xor 3"), 0, true);      // with a=1 and b=2
+      //iStat += EqnTest(_T("a xor b xor c"), 0, true);      // with a=1 and b=2
+      //iStat += EqnTest(_T("(1 xor 2) xor 3"), 0, true); 
+      //iStat += EqnTest(_T("(a xor b) xor c"), 0, true);    // with a=1 and b=2
+      //iStat += EqnTest(_T("(a) xor (b) xor c"), 0, true);  // with a=1 and b=2
+      //iStat += EqnTest(_T("1 or 2"), 3, true); 
+      //iStat += EqnTest(_T("a or b"), 3, true);             // with a=1 and b=2
       iStat += EqnTest(_T("a++b"), 3, true);
       iStat += EqnTest(_T("a ++ b"), 3, true);
       iStat += EqnTest(_T("1++2"), 3, true);
@@ -167,6 +189,18 @@ namespace mu
       iStat += EqnTest(_T("a>=a"), 1, true);
       iStat += EqnTest(_T("b>=a"), 1, true);
       iStat += EqnTest(_T("a>=b"), 0, true);
+
+      // Test logical operators, expecially if user defined "&" and the internal "&&" collide
+      iStat += EqnTest(_T("1 && 1"), 1, true); 
+      iStat += EqnTest(_T("1 && 0"), 0, true); 
+      iStat += EqnTest(_T("(a<b) && (b>a)"), 1, true); 
+      iStat += EqnTest(_T("(a<b) && (a>b)"), 0, true); 
+      //iStat += EqnTest(_T("12 and 255"), 12, true); 
+      //iStat += EqnTest(_T("12 and 0"), 0, true); 
+      iStat += EqnTest(_T("12 & 255"), 12, true); 
+      iStat += EqnTest(_T("12 & 0"), 0, true); 
+      iStat += EqnTest(_T("12&255"), 12, true); 
+      iStat += EqnTest(_T("12&0"), 0, true); 
 
       // Assignement operator
       iStat += EqnTest(_T("a = b"), 2, true); 
@@ -264,7 +298,7 @@ namespace mu
       return iStat;
     }
 
-    //---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------------------
     /** \brief Check muParser name restriction enforcement. */
     int ParserTester::TestNames()
     {
@@ -346,16 +380,23 @@ namespace mu
       // Binary operator
       // The following must fail with builtin operators activated
       // p.EnableBuiltInOp(true); -> this is the default
+      p.ClearPostfixOprt();
       PARSER_THROWCHECK(Oprt, false, _T("+"),  f1of2)
       PARSER_THROWCHECK(Oprt, false, _T("-"),  f1of2)
       PARSER_THROWCHECK(Oprt, false, _T("*"),  f1of2)
       PARSER_THROWCHECK(Oprt, false, _T("/"),  f1of2)
+      PARSER_THROWCHECK(Oprt, false, _T("^"),  f1of2)
+      PARSER_THROWCHECK(Oprt, false, _T("&&"),  f1of2)
+      PARSER_THROWCHECK(Oprt, false, _T("||"),  f1of2)
       // without activated built in operators it should work
       p.EnableBuiltInOprt(false);
       PARSER_THROWCHECK(Oprt, true, _T("+"),  f1of2)
       PARSER_THROWCHECK(Oprt, true, _T("-"),  f1of2)
       PARSER_THROWCHECK(Oprt, true, _T("*"),  f1of2)
       PARSER_THROWCHECK(Oprt, true, _T("/"),  f1of2)
+      PARSER_THROWCHECK(Oprt, true, _T("^"),  f1of2)
+      PARSER_THROWCHECK(Oprt, true, _T("&&"),  f1of2)
+      PARSER_THROWCHECK(Oprt, true, _T("||"),  f1of2)
   #undef PARSER_THROWCHECK
 
       if (iStat==0) 
@@ -371,6 +412,12 @@ namespace mu
     {
       int iStat = 0;
       mu::console() << _T("testing syntax engine...");
+
+      iStat += ThrowTest(_T("1,"), ecUNEXPECTED_EOF);  // incomplete hex definition
+      iStat += ThrowTest(_T("a,"), ecUNEXPECTED_EOF);  // incomplete hex definition
+      iStat += ThrowTest(_T("sin(8),"), ecUNEXPECTED_EOF);  // incomplete hex definition
+      iStat += ThrowTest(_T("(sin(8)),"), ecUNEXPECTED_EOF);  // incomplete hex definition
+      iStat += ThrowTest(_T("a{m},"), ecUNEXPECTED_EOF);  // incomplete hex definition
 
       iStat += EqnTest(_T("(1+ 2*a)"), 3, true);   // Spaces within formula
       iStat += EqnTest(_T("sqrt((4))"), 2, true);  // Multiple brackets
@@ -413,7 +460,11 @@ namespace mu
     int ParserTester::TestVarConst()
     {
       int iStat = 0;
-      mu::console() << _T("testing variable/constant name recognition...");
+      mu::console() << _T("testing variable/constant detection...");
+
+      // Test if the result changes when a variable changes
+      iStat += EqnTestWithVarChange( _T("a"), 1, 1, 2, 2 );
+      iStat += EqnTestWithVarChange( _T("2*a"), 2, 4, 3, 6 );
 
       // distinguish constants with same basename
       iStat += EqnTest( _T("const"), 1, true);
@@ -436,6 +487,10 @@ namespace mu
       iStat += EqnTest( _T("2*aa"), 4, true);
       iStat += EqnTest( _T("2*a-1"), 1, true);
       iStat += EqnTest( _T("2*aa-1"), 3, true);
+
+      // custom value recognition
+      iStat += EqnTest( _T("0xff"), 255, true);
+      iStat += EqnTest( _T("0x97 + 0xff"), 406, true);
 
       // Finally test querying of used variables
       try
@@ -615,6 +670,7 @@ namespace mu
       iStat += EqnTest( _T("-(-1)"),  1, true);
       iStat += EqnTest( _T("-(-1)*2"),  2, true);
       iStat += EqnTest( _T("-(-2)*sqrt(4)"),  4, true);
+      iStat += EqnTest( _T("-_pi"), -PARSER_CONST_PI, true);
       iStat += EqnTest( _T("-a"),  -1, true);
       iStat += EqnTest( _T("-(a)"),  -1, true);
       iStat += EqnTest( _T("-(-a)"),  1, true);
@@ -627,7 +683,8 @@ namespace mu
       iStat += EqnTest( _T("-sin(8)"), -0.989358, true);
       iStat += EqnTest( _T("3-(-a)"), 4, true);
       iStat += EqnTest( _T("3--a"), 4, true);
-  
+      iStat += EqnTest( _T("-1*3"),  -3, true);
+
       // Postfix / infix priorities
       iStat += EqnTest( _T("~2#"), 8, true);
       iStat += EqnTest( _T("~f1of1(2)#"), 8, true);
@@ -641,12 +698,12 @@ namespace mu
       iStat += EqnTest( _T("(-3)^2"),9, true);
       iStat += EqnTest( _T("-(-2^2)"),4, true);
       iStat += EqnTest( _T("3+-3^2"),-6, true);
-      // The following assumes use of sqr as postfix operator ("?") together
-      // withn a sign operator of low priority:
-      iStat += EqnTest( _T("-2?"), -4, true);
-      iStat += EqnTest( _T("-(1+1)?"),-4, true);
-      iStat += EqnTest( _T("2+-(1+1)?"),-2, true);
-      iStat += EqnTest( _T("2+-2?"), -2, true);
+      // The following assumes use of sqr as postfix operator ("§") together
+      // with a sign operator of low priority:
+      iStat += EqnTest( _T("-2'"), -4, true);
+      iStat += EqnTest( _T("-(1+1)'"),-4, true);
+      iStat += EqnTest( _T("2+-(1+1)'"),-2, true);
+      iStat += EqnTest( _T("2+-2'"), -2, true);
       // This is the classic behaviour of the infix sign operator (here: "$") which is
       // now deprecated:
       iStat += EqnTest( _T("$2^2"),4, true);
@@ -654,6 +711,10 @@ namespace mu
       iStat += EqnTest( _T("($3)^2"),9, true);
       iStat += EqnTest( _T("$($2^2)"),-4, true);
       iStat += EqnTest( _T("3+$3^2"),12, true);
+
+      // infix operators sharing the first few characters
+      iStat += EqnTest( _T("~ 123"),  123+2, true);
+      iStat += EqnTest( _T("~~ 123"),  123+2, true);
 
       if (iStat==0)
         mu::console() << _T("passed") << endl;
@@ -686,109 +747,27 @@ namespace mu
       iStat += EqnTest( _T("f4of4(0,0,0,1000){m}"), 1, true);
       iStat += EqnTest( _T("2+(a*1000){m}"), 3, true);
 
+      // can postfix operators "m" und "meg" be told apart properly?
+      iStat += EqnTest( _T("2*3000meg+2"), 2*3e9+2, true);   
+
       // some incorrect results
       iStat += EqnTest( _T("1000{m}"), 0.1, false);
       iStat += EqnTest( _T("(a){m}"), 2, false);
       // failure due to syntax checking
       iStat += ThrowTest(_T("0x"), ecUNASSIGNABLE_TOKEN);  // incomplete hex definition
       iStat += ThrowTest(_T("3+"), ecUNEXPECTED_EOF);
-      iStat += ThrowTest( _T("4 + {m}"), ecUNEXPECTED_OPERATOR);
-      iStat += ThrowTest( _T("{m}4"), ecUNEXPECTED_OPERATOR);
-      iStat += ThrowTest( _T("sin({m})"), ecUNEXPECTED_OPERATOR);
-      iStat += ThrowTest( _T("{m} {m}"), ecUNEXPECTED_OPERATOR);
-      iStat += ThrowTest( _T("{m}(8)"), ecUNEXPECTED_OPERATOR);
-      iStat += ThrowTest( _T("4,{m}"), ecUNEXPECTED_OPERATOR);
-      iStat += ThrowTest( _T("-{m}"), ecUNEXPECTED_OPERATOR);
+      iStat += ThrowTest( _T("4 + {m}"), ecUNASSIGNABLE_TOKEN);
+      iStat += ThrowTest( _T("{m}4"), ecUNASSIGNABLE_TOKEN);
+      iStat += ThrowTest( _T("sin({m})"), ecUNASSIGNABLE_TOKEN);
+      iStat += ThrowTest( _T("{m} {m}"), ecUNASSIGNABLE_TOKEN);
+      iStat += ThrowTest( _T("{m}(8)"), ecUNASSIGNABLE_TOKEN);
+      iStat += ThrowTest( _T("4,{m}"), ecUNASSIGNABLE_TOKEN);
+      iStat += ThrowTest( _T("-{m}"), ecUNASSIGNABLE_TOKEN);
       iStat += ThrowTest( _T("2(-{m})"), ecUNEXPECTED_PARENS);
       iStat += ThrowTest( _T("2({m})"), ecUNEXPECTED_PARENS);
+ 
+      iStat += ThrowTest( _T("multi*1.0"), ecUNASSIGNABLE_TOKEN);
 
-      if (iStat==0)
-        mu::console() << _T("passed") << endl;
-      else
-        mu::console() << _T("\n  failed with ") << iStat << _T(" errors") << endl;
-
-      return iStat;
-    }
-
-    //---------------------------------------------------------------------------
-    /** \brief Test volatile (nonoptimizeable functions). */
-    int ParserTester::TestVolatile()
-    {
-      int iStat = 0;
-      mu::console() << "testing volatile/nonvolatile functions...";
-
-      // First test with volatile flag turned on
-      try
-      {
-        mu::Parser p;
-        p.DefineFun( _T("rnd"), Rnd, false);
-        p.DefineFun( _T("valueof"), RndWithString, false);
-
-        // 1st test, compare results from sucessive calculations
-        p.SetExpr( _T("3+rnd(8)") );
-        if (p.Eval()==p.Eval()) iStat += 1;
-
-        // 2nd test, force bytecode creation, compare two results both 
-        // calculated from bytecode
-        p.SetExpr( _T("3+rnd(8)") ); 
-        p.Eval(); //<- Force bytecode creation
-        if (p.Eval()==p.Eval()) iStat += 1;
-
-        p.SetExpr( _T("3*rnd(8)+3") );
-        p.Eval(); //<- Force bytecode creation
-        if (p.Eval()==p.Eval()) iStat += 1;
-
-        p.SetExpr( _T("10+3*sin(rnd(8))-1") );
-        p.Eval(); //<- Force bytecode creation
-        if (p.Eval()==p.Eval()) iStat += 1;
-
-        p.SetExpr( _T("3+rnd(rnd(8))*2") );
-        p.Eval(); //<- Force bytecode creation
-        if (p.Eval()==p.Eval()) iStat += 1;
-
-        p.SetExpr( _T("valueof(\"Das ist ein Test\")") );
-        p.Eval(); //<- Force bytecode creation
-        if (p.Eval()==p.Eval()) iStat += 1;
-      }
-      catch(Parser::exception_type &e)
-      {
-        mu::console() << _T("\n  ") << e.GetExpr() << _T(" : ") << e.GetMsg();
-        iStat += 1;
-      }
-
-      // Second test with volatile flag turned off
-      try
-      {
-        mu::Parser p;
-        p.DefineFun( _T("rnd"), Rnd);
-        p.DefineFun( _T("valueof"), RndWithString);
-
-        // compare string parsing with bytecode
-        p.SetExpr( _T("3+rnd(8)") ); 
-        if (p.Eval()!=p.Eval()) iStat += 1;
-
-        p.SetExpr( _T("3+rnd(8)") ); 
-        p.Eval(); //<- Force bytecode creation
-        if (p.Eval()!=p.Eval()) iStat += 1;
-
-        p.SetExpr( _T("3*rnd(8)+3") );
-        p.Eval(); //<- Force bytecode creation
-        if (p.Eval()!=p.Eval()) iStat += 1;
-
-        p.SetExpr( _T("10+3*sin(rnd(8))-1") );
-        p.Eval(); //<- Force bytecode creation
-        if (p.Eval()!=p.Eval()) iStat += 1;
-
-        p.SetExpr( _T("3+rnd(rnd(8))*2") );
-        p.Eval(); //<- Force bytecode creation
-        if (p.Eval()!=p.Eval()) iStat += 1;
-      }
-      catch(Parser::exception_type &e)
-      {
-        mu::console() << _T("\n  ") << e.GetExpr() << _T(" : ") << e.GetMsg();
-        iStat += 1;
-      }
-      
       if (iStat==0)
         mu::console() << _T("passed") << endl;
       else
@@ -803,9 +782,32 @@ namespace mu
       int iStat = 0;
       mu::console() << _T("testing expression samples...");
 
+      value_type b = 2;
+
+      // Optimization
+      iStat += EqnTest( _T("2*b*5"), 20, true);
+      iStat += EqnTest( _T("2*b*5 + 4*b"), 28, true);
+      iStat += EqnTest( _T("2*a/3"), 2.0/3.0, true);
+
+      // Addition auf cmVARMUL 
+      iStat += EqnTest( _T("3+b"), b+3, true);
+      iStat += EqnTest( _T("b+3"), b+3, true);
+      iStat += EqnTest( _T("b*3+2"), b*3+2, true);
+      iStat += EqnTest( _T("3*b+2"), b*3+2, true);
+      iStat += EqnTest( _T("2+b*3"), b*3+2, true);
+      iStat += EqnTest( _T("2+3*b"), b*3+2, true);
+      iStat += EqnTest( _T("b+3*b"), b+3*b, true);
+      iStat += EqnTest( _T("3*b+b"), b+3*b, true);
+
+      iStat += EqnTest( _T("2+b*3+b"), 2+b*3+b, true);
+      iStat += EqnTest( _T("b+2+b*3"), b+2+b*3, true);
+
+      iStat += EqnTest( _T("(2*b+1)*4"), (2*b+1)*4, true);
+      iStat += EqnTest( _T("4*(2*b+1)"), (2*b+1)*4, true);
+
       // operator precedencs
       iStat += EqnTest( _T("1+2-3*4/5^6"), 2.99923, true);
-      iStat += EqnTest( _T("1^2/3*4-5+6"), 2.3333, true);
+      iStat += EqnTest( _T("1^2/3*4-5+6"), 2.33333333, true);
       iStat += EqnTest( _T("1+2*3"), 7, true);
       iStat += EqnTest( _T("1+2*3"), 7, true);
       iStat += EqnTest( _T("(1+2)*3"), 9, true);
@@ -855,6 +857,113 @@ namespace mu
     }
 
 
+
+    //---------------------------------------------------------------------------
+    int ParserTester::TestIfThenElse()
+    {
+      int iStat = 0;
+      mu::console() << _T("testing if-then-else operator...");
+
+      // Test error detection
+      iStat += ThrowTest(_T(":3"), ecUNEXPECTED_CONDITIONAL); 
+      iStat += ThrowTest(_T("? 1 : 2"), ecUNEXPECTED_CONDITIONAL); 
+      iStat += ThrowTest(_T("(a<b) ? (b<c) ? 1 : 2"), ecMISSING_ELSE_CLAUSE); 
+      iStat += ThrowTest(_T("(a<b) ? 1"), ecMISSING_ELSE_CLAUSE); 
+      iStat += ThrowTest(_T("(a<b) ? a"), ecMISSING_ELSE_CLAUSE); 
+      iStat += ThrowTest(_T("(a<b) ? a+b"), ecMISSING_ELSE_CLAUSE); 
+      iStat += ThrowTest(_T("a : b"), ecMISPLACED_COLON); 
+      iStat += ThrowTest(_T("1 : 2"), ecMISPLACED_COLON); 
+      iStat += ThrowTest(_T("(1) ? 1 : 2 : 3"), ecMISPLACED_COLON); 
+      iStat += ThrowTest(_T("(true) ? 1 : 2 : 3"), ecUNASSIGNABLE_TOKEN); 
+
+      iStat += EqnTest(_T("1 ? 128 : 255"), 128, true);
+      iStat += EqnTest(_T("1<2 ? 128 : 255"), 128, true);
+      iStat += EqnTest(_T("a<b ? 128 : 255"), 128, true);
+      iStat += EqnTest(_T("(a<b) ? 128 : 255"), 128, true);
+      iStat += EqnTest(_T("(1) ? 10 : 11"), 10, true);
+      iStat += EqnTest(_T("(0) ? 10 : 11"), 11, true);
+      iStat += EqnTest(_T("(1) ? a+b : c+d"), 3, true);
+      iStat += EqnTest(_T("(0) ? a+b : c+d"), 1, true);
+      iStat += EqnTest(_T("(1) ? 0 : 1"), 0, true);
+      iStat += EqnTest(_T("(0) ? 0 : 1"), 1, true);
+      iStat += EqnTest(_T("(a<b) ? 10 : 11"), 10, true);
+      iStat += EqnTest(_T("(a>b) ? 10 : 11"), 11, true);
+      iStat += EqnTest(_T("(a<b) ? c : d"), 3, true);
+      iStat += EqnTest(_T("(a>b) ? c : d"), -2, true);
+
+      iStat += EqnTest(_T("(a>b) ? 1 : 0"), 0, true);
+      iStat += EqnTest(_T("((a>b) ? 1 : 0) ? 1 : 2"), 2, true);
+      iStat += EqnTest(_T("((a>b) ? 1 : 0) ? 1 : sum((a>b) ? 1 : 2)"), 2, true);
+      iStat += EqnTest(_T("((a>b) ? 0 : 1) ? 1 : sum((a>b) ? 1 : 2)"), 1, true);
+
+      iStat += EqnTest(_T("sum((a>b) ? 1 : 2)"), 2, true);
+      iStat += EqnTest(_T("sum((1) ? 1 : 2)"), 1, true);
+      iStat += EqnTest(_T("sum((a>b) ? 1 : 2, 100)"), 102, true);
+      iStat += EqnTest(_T("sum((1) ? 1 : 2, 100)"), 101, true);
+      iStat += EqnTest(_T("sum(3, (a>b) ? 3 : 10)"), 13, true);
+      iStat += EqnTest(_T("sum(3, (a<b) ? 3 : 10)"), 6, true);
+      iStat += EqnTest(_T("10*sum(3, (a>b) ? 3 : 10)"), 130, true);
+      iStat += EqnTest(_T("10*sum(3, (a<b) ? 3 : 10)"), 60, true);
+      iStat += EqnTest(_T("sum(3, (a>b) ? 3 : 10)*10"), 130, true);
+      iStat += EqnTest(_T("sum(3, (a<b) ? 3 : 10)*10"), 60, true);
+      iStat += EqnTest(_T("(a<b) ? sum(3, (a<b) ? 3 : 10)*10 : 99"), 60, true);
+      iStat += EqnTest(_T("(a>b) ? sum(3, (a<b) ? 3 : 10)*10 : 99"), 99, true);
+      iStat += EqnTest(_T("(a<b) ? sum(3, (a<b) ? 3 : 10,10,20)*10 : 99"), 360, true);
+      iStat += EqnTest(_T("(a>b) ? sum(3, (a<b) ? 3 : 10,10,20)*10 : 99"), 99, true);
+      iStat += EqnTest(_T("(a>b) ? sum(3, (a<b) ? 3 : 10,10,20)*10 : sum(3, (a<b) ? 3 : 10)*10"), 60, true);
+
+      // todo: auch für muParserX hinzufügen!
+      iStat += EqnTest(_T("(a<b)&&(a<b) ? 128 : 255"), 128, true);
+      iStat += EqnTest(_T("(a>b)&&(a<b) ? 128 : 255"), 255, true);
+      iStat += EqnTest(_T("(1<2)&&(1<2) ? 128 : 255"), 128, true);
+      iStat += EqnTest(_T("(1>2)&&(1<2) ? 128 : 255"), 255, true);
+      iStat += EqnTest(_T("((1<2)&&(1<2)) ? 128 : 255"), 128, true);
+      iStat += EqnTest(_T("((1>2)&&(1<2)) ? 128 : 255"), 255, true);
+      iStat += EqnTest(_T("((a<b)&&(a<b)) ? 128 : 255"), 128, true);
+      iStat += EqnTest(_T("((a>b)&&(a<b)) ? 128 : 255"), 255, true);
+
+      iStat += EqnTest(_T("1>0 ? 1>2 ? 128 : 255 : 1>0 ? 32 : 64"), 255, true);
+      iStat += EqnTest(_T("1>0 ? 1>2 ? 128 : 255 :(1>0 ? 32 : 64)"), 255, true);
+      iStat += EqnTest(_T("1>0 ? 1>0 ? 128 : 255 : 1>2 ? 32 : 64"), 128, true);
+      iStat += EqnTest(_T("1>0 ? 1>0 ? 128 : 255 :(1>2 ? 32 : 64)"), 128, true);
+      iStat += EqnTest(_T("1>2 ? 1>2 ? 128 : 255 : 1>0 ? 32 : 64"), 32, true);
+      iStat += EqnTest(_T("1>2 ? 1>0 ? 128 : 255 : 1>2 ? 32 : 64"), 64, true);
+      iStat += EqnTest(_T("1>0 ? 50 :  1>0 ? 128 : 255"), 50, true);
+      iStat += EqnTest(_T("1>0 ? 50 : (1>0 ? 128 : 255)"), 50, true);
+      iStat += EqnTest(_T("1>0 ? 1>0 ? 128 : 255 : 50"), 128, true);
+      iStat += EqnTest(_T("1>2 ? 1>2 ? 128 : 255 : 1>0 ? 32 : 1>2 ? 64 : 16"), 32, true);
+      iStat += EqnTest(_T("1>2 ? 1>2 ? 128 : 255 : 1>0 ? 32 :(1>2 ? 64 : 16)"), 32, true);
+      iStat += EqnTest(_T("1>0 ? 1>2 ? 128 : 255 :  1>0 ? 32 :1>2 ? 64 : 16"), 255, true);
+      iStat += EqnTest(_T("1>0 ? 1>2 ? 128 : 255 : (1>0 ? 32 :1>2 ? 64 : 16)"), 255, true);
+      iStat += EqnTest(_T("1 ? 0 ? 128 : 255 : 1 ? 32 : 64"), 255, true);
+
+      // assignment operators
+      iStat += EqnTest(_T("a= 0 ? 128 : 255, a"), 255, true);
+      iStat += EqnTest(_T("a=((a>b)&&(a<b)) ? 128 : 255, a"), 255, true);
+      iStat += EqnTest(_T("c=(a<b)&&(a<b) ? 128 : 255, c"), 128, true);
+      iStat += EqnTest(_T("0 ? a=a+1 : 666, a"), 1, true);
+      iStat += EqnTest(_T("1?a=10:a=20, a"), 10, true);
+      iStat += EqnTest(_T("0?a=10:a=20, a"), 20, true);
+      iStat += EqnTest(_T("0?a=sum(3,4):10, a"), 1, true);  // a should not change its value due to lazy calculation
+      
+      iStat += EqnTest(_T("a=1?b=1?3:4:5, a"), 3, true);
+      iStat += EqnTest(_T("a=1?b=1?3:4:5, b"), 3, true);
+      iStat += EqnTest(_T("a=0?b=1?3:4:5, a"), 5, true);
+      iStat += EqnTest(_T("a=0?b=1?3:4:5, b"), 2, true);
+
+      iStat += EqnTest(_T("a=1?5:b=1?3:4, a"), 5, true);
+      iStat += EqnTest(_T("a=1?5:b=1?3:4, b"), 2, true);
+      iStat += EqnTest(_T("a=0?5:b=1?3:4, a"), 3, true);
+      iStat += EqnTest(_T("a=0?5:b=1?3:4, b"), 3, true);
+
+      if (iStat==0) 
+        mu::console() << _T("passed") << endl;  
+      else 
+        mu::console() << _T("\n  failed with ") << iStat << _T(" errors") << endl;
+
+      return iStat;
+    }
+
     //---------------------------------------------------------------------------
     int ParserTester::TestException()
     {
@@ -866,7 +975,7 @@ namespace mu
       iStat += ThrowTest(_T("()"),           ecUNEXPECTED_PARENS);
       iStat += ThrowTest(_T("3+()"),         ecUNEXPECTED_PARENS);
       iStat += ThrowTest(_T("sin(3,4)"),     ecTOO_MANY_PARAMS);
-      iStat += ThrowTest(_T("if(3)"),        ecTOO_FEW_PARAMS);
+      iStat += ThrowTest(_T("sin()"),        ecTOO_FEW_PARAMS);
       iStat += ThrowTest(_T("(1+2"),         ecMISSING_PARENS);
       iStat += ThrowTest(_T("sin(3)3"),      ecUNEXPECTED_VAL);
       iStat += ThrowTest(_T("sin(3)xyz"),    ecUNASSIGNABLE_TOKEN);
@@ -993,6 +1102,7 @@ namespace mu
         p.DefineVar( _T("b"), &fVal[1]);
         p.DefineVar( _T("c"), &fVal[2]);
         p.DefinePostfixOprt( _T("{m}"), Milli);
+        p.DefinePostfixOprt( _T("m"), Milli);
         p.DefineFun( _T("ping"), Ping);
         p.DefineFun( _T("valueof"), ValueOf);
         p.DefineFun( _T("strfun1"), StrFun1);
@@ -1032,11 +1142,65 @@ namespace mu
 
         \return 1 in case of a failure, 0 otherwise.
     */
+    int ParserTester::EqnTestWithVarChange(const string_type &a_str, 
+                                           double a_fVar1, 
+                                           double a_fRes1, 
+                                           double a_fVar2, 
+                                           double a_fRes2)
+    {
+      ParserTester::c_iCount++;
+      value_type fVal[2] = {-999, -999 }; // should be equalinitially
+
+      try
+      {
+        Parser  p;
+
+        // variable
+        value_type var = 0;
+        p.DefineVar( _T("a"), &var);
+        p.SetExpr(a_str);
+
+        var = a_fVar1;
+        fVal[0] = p.Eval();
+
+        var = a_fVar2;
+        fVal[1] = p.Eval();
+        
+        if ( fabs(a_fRes1-fVal[0]) > 0.0000000001)
+          throw std::runtime_error("incorrect result (first pass)");
+
+        if ( fabs(a_fRes2-fVal[1]) > 0.0000000001)
+          throw std::runtime_error("incorrect result (second pass)");
+      }
+      catch(Parser::exception_type &e)
+      {
+        mu::console() << _T("\n  fail: ") << a_str.c_str() << _T(" (") << e.GetMsg() << _T(")");
+        return 1;
+      }
+      catch(std::exception &e)
+      {
+        mu::console() << _T("\n  fail: ") << a_str.c_str() << _T(" (") << e.what() << _T(")");
+        return 1;  // always return a failure since this exception is not expected
+      }
+      catch(...)
+      {
+        mu::console() << _T("\n  fail: ") << a_str.c_str() <<  _T(" (unexpected exception)");
+        return 1;  // exceptions other than ParserException are not allowed
+      }
+
+      return 0;
+    }
+
+    //---------------------------------------------------------------------------
+    /** \brief Evaluate a tet expression. 
+
+        \return 1 in case of a failure, 0 otherwise.
+    */
     int ParserTester::EqnTest(const string_type &a_str, double a_fRes, bool a_fPass)
     {
       ParserTester::c_iCount++;
       int iRet(0);
-      value_type fVal[4] = {-999, -998, -997, -996}; // initially should be different
+      value_type fVal[5] = {-999, -998, -997, -996, -995}; // initially should be different
 
       try
       {
@@ -1061,6 +1225,10 @@ namespace mu
         p1->DefineVar( _T("b"), &vVarVal[1]);
         p1->DefineVar( _T("c"), &vVarVal[2]);
         p1->DefineVar( _T("d"), &vVarVal[3]);
+        
+        // custom value ident functions
+        p1->AddValIdent(&ParserTester::IsHexVal);        
+
         // functions
         p1->DefineFun( _T("ping"), Ping);
         p1->DefineFun( _T("f1of1"), f1of1);  // one parameter
@@ -1082,6 +1250,7 @@ namespace mu
         // binary operators
         p1->DefineOprt( _T("add"), add, 0);
         p1->DefineOprt( _T("++"), add, 0);
+        p1->DefineOprt( _T("&"), land, prLAND);
 
         // sample functions
         p1->DefineFun( _T("min"), Min);
@@ -1097,13 +1266,17 @@ namespace mu
         p1->DefineFun( _T("order"), FirstArg);
 
         // infix / postfix operator
-        // (identifiers used here do not have any meaning or make any sense at all)
+        // Note: Identifiers used here do not have any meaning 
+        //       they are mere placeholders to test certain features.
         p1->DefineInfixOprt( _T("$"), sign, prPOW+1);  // sign with high priority
         p1->DefineInfixOprt( _T("~"), plus2);          // high priority
+        p1->DefineInfixOprt( _T("~~"), plus2);
         p1->DefinePostfixOprt( _T("{m}"), Milli);
         p1->DefinePostfixOprt( _T("{M}"), Mega);
+        p1->DefinePostfixOprt( _T("m"), Milli);
+        p1->DefinePostfixOprt( _T("meg"), Mega);
         p1->DefinePostfixOprt( _T("#"), times3);
-        p1->DefinePostfixOprt( _T("?"), sqr);  //
+        p1->DefinePostfixOprt( _T("'"), sqr); 
         p1->SetExpr(a_str);
 
         // Test bytecode integrity
@@ -1133,6 +1306,12 @@ namespace mu
           p3 = p2;
           p3.EnableOptimizer(false);
           fVal[3] = p3.Eval();
+
+          // Test Eval function for multiple return values
+          // use p2 since it has the optimizer enabled!
+          int nNum;
+          value_type *v = p2.Eval(nNum);
+          fVal[4] = v[nNum-1];
         }
         catch(std::exception &e)
         {
@@ -1141,17 +1320,29 @@ namespace mu
 
         // limited floating point accuracy requires the following test
         bool bCloseEnough(true);
-        for (int i=0; i<4; ++i)
+        for (unsigned i=0; i<sizeof(fVal)/sizeof(value_type); ++i)
         {
-          bCloseEnough &= (fabs(a_fRes-fVal[i]) <= fabs(fVal[i]*0.0001));
+          bCloseEnough &= (fabs(a_fRes-fVal[i]) <= fabs(fVal[i]*0.00001));
+
+          // The tests equations never result in infinity, if they do thats a bug.
+          // reference:
+          // http://sourceforge.net/projects/muparser/forums/forum/462843/topic/5037825
+          if (numeric_limits<value_type>::has_infinity)
+            bCloseEnough &= (fabs(fVal[i]) != numeric_limits<value_type>::infinity());
         }
 
         iRet = ((bCloseEnough && a_fPass) || (!bCloseEnough && !a_fPass)) ? 0 : 1;
+        
+        
         if (iRet==1)
         {
           mu::console() << _T("\n  fail: ") << a_str.c_str() 
                         << _T(" (incorrect result; expected: ") << a_fRes
-                        << _T(" ;calculated: ") << fVal[0]<< _T(").");
+                        << _T(" ;calculated: ") << fVal[0] << _T(",") 
+                                                << fVal[1] << _T(",")
+                                                << fVal[2] << _T(",")
+                                                << fVal[3] << _T(",")
+                                                << fVal[4] << _T(").");
         }
       }
       catch(Parser::exception_type &e)

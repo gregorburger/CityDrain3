@@ -17,7 +17,6 @@ Reactor::Reactor(Flow &volume, bool use_outer_volume)
    for (size_t c = 0; c < nc; ++c) {
       parsers[c] = new mu::Parser();
       parsers[c]->EnableOptimizer();
-      parsers[c]->EnableByteCode();
       for (size_t cvars = 0; cvars < nc; ++cvars) {
           std::string ccname = Flow::getUnitNames(Flow::concentration)[cvars];
           parsers[c]->DefineVar(ccname, &volume[cvars+1]);
