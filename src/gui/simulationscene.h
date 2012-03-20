@@ -6,9 +6,11 @@
 #include <QGraphicsScene>
 #include <QMap>
 #include <QDateTime>
+#ifndef Q_MOC_RUN
 #include <nodeitem.h> //for PortType
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <simulation.h>
+#endif
 
 class NodeRegistry;
 class SimulationRegistry;
