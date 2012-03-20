@@ -170,8 +170,7 @@ int main(int argc, char **argv) {
 #ifndef PYTHON_DISABLED
 	}
 	catch (PythonException e) {
-		Logger(Error) << e.type;
-		Logger(Error) << e.value;
+		cout << "python exception cought" << endl;
 	}
 #endif
 	return 0;

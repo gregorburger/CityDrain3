@@ -338,14 +338,11 @@ void MainWindow::on_actionAdd_Python_Module_activated() {
 	try {
 		scene->addPythonModule(plugin);
 	} catch (PythonException e) {
-		QString type = QString::fromStdString(e.type);
-		QString value = QString::fromStdString(e.value);
-		QString msg = QString("failed to load python module.\n"
-							  "python error: \n\t%1\t\n%2")
-							  .arg(type, value);
-		Logger(Error) << e.type;
-		Logger(Error) << e.value;
-		QMessageBox::critical(this, "Python module failure", msg);
+		QString msg = QString("Error loading python module %1\n"
+							  "see log for more information")
+							  .arg(plugin);
+		
+		QMessageBox::critical(this, "Python module loading failed", msg);
 		return;
 	}
 
@@ -374,14 +371,9 @@ void MainWindow::on_action_open_activated() {
 	try {
 		scene->load(path);
 	} catch (PythonException e) {
-		QString type = QString::fromStdString(e.type);
-		QString value = QString::fromStdString(e.value);
-		QString msg = QString("failed to load model.\n"
-							  "python error: \n\t%1\t\n%2")
-							  .arg(type, value);
-		Logger(Error) << e.type;
-		Logger(Error) << e.value;
-		QMessageBox::critical(this, "Python module failure", msg);
+		QString msg = QString("Python error while loading model file.\n"
+		                      "See log for more information.");
+		QMessageBox::critical(this, "Model loading failed", msg);
 		return;
 	}
 	setWindowTitle(QString("%2 (%1)").arg(path, QApplication::applicationName()));
@@ -527,15 +519,10 @@ void MainWindow::on_actionClose_activated() {
 
 void MainWindow::checkThreadOk() {
 	if (current_thread->hasFailed()) {
-		PythonException e = current_thread->exception;
-		QString type = QString::fromStdString(e.type);
-		QString value = QString::fromStdString(e.value);
 		QString msg = QString("failed to run simulation.\n"
-							  "python error: \n\t%1\t\n%2")
-							  .arg(type, value);
-		Logger(Error) << e.type;
-		Logger(Error) << e.value;
-		QMessageBox::critical(this, "Python module failure", msg);
+							  "python error in log");
+		
+		QMessageBox::critical(this, "Python Error", msg);
 	}
 }
 

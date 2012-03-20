@@ -309,7 +309,9 @@ public:
 					break
 
 		if p.__class__ not in [Integer, Double, String, Flow, DoubleVector, IntegerVector, StringVector]:
-			raise TypeError("parameters can only have type Integer(), Double(), String(), list or Flow")
+			msg = "parameter %s has wrong type %s\n" % (name, p.__class__)
+			msg += " parameters can only have type Integer(), Double(), String(), Flow, DoubleVector(), IntegerVector() or StringVector()"
+			raise TypeError(msg)
 
 		log("adding parameter %s with type %s" % (name, p.__class__))
 		self.wrapped_values[name] = p
@@ -329,14 +331,16 @@ public:
 					break
 		nt = [Integer, Double, String, Flow, DoubleVector]
 		if state.__class__ not in nt:
-			raise TypeError("states can only have type Integer(), Double(), String(), Flow, DoubleVector(), IntegerVector(), StringVector(), FlowVector() ")
+			msg = "state %s has wrong type" % name
+			msg += "states can only have type Integer(), Double(), String(), Flow, DoubleVector(), IntegerVector(), StringVector(), FlowVector()"
+			raise TypeError(msg)
 
 		log("adding parameter %s with type %s" % (name, state.__class__))
 		self.wrapped_values[name] = state
 		self.intern_addState(name, state)
 
 	def addParameters(self):
-		ignores = ["this"]
+		ignores = ["this", "wrapped_values"]
 		for k in self.__dict__:
 			if k in ignores:
 				continue
@@ -356,7 +360,9 @@ public:
 	%}
 protected:
 	void addInPort(std::string name, Flow *f);
+	void removeInPort(std::string name);
 	void addOutPort(std::string name, Flow *f);
+	void removeOutPort(std::string name);
 };
 
 %extend Node {
@@ -415,9 +421,16 @@ protected:
 	}
 }
 
+enum LogLevel {
+	Debug = 0,
+	Standard = 1,
+	Warning = 2,
+	Error = 3
+};
+
 %inline %{
-void log(std::string s) {
-	Logger(Debug) << s;
+void log(std::string s, LogLevel l = Debug) {
+	Logger(l) << s;
 }
 void assign(Flow *target, Flow *source) {
 	for (size_t i = 0; i < Flow::size(); i++) {
@@ -450,6 +463,35 @@ public:
 };
 
 %pythoncode %{
+class Redirector:
+	def __init__(self, orig_out, log_level):
+		self.orig_out = orig_out
+		self.log_level = log_level
+		self.currentstring = ""
+
+	def write(self, text):
+		self.orig_out.write(text + "\n")
+		self.currentstring = self.currentstring + " " + text
+
+		if text.rfind("\n") == -1:
+			return
+
+		self.currentstring=self.currentstring.replace("\n","")
+		self.currentstring=self.currentstring.replace("\r","")
+
+		log("PYTHON:" + self.currentstring, self.log_level)
+		
+		self.currentstring=""
+
+	def close(self):
+		self.orig_out.close()
+
+def install_redirector():
+	import sys
+	if not isinstance(sys.stdout, Redirector):
+		sys.stdout=Redirector(sys.stdout, Debug)
+		sys.stderr=Redirector(sys.stderr, Error)
+
 class NodeFactory(INodeFactory):
 	def __init__(self, node):
 		INodeFactory.__init__(self)

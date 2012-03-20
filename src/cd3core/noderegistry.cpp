@@ -65,6 +65,29 @@ void NodeRegistry::addPythonPlugin(const std::string &script) {
 		PyObject *main = PyImport_ImportModule("__main__");
 		main_namespace = PyModule_GetDict(main);
 		Py_DECREF(main);
+
+		PyRun_String("import sys\nsys.path.append('.')\n", Py_file_input, main_namespace, 0);
+
+		PyObject *pycd3_module = PyImport_ImportModule("pycd3");
+		if (PyErr_Occurred()) {
+			PyErr_Print();
+			return;
+		}
+		PyObject *pycd3_dict = PyModule_GetDict(pycd3_module);
+		if (PyErr_Occurred()) {
+			PyErr_Print();
+		}
+		Py_XDECREF(pycd3_module);
+		PyObject *callback = PyDict_GetItemString(pycd3_dict, "install_redirector");
+		if (PyErr_Occurred()) {
+			PyErr_Print();
+		}
+		PyObject *res = PyObject_Call(callback, Py_None, Py_None);
+		if (PyErr_Occurred()) {
+			PyErr_Print();
+			return;
+		}
+		Py_XDECREF(res);
 	}
 
 	PyRun_String("import sys\nsys.path.append('.')\n", Py_file_input, main_namespace, 0);

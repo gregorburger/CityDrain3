@@ -186,12 +186,14 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 	std::string klassName = treeWidget->selectedItems()[0]->text(0).toStdString();
 	QGraphicsScene::dragMoveEvent(event);
 
+	Node *node = 0;
+	NodeItem *nitem = 0;
 	try {
-		Node *node = node_reg->createNode(klassName);
+		node = node_reg->createNode(klassName);
 		std::string id = getDefaultId(node);
 		model->addNode(id, node);
 
-		NodeItem *nitem = new NodeItem(node);
+		nitem = new NodeItem(node);
 		nitem->setPos(event->scenePos());
 		this->addItem(nitem);
 
@@ -205,14 +207,15 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 		//update();
 		Q_EMIT(changed(new AddNode(this, nitem)));
 	} catch (PythonException e) {
-		QString type = QString::fromStdString(e.type);
-		QString value = QString::fromStdString(e.value);
-		QString msg = QString("failed to load python module.\n"
-							  "python error: \n\t%1\t\n%2")
-							  .arg(type, value);
-		Logger(Error) << e.type;
-		Logger(Error) << e.value;
-		QMessageBox::critical(0, "Python module failure", msg);
+		QString msg = QString("Error while initializing Node\n"
+							  "python error in log");
+		QMessageBox::critical(0, "Python Node init failed", msg);
+		if (node) {
+			model->removeNode(node);
+		}
+		if (nitem) {
+			delete nitem;
+		}
 		return;
 	}
 }
@@ -343,7 +346,8 @@ void SimulationScene::add(NodeItem *item) {
 	Q_ASSERT(!node_items.contains(item->getId()));
 	node_items[item->getId()] = item;
 	this->connect(item, SIGNAL(changed(QUndoCommand*)), SLOT(nodeChanged(QUndoCommand*)));
-	addItem(item);
+	if (!items().contains(item))
+		addItem(item);
 }
 
 void SimulationScene::remove(ConnectionItem *item) {
