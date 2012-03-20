@@ -1,12 +1,14 @@
 from pycd3 import *
 import random as r
 
+print "gaga"
+
 #CU = CalculationUnit
 
 class PyMixer(Node):
     def __init__(self):
         Node.__init__(self)
-        self.count = 2
+        self.count = Integer(2)
         self.addParameters()
         self.out = Flow()
         self.ins = []
@@ -23,7 +25,12 @@ class PyMixer(Node):
         for f in self.ins:
             q = q + f[0]
         self.out[0] = q
-        return dt  
+        return dt
+
+    def deinit(self):
+        for i in xrange(self.count):
+            self.removeInPort('in%s' % i)
+
 
 class PyNull(Node):
     def __init__(self):
@@ -67,14 +74,14 @@ class PyConstFlow(Node):
 class PyOut(Node):
 	def __init__(self):
 		Node.__init__(self)
-		self.out = str("/tmp/pyout.log")
+		self.out = String("/tmp/pyout.log")
 		self.addParameters()
 		self.in_flow = Flow()
 		self.addInPort('in', self.in_flow)
 		
 	def init(self, start, stop, dt):
 		log("using out name %s" % str(self.out))
-		self.file = open(self.out, 'w')
+		self.file = open(self.out.value, 'w')
 		return True
 		
 		
@@ -108,8 +115,8 @@ class RandomCatchment(Node):
             self.out[i] = r.random()
         return dt  
         
-def register(nr):
-	for c in Node.__subclasses__():
-		nf = NodeFactory(c)
-		nf.__disown__()
-		nr.addNodeFactory(nf)
+#def register(nr):
+#	for c in Node.__subclasses__():
+#		nf = NodeFactory(c)
+#		nf.__disown__()
+#		nr.addNodeFactory(nf)
