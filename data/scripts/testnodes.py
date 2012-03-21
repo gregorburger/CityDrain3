@@ -58,6 +58,29 @@ class PyMixer(Node):
         return dt
 
 
+# an empty template to start with. add it to an empty project and check where and
+# when all methods are called
+class Template(Node):
+    def __init__(self):
+        Node.__init__(self)
+        print "Template.__init__()"
+
+    def init(self, start, stop, dt):
+        print "Template.init(start, stop, dt)"
+        return True
+
+    def deinit(self):
+        print "Template.deinit()"
+
+    def start(self):
+        print "Template.start()"
+
+    def stop(self):
+        print "Template.stop()"
+
+    def f(self, time, dt):
+        print "Template.f(time, dt)"
+        return dt
 
 
 class PyNull(Node):
