@@ -289,6 +289,8 @@ public:
 	virtual int f(boost::posix_time::ptime current, int dt) = 0;
 	virtual bool init(boost::posix_time::ptime start, boost::posix_time::ptime stop, int dt);
 	virtual void deinit();
+	virtual void start();
+	virtual void stop();
 	virtual const char *getClassName() const = 0;
 
 	%pythoncode %{
