@@ -53,20 +53,20 @@ drainage system.
 and urban drainage components.
 - Log View: The log view is used to give detailed feedback to the user.
 
-![](raw/master/doc/manual/imgs/gui/mainwindow.png)
+![](CityDrain3/raw/master/doc/manual/imgs/gui/mainwindow.png)
 
 In the red highlighted area the left most button is used for creating a new and 
 empty simulation. If you hit this button a dialog shows up where you can enter 
 the details of the simulation. Everything except the flow definition can be 
 changed afterwards. 
 
-![New Simulation](raw/master/doc/manual/imgs/gui/newsim.png)
+![New Simulation](CityDrain3/raw/master/doc/manual/imgs/gui/newsim.png)
 
 Once you have accepted the properties of your new simulation you get back to the
  main window. The **Node List** is now filled with a list of predefined nodes. 
 You can drag and drop the nodes from the list into the **Model Area**.
 
-![](raw/master/doc/manual/imgs/gui/emptysim.png)
+![](CityDrain3/raw/master/doc/manual/imgs/gui/emptysim.png)
 
 Once you have droped a node on the **Model Area** a dialog pops up which prompts
  you to edit the properties of the node. This dialog is dynamically generated 
@@ -79,7 +79,7 @@ pops up again and a message shows up
 in the **Log View**. Only if all properties are verified to work the dialog
  disappears after hitting **Ok**.
 
-![](raw/master/doc/manual/imgs/gui/catchmentproperties.png)
+![](CityDrain3/raw/master/doc/manual/imgs/gui/catchmentproperties.png)
 
 To connect two nodes, i.e. make water flow from one component to the other, 
 you begin by clicking a **source port** of a
@@ -89,5 +89,5 @@ are on the right of a node and end them at **sink ports**, which are located
 on the left of a node. After you are finished
 with modelling your system you can run the simulation. 
 
-![](raw/master/doc/manual/imgs/gui/connection.png)
+![](CityDrain3/raw/master/doc/manual/imgs/gui/connection.png)
  
