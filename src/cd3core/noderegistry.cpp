@@ -36,6 +36,7 @@ using namespace boost;
 
 #ifndef PYTHON_DISABLED
 std::vector<std::string> NodeRegistry::python_paths = std::vector<std::string>();
+PyObject *NodeRegistry::main_namespace = 0;
 void NodeRegistry::addToPythonPath(std::string p) {
 	NodeRegistry::python_paths.push_back(p);
 }
@@ -53,7 +54,10 @@ NodeRegistry::~NodeRegistry() {
 }
 
 bool NodeRegistry::addNodeFactory(INodeFactory *factory) {
-	cd3assert(!contains(factory->getNodeName()), str(format("NodeFactory already registered for that name: %1%") %factory->getNodeName()));
+    if (contains(factory->getNodeName())) {
+        Logger(Warning) << str(format("NodeFactory already registered for that name: %1%") %factory->getNodeName());
+        return false;
+    }
 	registered_nodes[factory->getNodeName()] = factory;
 	return true;
 }
@@ -78,43 +82,58 @@ void init_pycd3(void);
 }
 
 void NodeRegistry::addPythonPlugin(const std::string &script) {
-	if (!Py_IsInitialized()) {
-		Py_Initialize();
-		init_pycd3();
-		PyObject *main = PyImport_ImportModule("__main__");
-		main_namespace = PyModule_GetDict(main);
-		Py_DECREF(main);
+    if (!Py_IsInitialized()) {
+        Py_Initialize();
+        init_pycd3();
+        PyObject *main = PyImport_ImportModule("__main__");
+        main_namespace = PyModule_GetDict(main);
+        Py_INCREF(main_namespace);
+        Py_DECREF(main);
 
-		PyRun_String("import sys\nsys.path.append('.')\n", Py_file_input, main_namespace, 0);
+        PyRun_String("import sys\nsys.path.append('.')\n", Py_file_input, main_namespace, 0);
 
-		PyObject *pycd3_module = PyImport_ImportModule("pycd3");
-		if (PyErr_Occurred()) {
-			PyErr_Print();
-			return;
-		}
-		PyObject *pycd3_dict = PyModule_GetDict(pycd3_module);
-		if (PyErr_Occurred()) {
-			PyErr_Print();
-		}
-		Py_XDECREF(pycd3_module);
-		PyObject *callback = PyDict_GetItemString(pycd3_dict, "install_redirector");
-		if (PyErr_Occurred()) {
-			PyErr_Print();
-		}
-		PyObject *res = PyObject_Call(callback, Py_None, Py_None);
-		if (PyErr_Occurred()) {
-			PyErr_Print();
-			return;
-		}
-		Py_XDECREF(res);
-	}
+        PyObject *pycd3_module = PyImport_ImportModule("pycd3");
+        if (PyErr_Occurred()) {
+            PyErr_Print();
+            return;
+        }
+        PyObject *pycd3_dict = PyModule_GetDict(pycd3_module);
+        if (PyErr_Occurred()) {
+            PyErr_Print();
+        }
+        Py_XDECREF(pycd3_module);
+        PyObject *callback = PyDict_GetItemString(pycd3_dict, "install_redirector");
+        if (PyErr_Occurred()) {
+            PyErr_Print();
+        }
+        PyObject *res = PyObject_Call(callback, Py_None, Py_None);
+        if (PyErr_Occurred()) {
+            PyErr_Print();
+            return;
+        }
+        Py_XDECREF(res);
+    }
+
+    if (PyErr_Occurred()) {
+        Logger(Error) << "unknown python error" << script;
+        throw PythonException();
+    }
 
 	PyRun_String("import sys\nsys.path.append('.')\n", Py_file_input, main_namespace, 0);
+
+    if (PyErr_Occurred()) {
+        Logger(Error) << "" << script;
+        throw PythonException();
+    }
 
 	BOOST_FOREACH(std::string path, python_paths) {
 		std::string app_pp_cmd = "sys.path.append('"+path+"')\n";
 		Logger(Debug) << "adding" << path << "to pyhton sys.path";
 		PyRun_String(app_pp_cmd.c_str(), Py_file_input, main_namespace, 0);
+        if (PyErr_Occurred()) {
+            Logger(Error) << "error adding path to sys.path" << script;
+            throw PythonException();
+        }
 	}
 
 	FILE *test_py = fopen(script.c_str(), "r");
