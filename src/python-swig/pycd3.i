@@ -1,4 +1,9 @@
-%module(directors="1", allprotected="1") pycd3
+%define DOCSTRING
+"This module wraps part of the CityDrain3 API in order to extend CityDrain3 and to
+start a simulation from within a python script."
+%enddef
+
+%module(directors="1", allprotected="1", docstring=DOCSTRING) pycd3
 %feature("director");
 %{
 #include <nodefactory.h>
@@ -24,7 +29,7 @@ public:
 %include std_string.i
 %include std_map.i
 
-%feature("autodoc", "docstring");
+//%feature("autodoc", "docstring");
 
 %feature("director:except") {
 	if ($error != NULL) {
