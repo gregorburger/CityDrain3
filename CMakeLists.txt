@@ -78,6 +78,7 @@ endif()
 
 add_subdirectory(src/app)
 add_subdirectory(src/gui)
+add_subdirectory(src/plugindoc)
 
 option(WITH_PLUGINDOC "Build the plugindoc app" OFF)
 if (WITH_PLUGINDOC)

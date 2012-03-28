@@ -98,6 +98,14 @@ public:
 	std::string getId() const;
 
 	virtual const char *getClassName() const = 0;
+	
+	std::string getDescription() const {
+		return description;
+	}
+	
+	void setDescription(const std::string &d) {
+		description = d;
+	}
 
 	/**
 	  * init is called after parameters were set. Also
@@ -247,6 +255,7 @@ protected:
 	ssf		out_ports;
 	int		dt;
 	std::string		id;
+	std::string		description;
 private:
 	friend class MapBasedModel;
 	void setId(const std::string &id);
