@@ -108,7 +108,7 @@ void NodeRegistry::addPythonPlugin(const std::string &script) {
 			Logger(Error) << "could not find callback \"install_redirector\"";
 			throw PythonException();
 		}
-		PyObject *res = PyObject_Call(callback, Py_None, Py_None);
+		PyObject *res = PyObject_CallFunction(callback, NULL);
 		if (PyErr_Occurred()) {
 			Logger(Error) << "could not call callback \"install_redirector\"";
 			throw PythonException();
