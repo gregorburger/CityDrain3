@@ -54,10 +54,10 @@ NodeRegistry::~NodeRegistry() {
 }
 
 bool NodeRegistry::addNodeFactory(INodeFactory *factory) {
-    if (contains(factory->getNodeName())) {
-        Logger(Warning) << str(format("NodeFactory already registered for that name: %1%") %factory->getNodeName());
-        return false;
-    }
+	if (contains(factory->getNodeName())) {
+		Logger(Warning) << str(format("NodeFactory already registered for that name: %1%") %factory->getNodeName());
+		return false;
+	}
 	registered_nodes[factory->getNodeName()] = factory;
 	return true;
 }
