@@ -20,10 +20,6 @@
 #ifndef NODEREGISTRY_H
 #define NODEREGISTRY_H
 
-#ifndef PYTHON_DISABLED
-#include <Python.h>
-#endif
-
 #include <map>
 #include <string>
 #include <vector>
@@ -34,6 +30,12 @@ using namespace boost;
 
 class INodeFactory;
 class Node;
+
+#ifndef PYTHON_DISABLED
+#undef _POSIX_C_SOURCE
+#undef _XOPEN_SOURCE
+#include <Python.h>
+#endif
 
 typedef std::map<std::string, INodeFactory *> reg_node_type;
 
