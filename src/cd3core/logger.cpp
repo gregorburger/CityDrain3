@@ -54,15 +54,6 @@ Logger &Logger::operator <<(const Node *n) {
 	return *this;
 }
 
-Logger &Logger::operator <<(const shared_ptr<Node> n) {
-	if (level < max) {
-		return *this;
-	}
-	sink << " Node[" << n->getId() << "] ";
-	dirty = true;
-	return *this;
-}
-
 Logger &Logger::operator<< (const char* s) {
 	if (level < max) {
 		return *this;

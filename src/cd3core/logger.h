@@ -23,9 +23,6 @@
 #include <cd3globals.h>
 #include "log.h"
 
-#include <boost/shared_ptr.hpp>
-using namespace boost;
-
 class QString;
 class LogSink;
 
@@ -34,7 +31,6 @@ public:
 	Logger(LogLevel level = Standard);
 	virtual ~Logger();
 	Logger &operator<< (LogLevel level);
-	Logger &operator<< (const shared_ptr<Node> node);
 	Logger &operator<< (const Node *node);
 	Logger &operator<< (const char* s);
 	Logger &operator<< (const int i);
