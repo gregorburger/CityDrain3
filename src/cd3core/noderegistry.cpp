@@ -18,6 +18,7 @@
  **/
 
 #ifndef PYTHON_DISABLED
+#define SWIG_PYTHON_THREADS
 #include <Python.h>
 #include <swigruntime.h>
 #include <pythonexception.h>
@@ -84,6 +85,10 @@ void init_pycd3(void);
 void NodeRegistry::addPythonPlugin(const std::string &script) {
     if (!Py_IsInitialized()) {
         Py_Initialize();
+        SWIG_PYTHON_INITIALIZE_THREADS;
+        PyThreadState *pts = PyGILState_GetThisThreadState();
+        PyEval_ReleaseThread(pts);
+        SWIG_PYTHON_THREAD_BEGIN_BLOCK;
         init_pycd3();
         PyObject *main = PyImport_ImportModule("__main__");
         main_namespace = PyModule_GetDict(main);
@@ -113,6 +118,16 @@ void NodeRegistry::addPythonPlugin(const std::string &script) {
         }
         Py_XDECREF(res);
     }
+
+    if(!main_namespace) {
+        SWIG_PYTHON_THREAD_BEGIN_BLOCK;
+        init_pycd3();
+        PyObject *main = PyImport_ImportModule("__main__");
+        main_namespace = PyModule_GetDict(main);
+        Py_DECREF(main);
+    }
+
+    SWIG_PYTHON_THREAD_BEGIN_BLOCK;
 
     if (PyErr_Occurred()) {
         Logger(Error) << "unknown python error" << script;
