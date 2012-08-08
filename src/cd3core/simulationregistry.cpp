@@ -52,7 +52,7 @@ void SimulationRegistry::addNativePlugin(const std::string &plugin_path) {
 	if (regSimFun) {
 		regSimFun(this);
 	} else {
-		Logger(Warning) << plugin_path << " has no node register hook";
+        Logger(Warning) << plugin_path << " has no simulation register hook";
 	}
 }
 
