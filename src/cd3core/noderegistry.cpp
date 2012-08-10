@@ -85,10 +85,6 @@ void init_pycd3(void);
 void NodeRegistry::addPythonPlugin(const std::string &script) {
     if (!Py_IsInitialized()) {
         Py_Initialize();
-        SWIG_PYTHON_INITIALIZE_THREADS;
-        PyThreadState *pts = PyGILState_GetThisThreadState();
-        PyEval_ReleaseThread(pts);
-        SWIG_PYTHON_THREAD_BEGIN_BLOCK;
         init_pycd3();
         PyObject *main = PyImport_ImportModule("__main__");
         main_namespace = PyModule_GetDict(main);
@@ -117,6 +113,10 @@ void NodeRegistry::addPythonPlugin(const std::string &script) {
             return;
         }
         Py_XDECREF(res);
+
+        SWIG_PYTHON_INITIALIZE_THREADS;
+        PyThreadState *pts = PyGILState_GetThisThreadState();
+        PyEval_ReleaseThread(pts);
     }
 
     if(!main_namespace) {
