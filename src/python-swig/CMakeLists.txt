@@ -7,6 +7,7 @@ execute_process(COMMAND ${SWIG_EXECUTABLE} -python -threads -external-runtime sw
 ADD_CUSTOM_COMMAND(
 	OUTPUT ${CMAKE_BINARY_DIR}/pycd3WRAP.cpp
         COMMAND ${SWIG_EXECUTABLE} -python -threads -c++ -o ${CMAKE_BINARY_DIR}/pycd3WRAP.cpp ${CMAKE_CURRENT_SOURCE_DIR}/pycd3.i
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/pycd3.py ${OUTPUT_DIR}/pycd3.py
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/pycd3.i
 	)
 
