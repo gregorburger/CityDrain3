@@ -1,4 +1,4 @@
-#include "river.h"
+#include "riversed.h"
 
 #include <flow.h>
 #include <flowfuns.h>
@@ -9,9 +9,11 @@
 
 using namespace boost;
 
-CD3_DECLARE_NODE_NAME(River)
 
-River::River() {
+CD3_DECLARE_NODE_NAME(RiverSed)
+
+RiverSed::RiverSed()
+{
 	addInPort(ADD_PARAMETERS(in));
 	addOutPort(ADD_PARAMETERS(out));
 
@@ -23,6 +25,18 @@ River::River() {
 			.setUnit("K per subreach in s");
 	addParameter(ADD_PARAMETERS(X));
 	addParameter(ADD_PARAMETERS(N));
+
+	// Lateral influent from Groundwater in m3/s per river node
+	addParameter(ADD_PARAMETERS(LATQ))
+			.setUnit("LATQ m^3/s, g/m^3");
+
+	/* Reactor Parameters */
+	// SED = No of Substances that are NOT transported with flow
+	// !!! MUST BE PLACED AT THE END OF THE FLOW VECTOR
+	// SED = 2 means that the last 2 Sunstances in the flow vector are not transported
+	SED = 0;
+	addParameter(ADD_PARAMETERS(SED))
+			.setUnit("-");
 
 	nc = Flow::countUnits(Flow::concentration);
 	conc_formula.resize(nc);
@@ -43,10 +57,12 @@ River::River() {
 	}
 }
 
-River::~River() {
+
+RiverSed::~RiverSed(){
 }
 
-void River::deinit() {
+
+void RiverSed::deinit() {
 	for (int i = 0; i < N; i++) {
 		Flow *f = getState<Flow>(str(format("V[%1%]") % i));
 		removeState(str(format("V[%1%]") % i));
@@ -57,7 +73,8 @@ void River::deinit() {
 	V.clear();
 }
 
-bool River::init(ptime start, ptime end, int dt) {
+
+bool RiverSed::init(ptime start, ptime end, int dt) {
 	(void) end;
 	for (int i = 0; i < N; i++) {
 		V.push_back(new Flow());
@@ -75,13 +92,22 @@ bool River::init(ptime start, ptime end, int dt) {
 }
 
 
-int River::f(ptime time, int dt) {
+int RiverSed::f(ptime time, int dt) {
 	(void) time;
 	double C_x, C_y;
 	setMuskParam(&C_x, &C_y, dt);
 	Flow tmp = in;
 
+	// Lateral inflow as Volume per subreach
+	double LATQv = LATQ[0]*dt/N;
+
 	for (int i = 0; i < N; i++) {
+
+		// Lateral Inflow - added
+		for (int ii = 0; ii < nc; ii++) {
+			tmp[ii+1]=(tmp[0]*tmp[ii+1]+LATQv*LATQ[ii+1])/(tmp[0]+LATQv);
+		}
+		tmp[0] += LATQv;
 
 		// Muskingum routing
 		// tmp = Vector inflow
@@ -94,7 +120,7 @@ int River::f(ptime time, int dt) {
 		double dvolqe = (inqe - outqe);
 
 		// Reactor with variable Volume
-		reactors[i]->react_dV(tmp, dvolqe,dt);
+		reactors[i]->react_dV_SED(tmp, dvolqe,SED, dt);
 
 		// Write Flow and Concentration back in tmp for next subreach inflow
 		tmp = (*(V[i]));
@@ -108,7 +134,9 @@ int River::f(ptime time, int dt) {
 	return dt;
 }
 
-void River::addMuskParam(int dt) {
+
+
+void RiverSed::addMuskParam(int dt) {
 	double dt_halve = static_cast<double>(dt) / 2;
 	double K_1_min_X = K*(1-X);
 	double Cx = (dt_halve - K*X) / (dt_halve + K_1_min_X);
@@ -116,7 +144,7 @@ void River::addMuskParam(int dt) {
 	musk_param[dt] = std::pair<double, double>(Cx, Cy);
 }
 
-void River::setMuskParam(double *x, double *y, int dt) {
+void RiverSed::setMuskParam(double *x, double *y, int dt) {
 	if (musk_param.find(dt) == musk_param.end()) {
 		addMuskParam(dt);
 	}

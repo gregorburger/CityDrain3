@@ -1,5 +1,5 @@
-#ifndef RIVER_H
-#define RIVER_H
+#ifndef RIVERSED_H
+#define RIVERSED_H
 
 #include <node.h>
 #include <flow.h>
@@ -10,11 +10,12 @@ class Reactor;
 
 /* Combine Sewer and Reactor */
 
-CD3_DECLARE_NODE(River)
-public:
-	River();
-	virtual ~River();
+CD3_DECLARE_NODE(RiverSed)
 
+
+public:
+	RiverSed();
+	virtual ~RiverSed();
 	bool init(ptime start, ptime end, int dt);
 	int f(ptime time, int dt);
 	void deinit();
@@ -26,11 +27,12 @@ private:
 	/* Stuff from Sewer */
 	Flow in;
 	Flow out;
+	Flow LATQ;
 	int K;
 	double X;
 	int N;
- //   double latq;
- //   int SED;
+	double latq;
+	int SED;
 	std::vector<Flow*> V;
 	std::map<int, std::pair<double, double> > musk_param;
 
@@ -42,4 +44,4 @@ private:
 	int nc, nstep;
 };
 
-#endif // SEWER_H
+#endif // RIVERSED_H

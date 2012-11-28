@@ -32,6 +32,7 @@
 #include "raingen.h"
 #include "mcso.h"
 #include "flowread.h"
+#include "riversed.h"
 
 #include <noderegistry.h>
 #include <nodefactory.h>
@@ -72,6 +73,7 @@ extern "C" {
 		registry->addNodeFactory(new NodeFactory<RainGen>(SOURCE));
 		registry->addNodeFactory(new NodeFactory<mCSO>(SOURCE));
 		registry->addNodeFactory(new NodeFactory<FlowRead>(SOURCE));
+		registry->addNodeFactory(new NodeFactory<RiverSed>(SOURCE));
 	}
 
 	void CD3_PUBLIC registerSimulations(SimulationRegistry *registry) {
