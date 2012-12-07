@@ -21,13 +21,13 @@ RiverSed::RiverSed()
 	K = 300;
 	X = 0.1;
 	N = 11;
-	addParameter(ADD_PARAMETERS(K))
+	addParameter("a_K", &K)
 			.setUnit("K per subreach in s");
-	addParameter(ADD_PARAMETERS(X));
-	addParameter(ADD_PARAMETERS(N));
+	addParameter("b_X", &X);
+	addParameter("c_N", &N);
 
 	// Lateral influent from Groundwater in m3/s per river node
-	addParameter(ADD_PARAMETERS(LATQ))
+	addParameter("d_LATQ", &LATQ)
 			.setUnit("LATQ m^3/s, g/m^3");
 
 	/* Reactor Parameters */
@@ -35,23 +35,30 @@ RiverSed::RiverSed()
 	// !!! MUST BE PLACED AT THE END OF THE FLOW VECTOR
 	// SED = 2 means that the last 2 Sunstances in the flow vector are not transported
 	SED = 0;
-	addParameter(ADD_PARAMETERS(SED))
-			.setUnit("-");
+	addParameter("e_SED", &SED)
+			.setUnit("-")
+			.setDescription("SED = No of Substances that are NOT transported with flow\n"
+							"!!! MUST BE PLACED AT THE END OF THE FLOW VECTOR");
 
 	nc = Flow::countUnits(Flow::concentration);
 	conc_formula.resize(nc);
 	formula_name.resize(nc);
 
-	addParameter(ADD_PARAMETERS(constants));
+	addParameter("f_constants", &constants)
+			.setUnit("-");
 
 	nstep = 10;
 
-	addParameter(ADD_PARAMETERS(nstep)).setUnit("-");
-	addParameter(ADD_PARAMETERS(init_v)).setUnit("[-]");
+	addParameter("g_nstep", &nstep)
+			.setUnit("-")
+			.setDescription("number of steps for the reactor solver\n"
+							"step<=0 activates the adaptive ode solver\n"
+							"step>0 activates the simple euler solver");
+	addParameter("h_init_v", &init_v).setUnit("[-]");
 
 	for (int c = 0; c < nc; ++c) {
-		std::string cname = Flow::getUnitNames(Flow::concentration)[c];
-		formula_name[c] = cname + "_formula";
+		std::string cname = "_"+Flow::getUnitNames(Flow::concentration)[c];
+		formula_name[c] = (char)('i'+c)+cname + "_formula";
 		conc_formula[c] = std::string("0");
 		addParameter(formula_name[c], &conc_formula[c]);
 	}
