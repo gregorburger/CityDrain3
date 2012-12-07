@@ -1,3 +1,22 @@
+/**
+ * CityDrain3 is an open source software for modelling and simulating integrated 
+ * urban drainage systems.
+ * 
+ * Copyright (C) 2012 Gregor Burger
+ * 
+ * This program is free software; you can redistribute it and/or modify it under 
+ * the terms of the GNU General Public License as published by the Free Software 
+ * Foundation; version 2 of the License.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with 
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ * Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ **/
+
 #include "mainwindow.h"
 #include <simulation.h>
 #include <noderegistry.h>
@@ -338,14 +357,11 @@ void MainWindow::on_actionAdd_Python_Module_activated() {
 	try {
 		scene->addPythonModule(plugin);
 	} catch (PythonException e) {
-		QString type = QString::fromStdString(e.type);
-		QString value = QString::fromStdString(e.value);
-		QString msg = QString("failed to load python module.\n"
-							  "python error: \n\t%1\t\n%2")
-							  .arg(type, value);
-		Logger(Error) << e.type;
-		Logger(Error) << e.value;
-		QMessageBox::critical(this, "Python module failure", msg);
+		QString msg = QString("Error loading python module %1\n"
+							  "see log for more information")
+							  .arg(plugin);
+		
+		QMessageBox::critical(this, "Python module loading failed", msg);
 		return;
 	}
 
@@ -374,14 +390,9 @@ void MainWindow::on_action_open_activated() {
 	try {
 		scene->load(path);
 	} catch (PythonException e) {
-		QString type = QString::fromStdString(e.type);
-		QString value = QString::fromStdString(e.value);
-		QString msg = QString("failed to load model.\n"
-							  "python error: \n\t%1\t\n%2")
-							  .arg(type, value);
-		Logger(Error) << e.type;
-		Logger(Error) << e.value;
-		QMessageBox::critical(this, "Python module failure", msg);
+		QString msg = QString("Python error while loading model file.\n"
+		                      "See log for more information.");
+		QMessageBox::critical(this, "Model loading failed", msg);
 		return;
 	}
 	setWindowTitle(QString("%2 (%1)").arg(path, QApplication::applicationName()));
@@ -527,15 +538,10 @@ void MainWindow::on_actionClose_activated() {
 
 void MainWindow::checkThreadOk() {
 	if (current_thread->hasFailed()) {
-		PythonException e = current_thread->exception;
-		QString type = QString::fromStdString(e.type);
-		QString value = QString::fromStdString(e.value);
 		QString msg = QString("failed to run simulation.\n"
-							  "python error: \n\t%1\t\n%2")
-							  .arg(type, value);
-		Logger(Error) << e.type;
-		Logger(Error) << e.value;
-		QMessageBox::critical(this, "Python module failure", msg);
+							  "python error in log");
+		
+		QMessageBox::critical(this, "Python Error", msg);
 	}
 }
 

@@ -1,5 +1,5 @@
-file(GLOB GUI_CPP *.cpp)
-file(GLOB COMMAND_CPP  commands/*.cpp)
+file(GLOB GUI_CPP *.cpp *.h)
+file(GLOB COMMAND_CPP  commands/*.cpp commands/*.h)
 file(GLOB GUI_UI *.ui)
 
 

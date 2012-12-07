@@ -1,3 +1,22 @@
+/**
+ * CityDrain3 is an open source software for modelling and simulating integrated 
+ * urban drainage systems.
+ * 
+ * Copyright (C) 2012 Gregor Burger
+ * 
+ * This program is free software; you can redistribute it and/or modify it under 
+ * the terms of the GNU General Public License as published by the Free Software 
+ * Foundation; version 2 of the License.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with 
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ * Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ **/
+
 #include "catchmentcss.h"
 #include <flow.h>
 #include <flowfuns.h>
@@ -9,6 +28,30 @@ using namespace boost;
 CD3_DECLARE_NODE_NAME(CatchmentCSS)
 
 CatchmentCSS::CatchmentCSS() {
+	std::string description = 
+	        "Catchment CSS block is designed to simulate a combined sewer system on catchment level."
+	        "The block copes the major drainage-related processes in an urban area and returns for each"
+	        "time step both the current amount and pollutant concentration of the aggregated outflow from"
+	        "the catchment. Storm water runoff and water quality aspects are computed here with a set of"
+	        "consistently simple conceptual models. The main processes that appear on an urban area in"
+	        "this context are\n\n"
+	        " * Runoff generation\n"
+	        " * Overland flow\n"
+	        " * Dry weather flow generation\n"
+	        " * Runoff and wasteflow pollution\n\n"
+	        "The associated dynamic inputs can be distinguished for inputs that (a) originate from the"
+	        "catchment and (b) inputs which originate from upstream and are to be routed through the"
+	        "catchment.\n\n"
+	        "The modified scheme allows both, feeding of the uppermost block (QI,U) as well a distributed"
+	        "feeding of blocks (QI,L). Thus, inputs provided such as the rain intensities (rl) acting on the"
+	        "catchment, the dry weather flows generated in the catchment (DWFL) and parasite water"
+	        "infiltrating into the sewer system (Qpl) are distributed homogeneously within the catchment."
+	        "Flows from upstream of the catchment are all the way routed through and thus are fed to the"
+	        "uppermost sub-block. In case of the CSS block an upstream wastewater stream Qe may be"
+	        "provided as dynamic input."
+	        ;
+	setDescription(description);
+	
 	addInPort(ADD_PARAMETERS(rain_in));
 	addInPort(ADD_PARAMETERS(dwf_in));
 	addInPort(ADD_PARAMETERS(parasite_in));
@@ -24,9 +67,15 @@ CatchmentCSS::CatchmentCSS() {
 		.setUnit("mm");
 	addParameter(ADD_PARAMETERS(permanent_loss))
 		.setUnit("mm/day");
-	addParameter(ADD_PARAMETERS(N));
-	addParameter(ADD_PARAMETERS(K));
-	addParameter(ADD_PARAMETERS(X));
+	addParameter(ADD_PARAMETERS(N))
+	        .setDescription("Number of sub areas/subreaches");
+	addParameter(ADD_PARAMETERS(K))
+	        .setDescription("Muskingum parameter describing the time required for a discharge wave travelling"
+	                        "through the reach [s]. *K applies to one subreach* and does not cover travelling time"
+	                        "for all sub reaches.");
+	addParameter(ADD_PARAMETERS(X))
+	        .setDescription("Dimensionless weighting factor that relates to the amount of wedge storage [-] in the"
+	                        "range of 0 (linear reservoir storage) and 0.5. (Typical value = 0,2).");
 
 	for (size_t i = 0; i < Flow::countUnits(Flow::concentration); i++) {
 		rain_concentration.push_back(0.0);

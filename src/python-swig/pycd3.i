@@ -1,4 +1,28 @@
-%module(directors="1", allprotected="1") pycd3
+/**
+ * CityDrain3 is an open source software for modelling and simulating integrated 
+ * urban drainage systems.
+ * 
+ * Copyright (C) 2012 Gregor Burger
+ * 
+ * This program is free software; you can redistribute it and/or modify it under 
+ * the terms of the GNU General Public License as published by the Free Software 
+ * Foundation; version 2 of the License.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with 
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ * Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ **/
+
+%define DOCSTRING
+"This module wraps part of the CityDrain3 API in order to extend CityDrain3 and to
+start a simulation from within a python script."
+%enddef
+
+%module(directors="1", allprotected="1", docstring=DOCSTRING) pycd3
 %feature("director");
 %{
 #include <nodefactory.h>
@@ -24,7 +48,7 @@ public:
 %include std_string.i
 %include std_map.i
 
-%feature("autodoc", "docstring");
+//%feature("autodoc", "docstring");
 
 %feature("director:except") {
 	if ($error != NULL) {
@@ -289,6 +313,8 @@ public:
 	virtual int f(boost::posix_time::ptime current, int dt) = 0;
 	virtual bool init(boost::posix_time::ptime start, boost::posix_time::ptime stop, int dt);
 	virtual void deinit();
+	virtual void start();
+	virtual void stop();
 	virtual const char *getClassName() const = 0;
 
 	%pythoncode %{
@@ -309,7 +335,9 @@ public:
 					break
 
 		if p.__class__ not in [Integer, Double, String, Flow, DoubleVector, IntegerVector, StringVector]:
-			raise TypeError("parameters can only have type Integer(), Double(), String(), list or Flow")
+			msg = "parameter %s has wrong type %s\n" % (name, p.__class__)
+			msg += " parameters can only have type Integer(), Double(), String(), Flow, DoubleVector(), IntegerVector() or StringVector()"
+			raise TypeError(msg)
 
 		log("adding parameter %s with type %s" % (name, p.__class__))
 		self.wrapped_values[name] = p
@@ -329,14 +357,16 @@ public:
 					break
 		nt = [Integer, Double, String, Flow, DoubleVector]
 		if state.__class__ not in nt:
-			raise TypeError("states can only have type Integer(), Double(), String(), Flow, DoubleVector(), IntegerVector(), StringVector(), FlowVector() ")
+			msg = "state %s has wrong type" % name
+			msg += "states can only have type Integer(), Double(), String(), Flow, DoubleVector(), IntegerVector(), StringVector(), FlowVector()"
+			raise TypeError(msg)
 
 		log("adding parameter %s with type %s" % (name, state.__class__))
 		self.wrapped_values[name] = state
 		self.intern_addState(name, state)
 
 	def addParameters(self):
-		ignores = ["this"]
+		ignores = ["this", "wrapped_values"]
 		for k in self.__dict__:
 			if k in ignores:
 				continue
@@ -356,7 +386,9 @@ public:
 	%}
 protected:
 	void addInPort(std::string name, Flow *f);
+	void removeInPort(std::string name);
 	void addOutPort(std::string name, Flow *f);
+	void removeOutPort(std::string name);
 };
 
 %extend Node {
@@ -415,9 +447,16 @@ protected:
 	}
 }
 
+enum LogLevel {
+	Debug = 0,
+	Standard = 1,
+	Warning = 2,
+	Error = 3
+};
+
 %inline %{
-void log(std::string s) {
-	Logger(Debug) << s;
+void log(std::string s, LogLevel l = Debug) {
+	Logger(l) << s;
 }
 void assign(Flow *target, Flow *source) {
 	for (size_t i = 0; i < Flow::size(); i++) {
@@ -450,6 +489,35 @@ public:
 };
 
 %pythoncode %{
+class Redirector:
+	def __init__(self, orig_out, log_level):
+		self.orig_out = orig_out
+		self.log_level = log_level
+		self.currentstring = ""
+
+	def write(self, text):
+		self.orig_out.write(text + "\n")
+		self.currentstring = self.currentstring + " " + text
+
+		if text.rfind("\n") == -1:
+			return
+
+		self.currentstring=self.currentstring.replace("\n","")
+		self.currentstring=self.currentstring.replace("\r","")
+
+		log("PYTHON:" + self.currentstring, self.log_level)
+		
+		self.currentstring=""
+
+	def close(self):
+		self.orig_out.close()
+
+def install_redirector():
+	import sys
+	if not isinstance(sys.stdout, Redirector):
+		sys.stdout=Redirector(sys.stdout, Debug)
+		sys.stderr=Redirector(sys.stderr, Error)
+
 class NodeFactory(INodeFactory):
 	def __init__(self, node):
 		INodeFactory.__init__(self)

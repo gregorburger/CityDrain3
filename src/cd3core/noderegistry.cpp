@@ -1,3 +1,22 @@
+/**
+ * CityDrain3 is an open source software for modelling and simulating integrated 
+ * urban drainage systems.
+ * 
+ * Copyright (C) 2012 Gregor Burger
+ * 
+ * This program is free software; you can redistribute it and/or modify it under 
+ * the terms of the GNU General Public License as published by the Free Software 
+ * Foundation; version 2 of the License.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with 
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ * Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ **/
+
 #ifndef PYTHON_DISABLED
 #include <Python.h>
 #include <swigruntime.h>
@@ -17,6 +36,7 @@ using namespace boost;
 
 #ifndef PYTHON_DISABLED
 std::vector<std::string> NodeRegistry::python_paths = std::vector<std::string>();
+PyObject *NodeRegistry::main_namespace = 0;
 void NodeRegistry::addToPythonPath(std::string p) {
 	NodeRegistry::python_paths.push_back(p);
 }
@@ -34,7 +54,10 @@ NodeRegistry::~NodeRegistry() {
 }
 
 bool NodeRegistry::addNodeFactory(INodeFactory *factory) {
-	cd3assert(!contains(factory->getNodeName()), str(format("NodeFactory already registered for that name: %1%") %factory->getNodeName()));
+	if (contains(factory->getNodeName())) {
+		Logger(Warning) << str(format("NodeFactory already registered for that name: %1%") %factory->getNodeName());
+		return false;
+	}
 	registered_nodes[factory->getNodeName()] = factory;
 	return true;
 }
@@ -64,17 +87,59 @@ void NodeRegistry::addPythonPlugin(const std::string &script) {
 		init_pycd3();
 		PyObject *main = PyImport_ImportModule("__main__");
 		main_namespace = PyModule_GetDict(main);
+		Py_INCREF(main_namespace);
 		Py_DECREF(main);
+		
+		PyRun_String("import sys\nsys.path.append('.')\n", Py_file_input, main_namespace, 0);
+		
+		PyObject *pycd3_module = PyImport_ImportModule("pycd3");
+		if (PyErr_Occurred()) {
+			Logger(Error) << "can not import module pycd3";
+			throw PythonException();
+			return;
+		}
+		PyObject *pycd3_dict = PyModule_GetDict(pycd3_module);
+		if (PyErr_Occurred()) {
+			Logger(Error) << "can not get dict of module pycd3";
+			throw PythonException();
+		}
+		PyObject *callback = PyDict_GetItemString(pycd3_dict, "install_redirector");
+		if (PyErr_Occurred()) {
+			Logger(Error) << "could not find callback \"install_redirector\"";
+			throw PythonException();
+		}
+		PyObject *res = PyObject_CallFunction(callback, NULL);
+		if (PyErr_Occurred()) {
+			Logger(Error) << "could not call callback \"install_redirector\"";
+			throw PythonException();
+			return;
+		}
+		Py_XDECREF(pycd3_module);
+		Py_XDECREF(res);
 	}
-
+	
+	if (PyErr_Occurred()) {
+		Logger(Error) << "unknown python error" << script;
+		throw PythonException();
+	}
+	
 	PyRun_String("import sys\nsys.path.append('.')\n", Py_file_input, main_namespace, 0);
-
+	
+	if (PyErr_Occurred()) {
+		Logger(Error) << "" << script;
+		throw PythonException();
+	}
+	
 	BOOST_FOREACH(std::string path, python_paths) {
 		std::string app_pp_cmd = "sys.path.append('"+path+"')\n";
 		Logger(Debug) << "adding" << path << "to pyhton sys.path";
 		PyRun_String(app_pp_cmd.c_str(), Py_file_input, main_namespace, 0);
+		if (PyErr_Occurred()) {
+			Logger(Error) << "error adding path to sys.path" << script;
+			throw PythonException();
+		}
 	}
-
+	
 	FILE *test_py = fopen(script.c_str(), "r");
 	PyRun_File(test_py, script.c_str(), Py_file_input, main_namespace, 0);
 

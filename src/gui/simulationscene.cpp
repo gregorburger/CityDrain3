@@ -1,3 +1,22 @@
+/**
+ * CityDrain3 is an open source software for modelling and simulating integrated 
+ * urban drainage systems.
+ * 
+ * Copyright (C) 2012 Gregor Burger
+ * 
+ * This program is free software; you can redistribute it and/or modify it under 
+ * the terms of the GNU General Public License as published by the Free Software 
+ * Foundation; version 2 of the License.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with 
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ * Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ **/
+
 #include "simulationscene.h"
 #include <QGraphicsSceneDragDropEvent>
 #include <QMimeData>
@@ -186,12 +205,14 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 	std::string klassName = treeWidget->selectedItems()[0]->text(0).toStdString();
 	QGraphicsScene::dragMoveEvent(event);
 
+	Node *node = 0;
+	NodeItem *nitem = 0;
 	try {
-		Node *node = node_reg->createNode(klassName);
+		node = node_reg->createNode(klassName);
 		std::string id = getDefaultId(node);
 		model->addNode(id, node);
 
-		NodeItem *nitem = new NodeItem(node);
+		nitem = new NodeItem(node);
 		nitem->setPos(event->scenePos());
 		this->addItem(nitem);
 
@@ -205,14 +226,15 @@ void SimulationScene::dropEvent(QGraphicsSceneDragDropEvent *event) {
 		//update();
 		Q_EMIT(changed(new AddNode(this, nitem)));
 	} catch (PythonException e) {
-		QString type = QString::fromStdString(e.type);
-		QString value = QString::fromStdString(e.value);
-		QString msg = QString("failed to load python module.\n"
-							  "python error: \n\t%1\t\n%2")
-							  .arg(type, value);
-		Logger(Error) << e.type;
-		Logger(Error) << e.value;
-		QMessageBox::critical(0, "Python module failure", msg);
+		QString msg = QString("Error while initializing Node\n"
+							  "python error in log");
+		QMessageBox::critical(0, "Python Node init failed", msg);
+		if (node) {
+			model->removeNode(node);
+		}
+		if (nitem) {
+			delete nitem;
+		}
 		return;
 	}
 }
@@ -343,7 +365,8 @@ void SimulationScene::add(NodeItem *item) {
 	Q_ASSERT(!node_items.contains(item->getId()));
 	node_items[item->getId()] = item;
 	this->connect(item, SIGNAL(changed(QUndoCommand*)), SLOT(nodeChanged(QUndoCommand*)));
-	addItem(item);
+	if (!items().contains(item))
+		addItem(item);
 }
 
 void SimulationScene::remove(ConnectionItem *item) {
