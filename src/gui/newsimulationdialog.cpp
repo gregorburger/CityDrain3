@@ -17,11 +17,12 @@
  * Street, Fifth Floor, Boston, MA 02110-1301, USA.
  **/
 
+#include <simulation.h>
 #include "newsimulationdialog.h"
 #include <ui_newsimulationdialog.h>
 #include <simulationregistry.h>
 #include <noderegistry.h>
-#include <simulation.h>
+
 #include <simulationscene.h>
 #include <flow.h>
 

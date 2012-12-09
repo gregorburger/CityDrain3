@@ -12,7 +12,7 @@ endif()
 #if (${CMAKE_HOST_WIN32})
 #    target_link_libraries(nodes cd3core ${Boost_THREAD_LIBRARY})
 #else()
-    target_link_libraries(nodes cd3core)
+    target_link_libraries(nodes cd3core ${Boost_THREAD_LIBRARY})
 #endif()
 
 
