@@ -21,9 +21,9 @@
 #include <string>
 using namespace std;
 
+#include <node.h>
 #include <noderegistry.h>
 #include <simulationregistry.h>
-#include <node.h>
 #include <flow.h>
 #include <log.h>
 #include <logsink.h>
