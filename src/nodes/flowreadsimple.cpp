@@ -47,7 +47,7 @@ IxxEntry parseIxxLine(QString line) {
 	QStringList parts = line.split(QRegExp("\\s+"));
 	QDateTime dt = QDateTime::fromString(parts[0] + " " + parts[1], "dd.MM.yyyy HH:mm:ss");
 	std::vector<double> value;
-	for (int i = 1; i < parts.size(); i++) {
+	for (int i = 2; i < parts.size(); i++) {
 		value.push_back(parts[i].toDouble());
 	}
 
@@ -138,8 +138,6 @@ int FlowReadSimple::f(ptime _time, int dt) {
 	while (entry.first < time) {
 		entry = parseIxxLine(data->file.readLine());
 	}
-
-	cd3assert(time > entry.first && entry.first.secsTo(time) == dt, "time slipped through a dark worm hole");
 
 	for (int i = 0; i < entry.second.size(); i++) {
 		out[i] = entry.second[i]; //do the actual work ;-)

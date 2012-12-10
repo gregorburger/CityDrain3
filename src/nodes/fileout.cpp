@@ -79,10 +79,10 @@ void FileOut::start() {
 	//file.reset();
 	stream.reset();
 	stream.setDevice(&file);
-	Logger(Debug) << this << "opening file";
-	stream << qSetFieldWidth(15);
-	stream << qSetRealNumberPrecision(15);
-	stream << fixed;
+    stream << qSetFieldWidth(9);
+    stream << qSetRealNumberPrecision(5);
+    stream << fixed;
+    Logger(Debug) << this << "opening file";
 	stream << "time";
 	stream << "\t" << QString::fromStdString(Flow::getNames()[0]) << " [m^3/dt]";
 	for (int i = 1; i < Flow::getNames().size(); ++i) {
