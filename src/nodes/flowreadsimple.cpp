@@ -22,6 +22,7 @@
 #include <QFile>
 #include <QRegExp>
 #include <QStringList>
+//#include <iostream>
 
 struct FlowReadSimple_Private {
 	QDateTime first, last;
@@ -99,10 +100,16 @@ bool FlowReadSimple::init(ptime start, ptime end, int dt) {
 	}
 
     // Go to last line and read last date >> check
-    while (file.canReadLine()) {
-		line = file.readLine();
-	}
-	data->last = parseIxxLine(line).first;
+    while(!(file.atEnd())) {
+        line = file.readLine();
+    }
+    data->last = parseIxxLine(line).first;
+
+    // Does NOT work !!!!
+//    while (file.canReadLine()) {
+//		line = file.readLine();
+//	}
+//	data->last = parseIxxLine(line).first;
 
 	if (data->last <= qdt_start || data->first >= qdt_end) {
 		Logger(Error) << "timerange of rain_file outside simulation time";
@@ -128,8 +135,12 @@ void FlowReadSimple::stop() {
 int FlowReadSimple::f(ptime _time, int dt) {
 	QDateTime time = pttoqt(_time);
 
+//    std::cout << data->first.toString().toStdString();
+//    std::cout << data->last.toString().toStdString();
+
 	if (time <= data->first || time >= data->last) {
 		out.clear();
+//        std::cout << std::endl;
 		return dt;
 	}
 
@@ -139,15 +150,17 @@ int FlowReadSimple::f(ptime _time, int dt) {
 
 
 	//eat up all entry in file before simulation time
-	while (entry.first < time) {
-		entry = parseIxxLine(data->file.readLine());
+    while (entry.first < time) {
+        entry = parseIxxLine(data->file.readLine());
 	}
+
+//    std::cout << entry.first.toString().toStdString();
+//    std::cout << time.toString().toStdString()  << std::endl;
 
 
     for (int i = 0; i < entry.second.size(); i++) {
 		out[i] = entry.second[i]; //do the actual work ;-)
     }
-
 
 	return dt;
 }
