@@ -64,7 +64,9 @@ static QDateTime pttoqt(const boost::posix_time::ptime &pt) {
 }
 
 bool FlowReadSimple::init(ptime start, ptime end, int dt) {
-	QString q_rain_file = QString::fromStdString(rain_file);
+    // Foollowing are test routines for the file
+    // Test if rainfile exists and can be opened
+    QString q_rain_file = QString::fromStdString(rain_file);
 	if (!QFile::exists(q_rain_file)) {
 		Logger(Error) << "rain_file does not exist";
 		return false;
@@ -75,7 +77,8 @@ bool FlowReadSimple::init(ptime start, ptime end, int dt) {
 		return false;
 	}
 
-	QString line = file.readLine();
+    // Test if rainfile has correct dt spacing == only tested for the first 2 lines
+    QString line = file.readLine();
 	data->first = parseIxxLine(line).first;
 	line = file.readLine();
 	QDateTime second = parseIxxLine(line).first;
@@ -95,7 +98,8 @@ bool FlowReadSimple::init(ptime start, ptime end, int dt) {
 		return false;
 	}
 
-	while (file.canReadLine()) {
+    // Go to last line and read last date >> check
+    while (file.canReadLine()) {
 		line = file.readLine();
 	}
 	data->last = parseIxxLine(line).first;
@@ -139,9 +143,10 @@ int FlowReadSimple::f(ptime _time, int dt) {
 		entry = parseIxxLine(data->file.readLine());
 	}
 
-	for (int i = 0; i < entry.second.size(); i++) {
+
+    for (int i = 0; i < entry.second.size(); i++) {
 		out[i] = entry.second[i]; //do the actual work ;-)
-	}
+    }
 
 
 	return dt;
