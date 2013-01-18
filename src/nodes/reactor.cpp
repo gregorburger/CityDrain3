@@ -361,7 +361,7 @@ void Reactor::react_dV_SED(Flow &in, double d_reactor_volume, int SED, int dt) {
 				dvol1[i+1] = (thyd * (in[i+1] - volume[i+1]) + parsers[i]->Eval());
 			}
 			for (int i = (nc-SED); i < nc; ++i) {
-				dvol1[i+1] = parsers[i]->Eval();
+                dvol1[i+1] = thyd*parsers[i]->Eval();
 			}
 
 			//Effektive Lg Euler - volume wird upgedatet
@@ -393,7 +393,7 @@ void Reactor::react_dV_SED(Flow &in, double d_reactor_volume, int SED, int dt) {
 				scalvol[i+1] = fabs(volume[i+1]) + fabs(hh*dvol1[i+1]) +acc;
 			}
 			for (int i = (nc-SED); i < nc; ++i) {
-				dvol1[i+1] = parsers[i]->Eval();
+                dvol1[i+1] = thyd * parsers[i]->Eval();
 				scalvol[i+1] = fabs(volume[i+1]) + fabs(hh*dvol1[i+1]) +acc;
 			}
 			for (int i = 0; i < nc; ++i) {oldvol[i+1] = volume[i+1];}
@@ -410,7 +410,7 @@ void Reactor::react_dV_SED(Flow &in, double d_reactor_volume, int SED, int dt) {
 					dvol1[i+1] = (thyd * (in[i+1] - volume[i+1]) + parsers[i]->Eval());
 				}
 				for (int i = (nc-SED); i < nc; ++i) {
-					dvol1[i+1] = parsers[i]->Eval();
+                    dvol1[i+1] = thyd * parsers[i]->Eval();
 				}
 				for (int i = 0; i < nc; ++i) {
 					volume[i+1] += dvol1[i+1] * hh;
@@ -422,7 +422,7 @@ void Reactor::react_dV_SED(Flow &in, double d_reactor_volume, int SED, int dt) {
 					dvol2[i+1] = (thyd * (in[i+1] - volume[i+1]) + parsers[i]->Eval());
 				}
 				for (int i = (nc-SED); i < nc; ++i) {
-					dvol2[i+1] =  parsers[i]->Eval();
+                    dvol2[i+1] = thyd * parsers[i]->Eval();
 				}
 
 				for (int i = 0; i < nc; ++i) {
