@@ -158,9 +158,9 @@ int FlowReadSimple::f(ptime _time, int dt) {
 //    std::cout << time.toString().toStdString()  << std::endl;
 
 
-    for (int i = 0; i < entry.second.size(); i++) {
+	for (int i = 0; i < std::min(entry.second.size(), out.size()); i++) {
 		out[i] = entry.second[i]; //do the actual work ;-)
-    }
+	}
 
 	return dt;
 }
