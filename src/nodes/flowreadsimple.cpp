@@ -45,7 +45,7 @@ FlowReadSimple::~FlowReadSimple() {
 
 static
 IxxEntry parseIxxLine(QString line) {
-	QStringList parts = line.split(QRegExp("\\s+"));
+	QStringList parts = line.split(QRegExp("\\s+"), QString::SkipEmptyParts);
 	QDateTime dt = QDateTime::fromString(parts[0] + " " + parts[1], "dd.MM.yyyy HH:mm:ss");
 	std::vector<double> value;
 	for (int i = 2; i < parts.size(); i++) {
@@ -65,9 +65,9 @@ static QDateTime pttoqt(const boost::posix_time::ptime &pt) {
 }
 
 bool FlowReadSimple::init(ptime start, ptime end, int dt) {
-    // Foollowing are test routines for the file
-    // Test if rainfile exists and can be opened
-    QString q_rain_file = QString::fromStdString(rain_file);
+	// Foollowing are test routines for the file
+	// Test if rainfile exists and can be opened
+	QString q_rain_file = QString::fromStdString(rain_file);
 	if (!QFile::exists(q_rain_file)) {
 		Logger(Error) << "rain_file does not exist";
 		return false;
@@ -78,8 +78,8 @@ bool FlowReadSimple::init(ptime start, ptime end, int dt) {
 		return false;
 	}
 
-    // Test if rainfile has correct dt spacing == only tested for the first 2 lines
-    QString line = file.readLine();
+	// Test if rainfile has correct dt spacing == only tested for the first 2 lines
+	QString line = file.readLine();
 	data->first = parseIxxLine(line).first;
 	line = file.readLine();
 	QDateTime second = parseIxxLine(line).first;
@@ -99,17 +99,11 @@ bool FlowReadSimple::init(ptime start, ptime end, int dt) {
 		return false;
 	}
 
-    // Go to last line and read last date >> check
-    while(!(file.atEnd())) {
-        line = file.readLine();
-    }
-    data->last = parseIxxLine(line).first;
-
-    // Does NOT work !!!!
-//    while (file.canReadLine()) {
-//		line = file.readLine();
-//	}
-//	data->last = parseIxxLine(line).first;
+	// Go to last line and read last date >> check
+	while(!(file.atEnd())) {
+		line = file.readLine();
+	}
+	data->last = parseIxxLine(line).first;
 
 	if (data->last <= qdt_start || data->first >= qdt_end) {
 		Logger(Error) << "timerange of rain_file outside simulation time";
@@ -135,12 +129,8 @@ void FlowReadSimple::stop() {
 int FlowReadSimple::f(ptime _time, int dt) {
 	QDateTime time = pttoqt(_time);
 
-//    std::cout << data->first.toString().toStdString();
-//    std::cout << data->last.toString().toStdString();
-
 	if (time <= data->first || time >= data->last) {
 		out.clear();
-//        std::cout << std::endl;
 		return dt;
 	}
 
@@ -150,13 +140,9 @@ int FlowReadSimple::f(ptime _time, int dt) {
 
 
 	//eat up all entry in file before simulation time
-    while (entry.first < time) {
-        entry = parseIxxLine(data->file.readLine());
+	while (entry.first < time) {
+		entry = parseIxxLine(data->file.readLine());
 	}
-
-//    std::cout << entry.first.toString().toStdString();
-//    std::cout << time.toString().toStdString()  << std::endl;
-
 
 	for (int i = 0; i < std::min(entry.second.size(), out.size()); i++) {
 		out[i] = entry.second[i]; //do the actual work ;-)
