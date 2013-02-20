@@ -83,7 +83,6 @@ void AutoLayout::layout() {
 
 	e = gvLayout(gvc, G, "dot");
 	e = gvRender(gvc, G, "dot", NULL);
-	e = gvRenderFilename(gvc, G, "pdf", "/tmp/out.pdf");
 
 	QMap<QString, NodeItem *> sim_nodes = scene->getNodeItems();
 
