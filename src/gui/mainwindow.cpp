@@ -619,7 +619,11 @@ void MainWindow::on_action_About_activated() {
 }
 
 void MainWindow::on_actionAuto_layout_activated() {
+#ifdef WITH_AUTOLAYOUT
 	AutoLayout a(scene);
 	a.layout();
 	on_actionZoom_reset_activated();
+#else
+	QMessageBox::critical(0, "autolayout disabled", "Autolayout support is disabled for this build");
+#endif
 }

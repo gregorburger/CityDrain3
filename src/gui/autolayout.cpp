@@ -1,128 +1,117 @@
 /**
- * CityDrain3 is an open source software for modelling and simulating integrated 
+ * CityDrain3 is an open source software for modelling and simulating integrated
  * urban drainage systems.
- * 
+ *
  * Copyright (C) 2012 Gregor Burger
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation; version 2 of the License.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
- * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
  * Street, Fifth Floor, Boston, MA 02110-1301, USA.
  **/
 
 #include "autolayout.h"
-#include <QMap>
-#include <QDebug>
+
 
 #include <simulationscene.h>
 #include <mapbasedmodel.h>
-#include <nodeconnection.h>
 #include <node.h>
+#include <connectionitem.h>
+#ifdef WITH_AUTOLAYOUT
+#include <graphviz/gvc.h>
 
-#include <boost/foreach.hpp>
+#define DECL_DPI(d) double dpi = d; char *dpi_str = #d;
+#define	TAILX				1
+#define HEADX				2
+#endif
 
 AutoLayout::AutoLayout(SimulationScene *scene) : scene(scene), model(scene->getModel()) {
-	vdist = 40;
-	hdist = 130;
 }
 
 void AutoLayout::layout() {
-	QMap<int, QList<QString> > ranks = rank();
+#ifdef WITH_AUTOLAYOUT
+	int e;
+	DECL_DPI(72.0);
 
-	QMap<QString, NodeItem*> items = scene->getNodeItems();
+	GVC_t *gvc = gvContext();
+	Agraph_t *G = agopen("G", AGRAPH);
+	e = agsafeset(G, "dpi", dpi_str, "");
+	e = agsafeset(G, "rankdir", "LR", "");
+	e = agsafeset(G, "nodesep", "0.5", "");
+	e = agsafeset(G, "ranksep", "1.0", "");
 
-	int h = 0;
+	QMap<QString, Agnode_t *> nodes;
 
-	QList<QString> prev_rank, sorted;
-
-	Q_FOREACH(int rank, ranks.keys()) {
-		int v = 0;
-		int mnw = 0; //max node width per rank
-
-		if (prev_rank.empty()) {//first round
-			prev_rank = ranks[rank];
-			sorted = ranks[rank];
-		} else {//not the first round
-			sorted = sort(prev_rank, ranks[rank]);
-			prev_rank = sorted;
+	Q_FOREACH(NodeItem *n, scene->getNodeItems()) {
+		Agnode_t *ag_n = agnode(G, n->getId().toAscii().data());
+		QRectF br = n->boundingRect();
+		QStringList inports;
+		Q_FOREACH(std::string ip, n->in_ports.keys()) {
+			inports << QString("<%1> %1").arg(QString::fromStdString(ip));
+		}
+		QStringList outports;
+		Q_FOREACH(std::string op, n->out_ports.keys()) {
+			outports << QString("<%1> %1").arg(QString::fromStdString(op));
 		}
 
-		Q_FOREACH(QString node, sorted) {
-			NodeItem *item = items[node];
+		QString label = QString("{{%1}|%2|{%3}}").arg(
+					inports.join("|"),
+					n->getId(),
+					outports.join("|")
+					);
 
-			item->setPos(h, v);
-
-			//update mnw
-			int cnw = item->boundingRect().width(); //current node width
-			mnw = cnw > mnw ? cnw : mnw;
-
-			v -= item->boundingRect().height() + vdist;
-		}
-
-		h += mnw + hdist;
+		agsafeset(ag_n, "label", label.toAscii().data(), "");
+		agsafeset(ag_n, "width", QString("%1").arg(br.width()/dpi).toAscii().data(), "");
+		agsafeset(ag_n, "height", QString("%1").arg(br.height()/dpi).toAscii().data(), "");
+		agsafeset(ag_n, "fixedsize", "true", "");
+		agsafeset(ag_n, "shape", "record", "");
+		nodes[n->getId()] = ag_n;
 	}
 
-	qDebug() << ranks;
-}
-
-void AutoLayout::rank_helper(QMap<int, QList<QString> > &ranks,
-							 QSet<QString> &ranked,
-							 Node *current,
-							 int current_rank) {
-	BOOST_FOREACH(NodeConnection *c, model->forwardConnection(current)) {
-		QString id = QString::fromStdString(c->sink->getId());
-		if (ranked.contains(id))
-			continue;
-		ranks[current_rank+1].append(id);
-		ranked << id;
-		rank_helper(ranks, ranked, c->sink, current_rank+1);
+	Q_FOREACH(ConnectionItem *e, scene->getConnectionsItems()) {
+		Agedge_t *edge = agedge(G, nodes[e->getSourceId()], nodes[e->getSinkId()]);
+		agxset(edge, HEADX, e->getSinkPortId().toAscii().data());
+		agxset(edge, TAILX, e->getSourcePortId().toAscii().data());
 	}
 
-	BOOST_FOREACH(NodeConnection *c, model->backwardConnection(current)) {
-		QString id = QString::fromStdString(c->source->getId());
-		if (ranked.contains(id))
-			continue;
-		ranks[current_rank-1].append(id);
-		ranked << id;
-		rank_helper(ranks, ranked, c->source, current_rank-1);
-	}
-}
+	e = gvLayout(gvc, G, "dot");
+	e = gvRender(gvc, G, "dot", NULL);
+	e = gvRenderFilename(gvc, G, "pdf", "/tmp/out.pdf");
 
-QMap<int, QList<QString> > AutoLayout::rank() {
-	QMap<int, QList<QString> > ranks;
-	QSet<QString> ranked;
-	Node *current = *model->getSourceNodes().begin();
-	QString id = QString::fromStdString(current->getId());
-	ranks[0].append(id);
-	ranked << id;
-	rank_helper(ranks, ranked, current, 0);
-	return ranks;
-}
+	QMap<QString, NodeItem *> sim_nodes = scene->getNodeItems();
 
-QList<QString> AutoLayout::sort(QList<QString> pred,
-								QList<QString> current) {
-#if 0
-	QList<QString> sorted;
-	Q_FOREACH(QString n, pred) {
-		QList<QString> per_node;
+	QStringList bb = QString(agget(G, "bb")).split(",");
+	Q_ASSERT(bb.size() == 4);
+	double width = bb[2].toDouble();
+	double height = bb[3].toDouble();
 
-		Node *node = model->getNode(n.toStdString());
-		BOOST_FOREACH(NodeConnection *con, model->forwardConnection(node)) {
-			QString sink_node = QString::fromStdString(con->sink->getId());
-			if (current.contains(sink_node))
-				per_node.append(sink_node);
-		}
-		sorted.append(per_node);
+	Q_FOREACH(QString node_name, nodes.keys()) {
+		Agnode_t *ag_n = nodes[node_name];
+		NodeItem *n = sim_nodes[node_name];
+		QString pos(agget(ag_n, "pos"));
+		QStringList pos_items = pos.split(",");
+		Q_ASSERT(pos_items.size() == 2);
+		bool ok;
+		double x = pos_items[0].toDouble(&ok);
+		Q_ASSERT(ok);
+		double y = pos_items[1].toDouble(&ok);
+		Q_ASSERT(ok);
+		QRectF br = n->boundingRect();
+		n->setPos(x - br.width()/2.0, height - (y - br.height()/2.0));
+		/*QString w(agget(ag_n, "width"));
+		QString h(agget(ag_n, "height"));
+		qDebug() << w << h;*/
 	}
 
-	return sorted;
+	e = gvFreeLayout(gvc, G);
+	agclose(G);
+	e = gvFreeContext(gvc);
 #endif
-	return current;
 }

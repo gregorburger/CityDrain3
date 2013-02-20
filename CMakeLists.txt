@@ -67,6 +67,15 @@ else ()
 	message(STATUS Release)
 endif()
 
+#check for graphviz
+find_package(PkgConfig)
+if (PKG_CONFIG_FOUND)
+    pkg_search_module(GRAPHVIZ libgvc)
+    if (GRAPHVIZ_FOUND)
+        message(STATUS "graphviz found enabling autolayout")
+        set(WITH_AUTOLAYOUT TRUE)
+    endif (GRAPHVIZ_FOUND)
+endif (PKG_CONFIG_FOUND)
 
 ##'NOF CHECKING... BUILDING##
 add_subdirectory(src/cd3core)
