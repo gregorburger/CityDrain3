@@ -58,7 +58,7 @@ void OrderedPipeSimulation::start(ptime time) {
 	}
 	Logger(Standard) << "thread count: " << pool->maxThreadCount();
 
-	sh_node_queue upper_queue = shared_ptr<tqueue<Node *> >(new tqueue<Node *>());
+	sh_node_queue upper_queue = boost::shared_ptr<tqueue<Node *> >(new tqueue<Node *>());
 	BOOST_FOREACH(Node *n, order) {
 		upper_queue->enqueue(n);
 	}
