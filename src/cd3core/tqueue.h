@@ -32,14 +32,14 @@ public:
 
 	void enqueue(T t) {
 		{
-			unique_lock<boost::mutex> lock(mut);
+			boost::unique_lock<boost::mutex> lock(mut);
 			q.push(t);
 		}
 		wait.notify_one();
 	}
 
 	T dequeue() {
-		unique_lock<boost::mutex> lock(mut);
+		boost::unique_lock<boost::mutex> lock(mut);
 		while (q.empty()) {
 			wait.wait(lock);
 		}
