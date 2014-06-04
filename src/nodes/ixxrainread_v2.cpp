@@ -1,19 +1,19 @@
 /**
- * CityDrain3 is an open source software for modelling and simulating integrated
+ * CityDrain3 is an open source software for modelling and simulating integrated 
  * urban drainage systems.
- *
+ * 
  * Copyright (C) 2012 Gregor Burger
- *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
+ * 
+ * This program is free software; you can redistribute it and/or modify it under 
+ * the terms of the GNU General Public License as published by the Free Software 
  * Foundation; version 2 of the License.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
+ * 
+ * You should have received a copy of the GNU General Public License along with 
+ * this program; if not, write to the Free Software Foundation, Inc., 51 Franklin 
  * Street, Fifth Floor, Boston, MA 02110-1301, USA.
  **/
 
@@ -25,6 +25,7 @@
 
 struct IxxRainRead_v2_Private {
 	QDateTime first, last;
+	int file_dt;
 	QFile file;
 };
 
@@ -35,6 +36,8 @@ CD3_DECLARE_NODE_NAME(IxxRainRead_v2)
 IxxRainRead_v2::IxxRainRead_v2() {
 	data = new IxxRainRead_v2_Private();
 	addOutPort(ADD_PARAMETERS(out));
+	datestring = "dd.MM.yyyy HH:mm:ss";
+	addParameter(ADD_PARAMETERS(datestring));
 	addParameter(ADD_PARAMETERS(rain_file));
 }
 
@@ -42,10 +45,9 @@ IxxRainRead_v2::~IxxRainRead_v2() {
 	delete data;
 }
 
-static
-IxxEntry parseIxxLine(QString line) {
+IxxEntry parseIxxLine(QString line, QString date_time_string) {
 	QStringList parts = line.split(QRegExp("\\s+"));
-	QDateTime dt = QDateTime::fromString(parts[0] + " " + parts[1], "dd.MM.yyyy HH:mm:ss");
+	QDateTime dt = QDateTime::fromString(parts[0] + " " + parts[1], date_time_string);
 	double value = parts[2].toDouble();
 	return IxxEntry(dt, value);
 }
@@ -60,6 +62,7 @@ static QDateTime pttoqt(const boost::posix_time::ptime &pt) {
 }
 
 bool IxxRainRead_v2::init(ptime start, ptime end, int dt) {
+	q_datestring = QString::fromStdString(datestring);
 	QString q_rain_file = QString::fromStdString(rain_file);
 	if (!QFile::exists(q_rain_file)) {
 		Logger(Error) << "rain_file does not exist";
@@ -72,13 +75,13 @@ bool IxxRainRead_v2::init(ptime start, ptime end, int dt) {
 	}
 
 	QString line = file.readLine();
-	data->first = parseIxxLine(line).first;
+	data->first = parseIxxLine(line, this->q_datestring).first;
 	line = file.readLine();
-	QDateTime second = parseIxxLine(line).first;
-
+	QDateTime second = parseIxxLine(line, this->q_datestring).first;
+	data->file_dt = data->first.secsTo(second);
 	if (data->first.secsTo(second) != dt) {
-		Logger(Error) << "dt of rain file and simulation must be equal";
-		return false;
+		Logger(Warning) << "dt of rain file and simulation are not equal; dt=" << data->first.secsTo(second);
+		//return false;
 	}
 
 	QDateTime qdt_start = pttoqt(start);
@@ -91,15 +94,15 @@ bool IxxRainRead_v2::init(ptime start, ptime end, int dt) {
 		return false;
 	}
 
-	while (file.canReadLine()) {
-		line = file.readLine();
-	}
-	data->last = parseIxxLine(line).first;
+	//    while (file.canReadLine()) {
+	//        line = file.canReadLine();
+	//    }
+	//    data->last = parseIxxLine(line, this->q_datestring).first;
 
-	if (data->last <= qdt_start || data->first >= qdt_end) {
-		Logger(Error) << "timerange of rain_file outside simulation time";
-		return false;
-	}
+	//    if (data->last <= qdt_start || data->first >= qdt_end) {
+	//        Logger(Error) << "timerange of rain_file outside simulation time";
+	//        return false;
+	//    }
 
 	file.close();
 	return true;
@@ -120,18 +123,23 @@ void IxxRainRead_v2::stop() {
 int IxxRainRead_v2::f(ptime _time, int dt) {
 	QDateTime time = pttoqt(_time);
 
-	if (time <= data->first || time >= data->last) {
-		out.clear();
-		return dt;
+	//    if (time <= data->first || time >= data->last) {
+	//        out.clear();
+	//        return dt;
+	//    }
+	//while ()
+	//   cd3assert(data->file.isOpen() && data->file.isReadable(), "can not read from rain file");
+
+	IxxEntry entry = parseIxxLine(data->file.readLine(), this->q_datestring);
+	double sum =entry.second;
+	while (entry.first.secsTo(time) - this->data->file_dt > 0) {
+		entry = parseIxxLine(data->file.readLine(), this->q_datestring);
+		sum+=entry.second;
+
+		//cd3assert(time > entry.first && entry.first.secsTo(time) == dt, "time slipped through a dark worm hole");
 	}
 
-	cd3assert(data->file.isOpen() && data->file.isReadable(), "can not read from rain file");
-
-	IxxEntry entry = parseIxxLine(data->file.readLine());
-
-	cd3assert(time > entry.first && entry.first.secsTo(time) == dt, "time slipped through a dark worm hole");
-
-	out[0] = entry.second; //do the actual work ;-)
+	out[0] =sum; //do the actual work ;-)
 
 	return dt;
 }
