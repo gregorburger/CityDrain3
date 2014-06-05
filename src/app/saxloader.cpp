@@ -55,7 +55,7 @@ SaxLoader::SaxLoader(IModel *model) : delete_node_reg(true), delete_sim_reg(true
 	pd->node_registry = new NodeRegistry();
 	pd->sim_registry = new SimulationRegistry();
 	this->model = model;
-	this->simulation =0;
+	this->simulation = 0;
 }
 
 SaxLoader::SaxLoader(IModel *model,
@@ -66,7 +66,7 @@ SaxLoader::SaxLoader(IModel *model,
 	pd->node_registry = nr;
 	pd->sim_registry = sr;
 	this->model = model;
-	this->simulation =0;
+	this->simulation = 0;
 }
 
 SaxLoader::~SaxLoader() {
