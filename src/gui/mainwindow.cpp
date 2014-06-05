@@ -243,7 +243,7 @@ void MainWindow::changeEvent(QEvent *e) {
 	}
 }
 
-void MainWindow::on_actionAdd_Plugin_activated() {
+void MainWindow::on_actionAdd_Plugin_triggered() {
         QString plugin = QFileDialog::getOpenFileName(this, "select plugin", ".", "*.so *.dll");
 	if (plugin == "")
 		return;
@@ -259,15 +259,15 @@ void MainWindow::zoomOut(int times) {
 	ui->graphicsView->scale(1/(times * 1.2), 1/(times * 1.2));
 }
 
-void MainWindow::on_actionZoom_in_activated() {
+void MainWindow::on_actionZoom_in_triggered() {
 	zoomIn(1);
 }
 
-void MainWindow::on_actionZoom_out_activated() {
+void MainWindow::on_actionZoom_out_triggered() {
 	zoomOut(1);
 }
 
-void MainWindow::on_actionZoom_reset_activated() {
+void MainWindow::on_actionZoom_reset_triggered() {
 	//scene->update();
 	QRectF bounds;
 	if (scene->selectedItems().size() == 0) {
@@ -314,7 +314,7 @@ void MainWindow::on_stopButton_clicked() {
 	current_thread->getSimulation()->stop();
 }
 
-void MainWindow::on_actionNewSimulation_activated() {
+void MainWindow::on_actionNewSimulation_triggered() {
 	if (!unload()) {
 		return;
 	}
@@ -327,15 +327,15 @@ void MainWindow::updateTimeControls() {
 	time_controls->dt->setValue(scene->getDt());
 }
 
-void MainWindow::on_actionSave_Simulation_activated() {
+void MainWindow::on_actionSave_Simulation_triggered() {
 	if (scene->getModelFileName() == "") {
-		on_actionSave_as_activated();
+		on_actionSave_as_triggered();
 		return;
 	}
 	scene->save(scene->getModelFileName());
 }
 
-void MainWindow::on_actionSave_as_activated() {
+void MainWindow::on_actionSave_as_triggered() {
 	QString fileName = SaveAsDialog::getSaveFileName();
 	if (fileName == "")
 		return;
@@ -345,7 +345,7 @@ void MainWindow::on_actionSave_as_activated() {
 	scene->save(fileName);
 }
 
-void MainWindow::on_actionAdd_Python_Module_activated() {
+void MainWindow::on_actionAdd_Python_Module_triggered() {
 #ifndef PYTHON_DISABLED
 	QString plugin;
 	plugin = QFileDialog::getOpenFileName(this,
@@ -371,11 +371,11 @@ void MainWindow::on_actionAdd_Python_Module_activated() {
 #endif
 }
 
-void MainWindow::on_action_exit_activated() {
+void MainWindow::on_action_exit_triggered() {
 	this->close();
 }
 
-void MainWindow::on_action_open_activated() {
+void MainWindow::on_action_open_triggered() {
 	if (!unload()) {
 		return;
 	}
@@ -449,7 +449,7 @@ void MainWindow::simulationChanged(QUndoCommand *cmd) {
 	}
 }
 
-void MainWindow::on_actionExport_to_pdf_activated() {
+void MainWindow::on_actionExport_to_pdf_triggered() {
 	QString fileName = QFileDialog::getSaveFileName(this, "Export To PDF", ".", "PDF Files (*.pdf)");
 	if (fileName == "")
 		return;
@@ -476,7 +476,7 @@ bool MainWindow::unload() {
 							  QMessageBox::No | QMessageBox::Cancel | QMessageBox::Yes,
 							  QMessageBox::Yes);
 		if (ret == QMessageBox::Yes) {
-			on_actionSave_Simulation_activated();
+			on_actionSave_Simulation_triggered();
 		}
 		if (ret == QMessageBox::Cancel) {
 			return false;
@@ -489,7 +489,7 @@ bool MainWindow::unload() {
 	return true;
 }
 
-void MainWindow::on_actionFind_node_activated() {
+void MainWindow::on_actionFind_node_triggered() {
 	FindNodeDialog fn(scene, this);
 	if (fn.exec() && fn.found) {
 		ui->graphicsView->centerOn(fn.found);
@@ -498,7 +498,7 @@ void MainWindow::on_actionFind_node_activated() {
 	}
 }
 
-void MainWindow::on_actionHorizontal_center_align_activated() {
+void MainWindow::on_actionHorizontal_center_align_triggered() {
 	if (scene->selectedItems().size() < 2) {
 		return;
 	}
@@ -511,7 +511,7 @@ void MainWindow::on_actionHorizontal_center_align_activated() {
 	}
 }
 
-void MainWindow::on_actionAlign_vertically_center_activated() {
+void MainWindow::on_actionAlign_vertically_center_triggered() {
 	if (scene->selectedItems().size() < 2) {
 		return;
 	}
@@ -524,15 +524,15 @@ void MainWindow::on_actionAlign_vertically_center_activated() {
 	}
 }
 
-void MainWindow::on_actionCopy_activated() {
+void MainWindow::on_actionCopy_triggered() {
 	scene->copy();
 }
 
-void MainWindow::on_actionPaste_activated() {
+void MainWindow::on_actionPaste_triggered() {
 	scene->paste();
 }
 
-void MainWindow::on_actionClose_activated() {
+void MainWindow::on_actionClose_triggered() {
 	unload();
 }
 
@@ -545,25 +545,25 @@ void MainWindow::checkThreadOk() {
 	}
 }
 
-void MainWindow::on_action_delete_activated() {
+void MainWindow::on_action_delete_triggered() {
 	scene->deleteSelectedItems();
 }
 
-void MainWindow::on_actionUndo_activated() {
+void MainWindow::on_actionUndo_triggered() {
 	if (!undo_stack.canUndo()) {
 		return;
 	}
 	undo_stack.undo();
 }
 
-void MainWindow::on_actionRedo_activated() {
+void MainWindow::on_actionRedo_triggered() {
 	if (!undo_stack.canRedo()) {
 		return;
 	}
 	undo_stack.redo();
 }
 
-void MainWindow::on_actionRename_activated() {
+void MainWindow::on_actionRename_triggered() {
 	Q_FOREACH(NodeItem *item, scene->filterNodes(scene->selectedItems())) {
 		NodeItem *nitem = static_cast<NodeItem *>(item);
 		RenameNodeDialog rn(nitem, scene->getNodeNames(), this);
@@ -597,32 +597,32 @@ void MainWindow::incVerticalDistance(double inc) {
 	}
 }
 
-void MainWindow::on_actionIncrease_distance_activated() {
+void MainWindow::on_actionIncrease_distance_triggered() {
 	incVerticalDistance(1);
 }
 
-void MainWindow::on_actionDecrease_distance_activated() {
+void MainWindow::on_actionDecrease_distance_triggered() {
 	incVerticalDistance(-1);
 }
 
-void MainWindow::on_actionSelect_all_activated() {
+void MainWindow::on_actionSelect_all_triggered() {
 	Q_FOREACH(QGraphicsItem *item, scene->items()) {
 		item->setSelected(true);
 	}
 }
 
-void MainWindow::on_action_About_activated() {
+void MainWindow::on_action_About_triggered() {
 	QDialog dialog(this);
 	Ui::AboutDialog d;
 	d.setupUi(&dialog);
 	dialog.exec();
 }
 
-void MainWindow::on_actionAuto_layout_activated() {
+void MainWindow::on_actionAuto_layout_triggered() {
 #ifdef WITH_AUTOLAYOUT
 	AutoLayout a(scene);
 	a.layout();
-	on_actionZoom_reset_activated();
+	on_actionZoom_reset_triggered();
 #else
 	QMessageBox::critical(0, "autolayout disabled", "Autolayout support is disabled for this build");
 #endif

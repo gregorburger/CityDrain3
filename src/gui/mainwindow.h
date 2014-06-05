@@ -70,40 +70,40 @@ private:
 	void incHorizontalDistance(double inc);
 
 public Q_SLOTS:
-	void on_actionAdd_Plugin_activated();
-	void on_actionNewSimulation_activated();
-	void on_actionSave_Simulation_activated();
-	void on_actionSave_as_activated();
+	void on_actionAdd_Plugin_triggered();
+	void on_actionNewSimulation_triggered();
+	void on_actionSave_Simulation_triggered();
+void on_actionSave_as_triggered();
 	void on_runButton_clicked();
 	void on_stopButton_clicked();
-	void on_actionAdd_Python_Module_activated();
-	void on_action_exit_activated();
-	void on_action_open_activated();
-	void on_actionClose_activated();
-	void on_actionZoom_in_activated();
-	void on_actionZoom_out_activated();
-	void on_actionZoom_reset_activated();
-	void on_actionExport_to_pdf_activated();
-	void on_actionSelect_all_activated();
+	void on_actionAdd_Python_Module_triggered();
+	void on_action_exit_triggered();
+	void on_action_open_triggered();
+	void on_actionClose_triggered();
+	void on_actionZoom_in_triggered();
+	void on_actionZoom_out_triggered();
+	void on_actionZoom_reset_triggered();
+	void on_actionExport_to_pdf_triggered();
+	void on_actionSelect_all_triggered();
 
 	//edit stuff
-	void on_actionFind_node_activated();
-	void on_actionPaste_activated();
-	void on_actionCopy_activated();
-	void on_action_delete_activated();
-	void on_actionRedo_activated();
-	void on_actionUndo_activated();
-	void on_actionRename_activated();
-	void on_actionIncrease_distance_activated();
-	void on_actionDecrease_distance_activated();
-	void on_actionAuto_layout_activated();
+	void on_actionFind_node_triggered();
+	void on_actionPaste_triggered();
+	void on_actionCopy_triggered();
+	void on_action_delete_triggered();
+	void on_actionRedo_triggered();
+	void on_actionUndo_triggered();
+	void on_actionRename_triggered();
+	void on_actionIncrease_distance_triggered();
+	void on_actionDecrease_distance_triggered();
+	void on_actionAuto_layout_triggered();
 
 	//align stuff
-	void on_actionHorizontal_center_align_activated();
-	void on_actionAlign_vertically_center_activated();
+	void on_actionHorizontal_center_align_triggered();
+	void on_actionAlign_vertically_center_triggered();
 
 	//help stuff
-	void on_action_About_activated();
+	void on_action_About_triggered();
 
 	void start_stop_dateTimeChanged(const QDateTime &date);
 	void dt_valueChanged(int value);
