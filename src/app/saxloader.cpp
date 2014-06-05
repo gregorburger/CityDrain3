@@ -204,7 +204,7 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		consumed = true;
 	}
 	if (!consumed) {
-		Logger(Warning) << "not used xml elemetn" << lname.toStdString();
+		Logger(Warning) << "not used xml element" << lname.toStdString();
 	}
 	cd3assert(consumed, str(format("not used element: %1%") % lname.toStdString()));
 	return consumed;
