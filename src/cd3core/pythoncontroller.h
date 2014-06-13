@@ -4,7 +4,9 @@
 #include "icontroller.h"
 #include <Python.h>
 
-class PythonController : public IController {
+#include <cd3globals.h>
+
+class CD3_PUBLIC PythonController : public IController {
 public:
 	PythonController(const std::string &script_path);
 	virtual ~PythonController();
