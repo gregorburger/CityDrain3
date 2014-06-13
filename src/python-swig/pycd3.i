@@ -580,7 +580,6 @@ public:
 	virtual ~ISimulation();
 	virtual const char *getClassName() const = 0;
 	virtual int run(ptime time, int dt) = 0;
-	void callme();
 
 	virtual IModel *getModel() const;
 };
