@@ -1,6 +1,8 @@
 #ifndef PYTHONCONTROLLER_H
 #define PYTHONCONTROLLER_H
 
+#ifndef PYTHON_DISABLED
+
 #include "icontroller.h"
 #include <Python.h>
 
@@ -17,5 +19,7 @@ private:
 	PyObject *ts_after_cb, *ts_before_cb;
 
 };
+
+#endif // PYTHON_DISABLED
 
 #endif // PYTHONCONTROLLER_H

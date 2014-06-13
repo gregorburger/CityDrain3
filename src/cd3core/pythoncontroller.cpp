@@ -1,4 +1,5 @@
 #include "pythoncontroller.h"
+#ifndef PYTHON_DISABLED
 #include <stdio.h>
 #include <boost/filesystem.hpp>
 #include <cd3assert.h>
@@ -73,3 +74,4 @@ void PythonController::before_timestep(ISimulation *sim, boost::posix_time::ptim
 		}
 	}
 }
+#endif //PYTHON_DISABLED
