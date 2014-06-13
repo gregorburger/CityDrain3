@@ -40,6 +40,9 @@ using namespace std;
 #include <simulation.h>
 #include <flow.h>
 #include <boost/foreach.hpp>
+#ifndef PYTHON_DISABLED
+#include <pythoncontroller.h>
+#endif
 
 struct SaxLoaderPriv {
 	NodeRegistry *node_registry;
@@ -202,6 +205,15 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 	}
 	if (lname == "gui" || lname == "nodeposition") { //used for gui
 		consumed = true;
+	}
+	if (lname == "controller") {
+#ifndef PYTHON_DISABLED
+		simulation->addController(new PythonController(atts.value("path").toStdString()));
+		consumed = true;
+#else
+		Logger(Error) << "python support is disabled";
+		consumed = true;
+#endif
 	}
 	if (!consumed) {
 		Logger(Warning) << "not used xml element" << lname.toStdString();

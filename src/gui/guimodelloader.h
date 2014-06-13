@@ -41,10 +41,11 @@ public:
 	QPointF getNodePosition(QString id) const;
 	QStringList getPlugins() const { return plugins; }
 	QStringList getPythonModules() const { return python_modules; }
+	QStringList getPythonController() const { return python_controller; }
 	QSet<Node *> getFailedNodes() const { return failed_nodes; }
 private:
 	QMap<QString, QPointF> node_positions;
-	QStringList plugins, python_modules;
+	QStringList plugins, python_modules, python_controller;
 	QSet<Node *> failed_nodes;
 };
 

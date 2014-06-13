@@ -25,9 +25,14 @@
 #include "log.h"
 #include "logger.h"
 #include "node.h"
+#include "icontroller.h"
 
 #include <QTime>
 #include <boost/foreach.hpp>
+
+#ifndef PYTHON_DISABLED
+#include <boost/filesystem.hpp>
+#endif
 
 ISimulation::ISimulation()
  : running(true) {
@@ -77,9 +82,18 @@ void ISimulation::start(ptime time) {
 	current_time = time + seconds(sim_param.dt);
 	int dt;
 	while (running && current_time <= sim_param.stop) {
+		BOOST_FOREACH(IController *c, controllers) {
+			c->before_timestep(this, current_time);
+		}
+
 		timestep_before(this, current_time);
 		dt = run(current_time, sim_param.dt);
 		timestep_after(this, current_time);
+
+		BOOST_FOREACH(IController *c, controllers) {
+			c->after_timestep(this, current_time);
+		}
+
 		current_time = current_time + seconds(dt);
 	}
 
@@ -115,3 +129,6 @@ NodeConnection *ISimulation::createConnection(Node * source,
 	return new NodeConnection(source, soport, sink, siport);
 }
 
+void ISimulation::addController(IController *controller) {
+	this->controllers.push_back(controller);
+}

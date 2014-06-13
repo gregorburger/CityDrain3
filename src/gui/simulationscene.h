@@ -133,7 +133,7 @@ private:
 	QMultiMap<QString, ConnectionItem*> connections_of_node;
 	QList<ConnectionItem *> connection_items;
 	QString model_file_name;
-	QStringList plugins, python_modules;
+	QStringList plugins, python_modules, python_controller;
 	bool unsaved;
 	QList<CopyState> copied_nodes;
 	QPointF current_mouse;

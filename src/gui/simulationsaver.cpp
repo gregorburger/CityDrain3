@@ -36,8 +36,12 @@
 SimulationSaver::SimulationSaver(SimulationScene *scene,
 								 QString path,
 								 QStringList plugins,
-								 QStringList python_modules)
-	: scene(scene), path(path), plugins(plugins), python_modules(python_modules) {
+								 QStringList python_modules,
+								 QStringList python_controller)
+	: scene(scene), path(path),
+	  plugins(plugins),
+	  python_modules(python_modules),
+	  python_controller(python_controller) {
 	out = new QFile(path);
 	out->open(QIODevice::WriteOnly);
 	writer = new QXmlStreamWriter(out);
@@ -87,6 +91,7 @@ inline
 QString tos(std::string s) {
 	return QString::fromStdString(s);
 }
+
 void SimulationSaver::saveSimulation(ISimulation *sim) {
 	writer->writeStartElement("simulation");
 
@@ -96,10 +101,16 @@ void SimulationSaver::saveSimulation(ISimulation *sim) {
 	writer->writeAttribute("start", tos(sim->getSimulationParameters().start));
 	writer->writeAttribute("stop", tos(sim->getSimulationParameters().stop));
 	writer->writeAttribute("dt", tos(sim->getSimulationParameters().dt));
+	writer->writeEndElement(); //time
 
 	saveFlowDefinition();
 
-	writer->writeEndElement(); //time
+	BOOST_FOREACH(QString controller, python_controller) {
+		writer->writeStartElement("controller");
+		writer->writeAttribute("path", controller);
+		writer->writeEndElement();
+	}
+
 	writer->writeEndElement(); //simulation
 }
 

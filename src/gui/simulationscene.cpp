@@ -121,6 +121,7 @@ void SimulationScene::unload() {
 	connections_of_node.clear();
 	plugins.clear();
 	python_modules.clear();
+	python_controller.clear();
 	model_file_name = "";
 	clear();
 	delete sim_reg;
@@ -139,7 +140,7 @@ void SimulationScene::unload() {
 void SimulationScene::save(QString path) {
 	model_file_name = path;
 	Q_ASSERT(model_file_name != "");
-	SimulationSaver ss(this, model_file_name, plugins, python_modules);
+	SimulationSaver ss(this, model_file_name, plugins, python_modules, python_controller);
 	ss.save();
 	Q_EMIT(saved());
 }
@@ -177,6 +178,7 @@ void SimulationScene::load(QString model_file_name) {
 	}
 	plugins << gml.getPlugins();
 	python_modules << gml.getPythonModules();
+	python_controller << gml.getPythonController();
 	////update();
 	Q_EMIT(loaded());
 	Q_EMIT(nodesRegistered());

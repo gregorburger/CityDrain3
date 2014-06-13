@@ -20,13 +20,13 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#define USE_HASH
+//#define USE_HASH
 
 #include <string>
 #include <vector>
 #ifdef USE_HASH
-#include <boost/unordered/unordered_map.hpp>
-#include <boost/unordered/unordered_set.hpp>
+#include <unordered_map>
+#include <unordered_set>
 #else
 #include <map>
 #include <set>

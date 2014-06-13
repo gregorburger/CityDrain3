@@ -25,9 +25,11 @@ start a simulation from within a python script."
 %module(directors="1", allprotected="1", docstring=DOCSTRING) pycd3
 %feature("director");
 %{
+#include <simulation.h>
 #include <nodefactory.h>
 #include <noderegistry.h>
 #include <node.h>
+#include <imodel.h>
 #include <flow.h>
 #include <iostream>
 #include <string>
@@ -47,6 +49,7 @@ public:
 %include std_vector.i
 %include std_string.i
 %include std_map.i
+%include std_set.i
 
 //%feature("autodoc", "docstring");
 
@@ -62,6 +65,8 @@ namespace std {
 	%template(IntegerVector) vector<int>;
 	%template(StringVector) vector<std::string>;
 	%template(FlowVector) vector<Flow *>;
+	%template(NodeVector) vector<Node *>;
+	%template(NodeSet) set<Node *>;
 };
 
 %exception {
@@ -316,6 +321,19 @@ public:
 	virtual void start();
 	virtual void stop();
 	virtual const char *getClassName() const = 0;
+	std::string getId() const;
+
+	template<class T>
+	void setParameter(const std::string &name, T param);
+
+	template<class T>
+	T *getParameter(const std::string &name) const;
+
+	template<class T>
+	T *getState(const std::string &name);
+
+	template<class T>
+	void setState(const std::string &name, T &state);
 
 	%pythoncode %{
 	def getClassName(self):
@@ -392,6 +410,39 @@ protected:
 };
 
 %extend Node {
+	%template(setIntParameter)	setParameter<int>;
+	%template(setDoubleParameter)	setParameter<double>;
+	%template(setStringParameter)	setParameter<std::string>;
+	%template(setIntVectorParameter)	setParameter<std::vector<int> >;
+	%template(setDoubleVectorParameter)	setParameter<std::vector<double> >;
+	%template(setStringVectorParameter)	setParameter<std::vector<std::string> >;
+	%template(setParameter)	setParameter<Flow>;
+
+	%template(getIntParameter)			getParameter<int>;
+	%template(getDoubleParameter)		getParameter<double>;
+	%template(getStringParameter)		getParameter<std::string>;
+	%template(getIntVectorParameter)	getParameter<std::vector<int> >;
+	%template(getDoubleVectorParameter)	getParameter<std::vector<double> >;
+	%template(getStringVectorParameter)	getParameter<std::vector<std::string> >;
+	%template(getFlowParameter)			getParameter<Flow>;
+
+	%template(setIntState)	setState<int>;
+	%template(setDoubleState)	setState<double>;
+	%template(setStringState)	setState<std::string>;
+	%template(setIntVectorState)	setState<std::vector<int> >;
+	%template(setDoubleVectorState)	setState<std::vector<double> >;
+	%template(setStringVectorState)	setState<std::vector<std::string> >;
+	%template(setFlowState)	setState<Flow>;
+
+	%template(getIntState)		getState<int>;
+	%template(getDoubleState)	getState<double>;
+	%template(getStringState)	getState<std::string>;
+	%template(getIntVectorState)		getState<std::vector<int> >;
+	%template(getDoubleVectorState)	getState<std::vector<double> >;
+	%template(getStringVectorState)	getState<std::vector<std::string> >;
+	%template(getFlowState)		getState<Flow>;
+
+
 	NodeParameter &intern_addParameter(std::string name, std::vector<double> *v) {
 		return $self->addParameter(name, v);
 	}
@@ -486,6 +537,52 @@ public:
 
 	Node *createNode(const std::string &name) const;
 	bool contains(const std::string &name) const;
+};
+
+class IModel {
+public:
+	virtual ~IModel(){}
+
+	virtual std::string serialize() = 0;
+	virtual void deserialize(const std::string &serialid) = 0;
+
+	virtual void addNode(const std::string &id, Node *node) = 0;
+	virtual bool renameNode(Node *node, const std::string &new_id) = 0;
+	virtual void removeNode(Node *node) = 0;
+	virtual void addConnection(NodeConnection *con) = 0;
+	virtual void removeConnection(NodeConnection *con) = 0;
+
+	virtual std::set<Node *> initNodes(const SimulationParameters &) = 0;
+	virtual void deinitNodes() = 0;
+
+	virtual std::set<Node *> getSourceNodes() = 0;
+	virtual std::set<Node *> getSinkNodes() = 0;
+
+	virtual std::vector<NodeConnection *> forwardConnection(Node *n) = 0;
+	virtual std::vector<NodeConnection *> backwardConnection(Node *n) = 0;
+	virtual std::map<Node *, int> getForwardCounts() const = 0;
+	virtual std::map<Node *, int> getBackwardCounts() const = 0;
+
+	virtual const std::set<Node *> *getNodes() const = 0;
+	virtual const std::set<NodeConnection *> *getConnections() const = 0;
+	virtual std::map<string, Node *> getNamesAndNodes() const = 0;
+	virtual Node *getNode(const std::string &name) const = 0;
+
+	virtual bool connected() const = 0;
+	virtual void checkModel() const = 0;
+	virtual bool cycleFree() const = 0;
+	virtual std::set<Node *> cycleNodes() const = 0;
+};
+
+class ISimulation {
+public:
+	ISimulation();
+	virtual ~ISimulation();
+	virtual const char *getClassName() const = 0;
+	virtual int run(ptime time, int dt) = 0;
+	void callme();
+
+	virtual IModel *getModel() const;
 };
 
 %pythoncode %{
