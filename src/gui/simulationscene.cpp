@@ -276,8 +276,10 @@ void SimulationScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 void SimulationScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
 	current_mouse = event->scenePos();
 	if (connection_start) {
-		current_connection->setSink(event->scenePos());
-		update();
+		if (current_connection) {
+			current_connection->setSink(event->scenePos());
+			update();
+		}
 	}
 	QGraphicsScene::mouseMoveEvent(event);
 }
