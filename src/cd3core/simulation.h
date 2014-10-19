@@ -20,7 +20,7 @@
 #ifndef SIMULATION_H
 #define SIMULATION_H
 
-#include <boost/signals.hpp>
+#include <boost/signals2.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/date_time.hpp>
 using namespace boost;
@@ -86,8 +86,8 @@ public:
 											 Node *sink,
 											 const std::string &siport) const;
 
-	boost::signal2<void, ISimulation *, ptime> timestep_after;
-	boost::signal2<void, ISimulation *, ptime> timestep_before;
+	boost::signals2::signal<void (ISimulation *, ptime)> timestep_after;
+	boost::signals2::signal<void (ISimulation *, ptime)> timestep_before;
 
 protected:
 	SimulationParameters sim_param;

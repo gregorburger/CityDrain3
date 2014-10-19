@@ -22,7 +22,7 @@
 
 #include <QThread>
 #include "timestephandler.h"
-#include <boost/signals.hpp>
+#include <boost/signals2.hpp>
 #include <pythonexception.h>
 
 class ISimulation;
@@ -39,7 +39,7 @@ public:
 	inline bool hasFailed() const { return failed; }
 	PythonException exception;
 private:
-	boost::signals::connection c;
+	boost::signals2::connection c;
 	ISimulation *simulation;
 	bool failed;
 };

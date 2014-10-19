@@ -39,11 +39,10 @@ River::River() {
 	X = 0.1;
 	N = 11;
 	addParameter(ADD_PARAMETERS(K))
-			.setUnit("s");
+			.setUnit("K per subreach in s");
 	addParameter(ADD_PARAMETERS(X));
 	addParameter(ADD_PARAMETERS(N));
 
-	/* Reactor Paramters */
 	nc = Flow::countUnits(Flow::concentration);
 	conc_formula.resize(nc);
 	formula_name.resize(nc);
@@ -82,7 +81,7 @@ bool River::init(ptime start, ptime end, int dt) {
 	for (int i = 0; i < N; i++) {
 		V.push_back(new Flow());
 		addState(str(format("V[%1%]") % i), V[i]);
-		reactors.push_back(new Reactor(*V[i], true));
+		reactors.push_back(new Reactor(*V[i], true));   // Reactor block defined with variable volume (true) - pointer to V[i]
 		reactors[i]->nstep = nstep;
 		reactors[i]->init_v = init_v;
 		if (!reactors[i]->init(dt, constants, conc_formula)) {
@@ -99,16 +98,32 @@ int River::f(ptime time, int dt) {
 	(void) time;
 	double C_x, C_y;
 	setMuskParam(&C_x, &C_y, dt);
-
 	Flow tmp = in;
 
 	for (int i = 0; i < N; i++) {
-		Flow tmp_in = tmp;
-		tmp = FlowFuns::route_sewer(tmp, V[i], C_x, C_y, dt);
-		reactors[i]->react(tmp_in, dt);
+
+		// Muskingum routing
+		// tmp = Vector inflow
+		// *(V[i])= Vector subreach
+		// Calculation of hydraulics with timestep dt >> C_x and C_y
+		double inqe = tmp[0];
+		double volqe = (*(V[i]))[0];
+		double outqe = (inqe / dt * C_x + volqe * C_y) * dt;
+		double newvolqe = (inqe - outqe) + volqe;
+		double dvolqe = (inqe - outqe);
+
+		// Reactor with variable Volume
+		reactors[i]->react_dV(tmp, dvolqe,dt);
+
+		// Write Flow and Concentration back in tmp for next subreach inflow
+		tmp = (*(V[i]));
+		tmp[0] = outqe;
+
+		// Store newvolume in V[i] - just safety/should be OK anyway
+		(*(V[i]))[0]=newvolqe;
+
 	}
 	out = tmp;
-
 	return dt;
 }
 

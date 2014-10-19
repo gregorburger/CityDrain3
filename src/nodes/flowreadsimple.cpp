@@ -17,36 +17,41 @@
  * Street, Fifth Floor, Boston, MA 02110-1301, USA.
  **/
 
-#include "ixxrainread_v2.h"
+#include "flowreadsimple.h"
 #include <QDateTime>
 #include <QFile>
 #include <QRegExp>
 #include <QStringList>
+//#include <iostream>
 
-struct IxxRainRead_v2_Private {
+struct FlowReadSimple_Private {
 	QDateTime first, last;
 	QFile file;
 };
 
-typedef std::pair<QDateTime, double> IxxEntry;
+typedef std::pair<QDateTime, std::vector<double> > IxxEntry;
 
-CD3_DECLARE_NODE_NAME(IxxRainRead_v2)
+CD3_DECLARE_NODE_NAME(FlowReadSimple)
 
-IxxRainRead_v2::IxxRainRead_v2() {
-	data = new IxxRainRead_v2_Private();
+FlowReadSimple::FlowReadSimple() {
+	data = new FlowReadSimple_Private();
 	addOutPort(ADD_PARAMETERS(out));
 	addParameter(ADD_PARAMETERS(rain_file));
 }
 
-IxxRainRead_v2::~IxxRainRead_v2() {
+FlowReadSimple::~FlowReadSimple() {
 	delete data;
 }
 
 static
 IxxEntry parseIxxLine(QString line) {
-	QStringList parts = line.split(QRegExp("\\s+"));
+	QStringList parts = line.split(QRegExp("\\s+"), QString::SkipEmptyParts);
 	QDateTime dt = QDateTime::fromString(parts[0] + " " + parts[1], "dd.MM.yyyy HH:mm:ss");
-	double value = parts[2].toDouble();
+	std::vector<double> value;
+	for (int i = 2; i < parts.size(); i++) {
+		value.push_back(parts[i].toDouble());
+	}
+
 	return IxxEntry(dt, value);
 }
 
@@ -59,7 +64,9 @@ static QDateTime pttoqt(const boost::posix_time::ptime &pt) {
 	return QDateTime(qdate, qtime);
 }
 
-bool IxxRainRead_v2::init(ptime start, ptime end, int dt) {
+bool FlowReadSimple::init(ptime start, ptime end, int dt) {
+	// Foollowing are test routines for the file
+	// Test if rainfile exists and can be opened
 	QString q_rain_file = QString::fromStdString(rain_file);
 	if (!QFile::exists(q_rain_file)) {
 		Logger(Error) << "rain_file does not exist";
@@ -71,6 +78,7 @@ bool IxxRainRead_v2::init(ptime start, ptime end, int dt) {
 		return false;
 	}
 
+	// Test if rainfile has correct dt spacing == only tested for the first 2 lines
 	QString line = file.readLine();
 	data->first = parseIxxLine(line).first;
 	line = file.readLine();
@@ -91,7 +99,8 @@ bool IxxRainRead_v2::init(ptime start, ptime end, int dt) {
 		return false;
 	}
 
-	while (file.canReadLine()) {
+	// Go to last line and read last date >> check
+	while(!(file.atEnd())) {
 		line = file.readLine();
 	}
 	data->last = parseIxxLine(line).first;
@@ -105,7 +114,7 @@ bool IxxRainRead_v2::init(ptime start, ptime end, int dt) {
 	return true;
 }
 
-void IxxRainRead_v2::start() {
+void FlowReadSimple::start() {
 	data->file.setFileName(QString::fromStdString(rain_file));
 	if (!data->file.open(QIODevice::ReadOnly)) {
 		Logger(Error) << "could not open rain file";
@@ -113,11 +122,11 @@ void IxxRainRead_v2::start() {
 	data->file.seek(0);
 }
 
-void IxxRainRead_v2::stop() {
+void FlowReadSimple::stop() {
 	data->file.close();
 }
 
-int IxxRainRead_v2::f(ptime _time, int dt) {
+int FlowReadSimple::f(ptime _time, int dt) {
 	QDateTime time = pttoqt(_time);
 
 	if (time <= data->first || time >= data->last) {
@@ -129,9 +138,15 @@ int IxxRainRead_v2::f(ptime _time, int dt) {
 
 	IxxEntry entry = parseIxxLine(data->file.readLine());
 
-	cd3assert(time > entry.first && entry.first.secsTo(time) == dt, "time slipped through a dark worm hole");
 
-	out[0] = entry.second; //do the actual work ;-)
+	//eat up all entry in file before simulation time
+	while (entry.first < time) {
+		entry = parseIxxLine(data->file.readLine());
+	}
+
+	for (int i = 0; i < std::min(entry.second.size(), out.size()); i++) {
+		out[i] = entry.second[i]; //do the actual work ;-)
+	}
 
 	return dt;
 }

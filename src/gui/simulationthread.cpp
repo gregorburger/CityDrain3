@@ -21,12 +21,12 @@
 #include <simulation.h>
 #include <imodel.h>
 #include <boost/bind.hpp>
-#include <boost/signals.hpp>
+#include <boost/signals2.hpp>
 #include <pythonexception.h>
 #include <logger.h>
 
 using namespace boost;
-using namespace boost::signals;
+using namespace boost::signals2;
 
 SimulationThread::SimulationThread()
 	: handler(new TimeStepHandler()), simulation(0), failed(false) {

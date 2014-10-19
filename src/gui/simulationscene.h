@@ -70,6 +70,7 @@ public:
 	inline ISimulation *getSimulation() const { return simulation; }
 	inline MapBasedModel *getModel() const { return model; }
 	inline QMap<QString, NodeItem*> getNodeItems() const { return node_items; }
+	inline QList<ConnectionItem*> getConnectionsItems() const { return connection_items; }
 	inline QList<ConnectionItem*> getConnectionsOf(QString node_id) { return connections_of_node.values(node_id); }
 
 	inline QString getModelFileName() const { return model_file_name; }
