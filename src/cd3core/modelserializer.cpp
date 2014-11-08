@@ -118,10 +118,10 @@ void ModelSerializer::deserialize(ptime time) {
 
 Deserializer::Deserializer(IModel *m)
  :	model(m), current(0) {
-    mapper = IStateSerializer::standard;
-    in_state_node = false;
-    in_inport = false;
-    in_outport = false;
+	mapper = IStateSerializer::standard;
+	in_state_node = false;
+	in_inport = false;
+	in_outport = false;
 }
 
 Deserializer::~Deserializer() {
