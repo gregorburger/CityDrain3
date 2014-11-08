@@ -36,7 +36,7 @@ CD3_DECLARE_SIMULATION_NAME(PipelinedSimulation)
 
 struct PipeSimPrivate {
 	node_set_type		nodes;
-	unordered_map<Node *, ptime>	state;
+	std::map<Node *, ptime>	state;
 	QReadWriteLock			state_lock;
 	IModel				*model; //StateWorker needs it
 };

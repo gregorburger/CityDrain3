@@ -25,7 +25,7 @@
 #include <set>
 #include <cd3globals.h>
 
-typedef unordered_map<Node *, std::vector<NodeConnection *> > connection_type;
+typedef std::map<Node *, std::vector<NodeConnection *> > connection_type;
 
 class CD3_PUBLIC MapBasedModel : public IModel
 {
@@ -86,7 +86,7 @@ private:
 	name_node_map names_nodes;
 	connection_type fwd_connections;
 	connection_type bwd_connections;
-	unordered_set<NodeConnection*> all_connections;
+	std::set<NodeConnection*> all_connections;
 };
 
 #endif // MAPBASEMODEL_H
