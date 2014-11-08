@@ -42,7 +42,11 @@ void NodeRegistry::addToPythonPath(std::string p) {
 }
 #endif
 
+extern "C" void registerNodes(NodeRegistry *registry);
+
 NodeRegistry::NodeRegistry() {
+	Logger(Debug) << "registering builtin Nodes";
+	registerNodes(this);
 }
 
 typedef std::pair<std::string, INodeFactory *> rn_ptype;

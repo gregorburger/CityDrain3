@@ -27,7 +27,11 @@
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
 
+extern "C" void registerSimulations(SimulationRegistry *reg);
+
 SimulationRegistry::SimulationRegistry() {
+	Logger(Debug) << "registering builtin Simulations";
+	registerSimulations(this);
 }
 
 SimulationRegistry::~SimulationRegistry() {

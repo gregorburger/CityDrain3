@@ -103,11 +103,9 @@ void SimulationScene::_new() {
 		node_reg = new NodeRegistry();
 		simulation = ns.createSimulation();
 		simulation->setModel(model);
-		if (ns.ui->defaultNodesCheckBox->isChecked()) {
-			addPlugin("nodes");
-		}
 		current_connection = 0;
 		connection_start = 0;
+		Q_EMIT(nodesRegistered());
 		Q_EMIT(loaded());
 	} else {
 		delete sim_reg;
