@@ -24,6 +24,7 @@
 #include <ostream>
 
 #include <cd3globals.h>
+#include "log.h"
 
 class CD3_PUBLIC LSEndl {};
 
@@ -32,6 +33,7 @@ class CD3_PUBLIC LogSink
 public:
 	virtual ~LogSink() {}
 	virtual void close() = 0;
+	virtual LogSink &operator<<(LogLevel level) = 0;
 	virtual LogSink &operator<<(const std::string &string) = 0;
 	virtual LogSink &operator<<(const char *string) = 0;
 	virtual LogSink &operator<<(int i) = 0;
@@ -43,6 +45,7 @@ public:
 	OStreamLogSink(std::ostream &ostream);
 
 	void close() {}
+	LogSink &operator<<(LogLevel level);
 	LogSink &operator<<(const std::string &string);
 	LogSink &operator<<(const char *string);
 	LogSink &operator<<(int i);

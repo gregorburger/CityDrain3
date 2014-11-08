@@ -22,10 +22,15 @@
 #include <sstream>
 #include <log.h>
 
-GuiLogSink::GuiLogSink() {
+GuiLogSink::GuiLogSink(QPlainTextEdit *widget) : logWidget(widget) {
 }
 
 GuiLogSink::~GuiLogSink() {
+}
+
+LogSink &GuiLogSink::operator<<(LogLevel level) {
+	this->level = level;
+	return *this;
 }
 
 LogSink &GuiLogSink::operator<<(const std::string &string) {
@@ -44,7 +49,28 @@ LogSink &GuiLogSink::operator<<(int i) {
 }
 
 LogSink &GuiLogSink::operator<<(LSEndl i) {
-	Q_EMIT newLogLine(buf);
+	QTextCharFormat cf = logWidget->currentCharFormat();
+	QColor c = Qt::black;
+	switch (level) {
+	case Debug:
+		c = Qt::gray;
+		break;
+	case Warning:
+		c = Qt::magenta;
+		break;
+	case Error:
+		c = Qt::red;
+		break;
+	case Standard:
+		c = Qt::black;
+		break;
+	default:
+		c = Qt::black;
+		break;
+	}
+	cf.setForeground(c);
+	logWidget->setCurrentCharFormat(cf);
+	logWidget->appendPlainText(buf);
 	buf.clear();
 	return *this;
 }

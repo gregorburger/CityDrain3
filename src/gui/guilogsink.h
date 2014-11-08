@@ -23,24 +23,26 @@
 #include <logsink.h>
 #include <QObject>
 #include <QString>
+class QPlainTextEdit;
 
 class GuiLogSink : public QObject, public LogSink {
 	Q_OBJECT
 public:
-	GuiLogSink();
+	GuiLogSink(QPlainTextEdit *logWidget);
 	virtual ~GuiLogSink();
 
 	void close() {};
 
+	LogSink &operator<<(LogLevel level);
 	LogSink &operator<<(const std::string &string);
 	LogSink &operator<<(const char *string);
 	LogSink &operator<<(int i);
 	LogSink &operator<<(LSEndl i);
 
-Q_SIGNALS:
-	void newLogLine(const QString &line);
 private:
 	QString buf;
+	QPlainTextEdit *logWidget;
+	LogLevel level;
 };
 
 #endif // GUILOGSINK_H
