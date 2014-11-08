@@ -193,12 +193,18 @@ public:
 	template<class T>
 	void setParameter(const std::string &name,
 					  T param) {
-		cd3assert(parameters.find(name) != parameters.end(),
-				  str(format("no parameter with name %1%") % name));
+		if (parameters.find(name) == parameters.end()) {
+			Logger(Error) << str(format("no parameter with name %1%") % name);
+			return;
+		}
+
 		NodeParameter *p = parameters[name];
 
-		cd3assert(p->type == cd3::TypeInfo(typeid(T)),
-				  str(format("wrong type for parameter %1%") % name));
+		if (p->type != cd3::TypeInfo(typeid(T))) {
+			Logger(Error) << str(format("wrong type for parameter %1%") % name);
+			return;
+		}
+
 		T *vp = static_cast<T*>(p->value);
 		cd3assert(vp, str(format("parameter %1% null") % name));
 		Logger(Debug) << this << "setParameter(" << name << ")";
