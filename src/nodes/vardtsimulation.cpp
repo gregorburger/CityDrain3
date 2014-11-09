@@ -29,11 +29,9 @@
 #include <boost/foreach.hpp>
 #include <boost/tuple/tuple_comparison.hpp>
 
-using namespace boost::tuples;
-
 CD3_DECLARE_SIMULATION_NAME(VarDTSimulation)
 
-typedef tuple<Node *, std::string, Node *, std::string> con_type;
+typedef boost::tuple<Node *, std::string, Node *, std::string> con_type;
 typedef std::map<con_type, FlowBuffer *> buf_type;
 
 struct VarDTPriv {

@@ -40,6 +40,9 @@ using namespace std;
 #include <simulation.h>
 #include <flow.h>
 #include <boost/foreach.hpp>
+#ifndef PYTHON_DISABLED
+#include <pythoncontroller.h>
+#endif
 
 struct SaxLoaderPriv {
 	NodeRegistry *node_registry;
@@ -55,7 +58,7 @@ SaxLoader::SaxLoader(IModel *model) : delete_node_reg(true), delete_sim_reg(true
 	pd->node_registry = new NodeRegistry();
 	pd->sim_registry = new SimulationRegistry();
 	this->model = model;
-	this->simulation =0;
+	this->simulation = 0;
 }
 
 SaxLoader::SaxLoader(IModel *model,
@@ -66,7 +69,7 @@ SaxLoader::SaxLoader(IModel *model,
 	pd->node_registry = nr;
 	pd->sim_registry = sr;
 	this->model = model;
-	this->simulation =0;
+	this->simulation = 0;
 }
 
 SaxLoader::~SaxLoader() {
@@ -203,8 +206,17 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 	if (lname == "gui" || lname == "nodeposition") { //used for gui
 		consumed = true;
 	}
+	if (lname == "controller") {
+#ifndef PYTHON_DISABLED
+		simulation->addController(new PythonController(atts.value("path").toStdString()));
+		consumed = true;
+#else
+		Logger(Error) << "python support is disabled";
+		consumed = true;
+#endif
+	}
 	if (!consumed) {
-		Logger(Warning) << "not used xml elemetn" << lname.toStdString();
+		Logger(Warning) << "not used xml element" << lname.toStdString();
 	}
 	cd3assert(consumed, str(format("not used element: %1%") % lname.toStdString()));
 	return consumed;

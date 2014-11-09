@@ -42,7 +42,11 @@ void NodeRegistry::addToPythonPath(std::string p) {
 }
 #endif
 
+extern "C" void registerNodes(NodeRegistry *registry);
+
 NodeRegistry::NodeRegistry() {
+	Logger(Debug) << "registering builtin Nodes";
+	registerNodes(this);
 }
 
 typedef std::pair<std::string, INodeFactory *> rn_ptype;
@@ -65,9 +69,16 @@ bool NodeRegistry::addNodeFactory(INodeFactory *factory) {
 void NodeRegistry::addNativePlugin(const std::string &plugin_path) {
 	QLibrary l(QString::fromStdString(plugin_path));
 	bool loaded = l.load();
-	cd3assert(loaded, str(format("could not load plugin %1%: %2%")
-						  % plugin_path
-						  % l.errorString().toStdString()));
+	if (!loaded && plugin_path == "nodes") {
+		Logger(Warning) << "ignoring native plugin \"nodes\" because it is loaded as builtin";
+		return;
+	}
+	if (!loaded) {
+		Logger(Error) << str(format("could not load plugin %1%: %2%")
+							  % plugin_path
+							  % l.errorString().toStdString());
+		return;
+	}
 	regNodeFunProto regNodeFun = (regNodeFunProto) l.resolve("registerNodes");
 	if (regNodeFun) {
 		regNodeFun(this);

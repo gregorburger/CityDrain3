@@ -53,6 +53,9 @@ bool GuiModelLoader::startElement(const QString &ns,
 	if (lname == "pythonmodule") {
 		python_modules << atts.value("module");
 	}
+	if (lname == "controller") {
+		python_controller << atts.value("path");
+	}
 
 	return SaxLoader::startElement(ns, lname, qname, atts);
 }

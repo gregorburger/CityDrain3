@@ -23,6 +23,11 @@ OStreamLogSink::OStreamLogSink(std::ostream &ostream) : out(ostream) {
 
 }
 
+LogSink &OStreamLogSink::operator<<(LogLevel level) {
+	(void) level;
+	return *this;
+}
+
 LogSink &OStreamLogSink::operator<<(const std::string &s) {
 	out << s;
 	return *this;

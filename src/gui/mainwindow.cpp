@@ -46,6 +46,7 @@
 #include <QPrinter>
 #include <QSettings>
 #include <QStateMachine>
+#include <QPlainTextEdit>
 #include <boost/foreach.hpp>
 #include <boost/date_time.hpp>
 
@@ -67,9 +68,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->restoreState(s.value("gui/mainwindow/state").toByteArray());
 	this->restoreGeometry(s.value("gui/mainwindow/geometry").toByteArray());
 
-	log_updater = new GuiLogSink();
+	log_updater = new GuiLogSink(ui->logWidget);
 	Log::init(log_updater);
-	ui->logWidget->connect(log_updater, SIGNAL(newLogLine(QString)), SLOT(appendPlainText(QString)), Qt::QueuedConnection);
 	this->connect(scene, SIGNAL(nodesRegistered()), SLOT(pluginsAdded()));
 	this->connect(scene, SIGNAL(changed(QUndoCommand*)), SLOT(simulationChanged(QUndoCommand*)));
 	this->connect(scene, SIGNAL(simulationParametersChanged()), SLOT(updateTimeControls()));
@@ -244,7 +244,7 @@ void MainWindow::changeEvent(QEvent *e) {
 }
 
 void MainWindow::on_actionAdd_Plugin_triggered() {
-        QString plugin = QFileDialog::getOpenFileName(this, "select plugin", ".", "*.so *.dll");
+	QString plugin = QFileDialog::getOpenFileName(this, "select plugin", ".", "*.so *.dll");
 	if (plugin == "")
 		return;
 	scene->addPlugin(plugin);

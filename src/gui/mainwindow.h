@@ -23,6 +23,7 @@
 #include <QMainWindow>
 #include <QObject>
 #include <QUndoStack>
+#include "log.h"
 class QTreeWidgetItem;
 
 namespace Ui {
@@ -73,7 +74,7 @@ public Q_SLOTS:
 	void on_actionAdd_Plugin_triggered();
 	void on_actionNewSimulation_triggered();
 	void on_actionSave_Simulation_triggered();
-void on_actionSave_as_triggered();
+	void on_actionSave_as_triggered();
 	void on_runButton_clicked();
 	void on_stopButton_clicked();
 	void on_actionAdd_Python_Module_triggered();

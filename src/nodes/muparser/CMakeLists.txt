@@ -1,3 +1,3 @@
 file(GLOB SRCS *.cpp)
 
-add_library(muparser ${SRCS})
+add_library(muparser STATIC ${SRCS})

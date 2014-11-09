@@ -65,7 +65,7 @@ private:
 	reg_node_type registered_nodes;
 #ifndef PYTHON_DISABLED
 	static std::vector<std::string> python_paths;
-    static PyObject *main_namespace;
+	static PyObject *main_namespace;
 #endif
 };
 

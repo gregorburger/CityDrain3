@@ -40,8 +40,6 @@ NewSimulationDialog::NewSimulationDialog(SimulationRegistry *registry,
 	ok->setEnabled(false);
 	QStringList list;
 
-	registry->addNativePlugin("nodes");
-
 	BOOST_FOREACH(std::string name, registry->getRegisteredNames()) {
 		list << QString::fromStdString(name);
 	}

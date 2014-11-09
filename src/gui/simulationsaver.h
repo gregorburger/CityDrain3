@@ -41,7 +41,8 @@ public:
 	SimulationSaver(SimulationScene *scene,
 					QString path,
 					QStringList plugins,
-					QStringList python_modules);
+					QStringList python_modules,
+					QStringList python_controller);
 	void setPath(QString path) { this->path = path; }
 	QString getPath() const { return this->path; }
 	virtual ~SimulationSaver();
@@ -59,7 +60,7 @@ private:
 private:
 	SimulationScene *scene;
 	QString path;
-	QStringList plugins, python_modules;
+	QStringList plugins, python_modules, python_controller;
 	QXmlStreamWriter *writer;
 	QFile *out;
 };

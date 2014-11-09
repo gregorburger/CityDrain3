@@ -37,6 +37,8 @@ struct CD3_PUBLIC NodeConnection
 	NodeConnection(Node * source, const std::string &soport,
 				   Node *sink, const std::string &siport);
 
+	virtual ~NodeConnection();
+
 	Node *source, *sink;
 	std::string source_port, sink_port;
 

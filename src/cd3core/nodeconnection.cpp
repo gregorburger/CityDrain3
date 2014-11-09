@@ -30,6 +30,10 @@ NodeConnection::NodeConnection(Node * source, const std::string &soport,
 
 }
 
+NodeConnection::~NodeConnection() {
+
+}
+
 void NodeConnection::push(int dt) {
 	(void) dt;
 	sink->setInPort(sink_port, source->getOutPort(source_port));

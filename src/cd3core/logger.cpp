@@ -28,7 +28,7 @@ Logger::Logger(LogLevel level)
 	dirty = false;
 	this->max = Log::getInstance()->max;
 	if (level >= max) {
-		sink << logLevel() << " " << date() << "|";
+		sink << level << logLevel() << " " << date() << "|";
 		dirty = true;
 	}
 }
@@ -40,7 +40,7 @@ Logger::~Logger() {
 
 Logger &Logger::operator <<(LogLevel new_level) {
 	level = new_level;
-	sink << "\n" << logLevel() << " " << date() << "|";
+	sink << "\n" << level << logLevel() << " " << date() << "|";
 	dirty = true;
 	return *this;
 }

@@ -32,6 +32,7 @@ class IModel;
 class Controller;
 class Node;
 struct NodeConnection;
+class IController;
 
 struct CD3_PUBLIC SimulationParameters {
 	SimulationParameters(){}
@@ -89,11 +90,14 @@ public:
 	boost::signals2::signal<void (ISimulation *, ptime)> timestep_after;
 	boost::signals2::signal<void (ISimulation *, ptime)> timestep_before;
 
+	virtual void addController(IController *controller);
+
 protected:
 	SimulationParameters sim_param;
 	IModel *model;
 	ptime current_time;
 	bool running;
+	std::vector<IController *> controllers;
 };
 
 #endif // SIMULATION_H

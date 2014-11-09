@@ -20,20 +20,12 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#define USE_HASH
+//#define USE_HASH
 
 #include <string>
 #include <vector>
-#ifdef USE_HASH
-#include <boost/unordered/unordered_map.hpp>
-#include <boost/unordered/unordered_set.hpp>
-#else
 #include <map>
 #include <set>
-using namespace std;
-#define unordered_map map
-#define unordered_set set
-#endif
 #include <boost/tuple/tuple.hpp>
 #include <cd3globals.h>
 #include <boost/shared_ptr.hpp>
@@ -46,12 +38,12 @@ struct NodeConnection;
 using namespace boost;
 using namespace std;
 
-typedef unordered_map<string, Node *> name_node_map;
-typedef unordered_set<Node *> node_set_type;
+typedef std::map<string, Node *> name_node_map;
+typedef std::set<Node *> node_set_type;
 typedef pair<Node *, string> end_point_type;
 typedef boost::tuple<string, Node *, string> next_node_type;
-typedef unordered_map<Node *, int> con_count_type;
-typedef unordered_set<NodeConnection *> con_set_type;
+typedef std::map<Node *, int> con_count_type;
+typedef std::set<NodeConnection *> con_set_type;
 
 class CD3_PUBLIC IModel {
 public:

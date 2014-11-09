@@ -4,18 +4,18 @@ set(CPP_FILES ${CPP_FILES} rumba01dll.c)
 
 add_subdirectory(muparser)
 include_directories(muparser)
-add_library(nodes SHARED ${CPP_FILES})
+add_library(nodes STATIC ${CPP_FILES})
 
 IF (MINGW)
 	SET_TARGET_PROPERTIES(nodes PROPERTIES PREFIX "")
 endif()
 if (${CMAKE_HOST_WIN32})
-	target_link_libraries(nodes cd3core)
+	target_link_libraries(nodes)
 else()
-	target_link_libraries(nodes cd3core ${Boost_THREAD_LIBRARY})
+	target_link_libraries(nodes ${Boost_THREAD_LIBRARY})
 endif()
 
 
-INSTALL(TARGETS nodes
-	RUNTIME DESTINATION bin
-	LIBRARY DESTINATION lib)
+#INSTALL(TARGETS nodes
+#	RUNTIME DESTINATION bin
+#	LIBRARY DESTINATION lib)
