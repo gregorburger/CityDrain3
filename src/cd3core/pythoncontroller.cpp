@@ -18,9 +18,12 @@ PythonController::PythonController(const std::string &path) {
 		init_pycd3();
 	}
 
-	cd3assert(boost::filesystem::exists(path), "controller file not found");
-	FILE *f = fopen(path.c_str(), "ro");
-	assert(f);
+	if (!boost::filesystem::exists(path)) {
+		Logger(Error) << "controller " << path << ": file not found";
+		return;
+	}
+
+
 
 	PyObject *main = PyImport_ImportModule("__main__");
 
@@ -32,7 +35,8 @@ PythonController::PythonController(const std::string &path) {
 
 	PyObject *pycd3_module = PyImport_ImportModule("pycd3");
 
-	PyRun_File(f, path.c_str(), Py_file_input, main_namespace, 0);
+	PyObject* PyFileObject = PyFile_FromString((char *) path.c_str(), "r");
+	PyRun_File(PyFile_AsFile(PyFileObject), path.c_str(), Py_file_input, main_namespace, 0);
 
 	ts_after_cb = PyDict_GetItemString(main_namespace, AFTER);
 	ts_before_cb = PyDict_GetItemString(main_namespace, BEFORE);
