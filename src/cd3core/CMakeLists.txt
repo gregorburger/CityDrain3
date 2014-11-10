@@ -1,7 +1,12 @@
-file(GLOB_RECURSE CPP_FILES ./ *.cpp *.h)
+file(GLOB CPP_FILES RELATIVE_PATH
+	*.cpp
+	*.h
+	../nodes/*.cpp
+	../nodes/*.h
+	../nodes/muparser/*.cpp)
 
 message(STATUS ${CMAKE_BINARY_DIR})
-include_directories(${PYTHON_INCLUDE_DIR} ${CMAKE_BINARY_DIR})
+include_directories(${PYTHON_INCLUDE_DIR} ${CMAKE_BINARY_DIR} ../nodes/muparser)
 set_source_files_properties(${CMAKE_BINARY_DIR}/pycd3WRAP.cpp PROPERTIES GENERATED 1)
 if (WITH_PYTHON)
 	set(CPP_FILES ${CPP_FILES} ${CMAKE_BINARY_DIR}/pycd3WRAP.cpp)

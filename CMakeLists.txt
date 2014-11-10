@@ -79,10 +79,9 @@ endif (PKG_CONFIG_FOUND)
 
 ##'NOF CHECKING... BUILDING##
 add_subdirectory(src/cd3core)
-add_subdirectory(src/nodes)
 
 if (WITH_PYTHON)
-		add_subdirectory(src/python-swig)
+	add_subdirectory(src/python-swig)
 endif()
 
 add_subdirectory(src/app)
