@@ -24,6 +24,7 @@
 #include <flow.h>
 
 #include <boost/foreach.hpp>
+#include <boost/unordered_map.hpp>
 #include <limits>
 
 #include <QLabel>
@@ -122,7 +123,7 @@ QWidget *NodeParametersDialog::widgetForParameter(NodeParameter *p) {
 }
 
 bool NodeParametersDialog::updateNodeParameters() {
-	std::map<std::string, NodeParameter *> params = node->getParameters();
+	boost::unordered_map<std::string, NodeParameter *> params = node->getParameters();
 	Q_FOREACH(std::string p, widgets.keys()) {
 		NodeParameter *param = params[p];
 		if (param->type == cd3::TypeInfo(typeid(int))) {

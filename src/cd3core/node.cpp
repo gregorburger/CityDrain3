@@ -28,7 +28,7 @@ Node::Node() : /*const_parameters(&parameters),*/
 }
 
 Node::~Node() {
-	std::map<std::string, NodeParameter*>::iterator it;
+	boost::unordered_map<std::string, NodeParameter*>::iterator it;
 	for(it=parameters.begin(); it!=parameters.end(); ++it){
 		delete (*it).second;
 	}

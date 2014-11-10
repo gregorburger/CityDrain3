@@ -26,6 +26,7 @@
 #include <cd3assert.h>
 #include <boost/format.hpp>
 #include <boost/date_time.hpp>
+#include <boost/unordered_map.hpp>
 using namespace boost::posix_time;
 
 #include <cd3globals.h>
@@ -83,7 +84,7 @@ struct CD3_PUBLIC NodeParameter {
 	void *value;
 };
 
-typedef std::map<std::string, NodeParameter*> parameters_type;
+typedef boost::unordered_map<std::string, NodeParameter*> parameters_type;
 
 class CD3_PUBLIC Node
 {
@@ -256,7 +257,7 @@ protected:
 
 protected:
 	ssltvp	states;
-	std::map<std::string, NodeParameter*> parameters;
+	boost::unordered_map<std::string, NodeParameter*> parameters;
 	ssf		in_ports;
 	ssf		out_ports;
 	int		dt;
