@@ -151,8 +151,8 @@ void NodeRegistry::addPythonPlugin(const std::string &script) {
 		}
 	}
 	
-	FILE *test_py = fopen(script.c_str(), "r");
-	PyRun_File(test_py, script.c_str(), Py_file_input, main_namespace, 0);
+	PyObject* PyFileObject = PyFile_FromString((char *) script.c_str(), "r");
+	PyRun_File(PyFile_AsFile(PyFileObject), script.c_str(), Py_file_input, main_namespace, 0);
 
 	if (PyErr_Occurred()) {
 		Logger(Error) << "error loading python script" << script;
