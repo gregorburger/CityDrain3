@@ -130,7 +130,11 @@ PyObject *PrimTC<double>::toPython(void *p) const {
 
 template <>
 PyObject *PrimTC<int>::toPython(void *p) const {
+#if PY_MAJOR_VERSION >= 3
+	return PyLong_FromLong(*((int*) p));
+#else
 	return PyInt_FromLong(*((int*) p));
+#endif
 }
 
 template <>
@@ -142,7 +146,11 @@ PyObject *PrimTC<bool>::toPython(void *p) const {
 template <>
 PyObject *PrimTC<std::string>::toPython(void *p) const {
 	std::string s = *((std::string*) p);
+#if PY_MAJOR_VERSION >= 3
+	return PyUnicode_FromString(s.c_str());
+#else
 	return PyString_FromString(s.c_str());
+#endif
 }
 #endif
 
