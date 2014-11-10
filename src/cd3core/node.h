@@ -84,7 +84,7 @@ struct CD3_PUBLIC NodeParameter {
 	void *value;
 };
 
-typedef std::map<std::string, NodeParameter*> parameters_type;
+typedef boost::unordered_map<std::string, NodeParameter*> parameters_type;
 
 class CD3_PUBLIC Node
 {
