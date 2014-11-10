@@ -24,7 +24,8 @@
 Node::Node() : /*const_parameters(&parameters),*/
 		const_states(&states),
 		const_in_ports(&in_ports),
-		const_out_ports(&out_ports) {
+		const_out_ports(&out_ports),
+		dummy("dummy", cd3::TypeInfo(typeid(void)), 0) {
 }
 
 Node::~Node() {

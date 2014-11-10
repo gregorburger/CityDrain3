@@ -157,22 +157,30 @@ public:
 	const Flow *getOutPort(const std::string &) const;
 
 	template<class T> T *getState(const std::string &name) {
-		cd3assert(states.find(name) != states.end(),
-				  str(format("no state with name %1%") % name));
+		if (states.find(name) == states.end()) {
+			Logger(Error) << str(format("no state with name %1%") % name);
+			return 0;
+		}
 		ltvp p = states[name];
-		cd3assert(p.first == cd3::TypeInfo(typeid(T)),
-				  str(format("wrong type for state %1%") % name));
+		if (p.first != cd3::TypeInfo(typeid(T))) {
+			Logger(Error) << str(format("wrong type for state %1%") % name);
+			return 0;
+		}
 		Logger(Debug) << this << "getState(" << name << ")";
 		return static_cast<T*>(p.second);
 	}
 
 	template<class T>
 	void setState(const std::string &name, T &state) {
-		cd3assert(states.find(name) != states.end(),
-				  str(format("no state with name %1%") % name));
+		if (states.find(name) == states.end()) {
+			Logger(Error) << str(format("no state with name %1%") % name);
+			return;
+		}
 		ltvp p = states[name];
-		cd3assert(p.first == cd3::TypeInfo(typeid(T)),
-				  str(format("wrong type for state %1%") % name));
+		if (p.first != cd3::TypeInfo(typeid(T))) {
+			Logger(Error) << str(format("wrong type for state %1%") % name);
+			return;
+		}
 		T *vp = static_cast<T*>(p.second);
 		cd3assert(vp, str(format("state %1% null") % name));
 		Logger(Debug) << this << "setState(" << name << ")";
@@ -181,11 +189,15 @@ public:
 
 	template<class T>
 	T *getParameter(const std::string &name) const {
-		cd3assert(parameters.find(name) != parameters.end(),
-				  str(format("no parameter with name %1%") % name));
+		if (parameters.find(name) == parameters.end()) {
+			Logger(Error) << str(format("no parameter with name %1%") % name);
+			return 0;
+		}
 		NodeParameter *p = parameters.at(name);
-		cd3assert(p->type == cd3::TypeInfo(typeid(T)),
-				  str(format("wrong type for parameter %1%") % name));
+		if (p->type != cd3::TypeInfo(typeid(T))) {
+			Logger(Error) << str(format("wrong type for parameter %1%") % name);
+			return 0;
+		}
 		Logger(Debug) << this << "getParameter(" << name << ")";
 		return static_cast<T*>(p->value);
 	}
@@ -222,24 +234,38 @@ public:
 
 	template<class T>
 	void addState(const std::string &name, T *ptr) {
-		cd3assert(ptr, "adding null state");
-		cd3assert(states.find(name) == states.end(),
-				  str(format("state %1% already defined") % name));
+		if (!ptr) {
+			Logger(Error) << "adding null state";
+			return;
+		}
+		if (states.find(name) != states.end()) {
+			Logger(Error) << str(format("state %1% already defined") % name);
+			return;
+		}
 		Logger(Debug) << this << "addState(" << name << ")";
 		states[name] = ltvp(cd3::TypeInfo(typeid(T)), ptr);
 	}
 
 	void removeState(const std::string &name) {
-		cd3assert(states.find(name) != states.end(),
-				  str(format("state %1% not defined") % name));
+		if (states.find(name) == states.end()) {
+			Logger(Error) << str(format("state %1% not defined") % name);
+			return;
+		}
 		Logger(Debug) << this << "removeState(" << name << ")";
 		states.erase(name);
 	}
 
 	template<class T>
 	NodeParameter &addParameter(const std::string &name, T *ptr) {
-		cd3assert(ptr, "adding null parameter");
-		cd3assert(!parameters.count(name), str(format("parameter %1% already defined") % name));
+		if (!ptr) {
+			Logger(Error) << "adding null parameter";
+			return dummy;
+		}
+
+		if (parameters.count(name)) {
+			Logger(Error) << str(format("parameter %1% already defined") % name);
+			return dummy;
+		}
 		NodeParameter *p = new NodeParameter(name, cd3::TypeInfo(typeid(T)), ptr);
 		Logger(Debug) << this << "addParameter(" << name << ")";
 		parameters[name] = p;
@@ -265,6 +291,7 @@ protected:
 private:
 	friend class MapBasedModel;
 	void setId(const std::string &id);
+	NodeParameter dummy;
 };
 
 #endif // NODE_H
