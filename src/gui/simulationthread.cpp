@@ -21,12 +21,8 @@
 #include <simulation.h>
 #include <imodel.h>
 #include <boost/bind.hpp>
-#include <boost/signals2.hpp>
 #include <pythonexception.h>
 #include <logger.h>
-
-using namespace boost;
-using namespace boost::signals2;
 
 SimulationThread::SimulationThread()
 	: handler(new TimeStepHandler()), simulation(0), failed(false) {
@@ -41,7 +37,7 @@ void SimulationThread::run() {
 	Q_ASSERT(simulation);
 	failed = false;
 	SimulationParameters sp = simulation->getSimulationParameters();
-	c = simulation->timestep_after.connect(bind(&TimeStepHandler::after, handler, _1, _2));
+	c = simulation->timestep_after.connect(boost::bind(&TimeStepHandler::after, handler, _1, _2));
 	try {
 		simulation->getModel()->deinitNodes();
 		simulation->getModel()->initNodes(sp);//TODO check for uninited nodes here
