@@ -24,8 +24,9 @@
 
 #include <set>
 #include <cd3globals.h>
+#include <boost/unordered_map.hpp>
 
-typedef std::map<Node *, std::vector<NodeConnection *> > connection_type;
+typedef boost::unordered_map<Node *, std::vector<NodeConnection *> > connection_type;
 
 class CD3_PUBLIC MapBasedModel : public IModel
 {
