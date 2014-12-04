@@ -3,7 +3,7 @@ file(GLOB CPP_FILES RELATIVE_PATH
 	*.h
 	../nodes/*.cpp
 	../nodes/*.h
-	../nodes/muparser/*.cpp)
+	../nodes/muparser/*.cpp
 	../nodes/*.c)
 
 message(STATUS ${CMAKE_BINARY_DIR})
