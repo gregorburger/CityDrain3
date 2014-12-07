@@ -18,8 +18,13 @@ set(QT_USE_QTGUI true)
 set(QT_USE_QTSVG true)
 add_definitions(-DQT_NO_KEYWORDS)
 INCLUDE(${QT_USE_FILE})
-set(LIBRARY_OUTPUT_PATH ${cd3_BINARY_DIR})
-set(EXECUTABLE_OUTPUT_PATH ${cd3_BINARY_DIR})
+
+if(NOT(OUTPUT_DIR))
+    set(OUTPUT_DIR ${cd3_BINARY_DIR})
+endif()
+
+set(LIBRARY_OUTPUT_PATH ${OUTPUT_DIR})
+set(EXECUTABLE_OUTPUT_PATH ${OUTPUT_DIR})
 
 set(CD3_FRONTEND_LIBS cd3core)
 set(BOOST_COMPONENTS system signals program_options thread date_time filesystem)
@@ -85,13 +90,13 @@ if (WITH_PYTHON)
 endif()
 
 add_subdirectory(src/app)
-add_subdirectory(src/gui)
-add_subdirectory(src/plugindoc)
+#add_subdirectory(src/gui)
+#add_subdirectory(src/plugindoc)
 
-option(WITH_PLUGINDOC "Build the plugindoc app" OFF)
-if (WITH_PLUGINDOC)
-	add_subdirectory(src/plugindoc)
-endif()
+#option(WITH_PLUGINDOC "Build the plugindoc app" OFF)
+#if (WITH_PLUGINDOC)
+#	add_subdirectory(src/plugindoc)
+#endif()
 
 option(WITH_TESTS "Enable unit testing" OFF)
 
