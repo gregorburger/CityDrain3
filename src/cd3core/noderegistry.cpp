@@ -59,10 +59,10 @@ NodeRegistry::~NodeRegistry() {
 }
 
 bool NodeRegistry::addNodeFactory(INodeFactory *factory) {
-	if (contains(factory->getNodeName())) {
-		Logger(Warning) << str(format("NodeFactory already registered for that name: %1%") %factory->getNodeName());
-		return false;
-	}
+    if (contains(factory->getNodeName())) {
+        Logger(Warning) << str(format("NodeFactory already registered for that name: %1%") %factory->getNodeName());
+        return false;
+    }
 	registered_nodes[factory->getNodeName()] = factory;
 	return true;
 }
@@ -146,20 +146,20 @@ void NodeRegistry::addPythonPlugin(const std::string &script) {
     }
 
 	PyRun_String("import sys\nsys.path.append('.')\n", Py_file_input, main_namespace, 0);
-	
-	if (PyErr_Occurred()) {
-		Logger(Error) << "" << script;
-		throw PythonException();
-	}
-	
+
+    if (PyErr_Occurred()) {
+        Logger(Error) << "" << script;
+        throw PythonException();
+    }
+
 	BOOST_FOREACH(std::string path, python_paths) {
 		std::string app_pp_cmd = "sys.path.append('"+path+"')\n";
 		Logger(Debug) << "adding" << path << "to pyhton sys.path";
 		PyRun_String(app_pp_cmd.c_str(), Py_file_input, main_namespace, 0);
-		if (PyErr_Occurred()) {
-			Logger(Error) << "error adding path to sys.path" << script;
-			throw PythonException();
-		}
+        if (PyErr_Occurred()) {
+            Logger(Error) << "error adding path to sys.path" << script;
+            throw PythonException();
+        }
 	}
 	
 	PyObject* PyFileObject = PyFile_FromString((char *) script.c_str(), "r");
