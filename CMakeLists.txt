@@ -47,7 +47,8 @@ else()
 endif()
 
 #check for boost which is a definitive requirement for building cd3
-set(Boost_USE_STATIC_LIBS ON)
+#status makes problems when compiling in linux
+#set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost 1.38.0 COMPONENTS ${BOOST_COMPONENTS} REQUIRED)
 add_definitions(${Boost_LIB_DIAGNOSTIC_DEFINITIONS})
 set(Boost_USE_MULTITHREADED ON)
