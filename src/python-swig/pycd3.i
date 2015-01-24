@@ -320,7 +320,7 @@ public:
 	virtual void deinit();
 	virtual void start();
 	virtual void stop();
-	virtual const char *getClassName() const = 0;
+	virtual std::string getClassName() const;
 	std::string getId() const;
 
 	template<class T>
@@ -578,7 +578,7 @@ class ISimulation {
 public:
 	ISimulation();
 	virtual ~ISimulation();
-	virtual const char *getClassName() const = 0;
+	virtual std::string getClassName() const;
 	virtual int run(ptime time, int dt) = 0;
 
 	virtual IModel *getModel() const;
