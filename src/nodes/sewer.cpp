@@ -26,7 +26,7 @@
 
 using namespace boost;
 
-CD3_DECLARE_NODE_NAME(Sewer)
+
 
 Sewer::Sewer() {
 	addInPort(ADD_PARAMETERS(in));

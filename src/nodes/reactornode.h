@@ -26,7 +26,7 @@
 
 class Reactor;
 
-CD3_DECLARE_NODE(ReactorNode)
+class ReactorNode : public Node {
 public:
 	ReactorNode();
 	virtual ~ReactorNode();

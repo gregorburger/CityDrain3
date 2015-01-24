@@ -24,7 +24,7 @@
 #include <flow.h>
 
 
-CD3_DECLARE_NODE(RainGen)
+class RainGen : public Node {
 public:
 	RainGen();
 	virtual ~RainGen();

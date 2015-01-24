@@ -10,7 +10,7 @@
 using namespace boost;
 
 
-CD3_DECLARE_NODE_NAME(RiverSed)
+
 
 RiverSed::RiverSed()
 {

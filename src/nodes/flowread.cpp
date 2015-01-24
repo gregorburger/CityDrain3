@@ -20,7 +20,7 @@
 #include "flowread.h"
 
 
-CD3_DECLARE_NODE_NAME(FlowRead)
+
 
 FlowRead::FlowRead() {
 	ctxt.dateformat = "dd.MM.yyyy hh:mm:ss";

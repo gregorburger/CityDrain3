@@ -225,7 +225,9 @@ NodeRegistry::getRegisteredNamesAndSources() const {
 Node *NodeRegistry::createNode(const std::string &name) const {
 	cd3assert(contains(name),
 			  str(format("no such node class registered: %1%") % name));
-	return registered_nodes.find(name)->second->createNode();
+	Node *n = registered_nodes.find(name)->second->createNode();
+	n->class_name = name;
+	return n;
 }
 
 bool NodeRegistry::contains(const std::string &name) const {

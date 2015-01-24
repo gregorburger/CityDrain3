@@ -26,7 +26,7 @@
 #include <omp.h>
 #endif
 
-CD3_DECLARE_SIMULATION_NAME(ParallelSimulation)
+
 
 ParallelSimulation::ParallelSimulation() {
 #ifdef _OPENMP

@@ -28,7 +28,7 @@
 
 using namespace boost;
 
-CD3_DECLARE_NODE_NAME(River)
+
 
 River::River() {
 	addInPort(ADD_PARAMETERS(in));

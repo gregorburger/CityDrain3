@@ -26,7 +26,7 @@
 #include <flow.h>
 
 
-CD3_DECLARE_NODE(CatchmentBWMCSS)
+class CatchmentBWMCSS : public Node {
 public:
 	CatchmentBWMCSS();
 	virtual ~CatchmentBWMCSS();

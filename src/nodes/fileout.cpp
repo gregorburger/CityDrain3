@@ -28,7 +28,7 @@
 #include <QDateTime>
 #include <boost/foreach.hpp>
 
-CD3_DECLARE_NODE_NAME(FileOut)
+
 
 FileOut::FileOut()
 	: Node(), stream(&file) {

@@ -24,7 +24,7 @@
 
 class Flow;
 
-CD3_DECLARE_NODE(TestNode)
+class TestNode : public Node {
 public:
 	TestNode();
 	virtual ~TestNode();

@@ -24,7 +24,7 @@
 #include <boost/foreach.hpp>
 #include <sstream>
 
-CD3_DECLARE_NODE_NAME(Mixer)
+
 
 Mixer::Mixer() {
 	num_inputs = 2;

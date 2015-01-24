@@ -24,7 +24,7 @@
 
 using namespace boost;
 
-CD3_DECLARE_SIMULATION(ParallelSimulation)
+class CD3_PUBLIC ParallelSimulation : public ISimulation {
 public:
 	ParallelSimulation();
 	virtual ~ParallelSimulation();

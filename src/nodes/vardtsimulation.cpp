@@ -29,7 +29,7 @@
 #include <boost/foreach.hpp>
 #include <boost/tuple/tuple_comparison.hpp>
 
-CD3_DECLARE_SIMULATION_NAME(VarDTSimulation)
+
 
 typedef boost::tuple<Node *, std::string, Node *, std::string> con_type;
 typedef std::map<con_type, FlowBuffer *> buf_type;

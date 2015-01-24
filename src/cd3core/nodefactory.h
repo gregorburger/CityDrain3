@@ -28,6 +28,7 @@
 #include <boost/utility.hpp>
 #include <cd3globals.h>
 #include <boost/shared_ptr.hpp>
+#include <cxxabi.h>
 
 class CD3_PUBLIC INodeFactory {
 public:
@@ -60,7 +61,11 @@ Node *NodeFactory<T>::createNode() const {
 
 template <typename T>
 std::string NodeFactory<T>::getNodeName() const {
-	return T::class_name;
+	int status;
+	char *cp_class_name = abi::__cxa_demangle(typeid(T).name(), 0, 0, &status);
+	std::string class_name(cp_class_name);
+	free(cp_class_name);
+	return class_name;
 }
 
 template <typename T>

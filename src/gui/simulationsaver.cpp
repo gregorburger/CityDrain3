@@ -95,7 +95,7 @@ QString tos(std::string s) {
 void SimulationSaver::saveSimulation(ISimulation *sim) {
 	writer->writeStartElement("simulation");
 
-	writer->writeAttribute("class", sim->getClassName());
+	writer->writeAttribute("class", QString::fromStdString(sim->getClassName()));
 
 	writer->writeStartElement("time");
 	writer->writeAttribute("start", tos(sim->getSimulationParameters().start));

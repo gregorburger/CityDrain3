@@ -20,7 +20,7 @@
 #include "wwtp.h"
 #include "rumba01dll.h"
 
-CD3_DECLARE_NODE_NAME(WWTP)
+
 
 WWTP::WWTP() {
 	addInPort(ADD_PARAMETERS(in));

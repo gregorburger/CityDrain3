@@ -24,7 +24,7 @@
 
 class Node;
 
-CD3_DECLARE_NODE(Splitter)
+class Splitter : public Node {
 public:
 	Splitter();
 	virtual ~Splitter();

@@ -23,7 +23,7 @@
 #include <node.h>
 #include <flow.h>
 
-CD3_DECLARE_NODE(WWTP)
+class WWTP : public Node {
 public:
 	WWTP();
 	virtual ~WWTP();

@@ -25,7 +25,7 @@
 #include <map>
 #include <flow.h>
 
-CD3_DECLARE_NODE(CatchmentCSS)
+class CatchmentCSS : public Node {
 public:
 	CatchmentCSS();
 	virtual ~CatchmentCSS();

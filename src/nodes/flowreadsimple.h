@@ -25,7 +25,7 @@
 
 struct FlowReadSimple_Private;
 
-CD3_DECLARE_NODE(FlowReadSimple)
+class FlowReadSimple : public Node {
 public:
     FlowReadSimple();
     virtual ~FlowReadSimple();

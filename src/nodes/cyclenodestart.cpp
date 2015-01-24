@@ -20,7 +20,7 @@
 #include "cyclenodestart.h"
 #include <iostream>
 
-CD3_DECLARE_NODE_NAME(CycleNodeStart)
+
 
 CycleNodeStart::CycleNodeStart() {
 	addOutPort(ADD_PARAMETERS(out));

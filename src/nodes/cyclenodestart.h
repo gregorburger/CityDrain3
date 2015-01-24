@@ -23,7 +23,7 @@
 #include "../cd3core/node.h"
 #include <flow.h>
 
-CD3_DECLARE_NODE(CycleNodeStart)
+class CycleNodeStart : public Node {
 public:
 	CycleNodeStart();
 	virtual ~CycleNodeStart();

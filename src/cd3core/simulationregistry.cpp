@@ -86,5 +86,7 @@ bool SimulationRegistry::contains(const std::string &name) const {
 ISimulation *SimulationRegistry::createSimulation(const std::string &name) const {
 	cd3assert(contains(name), "no such simulation registered");
 	sim_reg_type::const_iterator it = registry.find(name);
-	return it->second->createSimulation();
+	ISimulation *sim = it->second->createSimulation();
+	sim->class_name = name;
+	return sim;
 }

@@ -23,7 +23,7 @@
 #include <node.h>
 #include <flow.h>
 
-CD3_DECLARE_NODE(Null)
+class Null : public Node {
 public:
 	Null();
 	int f(ptime time, int dt);

@@ -89,7 +89,7 @@ void SeasonContext::clear(){
 	}
 }
 
-CD3_DECLARE_NODE_NAME(SeasonQRead)
+
 
 SeasonQRead::SeasonQRead() {
 	addParameter(ADD_PARAMETERS(rain_folder));

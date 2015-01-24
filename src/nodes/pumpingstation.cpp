@@ -28,7 +28,7 @@
 using namespace std;
 using namespace boost::assign;
 
-CD3_DECLARE_NODE_NAME(PumpingStation)
+
 
 PumpingStation::PumpingStation() {
 	basin_volume = 360;

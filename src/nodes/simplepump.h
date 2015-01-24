@@ -23,7 +23,7 @@
 #include <node.h>
 #include <flow.h>
 
-CD3_DECLARE_NODE(SimplePump)
+class SimplePump : public Node {
 public:
 	SimplePump();
 

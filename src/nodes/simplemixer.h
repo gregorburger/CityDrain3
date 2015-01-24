@@ -23,7 +23,7 @@
 #include <node.h>
 #include <flow.h>
 
-CD3_DECLARE_NODE(SimpleMixer)
+class SimpleMixer : public Node {
 public:
 	SimpleMixer();
 	int f(ptime time, int dt);
