@@ -1,6 +1,6 @@
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 2.8)
 project(cd3)
-set(CMAKE_AUTOUIC on)
+#set(CMAKE_AUTOUIC on)
 set(CMAKE_AUTOMOC on)
 
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)

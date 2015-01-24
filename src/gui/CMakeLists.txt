@@ -2,6 +2,8 @@ file(GLOB GUI_CPP *.cpp *.h)
 file(GLOB COMMAND_CPP  commands/*.cpp commands/*.h)
 file(GLOB GUI_UI *.ui)
 
+QT4_WRAP_UI(GUI_CPP ${GUI_UI})
+
 QT4_ADD_RESOURCES(GUI_CPP ../../data/resources/cd3-gui.qrc)
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
