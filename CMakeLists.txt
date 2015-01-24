@@ -23,7 +23,6 @@ INCLUDE(${QT_USE_FILE})
 set(LIBRARY_OUTPUT_PATH ${cd3_BINARY_DIR})
 set(EXECUTABLE_OUTPUT_PATH ${cd3_BINARY_DIR})
 
-set(CD3_FRONTEND_LIBS cd3core)
 set(BOOST_COMPONENTS system signals program_options thread date_time filesystem)
 
 
