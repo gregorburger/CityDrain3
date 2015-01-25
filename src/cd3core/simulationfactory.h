@@ -22,7 +22,9 @@
 
 #include <simulation.h>
 #include <cd3globals.h>
+#ifndef _MSC_VER
 #include <cxxabi.h>
+#endif //_MSC_VER
 
 class CD3_PUBLIC ISimulationFactory
 {
@@ -48,11 +50,16 @@ ISimulation *SimulationFactory<T>::createSimulation() const {
 
 template<class T>
 std::string SimulationFactory<T>::getSimulationName() const {
+#ifdef _MSC_VER
+	std::string name = typeid(T).name();
+	return name.substr(name.find(" ") + 1, name.size());
+#else
 	int status;
 	char *cp_class_name = abi::__cxa_demangle(typeid(T).name(), 0, 0, &status);
 	std::string class_name(cp_class_name);
 	free(cp_class_name);
 	return class_name;
+#endif
 }
 
 #endif // ISIMULATIONFACTORY_H
