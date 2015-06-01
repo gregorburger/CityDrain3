@@ -72,7 +72,7 @@ namespace std {
 	%template(FlowVector) vector<Flow *>;
 	%template(NodeVector) vector<Node *>;
 	%template(NodeSet) set<Node *>;
-};
+}
 
 %exception {
 	try {
@@ -639,7 +639,7 @@ class MapBasedModel {
 public:
 	void addNode(const std::string &id, Node *node);
 	void addConnection(NodeConnection *con);
-	node_set_type initNodes(const SimulationParameters &);
+	std::set<Node *> initNodes(const SimulationParameters &);
 };
 
 %extend MapBasedModel {
@@ -663,8 +663,10 @@ public:
 //Init CD3
 void initCD3Logger(){
 //Init Logger
-ostream *out = &cout;
-Log::init(new OStreamLogSink(*out), Error);
+	std::ofstream * file = new std::ofstream();
+	file->open("/tmp/file.txt");
+//ostream *out = &cout;
+Log::init(new OStreamLogSink(*file), Error);
 }
 %}
 
@@ -758,9 +760,9 @@ class CityDrain3:
 		self.model = pycd3.MapBasedModel()
 
 		self.sim_parameter = None
-		flow = pycd3.FlowMap()
-		flow["Q"] = pycd3.Flow.flow
-		pycd3.Flow.define(flow)
+		self.flow = pycd3.FlowMap()
+		self.flow["Q"] = pycd3.Flow.flow
+		pycd3.Flow.define(self.flow)
 
 		if start_time and end_time and delta_t:
 			self.set_simulation_parameter(start_time, end_time, delta_t)
@@ -772,6 +774,14 @@ class CityDrain3:
 		:return: None
 		"""
 		self.node_registry.addNativePlugin(file_name)
+
+	def register_python_plugin(self, file_name):
+		"""
+		:type start_time: str
+		:param file_name: file name
+		:return: None
+		"""
+		self.node_registry.addPythonPlugin(file_name)
 
 	def set_simulation_parameter(self, start_time, end_time, delta_t):
 		"""
@@ -793,6 +803,9 @@ class CityDrain3:
 			val = parameter[k]
 			if type(val) is pycd3.Flow:
 				val = n.setParameter(k, val)
+			if type(val) is int:
+				val = n.setIntParameter(k, val)
+
 
 	def start(self, start_time):
 		"""
