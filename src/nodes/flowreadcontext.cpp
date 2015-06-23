@@ -75,7 +75,7 @@ bool FlowReadContext::addLine(){
 	memset(line, 0, 1024);
 	file.readLine(line, 1023);
 	QDateTime time = QDateTime(QDate(0,0,0),QTime(00,00));
-	QString qline = QString::fromAscii(line);
+	QString qline = QString::fromLatin1(line);
 	qline.resize(dateformat.length());
 	QString format = QString::fromStdString(dateformat);
 	time = QDateTime::fromString(qline, format);

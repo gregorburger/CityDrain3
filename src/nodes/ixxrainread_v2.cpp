@@ -80,7 +80,7 @@ bool IxxRainRead_v2::init(ptime start, ptime end, int dt) {
 	QDateTime second = parseIxxLine(line, this->q_datestring).first;
 	data->file_dt = data->first.secsTo(second);
 	if (data->first.secsTo(second) != dt) {
-		Logger(Warning) << "dt of rain file and simulation are not equal; dt=" << data->first.secsTo(second);
+		Logger(Warning) << "dt of rain file and simulation are not equal; dt=" << (int) data->first.secsTo(second);
 		//return false;
 	}
 
