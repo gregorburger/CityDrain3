@@ -213,7 +213,7 @@ const std::vector<NodeConnection *> MapBasedModel::forwardConnection(Node *n) co
 	cd3assert(n, "Node null");
 	cd3assert(all_nodes.count(n), "node not in model");
 	cd3assert(fwd_connections.count(n), "no forward connection for node");
-	return fwd_connections.at(n);
+	return fwd_connections.find(n)->second;
 }
 
 vector<NodeConnection *> MapBasedModel::backwardConnection(Node *n) {
@@ -239,7 +239,8 @@ void MapBasedModel::checkModel() const {
 		BOOST_FOREACH(Node *node, all_nodes) {
 		BOOST_FOREACH(port_type port, *node->const_in_ports) {
 			bool found = false;
-			BOOST_FOREACH(NodeConnection *con, bwd_connections.at(node)) {
+
+			BOOST_FOREACH(NodeConnection *con, bwd_connections.find(node)->second) {
 				if (con->sink_port == port.first) {
 					found = true;
 					break;
@@ -252,7 +253,7 @@ void MapBasedModel::checkModel() const {
 
 		BOOST_FOREACH(port_type port, *node->const_out_ports) {
 			bool found = false;
-			BOOST_FOREACH(NodeConnection *con, fwd_connections.at(node)) {
+			BOOST_FOREACH(NodeConnection *con, fwd_connections.find(node)->second) {
 				if (con->source_port == port.first) {
 					found = true;
 					break;
@@ -269,7 +270,7 @@ void MapBasedModel::checkModel() const {
 con_count_type MapBasedModel::getBackwardCounts() const {
 	con_count_type counts;
 		BOOST_FOREACH(Node *node, all_nodes) {
-		counts[node] = bwd_connections.at(node).size();
+		counts[node] = bwd_connections.find(node)->second.size();
 	}
 
 	return counts;
@@ -278,7 +279,7 @@ con_count_type MapBasedModel::getBackwardCounts() const {
 con_count_type MapBasedModel::getForwardCounts() const {
 	con_count_type counts;
 		BOOST_FOREACH(Node *node, all_nodes) {
-		counts[node] = fwd_connections.at(node).size();
+		counts[node] = fwd_connections.find(node)->second.size();
 	}
 
 	return counts;
@@ -301,7 +302,7 @@ bool MapBasedModel::cycleNodesHelper(Node *n,
 									 node_set_type reachable) const {
 	bool cycle = false;
 	reachable.insert(n);
-	BOOST_FOREACH(NodeConnection *con, fwd_connections.at(n)) {
+	BOOST_FOREACH(NodeConnection *con, fwd_connections.find(n)->second) {
 		if (reachable.count(con->sink))
 			cycle = true;
 		else
