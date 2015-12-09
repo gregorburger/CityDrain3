@@ -24,7 +24,7 @@
 #include <flow.h>
 
 
-CD3_DECLARE_NODE(CSO)
+class CSO : public Node {
 public:
 	CSO();
 	virtual ~CSO();

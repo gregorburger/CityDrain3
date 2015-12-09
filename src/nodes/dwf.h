@@ -26,7 +26,7 @@
 
 typedef std::pair<int, std::vector<double> > dwf_entry;
 
-CD3_DECLARE_NODE(DWF)
+class DWF : public Node {
 public:
 	DWF();
 	virtual ~DWF();

@@ -26,7 +26,7 @@
 
 #include "flowreadcontext.h"
 
-CD3_DECLARE_NODE(FlowRead)
+class FlowRead : public Node {
 public:
 	FlowRead();
 	virtual ~FlowRead();

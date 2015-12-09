@@ -23,7 +23,7 @@
 #include <node.h>
 #include <flow.h>
 
-CD3_DECLARE_NODE(Impuls)
+class Impuls : public Node {
 public:
 	Impuls();
 	virtual ~Impuls();

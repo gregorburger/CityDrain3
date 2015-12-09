@@ -37,15 +37,9 @@ using namespace boost::posix_time;
 class Flow;
 
 #define CD3_DECLARE_NODE(node)  \
-class CD3_PUBLIC node : public Node { \
-public: \
-	static const char *class_name; \
-	const char *getClassName() const; \
-private:
+class CD3_PUBLIC node : public Node {
 
-#define CD3_DECLARE_NODE_NAME(nodename) \
-const char *nodename::class_name = #nodename; \
-const char *nodename::getClassName() const { return nodename::class_name; }
+#define CD3_DECLARE_NODE_NAME(nodename)
 
 using namespace boost;
 
@@ -89,6 +83,7 @@ class CD3_PUBLIC Node
 {
 	friend class ModelSerializer;
 	friend class IStateMigrator;
+	friend class NodeRegistry;
 public:
 	Node();
 
@@ -97,7 +92,7 @@ public:
 
 	std::string getId() const;
 
-	virtual const char *getClassName() const = 0;
+	virtual std::string getClassName() const;
 	
 	std::string getDescription() const {
 		return description;
@@ -288,7 +283,9 @@ protected:
 	int		dt;
 	std::string		id;
 	std::string		description;
+
 private:
+	std::string class_name;
 	friend class MapBasedModel;
 	void setId(const std::string &id);
 	NodeParameter dummy;

@@ -34,7 +34,7 @@ struct IxxRainReadPrivate {
 	ptime current_time;
 };
 
-CD3_DECLARE_NODE_NAME(IxxRainRead)
+
 
 IxxRainRead::IxxRainRead() {
 	data = new IxxRainReadPrivate();

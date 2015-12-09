@@ -26,7 +26,7 @@ using namespace boost;
 
 #include <cd3assert.h>
 
-CD3_DECLARE_NODE_NAME(CSO)
+
 
 CSO::CSO() {
 	addInPort(ADD_PARAMETERS(in));

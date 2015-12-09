@@ -24,7 +24,7 @@
 #include <nodeconnection.h>
 #include <boost/foreach.hpp>
 
-CD3_DECLARE_SIMULATION_NAME(DefaultSimulation)
+
 
 struct SimPriv {
 	node_set_type sources;

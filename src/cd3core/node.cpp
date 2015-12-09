@@ -59,6 +59,11 @@ std::string Node::getId() const {
 	return id;
 }
 
+std::string Node::getClassName() const {
+	assert(!class_name.empty());
+	return class_name;
+}
+
 void Node::setInPort(const std::string &name, const Flow *inflow) {
 	cd3assert(in_ports.find(name) != in_ports.end(),
 			  str(format("no such in port (%1%)") % name));

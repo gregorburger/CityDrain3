@@ -25,7 +25,7 @@
 
 #include <vector>
 
-CD3_DECLARE_NODE(ArrayParamTest)
+class ArrayParamTest : public Node {
 public:
 	ArrayParamTest();
 	virtual ~ArrayParamTest();

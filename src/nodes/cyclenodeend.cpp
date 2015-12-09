@@ -20,7 +20,7 @@
 #include "cyclenodeend.h"
 #include "cyclenodestart.h"
 
-CD3_DECLARE_NODE_NAME(CycleNodeEnd)
+
 
 CycleNodeEnd::CycleNodeEnd() {
 	addInPort(ADD_PARAMETERS(in));

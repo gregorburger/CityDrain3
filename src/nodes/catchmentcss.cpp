@@ -25,7 +25,7 @@
 
 using namespace boost;
 
-CD3_DECLARE_NODE_NAME(CatchmentCSS)
+
 
 CatchmentCSS::CatchmentCSS() {
 	std::string description = 

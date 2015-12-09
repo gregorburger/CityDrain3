@@ -32,7 +32,7 @@ class Node;
 
 typedef boost::shared_ptr<tqueue<Node *> > sh_node_queue;
 
-CD3_DECLARE_SIMULATION(OrderedPipeSimulation)
+class CD3_PUBLIC OrderedPipeSimulation : public ISimulation {
 public:
 	OrderedPipeSimulation();
 	~OrderedPipeSimulation();

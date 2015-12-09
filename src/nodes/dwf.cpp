@@ -23,7 +23,7 @@
 #include <QStringList>
 #include <QString>
 
-CD3_DECLARE_NODE_NAME(DWF)
+
 
 DWF::DWF() {
 	addOutPort(ADD_PARAMETERS(out));

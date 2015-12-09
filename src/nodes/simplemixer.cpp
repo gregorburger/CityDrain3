@@ -19,7 +19,7 @@
 
 #include "simplemixer.h"
 
-CD3_DECLARE_NODE_NAME(SimpleMixer)
+
 
 SimpleMixer::SimpleMixer() {
 	addInPort(ADD_PARAMETERS(in1));

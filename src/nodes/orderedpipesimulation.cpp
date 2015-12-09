@@ -38,7 +38,7 @@
 
 typedef boost::shared_ptr<tqueue<Node *> > sh_node_queue;
 
-CD3_DECLARE_SIMULATION_NAME(OrderedPipeSimulation);
+
 
 OrderedPipeSimulation::OrderedPipeSimulation() {
 }

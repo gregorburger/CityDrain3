@@ -31,7 +31,7 @@ struct FlowReadSimple_Private {
 
 typedef std::pair<QDateTime, std::vector<double> > IxxEntry;
 
-CD3_DECLARE_NODE_NAME(FlowReadSimple)
+
 
 FlowReadSimple::FlowReadSimple() {
 	data = new FlowReadSimple_Private();

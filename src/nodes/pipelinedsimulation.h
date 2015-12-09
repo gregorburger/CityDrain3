@@ -25,7 +25,7 @@
 struct PipeSimPrivate;
 class IModel;
 
-CD3_DECLARE_SIMULATION(PipelinedSimulation)
+class CD3_PUBLIC PipelinedSimulation : public ISimulation {
 public:
 	PipelinedSimulation();
 	virtual ~PipelinedSimulation();

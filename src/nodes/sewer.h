@@ -25,7 +25,7 @@
 #include <vector>
 #include <map>
 
-CD3_DECLARE_NODE(Sewer)
+class Sewer : public Node {
 public:
 	Sewer();
 	virtual ~Sewer();

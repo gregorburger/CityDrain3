@@ -33,7 +33,7 @@ using namespace boost;
 inline double mattimax(double a, double b){return ((a>b)?a:b);}
 inline double mattimin(double a, double b){return ((a>b)?b:a);}
 
-CD3_DECLARE_NODE_NAME(RainGen)
+
 
 
 double RainGen::getNormRandNumbers(){

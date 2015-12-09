@@ -22,7 +22,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/format.hpp>
 
-CD3_DECLARE_NODE_NAME(TestNode)
+
 
 TestNode::TestNode() {
 	in_out = new Flow();

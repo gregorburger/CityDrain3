@@ -132,3 +132,9 @@ NodeConnection *ISimulation::createConnection(Node * source,
 void ISimulation::addController(IController *controller) {
 	this->controllers.push_back(controller);
 }
+
+
+std::string ISimulation::getClassName() const {
+	assert(!class_name.empty());
+	return class_name;
+}

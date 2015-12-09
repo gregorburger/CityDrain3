@@ -20,7 +20,7 @@
 #include "arrayparamtest.h"
 #include <boost/lexical_cast.hpp>
 
-CD3_DECLARE_NODE_NAME(ArrayParamTest)
+
 
 ArrayParamTest::ArrayParamTest() {
 	Qe = 0.0;

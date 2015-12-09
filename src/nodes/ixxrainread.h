@@ -27,7 +27,7 @@
 
 struct IxxRainReadPrivate;
 
-CD3_DECLARE_NODE(IxxRainRead)
+class IxxRainRead : public Node {
 public:
 	IxxRainRead();
 	virtual ~IxxRainRead();

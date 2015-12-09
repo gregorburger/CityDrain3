@@ -29,7 +29,7 @@ class Reactor;
 
 /* Combine Sewer and Reactor */
 
-CD3_DECLARE_NODE(River)
+class River : public Node {
 public:
 	River();
 	virtual ~River();

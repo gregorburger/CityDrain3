@@ -10,7 +10,7 @@ class Reactor;
 
 /* Combine Sewer and Reactor */
 
-CD3_DECLARE_NODE(RiverSed)
+class RiverSed : public Node {
 
 
 public:

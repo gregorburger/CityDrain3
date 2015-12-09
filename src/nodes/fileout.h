@@ -25,7 +25,7 @@
 #include <QFile>
 #include <QTextStream>
 
-CD3_DECLARE_NODE(FileOut)
+class FileOut : public Node {
 public:
 	FileOut();
 	virtual ~FileOut();

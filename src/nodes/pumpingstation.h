@@ -25,7 +25,7 @@
 
 #include <vector>
 
-CD3_DECLARE_NODE(PumpingStation)
+class PumpingStation : public Node {
 public:
 	PumpingStation();
 	virtual ~PumpingStation();

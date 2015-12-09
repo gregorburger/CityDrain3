@@ -140,7 +140,7 @@ void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 	painter->strokePath(path, painter->pen());
 	QString text;
 	QTextStream ts(&text);
-	ts << getId() << endl << node->getClassName();
+	ts << getId() << endl << QString::fromStdString(node->getClassName());
 	QFont f;
 	QFontMetrics fm(f);
 	painter->drawText(QRectF(fm.boundingRect(text)), Qt::AlignCenter, text);
@@ -149,7 +149,7 @@ void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 void NodeItem::updateBoundingRect() {
 	QFont f;
 	QFontMetrics fm(f);
-	QRectF r = QRectF(fm.boundingRect(getId() + "\n" + node->getClassName()));
+	QRectF r = QRectF(fm.boundingRect(getId() + "\n" + QString::fromStdString(node->getClassName())));
 	qreal max_outp_width = 0;
 
 	Q_FOREACH(PortItem *out, out_ports) {

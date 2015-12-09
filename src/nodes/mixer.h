@@ -25,7 +25,7 @@
 #include <node.h>
 #include <vector>
 
-CD3_DECLARE_NODE(Mixer)
+class Mixer : public Node {
 public:
 	Mixer();
 	~Mixer();

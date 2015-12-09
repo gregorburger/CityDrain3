@@ -28,7 +28,7 @@ class IModel;
 class Node;
 struct VarDTPriv;
 
-CD3_DECLARE_SIMULATION(VarDTSimulation)
+class CD3_PUBLIC VarDTSimulation : public ISimulation {
 public:
 	VarDTSimulation();
 	virtual ~VarDTSimulation();

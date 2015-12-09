@@ -30,7 +30,7 @@ inline bool fuzzyIsNull(double d)
     return fabs(d) <= 0.000000000001;
 }
 
-CD3_DECLARE_NODE_NAME(CatchmentBWMCSS)
+
 
 CatchmentBWMCSS::CatchmentBWMCSS() {
 	addInPort(ADD_PARAMETERS(rain_in));

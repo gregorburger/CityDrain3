@@ -25,7 +25,7 @@
 
 struct SimPriv;
 
-CD3_DECLARE_SIMULATION(DefaultSimulation)
+class CD3_PUBLIC DefaultSimulation : public ISimulation {
 public:
 	DefaultSimulation();
 	virtual ~DefaultSimulation();

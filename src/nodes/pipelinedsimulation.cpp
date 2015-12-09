@@ -32,7 +32,7 @@
 using namespace boost;
 
 
-CD3_DECLARE_SIMULATION_NAME(PipelinedSimulation)
+
 
 struct PipeSimPrivate {
 	node_set_type		nodes;

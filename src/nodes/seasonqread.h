@@ -59,7 +59,7 @@ private:
 
 typedef QPair<int, int> MonthDay;
 
-CD3_DECLARE_NODE(SeasonQRead)
+class SeasonQRead : public Node {
 public:
 	SeasonQRead();
 	virtual ~SeasonQRead();

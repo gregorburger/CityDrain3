@@ -19,7 +19,7 @@
 
 #include "impuls.h"
 
-CD3_DECLARE_NODE_NAME(Impuls)
+
 
 Impuls::Impuls() {
 	start_after = 0;

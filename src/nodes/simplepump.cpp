@@ -21,7 +21,7 @@
 #include <flowfuns.h>
 #include <boost/assign.hpp>
 
-CD3_DECLARE_NODE_NAME(SimplePump)
+
 
 
 SimplePump::SimplePump() {

@@ -24,8 +24,8 @@
 #include <QStringList>
 #include "reactor.h"
 
-const char *ReactorNode::class_name = "Reactor"; 
-const char *ReactorNode::getClassName() const { return ReactorNode::class_name; }
+//const char *ReactorNode::class_name = "Reactor";
+//const char *ReactorNode::getClassName() const { return ReactorNode::class_name; }
 
 ReactorNode::ReactorNode() {
 	addInPort(ADD_PARAMETERS(in));

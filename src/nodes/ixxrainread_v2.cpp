@@ -31,7 +31,7 @@ struct IxxRainRead_v2_Private {
 
 typedef std::pair<QDateTime, double> IxxEntry;
 
-CD3_DECLARE_NODE_NAME(IxxRainRead_v2)
+
 
 IxxRainRead_v2::IxxRainRead_v2() {
 	data = new IxxRainRead_v2_Private();
