@@ -94,41 +94,54 @@ void init_pycd3(void);
 }
 
 void NodeRegistry::addPythonPlugin(const std::string &script) {
-    if (!Py_IsInitialized()) {
-        Py_Initialize();
-        init_pycd3();
-        PyObject *main = PyImport_ImportModule("__main__");
-        main_namespace = PyModule_GetDict(main);
-        Py_INCREF(main_namespace);
-        Py_DECREF(main);
+	if(!Py_IsInitialized()) {
+		Py_Initialize();
+		SWIG_PYTHON_INITIALIZE_THREADS;
+		PyThreadState *pts = PyGILState_GetThisThreadState();
+		PyEval_ReleaseThread(pts);
 
-        PyRun_String("import sys\nsys.path.append('.')\n", Py_file_input, main_namespace, 0);
+		SWIG_PYTHON_THREAD_BEGIN_BLOCK;
+		PyObject *main = PyImport_ImportModule("__main__");
+		main_namespace = PyModule_GetDict(main);
 
-        PyObject *pycd3_module = PyImport_ImportModule("pycd3");
-        if (PyErr_Occurred()) {
-            PyErr_Print();
-            return;
-        }
-        PyObject *pycd3_dict = PyModule_GetDict(pycd3_module);
-        if (PyErr_Occurred()) {
-            PyErr_Print();
-        }
-        Py_XDECREF(pycd3_module);
-        PyObject *callback = PyDict_GetItemString(pycd3_dict, "install_redirector");
-        if (PyErr_Occurred()) {
-            PyErr_Print();
-        }
-        PyObject *res = PyObject_Call(callback, Py_None, Py_None);
-        if (PyErr_Occurred()) {
-            PyErr_Print();
-            return;
-        }
-        Py_XDECREF(res);
+		init_pycd3();
 
-        SWIG_PYTHON_INITIALIZE_THREADS;
-        PyThreadState *pts = PyGILState_GetThisThreadState();
-        PyEval_ReleaseThread(pts);
-    }
+		PyRun_String("import sys\nsys.path.append('.')\n", Py_file_input, main_namespace, 0);
+
+		PyObject *pycd3_module = PyImport_ImportModule("pycd3");
+		if (PyErr_Occurred()) {
+			PyErr_Print();
+			SWIG_PYTHON_THREAD_END_BLOCK;
+			return;
+		}
+		PyObject *pycd3_dict = PyModule_GetDict(pycd3_module);
+		if (PyErr_Occurred()) {
+			PyErr_Print();
+			Logger(Error) << "Could not start python environment";
+			SWIG_PYTHON_THREAD_END_BLOCK;
+			return;
+		}
+
+		PyObject *callback = PyDict_GetItemString(pycd3_dict, "install_redirector");
+		if (PyErr_Occurred()) {
+			PyErr_Print();
+			SWIG_PYTHON_THREAD_END_BLOCK;
+			return;
+		}
+
+		PyObject *arglist = Py_BuildValue("()");
+		PyObject *res = PyObject_CallObject(callback, arglist);
+		if (PyErr_Occurred()) {
+			PyErr_Print();
+			Logger(Error) << "Could not redirect python output";
+			SWIG_PYTHON_THREAD_END_BLOCK;
+			return;
+		}
+		Py_DECREF(main);
+		Py_XDECREF(pycd3_module);
+		Py_XDECREF(res);
+		SWIG_PYTHON_THREAD_END_BLOCK;
+	}
 
     if(!main_namespace) {
         SWIG_PYTHON_THREAD_BEGIN_BLOCK;
@@ -136,6 +149,7 @@ void NodeRegistry::addPythonPlugin(const std::string &script) {
         PyObject *main = PyImport_ImportModule("__main__");
         main_namespace = PyModule_GetDict(main);
         Py_DECREF(main);
+		SWIG_PYTHON_THREAD_END_BLOCK;
     }
 
     SWIG_PYTHON_THREAD_BEGIN_BLOCK;
@@ -183,6 +197,7 @@ void NodeRegistry::addPythonPlugin(const std::string &script) {
 		if (PyErr_Occurred()) {
 			Logger(Error) << "error importint pycd3 module";
 			throw PythonException();
+			SWIG_PYTHON_THREAD_END_BLOCK;
 			return;
 		}
 		PyObject *pycd3_dict = PyModule_GetDict(pycd3_module);
@@ -208,6 +223,7 @@ void NodeRegistry::addPythonPlugin(const std::string &script) {
 		throw PythonException();
 	}
 	Logger(Debug) << "successfully loaded python script" << script;
+	SWIG_PYTHON_THREAD_END_BLOCK;
 }
 
 #endif
