@@ -43,6 +43,9 @@ private:
 	QString buf;
 	QPlainTextEdit *logWidget;
 	LogLevel level;
+
+Q_SIGNALS:
+	void newLogLine(const QString &line, QColor c);
 };
 
 #endif // GUILOGSINK_H
