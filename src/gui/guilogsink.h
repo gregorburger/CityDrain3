@@ -24,6 +24,7 @@
 #include <QObject>
 #include <QString>
 class QPlainTextEdit;
+class QColor;
 
 class GuiLogSink : public QObject, public LogSink {
 	Q_OBJECT
