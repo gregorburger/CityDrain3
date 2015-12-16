@@ -679,7 +679,6 @@ class Redirector:
 		self.currentstring = ""
 
 	def write(self, text):
-		self.orig_out.write(text + "\n")
 		self.currentstring = self.currentstring + " " + text
 
 		if text.rfind("\n") == -1:
@@ -693,7 +692,7 @@ class Redirector:
 		self.currentstring=""
 
 	def close(self):
-		self.orig_out.close()
+		return
 
 def install_redirector():
 	import sys
