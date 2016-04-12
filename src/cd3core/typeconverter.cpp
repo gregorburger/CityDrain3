@@ -50,7 +50,11 @@ struct PrimTC : TC {
 
 	std::string toString(const void *value) const {
 		T *tvalue = (T *) value;
-		return lexical_cast<std::string>(*tvalue);
+        std::ostringstream ss;
+        ss.imbue(std::locale::classic());
+        ss << std::fixed << std::setprecision(5);
+        ss << *tvalue;
+        return ss.str();
 	}
 
 	std::string toStringExact(const void *value) const {
