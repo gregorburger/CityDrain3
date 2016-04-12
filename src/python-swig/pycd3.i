@@ -387,7 +387,7 @@ public:
 		nt = [Integer, Double, String, Flow, DoubleVector]
 		if state.__class__ not in nt:
 			msg = "state %s has wrong type" % name
-			msg += "states can only have type Integer(), Double(), String(), Flow, DoubleVector(), IntegerVector(), StringVector(), FlowVector()"
+			msg += "states can only have type Integer(), Double(), String(), Flow, DoubleVector()"
 			raise TypeError(msg)
 
 		log("adding parameter %s with type %s" % (name, state.__class__))
@@ -454,10 +454,17 @@ protected:
 	%template(getStringVectorState)	getState<std::vector<std::string> >;
 	%template(getFlowState)		getState<Flow>;
 
+    NodeParameter &intern_addParameter(std::string name, std::vector<double> *v) {
+        return $self->addParameter(name, v);
+    }
 
-	NodeParameter &intern_addParameter(std::string name, std::vector<double> *v) {
-		return $self->addParameter(name, v);
-	}
+    NodeParameter &intern_addParameter(std::string name, std::vector<string> *v) {
+        return $self->addParameter(name, v);
+    }
+
+    NodeParameter &intern_addParameter(std::string name, std::vector<int> *v) {
+        return $self->addParameter(name, v);
+    }
 
 	NodeParameter &intern_addParameter(std::string name, Flow *v) {
 		return $self->addParameter(name, v);
