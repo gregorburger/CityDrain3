@@ -71,11 +71,37 @@ QWidget *NodeParametersDialog::widgetForParameter(NodeParameter *p) {
 
 		QString s;
 		for (size_t i = 0; i < values.size(); i++) {
-			s += i == 0 ? QString("%1").arg(values[i]) : QString(", %1").arg(values[i]);
+            s += i == 0 ? QString("%1").arg( QWidget::locale().toString(values[i]) ): QString("; %1").arg(QWidget::locale().toString(values[i]));
 		}
 		param_widget->setText(s);
 		return param_widget;
 	}
+
+    if (p->type == cd3::TypeInfo(typeid(std::vector<int>))) {
+        QLineEdit *param_widget = new QLineEdit(this);
+
+        std::vector<int> values = *((std::vector<int> *) p->value);
+
+        QString s;
+        for (size_t i = 0; i < values.size(); i++) {
+            s += i == 0 ? QString("%1").arg(values[i]) : QString("; %1").arg(values[i]);
+        }
+        param_widget->setText(s);
+        return param_widget;
+    }
+
+    if (p->type == cd3::TypeInfo(typeid(std::vector<std::string>))) {
+        QLineEdit *param_widget = new QLineEdit(this);
+
+        std::vector<std::string> values = *((std::vector<std::string> *) p->value);
+
+        QString s;
+        for (size_t i = 0; i < values.size(); i++) {
+            s += i == 0 ? QString("%1").arg(QString::fromStdString(values[i])) : QString("; %1").arg(QString::fromStdString(values[i]));
+        }
+        param_widget->setText(s);
+        return param_widget;
+    }
 
 	if (p->type == cd3::TypeInfo(typeid(int))) {
 		QSpinBox *widget = new QSpinBox();
@@ -105,14 +131,14 @@ QWidget *NodeParametersDialog::widgetForParameter(NodeParameter *p) {
 		std::vector<std::string> names = Flow::getNames();
 		QString text = QString::fromStdString(names[0]);
 		for (size_t i = 1; i < names.size(); i++)  {
-			text += ", " + QString::fromStdString(names[i]);
+            text += "; " + QString::fromStdString(names[i]);
 		}
 		widget->setStatusTip(text);
 
 		Flow *f = (Flow*) p->value;
-		text = QString("%1").arg((*f)[0]);
+        text = QString("%1").arg(QWidget::locale().toString((*f)[0]));
 		for (size_t i = 1; i < Flow::size(); i++) {
-			text += QString(", %1").arg((*f)[i]);
+            text += QString("; %1").arg(QWidget::locale().toString((*f)[i]));
 		}
 		widget->setText(text);
 		return widget;
@@ -143,9 +169,9 @@ bool NodeParametersDialog::updateNodeParameters() {
 		if (param->type == cd3::TypeInfo(typeid(Flow))) {
 			std::vector<std::string> names = Flow::getNames();
 			QLineEdit *widget = static_cast<QLineEdit *>(widgets[p]);
-			QStringList values = widget->text().split(",");
+            QStringList values = widget->text().split(";");
 			if (values.size() != names.size()) {
-				qDebug() << "input format wrong";
+                Logger(Error) << "Input format wrong of parameter '" << param->name << "'";
 				return false;
 			}
 			int valuei = 0;
@@ -154,7 +180,7 @@ bool NodeParametersDialog::updateNodeParameters() {
 				bool ok;
 				double value = qsvalue.trimmed().toDouble(&ok);
 				if (!ok) {
-					qDebug() << "value for " << QString::fromStdString(names[valuei]) << " not a double";
+                    Logger(Warning) << "Input format wrong of parameter '" << param->name << "': Value for " << QString::fromStdString(names[valuei]) << " not a double";
 					return false;
 				}
 				f.setValue(names[valuei], value);
@@ -166,14 +192,45 @@ bool NodeParametersDialog::updateNodeParameters() {
 		if (param->type == cd3::TypeInfo(typeid(std::vector<double>))) {
 			std::vector<double> v;
 			QLineEdit *line = static_cast<QLineEdit *>(widgets[p]);
-			QStringList values = line->text().split(",", QString::SkipEmptyParts);
+            QStringList values = line->text().split(";", QString::SkipEmptyParts);
 			Q_FOREACH(QString value, values) {
 				bool ok;
 				v.push_back(value.toDouble(&ok));
+                if(!ok)
+                {
+                    Logger(Warning) << "Input format wrong of parameter '" << param->name << "'";
+                    return false;
+                }
 			}
 			node->setParameter(p, v);
 			continue;
 		}
+        if (param->type == cd3::TypeInfo(typeid(std::vector<int>))) {
+            std::vector<int> v;
+            QLineEdit *line = static_cast<QLineEdit *>(widgets[p]);
+            QStringList values = line->text().split(";", QString::SkipEmptyParts);
+            Q_FOREACH(QString value, values) {
+                bool ok;
+                v.push_back(value.toInt(&ok));
+                if(!ok)
+                {
+                    Logger(Warning) << "Input format wrong of parameter '" << param->name << "'";
+                    return false;
+                }
+            }
+            node->setParameter(p, v);
+            continue;
+        }
+        if (param->type == cd3::TypeInfo(typeid(std::vector<std::string>))) {
+            std::vector<std::string> v;
+            QLineEdit *line = static_cast<QLineEdit *>(widgets[p]);
+            QStringList values = line->text().split(";", QString::SkipEmptyParts);
+            Q_FOREACH(QString value, values) {
+                v.push_back(value.trimmed().toStdString());
+            }
+            node->setParameter(p, v);
+            continue;
+        }
 		Logger() << "cannot update node parameter " << p;
 	}
 	return true;
