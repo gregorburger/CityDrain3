@@ -171,7 +171,11 @@ struct FlowTC : public TypeConverter {
 		Flow *f = (Flow *) value;
 		std::string result;
 		BOOST_FOREACH(std::string name, Flow::getNames()) {
-			result += ";" + name + ";" + lexical_cast<std::string>(f->getValue(name));
+            std::ostringstream ss;
+            ss.imbue(std::locale::classic());
+            ss << std::fixed << std::setprecision(10);
+            ss << f->getValue(name);
+            result += ";" + name + ";" + ss.str();
 		}
 		return result.size() > 0 ? result.substr(1) : "";
 	}
