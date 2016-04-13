@@ -50,11 +50,7 @@ struct PrimTC : TC {
 
 	std::string toString(const void *value) const {
 		T *tvalue = (T *) value;
-        std::ostringstream ss;
-        ss.imbue(std::locale::classic());
-        ss << std::fixed << std::setprecision(5);
-        ss << *tvalue;
-        return ss.str();
+        return lexical_cast<std::string>(*tvalue);
 	}
 
 	std::string toStringExact(const void *value) const {
@@ -171,11 +167,7 @@ struct FlowTC : public TypeConverter {
 		Flow *f = (Flow *) value;
 		std::string result;
 		BOOST_FOREACH(std::string name, Flow::getNames()) {
-            std::ostringstream ss;
-            ss.imbue(std::locale::classic());
-            ss << std::fixed << std::setprecision(10);
-            ss << f->getValue(name);
-            result += ";" + name + ";" + ss.str();
+            result += ";" + name + ";" + lexical_cast<std::string>(f->getValue(name));
 		}
 		return result.size() > 0 ? result.substr(1) : "";
 	}
