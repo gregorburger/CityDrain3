@@ -35,7 +35,6 @@ int RainBuffer::available() const {
 }
 
 double RainBuffer::take(int dt) {
-	assert(dt > 0);
 	double rain = 0.0;
 	while (dt > 0) {
 		if (dt >= avail.front()) {

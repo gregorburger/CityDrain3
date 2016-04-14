@@ -70,31 +70,34 @@ bool IxxRainRead::init(ptime start, ptime end, int dt) {
 	data->in >> first_time;
 	data->current_time = first_time - seconds(raindt);
 	data->in.seekg(0, std::ios::beg);
+    int dataoffset = time_period(data->current_time, start - seconds(dt)).length().total_seconds();
 
-	if (first_time < start) {
-		while (data->current_time < start) {
+    Logger(Debug) << "First time stamp of rain data: " << to_simple_string(first_time);
+    Logger(Debug) << "dt of rain data (seconds): " << to_simple_string(seconds(raindt));
+    Logger(Debug) << "Rain measurements started at: " << to_simple_string(data->current_time);
+    Logger(Debug) << "Simulation first time step: " << to_simple_string(start);
+    Logger(Debug) << "Simulation start time: " << to_simple_string(start - seconds(dt));
+    Logger(Debug) << "Rain data starts " << dataoffset << " seconds earlier than simulation.";
+
+    if (dataoffset >= 0) {
+        while (time_period(data->current_time, start - seconds(dt)).length().total_seconds() >= 0) {
 			ixx_value v = data->parseLine();
-			time_period p(data->current_time, v.first);
-			data->rain_buf.put(p.length().total_seconds(), v.second);
+            data->rain_buf.put(raindt, v.second);
 			data->current_time = v.first;
 		}
 
-		int cut_off = time_period(first_time, start).length().total_seconds();
-		Logger(Debug) << (Node*) this << "cutting of" << cut_off << "after ff rainbuffer";
-		data->rain_buf.take(cut_off);
+        Logger(Debug) << (Node*) this << "Cutting of" << dataoffset << " seconds of raindata";
+        data->rain_buf.take(dataoffset);
+		return true;
+	}
+    else{
+        //fill up with zeroes
+        Logger(Debug) << "filling up rainbuffer with" << dataoffset*-1 << "seconds of zero";
+        data->rain_buf.put(dataoffset*(-1), 0.0);
 		return true;
 	}
 
-	if (first_time > start) { //fill up with zeroes
-		long zerosecs = time_period(start, data->current_time + seconds(raindt)).length().total_seconds();
-		Logger(Debug) << "filling up rainbuffer with" << zerosecs << "seconds of zero";
-		while (zerosecs > 0) {
-			data->rain_buf.put(dt, 0.0);
-			zerosecs -= dt;
-		}
-		return true;
-	}
-	return true;
+    return false;
 }
 
 void IxxRainRead::deinit() {
