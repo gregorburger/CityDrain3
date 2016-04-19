@@ -83,7 +83,7 @@ bool IxxRainRead::init(ptime start, ptime end, int dt) {
 
         if (dataoffset >= 0) {
             while (time_period(data->current_time, start - seconds(dt)).length().total_seconds() >= 0) {
-                if(!data->in.eof())
+                if(data->in.eof())
                 {
                     Logger(Error) << "Simulation starts after rain data";
                     return false;
@@ -146,11 +146,13 @@ ixx_value IxxRainReadPrivate::parseLine() {
 	assert(!in.eof());
     ptime date;
     double value;
-    in >> date >> value;
 
-    if(date == boost::posix_time::not_a_date_time)
+    in >> date;
+
+    if(date == boost::posix_time::not_a_date_time && !in.eof())
         throw "Data_time format not valid. Format shut be: dd.mm.yyyy hh:mm:ss";
 
+    in >> value;
 	return ixx_value(date, value);
 }
 
