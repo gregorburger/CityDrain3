@@ -190,7 +190,8 @@ int main(int argc, char **argv) {
 	}
 	catch (PythonException e) {
 		cout << "python exception cought" << endl;
+        return EXIT_FAILURE;
 	}
 #endif
-	return 0;
+    return EXIT_SUCCESS;
 }
