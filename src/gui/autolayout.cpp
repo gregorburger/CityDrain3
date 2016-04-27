@@ -28,8 +28,6 @@
 #include <graphviz/gvc.h>
 
 #define DECL_DPI(d) double dpi = d; char *dpi_str = #d;
-#define	TAILX				1
-#define HEADX				2
 #endif
 
 AutoLayout::AutoLayout(SimulationScene *scene) : scene(scene), model(scene->getModel()) {
@@ -41,7 +39,7 @@ void AutoLayout::layout() {
 	DECL_DPI(72.0);
 
 	GVC_t *gvc = gvContext();
-	Agraph_t *G = agopen("G", AGRAPH);
+	Agraph_t *G = agopen("G", Agundirected, NULL);
 	e = agsafeset(G, "dpi", dpi_str, "");
 	e = agsafeset(G, "rankdir", "LR", "");
 	e = agsafeset(G, "nodesep", "0.5", "");
@@ -50,7 +48,7 @@ void AutoLayout::layout() {
 	QMap<QString, Agnode_t *> nodes;
 
 	Q_FOREACH(NodeItem *n, scene->getNodeItems()) {
-		Agnode_t *ag_n = agnode(G, n->getId().toAscii().data());
+		Agnode_t *ag_n = agnode(G, n->getId().toAscii().data(), TRUE);
 		QRectF br = n->boundingRect();
 		QStringList inports;
 		Q_FOREACH(std::string ip, n->in_ports.keys()) {
@@ -76,9 +74,7 @@ void AutoLayout::layout() {
 	}
 
 	Q_FOREACH(ConnectionItem *e, scene->getConnectionsItems()) {
-		Agedge_t *edge = agedge(G, nodes[e->getSourceId()], nodes[e->getSinkId()]);
-		agxset(edge, HEADX, e->getSinkPortId().toAscii().data());
-		agxset(edge, TAILX, e->getSourcePortId().toAscii().data());
+		Agedge_t *edge = agedge(G, nodes[e->getSourceId()], nodes[e->getSinkId()],NULL,TRUE);
 	}
 
 	e = gvLayout(gvc, G, "dot");
