@@ -18,6 +18,7 @@
  **/
 
 #ifndef PYTHON_DISABLED
+#define SWIG_PYTHON_THREADS
 #include <Python.h>
 #include <swigruntime.h>
 #include <pythonexception.h>
@@ -58,10 +59,10 @@ NodeRegistry::~NodeRegistry() {
 }
 
 bool NodeRegistry::addNodeFactory(INodeFactory *factory) {
-	if (contains(factory->getNodeName())) {
-		Logger(Warning) << str(format("NodeFactory already registered for that name: %1%") %factory->getNodeName());
-		return false;
-	}
+    if (contains(factory->getNodeName())) {
+        Logger(Warning) << str(format("NodeFactory already registered for that name: %1%") %factory->getNodeName());
+        return false;
+    }
 	registered_nodes[factory->getNodeName()] = factory;
 	return true;
 }
@@ -93,62 +94,86 @@ void init_pycd3(void);
 }
 
 void NodeRegistry::addPythonPlugin(const std::string &script) {
-	if (!Py_IsInitialized()) {
+	if(!Py_IsInitialized()) {
 		Py_Initialize();
-		init_pycd3();
+		SWIG_PYTHON_INITIALIZE_THREADS;
+		PyThreadState *pts = PyGILState_GetThisThreadState();
+		PyEval_ReleaseThread(pts);
+
+		SWIG_PYTHON_THREAD_BEGIN_BLOCK;
 		PyObject *main = PyImport_ImportModule("__main__");
 		main_namespace = PyModule_GetDict(main);
-		Py_INCREF(main_namespace);
-		Py_DECREF(main);
-		
+
+		init_pycd3();
+
 		PyRun_String("import sys\nsys.path.append('.')\n", Py_file_input, main_namespace, 0);
-		
+
 		PyObject *pycd3_module = PyImport_ImportModule("pycd3");
 		if (PyErr_Occurred()) {
-			Logger(Error) << "can not import module pycd3";
-			throw PythonException();
+			PyErr_Print();
+			SWIG_PYTHON_THREAD_END_BLOCK;
 			return;
 		}
 		PyObject *pycd3_dict = PyModule_GetDict(pycd3_module);
 		if (PyErr_Occurred()) {
-			Logger(Error) << "can not get dict of module pycd3";
-			throw PythonException();
-		}
-		PyObject *callback = PyDict_GetItemString(pycd3_dict, "install_redirector");
-		if (PyErr_Occurred()) {
-			Logger(Error) << "could not find callback \"install_redirector\"";
-			throw PythonException();
-		}
-		PyObject *res = PyObject_CallFunction(callback, NULL);
-		if (PyErr_Occurred()) {
-			Logger(Error) << "could not call callback \"install_redirector\"";
-			throw PythonException();
+			PyErr_Print();
+			Logger(Error) << "Could not start python environment";
+			SWIG_PYTHON_THREAD_END_BLOCK;
 			return;
 		}
+
+		PyObject *callback = PyDict_GetItemString(pycd3_dict, "install_redirector");
+		if (PyErr_Occurred()) {
+			PyErr_Print();
+			SWIG_PYTHON_THREAD_END_BLOCK;
+			return;
+		}
+
+		PyObject *arglist = Py_BuildValue("()");
+		PyObject *res = PyObject_CallObject(callback, arglist);
+		if (PyErr_Occurred()) {
+			PyErr_Print();
+			Logger(Error) << "Could not redirect python output";
+			SWIG_PYTHON_THREAD_END_BLOCK;
+			return;
+		}
+		Py_DECREF(main);
 		Py_XDECREF(pycd3_module);
 		Py_XDECREF(res);
+		SWIG_PYTHON_THREAD_END_BLOCK;
 	}
-	
-	if (PyErr_Occurred()) {
-		Logger(Error) << "unknown python error" << script;
-		throw PythonException();
-	}
-	
+
+    if(!main_namespace) {
+        SWIG_PYTHON_THREAD_BEGIN_BLOCK;
+        init_pycd3();
+        PyObject *main = PyImport_ImportModule("__main__");
+        main_namespace = PyModule_GetDict(main);
+        Py_DECREF(main);
+		SWIG_PYTHON_THREAD_END_BLOCK;
+    }
+
+    SWIG_PYTHON_THREAD_BEGIN_BLOCK;
+
+    if (PyErr_Occurred()) {
+        Logger(Error) << "unknown python error" << script;
+        throw PythonException();
+    }
+
 	PyRun_String("import sys\nsys.path.append('.')\n", Py_file_input, main_namespace, 0);
-	
-	if (PyErr_Occurred()) {
-		Logger(Error) << "" << script;
-		throw PythonException();
-	}
-	
+
+    if (PyErr_Occurred()) {
+        Logger(Error) << "" << script;
+        throw PythonException();
+    }
+
 	BOOST_FOREACH(std::string path, python_paths) {
 		std::string app_pp_cmd = "sys.path.append('"+path+"')\n";
 		Logger(Debug) << "adding" << path << "to pyhton sys.path";
 		PyRun_String(app_pp_cmd.c_str(), Py_file_input, main_namespace, 0);
-		if (PyErr_Occurred()) {
-			Logger(Error) << "error adding path to sys.path" << script;
-			throw PythonException();
-		}
+        if (PyErr_Occurred()) {
+            Logger(Error) << "error adding path to sys.path" << script;
+            throw PythonException();
+        }
 	}
 	
 	PyObject* PyFileObject = PyFile_FromString((char *) script.c_str(), "r");
@@ -172,6 +197,7 @@ void NodeRegistry::addPythonPlugin(const std::string &script) {
 		if (PyErr_Occurred()) {
 			Logger(Error) << "error importint pycd3 module";
 			throw PythonException();
+			SWIG_PYTHON_THREAD_END_BLOCK;
 			return;
 		}
 		PyObject *pycd3_dict = PyModule_GetDict(pycd3_module);
@@ -197,6 +223,7 @@ void NodeRegistry::addPythonPlugin(const std::string &script) {
 		throw PythonException();
 	}
 	Logger(Debug) << "successfully loaded python script" << script;
+	SWIG_PYTHON_THREAD_END_BLOCK;
 }
 
 #endif

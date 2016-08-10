@@ -67,7 +67,7 @@ void DefaultSimulation::run(Node *n, ptime time, con_count_type &depends) {
 	}
 	BOOST_FOREACH(NodeConnection *con, model->forwardConnection(n)) {
 		if (depends[con->sink] > 0) {
-			return;
+			continue;
 		}
 		run(con->sink, time, depends);
 	}

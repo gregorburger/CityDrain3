@@ -118,6 +118,9 @@ public Q_SLOTS:
 	void simulationChanged(QUndoCommand *);
 	void simulationSaved();
 	void updateTimeControls();
+
+	//logger stuff
+	void newLogLine(QString line, QColor);
 };
 
 #endif // MAINWINDOW_H

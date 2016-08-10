@@ -21,3 +21,5 @@ doc/html/*
 plugindoc/plugindoc
 build*
 models/*.pdf
+*.txt.orig
+*.txt.user

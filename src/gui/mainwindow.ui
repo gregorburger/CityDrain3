@@ -192,6 +192,9 @@
        <property name="readOnly">
         <bool>true</bool>
        </property>
+       <property name="maximumBlockCount">
+        <number>50000</number>
+       </property>
       </widget>
      </item>
     </layout>

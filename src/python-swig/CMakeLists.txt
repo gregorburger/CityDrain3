@@ -1,22 +1,15 @@
 include(${SWIG_USE_FILE})
-execute_process(COMMAND ${SWIG_EXECUTABLE} -python -external-runtime swigruntime.h)
-
-#execute_process(COMMAND ${SWIG_EXECUTABLE} -python -c++ -o pycd3WRAP.cpp ${CMAKE_CURRENT_SOURCE_DIR}/pycd3.i
-#	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+execute_process(COMMAND ${SWIG_EXECUTABLE} -python -threads -external-runtime swigruntime.h)
 
 ADD_CUSTOM_COMMAND(
 	OUTPUT ${CMAKE_BINARY_DIR}/pycd3WRAP.cpp
-	COMMAND ${SWIG_EXECUTABLE} -python -c++ -o ${CMAKE_BINARY_DIR}/pycd3WRAP.cpp ${CMAKE_CURRENT_SOURCE_DIR}/pycd3.i
+        COMMAND ${SWIG_EXECUTABLE} -python -threads -c++ -o ${CMAKE_BINARY_DIR}/pycd3WRAP.cpp ${CMAKE_CURRENT_SOURCE_DIR}/pycd3.i
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/pycd3.i
 	)
 
 ADD_CUSTOM_TARGET(pycd3gen DEPENDS ${CMAKE_BINARY_DIR}/pycd3WRAP.cpp)
 
-
-#add_custom_target(pycd3gen ALL ${SWIG_EXECUTABLE} -python -c++ -o pycd3WRAP.cpp ${CMAKE_CURRENT_SOURCE_DIR}/pycd3.i
-#	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-#	SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/pycd3.i)
-
 SET_SOURCE_FILES_PROPERTIES(pycd3.i PROPERTIES CPLUSPLUS ON)
+SET_SOURCE_FILES_PROPERTIES(pycd3.i PROPERTIES SWIG_FLAGS "-threads")
 SWIG_ADD_MODULE(pycd3 python pycd3.i)
 SWIG_LINK_LIBRARIES(pycd3 cd3core ${PYTHON_LIBRARIES})

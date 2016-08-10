@@ -44,7 +44,7 @@ int ParallelSimulation::run(ptime time, int dt) {
 #pragma omp parallel for schedule(dynamic, 1)
 #endif
 	for (int i = 0; i < sources_size; i++) {
-		Node *n = sources.at(i);
+		Node *n = sources[i];
 		run(n, time);
 	}
 

@@ -49,9 +49,8 @@ LogSink &GuiLogSink::operator<<(int i) {
 }
 
 LogSink &GuiLogSink::operator<<(LSEndl i) {
-	QTextCharFormat cf = logWidget->currentCharFormat();
 	QColor c = Qt::black;
-	switch (level) {
+	switch (level){
 	case Debug:
 		c = Qt::gray;
 		break;
@@ -68,9 +67,7 @@ LogSink &GuiLogSink::operator<<(LSEndl i) {
 		c = Qt::black;
 		break;
 	}
-	cf.setForeground(c);
-	logWidget->setCurrentCharFormat(cf);
-	logWidget->appendPlainText(buf);
+	Q_EMIT newLogLine(buf,c);
 	buf.clear();
 	return *this;
 }

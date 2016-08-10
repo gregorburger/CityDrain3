@@ -26,8 +26,10 @@ start a simulation from within a python script."
 %feature("director");
 %{
 #include <simulation.h>
+#include <simulationregistry.h>
 #include <nodefactory.h>
 #include <noderegistry.h>
+#include <nodeconnection.h>
 #include <node.h>
 #include <imodel.h>
 #include <flow.h>
@@ -37,6 +39,9 @@ start a simulation from within a python script."
 #include <boost/foreach.hpp>
 #include <typeconverter.h>
 #include <boost/date_time.hpp>
+#include <mapbasedmodel.h>
+
+#include <logsink.h>
 
 class WrappedPrimitive {
 protected:
@@ -50,8 +55,8 @@ public:
 %include std_string.i
 %include std_map.i
 %include std_set.i
-
-//%feature("autodoc", "docstring");
+%include cpointer.i
+%pointer_functions(double ,doubleP)
 
 %feature("director:except") {
 	if ($error != NULL) {
@@ -67,7 +72,7 @@ namespace std {
 	%template(FlowVector) vector<Flow *>;
 	%template(NodeVector) vector<Node *>;
 	%template(NodeSet) set<Node *>;
-};
+}
 
 %exception {
 	try {
@@ -264,6 +269,8 @@ public:
 	Flow(const Flow&);
 	Flow();
 	static size_t size();
+	static bool defined();
+	static void define(std::map<std::string, CalculationUnit> definition);
 	static std::vector<std::string> getNames();
 	static size_t countUnits(CalculationUnit unit);
 	%pythoncode %{
@@ -311,6 +318,10 @@ public:
 	self.wrapped_values = {}
 %}
 
+	namespace std {
+
+		%template(FlowMap) map<std::string, Flow::CalculationUnit>;
+	};
 class Node {
 public:
 	Node();
@@ -376,7 +387,7 @@ public:
 		nt = [Integer, Double, String, Flow, DoubleVector]
 		if state.__class__ not in nt:
 			msg = "state %s has wrong type" % name
-			msg += "states can only have type Integer(), Double(), String(), Flow, DoubleVector(), IntegerVector(), StringVector(), FlowVector()"
+			msg += "states can only have type Integer(), Double(), String(), Flow, DoubleVector()"
 			raise TypeError(msg)
 
 		log("adding parameter %s with type %s" % (name, state.__class__))
@@ -436,16 +447,24 @@ protected:
 
 	%template(getIntState)		getState<int>;
 	%template(getDoubleState)	getState<double>;
+
 	%template(getStringState)	getState<std::string>;
 	%template(getIntVectorState)		getState<std::vector<int> >;
 	%template(getDoubleVectorState)	getState<std::vector<double> >;
 	%template(getStringVectorState)	getState<std::vector<std::string> >;
 	%template(getFlowState)		getState<Flow>;
 
+    NodeParameter &intern_addParameter(std::string name, std::vector<double> *v) {
+        return $self->addParameter(name, v);
+    }
 
-	NodeParameter &intern_addParameter(std::string name, std::vector<double> *v) {
-		return $self->addParameter(name, v);
-	}
+    NodeParameter &intern_addParameter(std::string name, std::vector<string> *v) {
+        return $self->addParameter(name, v);
+    }
+
+    NodeParameter &intern_addParameter(std::string name, std::vector<int> *v) {
+        return $self->addParameter(name, v);
+    }
 
 	NodeParameter &intern_addParameter(std::string name, Flow *v) {
 		return $self->addParameter(name, v);
@@ -466,6 +485,17 @@ protected:
 	void intern_addState(std::string name, std::vector<double> *v) {
 		$self->addState(name, v);
 	}
+
+	double get_state_value_as_double(std::string state) {
+		double * d = $self->getState<double>(state);
+		return *d;
+	}
+
+	std::vector<double> get_state_value_as_double_vector(std::string state) {
+		std::vector<double> * vd = $self->getState<std::vector<double> >(state);
+		return *vd;
+	}
+
 /*
 // no serializers for vectors for now
 	void intern_addState(std::string name, std::vector<Flow *> *v) {
@@ -537,6 +567,11 @@ public:
 
 	Node *createNode(const std::string &name) const;
 	bool contains(const std::string &name) const;
+
+	void addNativePlugin(const std::string &plugin_path);
+	void addPythonPlugin(const std::string &script);
+
+
 };
 
 class IModel {
@@ -574,15 +609,74 @@ public:
 	virtual std::set<Node *> cycleNodes() const = 0;
 };
 
+
 class ISimulation {
 public:
 	ISimulation();
 	virtual ~ISimulation();
 	virtual std::string getClassName() const;
 	virtual int run(ptime time, int dt) = 0;
-
+	virtual void setSimulationParameters(const SimulationParameters &params);
+	virtual SimulationParameters getSimulationParameters() const;
+	virtual void setModel(IModel *model);
 	virtual IModel *getModel() const;
 };
+
+
+class SimulationRegistry {
+public:
+	SimulationRegistry();
+	ISimulation *SimulationRegistry::createSimulation(const std::string &name) const;
+
+};
+
+struct SimulationParameters {
+	SimulationParameters(std::string start,
+						 std::string stop,
+						 std::string dt);
+};
+
+struct NodeConnection
+{
+	NodeConnection(Node * source, const std::string &soport,
+				   Node *sink, const std::string &siport);
+};
+
+class MapBasedModel {
+public:
+	void addNode(const std::string &id, Node *node);
+	void addConnection(NodeConnection *con);
+	std::set<Node *> initNodes(const SimulationParameters &);
+};
+
+%extend MapBasedModel {
+	void add_connection(Node * source, const std::string &soport,
+						Node *sink, const std::string &siport) {
+		$self->addConnection(new NodeConnection(source,soport,sink,siport ));
+	}
+}
+
+%extend ISimulation {
+	void setDefaultModel(MapBasedModel * m) {
+		$self->setModel(m);
+	}
+	void run(std::string time) {
+		$self->start(time_from_string(time));
+	}
+}
+
+%inline %{
+
+//Init CD3
+void initCD3Logger(){
+//Init Logger
+	std::ofstream * file = new std::ofstream();
+	file->open("/tmp/file.txt");
+//ostream *out = &cout;
+Log::init(new OStreamLogSink(*file), Error);
+}
+%}
+
 
 %pythoncode %{
 class Redirector:
@@ -592,7 +686,6 @@ class Redirector:
 		self.currentstring = ""
 
 	def write(self, text):
-		self.orig_out.write(text + "\n")
 		self.currentstring = self.currentstring + " " + text
 
 		if text.rfind("\n") == -1:
@@ -606,7 +699,7 @@ class Redirector:
 		self.currentstring=""
 
 	def close(self):
-		self.orig_out.close()
+		return
 
 def install_redirector():
 	import sys
@@ -637,4 +730,147 @@ def registerAllNodes(nr):
 			continue
 		log("adding python node %s" % nf.getNodeName())
 		nr.addNodeFactory(nf.__disown__())
+
+import pycd3
+import uuid
+
+class CityDrain3:
+	"""
+	CityDrain3 simulation interface
+	"""
+
+	def __init__(self, start_time="", end_time="", delta_t=""):
+		"""
+		Init simulation setting start, end time as well as delta T is optional, however,
+		required to run simulation
+
+		:type start_time: str
+		:param start_time: start time as string e.g. "2000-Jan-01 00:00:00"
+		:type end_time: str
+		:param end_time: end time as string e.g. "2001-Jan-01 00:00:00"
+		:type delta_t: str
+		:param delta_t: delta t in seconds e.g. "86400"
+		:return: None
+		"""
+
+		# Init CityDrain Logger
+		pycd3.initCD3Logger()
+
+		# Create default simulation. Other simulations are currently not implemented
+		self.sim = pycd3.SimulationRegistry().createSimulation("DefaultSimulation")
+
+		# Initialise node registry
+		self.node_registry = pycd3.NodeRegistry()
+
+		# Initialise simulation model
+		self.model = pycd3.MapBasedModel()
+
+		self.sim_parameter = None
+		self.flow = pycd3.FlowMap()
+		self.flow["Q"] = pycd3.Flow.flow
+		pycd3.Flow.define(self.flow)
+
+		if start_time and end_time and delta_t:
+			self.set_simulation_parameter(start_time, end_time, delta_t)
+
+	def register_native_plugin(self, file_name):
+		"""
+		:type start_time: str
+		:param file_name: file name
+		:return: None
+		"""
+		self.node_registry.addNativePlugin(file_name)
+
+	def register_python_plugin(self, file_name):
+		"""
+		:type start_time: str
+		:param file_name: file name
+		:return: None
+		"""
+		self.node_registry.addPythonPlugin(file_name)
+
+	def set_simulation_parameter(self, start_time, end_time, delta_t):
+		"""
+		Set simulation start, end time as well as delta T
+
+		:type start_time: str
+		:param start_time: start time as string e.g. "2000-Jan-01 00:00:00"
+		:type end_time: str
+		:param end_time: end time as string e.g. "2001-Jan-01 00:00:00"
+		:type delta_t: str
+		:param delta_t: delta t in seconds e.g. "86400"
+		:return: None
+		"""
+
+		self.sim_parameter = pycd3.SimulationParameters(start_time, end_time, delta_t)
+
+	def _set_module_parameter(self, n, parameter={}):
+		for k in parameter.keys():
+			val = parameter[k]
+			if type(val) is pycd3.Flow:
+				val = n.setParameter(k, val)
+			if type(val) is int:
+				val = n.setIntParameter(k, val)
+
+
+	def start(self, start_time):
+		"""
+		:param start_time: start time as string (2000-Jan-01 00:00:00)
+		:return: None
+		"""
+
+		if not self.sim_parameter:
+			raise Exception('Simulation parameter not set')
+
+		# self simulation model
+		self.sim.setDefaultModel(self.model)
+
+		# set simulation parameter
+		self.sim.setSimulationParameters(self.sim_parameter)
+
+		# init nodes with start and date time
+		self.model.initNodes(self.sim.getSimulationParameters())
+
+		# run simulation
+		self.sim.run(start_time)
+
+	def add_node(self, node_type, parameter={}, node_name=""):
+		"""
+		Add node to simulation
+
+		:type node_type: str
+		:param node_type: "Node type"
+		:type node_name: str
+		:param node_name: "Name of the node. If not set a uuid is set"
+		:return: created Node
+		:rtype: :class:`~pycd3.Node`
+		"""
+
+		node = self.node_registry.createNode(node_type)
+
+		# Create uuid as name of name has not bee defined
+		if not node_name:
+			node_name = str(uuid.uuid4())
+
+		self.model.addNode(node_name, node)
+
+		if parameter:
+			self._set_module_parameter(node, parameter)
+
+		return node
+
+	def add_connection(self, source, source_port_name, sink, sink_port_name):
+		"""
+		Connect two nodes
+
+		:type source: :class:`~pycd3.Node`
+		:param source: Source node
+		:param source_port_name: Port name at source
+		:type sink: :class:`~pycd3.Node`
+		:param sink: Sink node
+		:param sink_port_name: Port name at sink
+		:return: None
+		"""
+
+		self.model.add_connection(source, source_port_name, sink, sink_port_name)
 %}

@@ -91,3 +91,6 @@ with modelling your system you can run the simulation.
 
 ![](https://github.com/gregorburger/CityDrain3/raw/master/doc/manual/imgs/gui/connection.png)
  
+# Citation
+If you would like to use CityDrain3, please cite it as
+[Burger G., Bach P. M., Urich C., Leonhardt G., Kleidorfer M. and Rauch W. (2016). Designing and implementing a multi-core capable integrated urban drainage modelling Toolkit:Lessons from CityDrain3. Advances in Engineering Software 100, 277-89](http://dx.doi.org/10.1016/j.advengsoft.2016.08.004)

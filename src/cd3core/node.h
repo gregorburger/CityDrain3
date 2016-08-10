@@ -188,7 +188,7 @@ public:
 			Logger(Error) << str(format("no parameter with name %1%") % name);
 			return 0;
 		}
-		NodeParameter *p = parameters.at(name);
+		NodeParameter *p = parameters.find(name)->second;
 		if (p->type != cd3::TypeInfo(typeid(T))) {
 			Logger(Error) << str(format("wrong type for parameter %1%") % name);
 			return 0;

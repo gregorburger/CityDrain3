@@ -22,6 +22,7 @@
 
 #include <node.h>
 #include <flow.h>
+#include <QString>
 
 struct IxxRainRead_v2_Private;
 
@@ -38,6 +39,8 @@ public:
 private:
 	Flow out;
 	std::string rain_file;
+    std::string datestring;
+    QString q_datestring; //Same as datestring but avoids converting all the time
 	IxxRainRead_v2_Private *data;
 };
 

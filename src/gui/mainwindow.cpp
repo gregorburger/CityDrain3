@@ -69,6 +69,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->restoreGeometry(s.value("gui/mainwindow/geometry").toByteArray());
 
 	log_updater = new GuiLogSink(ui->logWidget);
+	connect(log_updater, SIGNAL(newLogLine(QString, QColor)), SLOT(newLogLine(QString, QColor)), Qt::QueuedConnection);
 	Log::init(log_updater);
 	this->connect(scene, SIGNAL(nodesRegistered()), SLOT(pluginsAdded()));
 	this->connect(scene, SIGNAL(changed(QUndoCommand*)), SLOT(simulationChanged(QUndoCommand*)));
@@ -626,4 +627,11 @@ void MainWindow::on_actionAuto_layout_triggered() {
 #else
 	QMessageBox::critical(0, "autolayout disabled", "Autolayout support is disabled for this build");
 #endif
+}
+
+void MainWindow::newLogLine(QString line, QColor c) {
+	QTextCharFormat cf = ui->logWidget->currentCharFormat();
+	cf.setForeground(c);
+	ui->logWidget->setCurrentCharFormat(cf);
+	ui->logWidget->appendPlainText(line);
 }

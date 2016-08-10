@@ -90,6 +90,12 @@ bool SaxLoader::startElement(const QString &/*ns*/,
 		std::string id = atts.value("id").toStdString();
 		std::string klass = atts.value("class").toStdString();
 		Logger(Debug) << "creating a" << klass << "node with id:" << id;
+
+		if(!pd->node_registry->contains(klass))
+		{
+			Logger(Error) << "Could not find class with name: " << klass;
+			return false;
+		}
 		current = pd->node_registry->createNode(klass);
 		model->addNode(id, current);
 		consumed = true;

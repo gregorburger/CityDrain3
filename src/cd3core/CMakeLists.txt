@@ -2,9 +2,9 @@ file(GLOB CPP_FILES RELATIVE_PATH
 	*.cpp
 	*.h
 	../nodes/*.cpp
-	../nodes/*.c
 	../nodes/*.h
-	../nodes/muparser/*.cpp)
+	../nodes/muparser/*.cpp
+	../nodes/*.c)
 
 message(STATUS ${CMAKE_BINARY_DIR})
 include_directories(${PYTHON_INCLUDE_DIR} ${CMAKE_BINARY_DIR} ../nodes/muparser)
@@ -14,13 +14,14 @@ if (WITH_PYTHON)
 endif (WITH_PYTHON)
 add_library(cd3core SHARED ${CPP_FILES})
 
-TARGET_LINK_LIBRARIES(cd3core 
-	${QT_LIBRARIES} 
-	${Boost_THREAD_LIBRARY} 
-	${Boost_SYSTEM_LIBRARY} 
-	${Boost_SIGNALS_LIBRARY} 
-	${Boost_DATE_TIME_LIBRARY} 
-	${Boost_FILESYSTEM_LIBRARY})
+
+IF(USEQT5)
+	TARGET_LINK_LIBRARIES(cd3core ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_SIGNALS_LIBRARY} ${Boost_DATE_TIME_LIBRARY} ${Boost_FILESYSTEM_LIBRARY} Qt5::Xml)
+ELSE()
+	TARGET_LINK_LIBRARIES(cd3core ${QT_LIBRARIES} ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_SIGNALS_LIBRARY} ${Boost_DATE_TIME_LIBRARY} ${Boost_FILESYSTEM_LIBRARY})
+ENDIF()
+
+
 
 add_dependencies(cd3core pycd3gen)
 
